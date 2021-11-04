@@ -22,9 +22,10 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "jest": "^27.3.1",
+    "jest-esm-transformer": "^1.0.0",
+    "nodemon": "^2.0.14",
     "superagent": "^6.1.0",
-    "supertest": "^6.1.6",
-    "nodemon": "^2.0.14"
+    "supertest": "^6.1.6"
   },
   "scripts": {
     "dev": "nodemon -r esm server.js",
