@@ -25,6 +25,7 @@
     "babel-preset-env": "^1.7.0",
     "jest": "^27.3.1",
     "jest-esm-transformer": "^1.0.0",
+    "jest-sonar-reporter": "^2.0.0",
     "nodemon": "^2.0.14",
     "superagent": "^6.1.0",
     "supertest": "^6.1.6"
@@ -33,7 +34,7 @@
     "dev": "nodemon -r esm server.js",
     "start": "node -r esm server.js",
     "test": "jest --runInBand --passWithNoTests",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest --coverage --testResultsProcessor=jest-sonar-reporter",
     "format": "prettier --write \"**/*.js\" \"test/**/*.js\""
   }
 }
