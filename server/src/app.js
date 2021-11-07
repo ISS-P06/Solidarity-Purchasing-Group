@@ -1,6 +1,6 @@
 "use strict";
 
-import { listClients, listProducts } from "../dao.js";
+import { listClients, listProducts } from "./dao";
 
 import express from 'express';
 import morgan from 'morgan';

@@ -2,6 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
+  "author": "",
+  "license": "ISC",
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -31,9 +33,7 @@
     "dev": "nodemon -r esm server.js",
     "start": "node -r esm server.js",
     "test": "jest --runInBand --passWithNoTests",
+    "test:cov": "jest --coverage",
     "format": "prettier --write \"**/*.js\" \"test/**/*.js\""
-  },
-  "author": "",
-  "license": "ISC",
-  "type": "module"
+  }
 }
