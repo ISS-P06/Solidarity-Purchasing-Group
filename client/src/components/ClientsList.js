@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Row, Col, Spinner, ListGroup, Card } from 'react-bootstrap/';
 import { api_getClientsList } from "../Api";
+import ClientOrderForm from "./ClientOrderForm";
 
 function ClientsList() {
     const [clientsList, setClientsList] = useState([]);
@@ -53,6 +54,8 @@ function ClientsList() {
 
 function Client(props) {
     const { client } = props;
+    const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
+
     return (
         <Card className="text-left">
             <Card.Header as="h5">{client.name + " " + client.surname}</Card.Header>
@@ -75,13 +78,16 @@ function Client(props) {
 
                 <Row>
                     <Col><Button variant="primary" className="mr-2">Top up wallet</Button></Col>
-                    <Col><Button variant="primary" className="mr-2">Add order</Button></Col>
+                    <Col><Button variant="primary" className="mr-2" onClick={() => setClientOrderFormShow(true)}>Add order</Button></Col>
 
 
                 </Row>
-
-
             </Card.Body>
+            <ClientOrderForm
+                show={clientOrderFormShow}
+                onHide={() => setClientOrderFormShow(false)}
+                client={client}
+            />
         </Card>
 
     );
