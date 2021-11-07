@@ -16,3 +16,21 @@ export const api_getProducts = async () => {
         }
     }
 };
+
+export const api_getClientsList = async () => {
+    try {
+        const res = await axios.get('/api/clients');
+        if (res.data) {
+            console.log(res.data);
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status == 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting the clients');
+        }
+    }
+};

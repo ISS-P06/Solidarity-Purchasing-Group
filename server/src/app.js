@@ -1,9 +1,9 @@
 "use strict";
 
-import { listProducts } from "../dao";
+import { listClients, listProducts } from "../dao.js";
 
-const express = require("express");
-const morgan = require("morgan");
+import express from 'express';
+import morgan from 'morgan';
 
 /* express setup */
 const app = new express();
@@ -21,6 +21,13 @@ app.get("/", (req, res) => {
 app.get('/api/products', (req, res) => {
   listProducts()
     .then((products) => res.json(products))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients
+app.get('/api/clients', (req, res) => {
+  listClients()
+    .then((clients) => res.json(clients))
     .catch(() => res.status(500).end());
 });
 
