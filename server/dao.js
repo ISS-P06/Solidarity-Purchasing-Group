@@ -23,9 +23,6 @@ export function listClients() {
         const sql = `SELECT id, name, surname, phone, address, mail, balance
             FROM  Client c`;
         db.all(sql, [], (err, rows) => {
-            console.log("********************");
-            console.log(rows);
-            console.log("*******************************************+")
             if (err) {
                 reject(err);
                 return;
