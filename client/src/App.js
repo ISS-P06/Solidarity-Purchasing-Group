@@ -87,6 +87,37 @@ function App() {
     setLoggedIn(false);
   }
 
+  // useEffect for getting user info
+  useEffect(()=> {
+    const checkAuth = async() => {
+      try {
+        const info = await api_getUserInfo();
+        setLoggedIn(true);
+        setUserRole(info.role);
+      } catch(err) {
+        console.error(err);
+      }
+    };
+    checkAuth();
+  }, [loggedIn]);
+
+  // async function for logging in
+  const doLogin = async (credentials) => {
+    try {
+      await api_login(credentials);
+      setLoggedIn(true);
+      return {done: true, msg: "ok"};
+    } catch(err) {
+      return {done: false, msg: err.message};
+    }
+  }
+
+  // async function for logging out
+  const doLogout = async () => {
+    await api_logout();
+    setLoggedIn(false);
+  }
+
   return (
     <Container
       className="App bg-light text-dark p-0 m-0 min-vh-100"

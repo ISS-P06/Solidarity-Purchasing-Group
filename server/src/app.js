@@ -256,7 +256,6 @@ app.get('/api/sessions/current', (req, res) => {
       res.status(401).json({message: 'Unauthenticated user'});
 });
 
-
 // --- --- --- //
 // --- Route used for adding an admin (used only for testing purposes)
 app.post('/test/addUser', [

@@ -69,8 +69,6 @@ export const api_addTopUpClient = async ({id, amount}) => {
   }
 };
 
-
-
 export async function insertClient(client) {
     let res;
     try {
