@@ -63,3 +63,30 @@ export function getUserById(id) {
         });
     });
 }
+
+// --- Add a new user
+// (used for testing purposes only)
+export function test_createUser(user) {
+    return new Promise((resolve, reject) => {
+        bcrypt.hash(user.password, saltRounds, (err, encr) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            const sql = `
+                INSERT INTO user(username, password, role) VALUES (
+                    ?, ?, ?);
+                `;
+            db.run(sql, [user.username,
+                        encr,
+                        user.role], function (err) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    });
+};
