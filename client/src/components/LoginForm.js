@@ -127,7 +127,7 @@ function LoginForm(props) {
                                         <Button 
                                             className="m-2"
                                             variant="secondary" 
-                                            onClick={() => handleClick("/home")}>
+                                            onClick={() => handleClick("/")}>
                                             Back to home
                                         </Button>
                                     </Row>
