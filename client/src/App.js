@@ -16,6 +16,7 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom
 import AppNavbar from './components/AppNavbar';
 import VirtualClock from './components/VirtualClock';
 import { api_getProducts, api_getUserInfo, api_login, api_logout } from './Api';
+import LoginForm from './components/LoginForm';
 
 function App() {
   // Product: { id, name, description, category, quantity, price }
@@ -62,6 +63,7 @@ function App() {
         setLoggedIn(true);
         setUserRole(info.role);
       } catch(err) {
+        setUserRole("");
         console.error(err);
       }
     };
@@ -119,14 +121,88 @@ function App() {
             </Col>
 
             <Col xs={10}>
-              <Route exact path="/insert-client">
-                <InsertClient />
+              {/* 
+                --- --- --- 
+                Shop employee-only routes            
+              */}
+              {/* Employee client list route */}
+              <Route path="/employee/clients">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <ClientsList setMessage={setMessage} />
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
               </Route>
-              <Route exact path="/browse-products">
-                <ProductCards />
+
+              {/* Employee client registration route */}
+              <Route path="/employee/clients/register">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <InsertClient />
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
               </Route>
-              <Route exact path="/show-clients">
-                <ClientsList setMessage={setMessage} />
+
+              {/* Employee product browsing route */}
+              <Route path="/employee/products">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <ProductCards />
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
+              </Route>
+
+              {/* Employee order list route */}
+              <Route path="/employee/orders">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <div/>
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
+              </Route>
+
+              {/* Employee order creation route */}
+              <Route path="/employee/orders/new">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <div/>
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
+              </Route>
+
+              {/* Employee home page route */}
+              <Route path="/employee">
+                {
+                  (loggedIn && userRole == "shop_employee") ?
+                    <div/>
+                    :
+                    <RedirectUser
+                      userRole={userRole}/>
+                }
+              </Route>
+              {/* 
+                end of employee-only routes
+                --- --- --- 
+              */}
+
+              {/* Home page route */}
+              <Route path="/home">
+                {/* Replace div with homepage component */}
+                <div/>     
+              </Route>
+
+              <Route>
+                <Redirect to="/home"/>
               </Route>
             </Col>
           </Row>
@@ -134,6 +210,21 @@ function App() {
       </Router>
     </Container>
   );
+}
+
+function RedirectUser(props) {
+  const userRole = props.userRole;
+
+  const renderSwitch = (role) => {
+    switch (role) {
+      case 'shop_employee':
+        return <Redirect to="/employee"/>;
+      default:
+        return <Redirect to="/home" />;
+    }
+  };
+
+  return renderSwitch(userRole);
 }
 
 export default App;

@@ -11,14 +11,11 @@ import bcrypt from 'bcrypt';
 /** Virtual Time Clock */
 const vtc = new VTC();
 import { listProducts } from "../dao";
-import { getUser, getUserById } from "../user-dao";
+import { getUser, getUserById, test_createUser } from "../user-dao";
 
-const express = require("express");
-const morgan = require("morgan");
-const {check, body, validationResult} = require('express-validator'); // validation middleware
-const passport = require('passport');
-const session = require('express-session');
-const LocalStrategy = require('passport-local').Strategy;
+import passport from 'passport';
+import session from 'express-session';
+import LocalStrategy from 'passport-local';
 
 // --- Set up Passport --- //
 /*
@@ -257,7 +254,6 @@ app.get('/api/sessions/current', (req, res) => {
   else
       res.status(401).json({message: 'Unauthenticated user'});
 });
-
 
 /*** End APIs ***/
 
