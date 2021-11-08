@@ -153,6 +153,18 @@ function App() {
             </Col>
 
             <Col xs={10}>
+              {/* Login route */}
+              <Route path="/login">
+                {
+                  (loggedIn) ?
+                    <RedirectUser
+                      userRole={userRole}/>
+                    :
+                    <LoginForm
+                      doLogin={doLogin}
+                      />
+                }
+              </Route>
               {/* 
                 --- --- --- 
                 Shop employee-only routes            
