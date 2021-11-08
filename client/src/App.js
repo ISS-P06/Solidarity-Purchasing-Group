@@ -196,13 +196,13 @@ function App() {
               */}
 
               {/* Home page route */}
-              <Route path="/home">
+              <Route path="/">
                 {/* Replace div with homepage component */}
                 <div/>     
               </Route>
 
               <Route>
-                <Redirect to="/home"/>
+                <Redirect to="/"/>
               </Route>
             </Col>
           </Row>
@@ -220,7 +220,7 @@ function RedirectUser(props) {
       case 'shop_employee':
         return <Redirect to="/employee"/>;
       default:
-        return <Redirect to="/home" />;
+        return <Redirect to="/" />;
     }
   };
 

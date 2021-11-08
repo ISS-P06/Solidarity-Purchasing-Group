@@ -2,15 +2,11 @@ import VirtualClock from "./VirtualClock";
 import { Navbar, Col, Button } from "react-bootstrap";
 import { BsFillBasket3Fill } from 'react-icons/bs';
 import { useHistory } from "react-router-dom";
-import {useState} from 'react';
-import LoginForm from './LoginForm';
 
 function AppNavbar(props) {
-  const doLogin = props.doLogin;
   const loggedIn = props.loggedIn;
   const doLogout = props.doLogout;
   const userRole = props.userRole;
-  const [showForm, setShowForm] = useState(false);
   const history = useHistory();
 
   const handleClick = (path) => {
