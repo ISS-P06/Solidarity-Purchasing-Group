@@ -95,6 +95,7 @@ function App() {
         setLoggedIn(true);
         setUserRole(info.role);
       } catch(err) {
+        setUserRole("");
         console.error(err);
       }
     };

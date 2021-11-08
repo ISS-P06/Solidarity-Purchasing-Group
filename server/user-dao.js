@@ -1,7 +1,7 @@
 'use strict';
 
-import db from './db';
-const bcrypt = require('bcrypt');
+import db from './db.js';
+import bcrypt from 'bcrypt';
 const saltRounds = 10;
 
 // --- Get user info by providing username and password
