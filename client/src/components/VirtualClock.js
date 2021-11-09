@@ -14,7 +14,6 @@ function VirtualClock(props) {
     const handleShow = () => setShowModalVT(true);
 
     const handleDate = async () => {
-        console.log(date);
         await setDate(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1));
     };
 
@@ -28,14 +27,15 @@ function VirtualClock(props) {
     useEffect(() => {
 
         const getTime = async () => {
-          let new_date = await API.api_getTime();
-          setDate(new Date(new_date.getFullYear(), new_date.getMonth(), new_date.getDate()));
-          setTime(new_date.getHours());
+          let new_date = await api_getTime();
+          setDate(new Date(new_date.substring(0,4), (new_date.substring(5,7) - 1), new_date.substring(8,10)));
+          setTime(new_date.substring(11,13));
         };
-    
+        
         getTime();
+
     
-      }, [ , date, time]);
+      }, []);
 
     const renderDate = () => {
         let d, weekDay;
