@@ -19,7 +19,6 @@ function VirtualClock(props) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        alert("Hai selezionato " + date + " ore: " + (time / 3600));
         api_setTime(date, time / 3600);
         handleClose();
     };
