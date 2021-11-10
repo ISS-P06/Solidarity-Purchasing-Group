@@ -2,14 +2,14 @@ import { Table } from "react-bootstrap";
 
 function OrderTable(props) {
 
-  const productList = props.products.map((product) => {
+  const productList = props.products != null ? props.products.map((product) => {
       return <tr>
-        <td>{product.productName}</td>
+        <td>{product.name}</td>
         <td>{product.quantity}</td>
         <td> €/Kg {product.price}</td>
       </tr>
     }
-  );
+  ) : 0;
 
   function computeTotal(products) {
     let total = 0.00;
@@ -29,7 +29,7 @@ function OrderTable(props) {
    </thead>
    <tbody>
        {productList}
-       <tr><td>Total: </td><td></td><td>€ {computeTotal(props.products)}</td></tr>
+       <tr><td>Total: </td><td></td><td>€ {props.products != null ? computeTotal(props.products) : 0}</td></tr>
    </tbody>
  </Table>;
 }
