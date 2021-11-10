@@ -1,5 +1,5 @@
 import VirtualClock from "./VirtualClock";
-import { Navbar, Col, Button } from "react-bootstrap";
+import { Navbar, Col, Button, Container, Nav } from "react-bootstrap";
 import { BsFillBasket3Fill } from 'react-icons/bs';
 import { useHistory } from "react-router-dom";
 
@@ -19,8 +19,17 @@ function AppNavbar(props) {
         handleClick("/employee");
         break;
       default:
-        handleClick("/home");
+        handleClick("/");
         break;
+    }
+  }
+
+  const userPage = (role) => {
+    switch(role) {
+      case "shop_employee":
+        return "/employee";
+      default:
+        return "/";
     }
   }
 
@@ -34,17 +43,45 @@ function AppNavbar(props) {
   }
 
   return (
-    <Navbar expand="md" bg="primary">
-      <Navbar.Brand className="text-light px-4 my-auto ml-md-0">
-        <h3>Solidarity Purchasing Group</h3>
-      </Navbar.Brand>
-
-      {/* TODO Button on the extreme right */}
-      <Navbar.Brand className="mx-auto mb-3">
-        <VirtualClock />
-      </Navbar.Brand>
+    <Navbar collapseOnSelect className="bg-primary text-light" fluid="true" expand="lg">
+      <Container>
+        <Navbar.Brand>Solidarity Purchasing Group</Navbar.Brand>
+        {/* TODO Button on the extreme right */}
+        <Navbar.Brand className="mx-auto mb-3">
+          <VirtualClock />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls='responsive-navbar-nav'/>
+        <Navbar.Collapse id='responsive-navbar-nav'>
+          <Nav className="">
+            {
+              loggedIn ?
+                <>
+                  <Nav.Link onClick = {() => goToUserPage(userRole)}>{ userPageText(userRole) }</Nav.Link>
+                  <LogoutLink
+                    doLogout={doLogout}/>
+                </>
+                :
+                <>
+                  <Nav.Link href="/login">
+                      Login
+                  </Nav.Link>
+                </>
+            }
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
     </Navbar>
   );
+}
+
+// --- Renders a logout link
+function LogoutLink(props) {
+  return(
+      <Nav.Link
+          onClick={props.doLogout}>
+          Logout
+      </Nav.Link>
+  )
 }
 
 // --- Renders a logout button
