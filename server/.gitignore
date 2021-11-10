@@ -3,3 +3,4 @@ node_modules
 # testing
 coverage
 test-report.xml
+database.db
