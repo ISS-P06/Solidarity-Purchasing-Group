@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { Container, Col, Form, Row, Button, Modal } from "react-bootstrap";
-import DatePicker from "react-datepicker";
+
 import TimePicker from 'react-bootstrap-time-picker';
+
+
+
+
 import { api_setTime, api_getTime } from "../Api";
+import { humanToISO, ISOtoHuman } from "../utils";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -10,25 +15,47 @@ function VirtualClock(props) {
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(0);
     const [showModalVT, setShowModalVT] = useState(false);
+
+
+    const weekdays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
     const handleClose = () => setShowModalVT(false);
     const handleShow = () => setShowModalVT(true);
 
     const handleDate = async () => {
-        await setDate(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1));
+        const newDate = new Date()
+        newDate.setDate(date.getDate() +1)
+        
+        setDate(newDate)
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        api_setTime(date, time / 3600);
+
+        const ISODate = humanToISO(date, time/3600);
+        api_setTime(ISODate);
+
         handleClose();
     };
 
     useEffect(() => {
 
         const getTime = async () => {
-          let new_date = await api_getTime();
-          setDate(new Date(new_date.substring(0,4), (new_date.substring(5,7) - 1), new_date.substring(8,10)));
-          setTime(new_date.substring(11,13));
+          const apiData = await api_getTime();
+        //   const day = apiData.day
+
+          const {date, time} = ISOtoHuman(apiData.currentTime)
+            
+          setDate(date);
+          setTime(time);
         };
         
         getTime();
@@ -36,33 +63,11 @@ function VirtualClock(props) {
     
       }, []);
 
-    const renderDate = () => {
-        let d, weekDay;
-        switch (date.getDay()) {
-            case 0:
-                weekDay = 'Sunday';
-                break;
-            case 1:
-                weekDay = 'Monday';
-                break;
-            case 2:
-                weekDay = 'Tuesday';
-                break;
-            case 3:
-                weekDay = 'Wednesday';
-                break;
-            case 4:
-                weekDay = 'Thursday';
-                break;
-            case 5:
-                weekDay = 'Friday';
-                break;
-            case 6:
-                weekDay = 'Saturday';
-                break;
-        }
-        d = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " - " + weekDay;
-        return d;
+    const renderDate=()=> {
+        const day = weekdays[date.getDay()]
+        const fullDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+
+        return  fullDate + " - " + day;
     }
 
     return (

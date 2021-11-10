@@ -22,13 +22,15 @@
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
-    "jest-sonar-reporter": "^2.0.0"
+    "jest-sonar-reporter": "^2.0.0",
+    "prettier": "^2.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false && react-scripts build",
     "test": "react-scripts test",
     "test:cov": "react-scripts test --coverage --testResultsProcessor=jest-sonar-reporter",
+    "format": "prettier --write \"**/*.js\" \"test/**/*.js\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
