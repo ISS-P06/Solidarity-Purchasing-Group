@@ -1,6 +1,7 @@
 "use strict";
 
-import { listOrders } from "./dao";
+import { request } from "http";
+import { getOrders, getOrderById, setOrderDelivered } from "./dao";
 
 const express = require("express");
 
@@ -17,11 +18,25 @@ app.get("/", (req, res) => {
 
 // GET /api/orders
 app.get('/api/orders', (req, res) => {
-  listOrders()
+  getOrders()
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
 
+// GET /api/orders/:id
+// Route used to get the order review
+app.get('/api/orders/:id', (req, res) => {
+  getOrderById(req.params.id)
+    .then((order) => {console.log(order); res.json(order)})
+    .catch(() => res.status(500).end());
+});
+
+// POST /api/orders/:id/deliver
+app.post('/api/orders/:id/deliver', (req, res) => {
+  setOrderDelivered(req.params.id)
+    .then((orderId) => {console.log(orderId); res.json(orderId)})
+    .catch(() => res.status(500).end());
+});
 
 /*** End APIs ***/
 
