@@ -84,6 +84,16 @@ function LogoutLink(props) {
   )
 }
 
+// --- Renders a logout link
+function LogoutLink(props) {
+  return(
+      <Nav.Link
+          onClick={props.doLogout}>
+          Logout
+      </Nav.Link>
+  )
+}
+
 // --- Renders a logout button
 function LogoutButton(props) {
   return(

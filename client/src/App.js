@@ -169,6 +169,15 @@ function App() {
                 --- --- --- 
                 Shop employee-only routes            
               */}
+              {/* Employee: client info page route */}
+              <Route path="/employee/clients/:id" render ={({match}) => {
+                if (loggedIn) {
+                  return <div id={match.params.id}/>;
+                }
+                else {
+                  return <RedirectUser userRole={userRole}/>;
+                }
+              }}/>
               {/* Employee client list route */}
               <Route path="/employee/clients">
                 {
@@ -201,6 +210,16 @@ function App() {
                       userRole={userRole}/>
                 }
               </Route>
+
+              {/* Employee: order info page route */}
+              <Route path="/employee/orders/:id" render ={({match}) => {
+                if (loggedIn) {
+                  return <div id={match.params.id}/>;
+                }
+                else {
+                  return <RedirectUser userRole={userRole}/>;
+                }
+              }}/>
 
               {/* Employee order list route */}
               <Route path="/employee/orders">
