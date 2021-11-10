@@ -71,10 +71,6 @@ export function insertOrder(orderClient) {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(sql, [orderClient.clientID, "confirmed", dayjs().format('YYYY-MM-DD HH:MM') ], function (err) {
       var OrderID = this.lastID;
-      if (err) {
-        reject(err);
-        return;
-      }
       orderClient.order.map((product, index) => {
         const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,?,?)`;
         db.run(sql, [OrderID, product.id, product.quantity], function (err) {
@@ -123,5 +119,21 @@ export function insertClient(name, surname, phone, address, mail, balance = 0, u
             })
         })
     })
+}
 
+export function listOrders() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT r.id, c.mail
+            FROM Request r, Client c
+            WHERE r.ref_client = c.id`;
+    db.all(sql, [], (err, rows) => {
+        reject(err);
+        return;
+      });
+    const orders = rows.map((p) => ({
+        orderId: p.id,
+        email: p.mail
+    }));
+    resolve(orders);  
+  });
 }

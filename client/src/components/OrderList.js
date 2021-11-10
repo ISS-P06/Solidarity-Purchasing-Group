@@ -1,10 +1,22 @@
 import { Card, CardGroup } from "react-bootstrap";
 import OrderItem from './OrderItem';
 import './OrderList.css';
+import { useEffect, useState } from 'react';
+import api_getOrders from '../Api';
 
-function OrderList(props) {
+function OrderList() {
 
-  const orderList = props.orderList.map((order) => 
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+
+    api_getOrders()
+    	.then((orders) => {
+    	setOrders(orders);
+    	}).catch((e) =>console.log(e));
+  }, []);
+
+  const orderList = orders.map((order) => 
     <div className="OrderItem">
       <OrderItem key={order.orderId.toString()}  order={order} />
     </div>
