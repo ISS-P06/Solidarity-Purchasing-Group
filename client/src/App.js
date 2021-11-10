@@ -7,13 +7,13 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import AppNavbar from './components/AppNavbar';
 import OrderList from './components/OrderList';
-import { useEffect, useState } from 'react';
 
-import api_getOrders from './api';
-import api_doDelivery from './api';
+
+
+import api_doDelivery from './Api';
 import OrderReview from './components/OrderReview';
 
-
+/*
 function api_getOrderList() {
 
   const orderListData = [ 
@@ -29,7 +29,7 @@ function api_getOrderList() {
 
   return orderListData;
 }
-
+*/
 function api_getOrderReview(id) {
 
   const orderReview1 = {
@@ -39,10 +39,12 @@ function api_getOrderReview(id) {
       {
         productName: 'Apple',
         quantity: 3,
+        price: 1.50,
       },
       {
         productName: 'Banana',
         quantity: 2,
+        price: 2.30,
       }
     ],
     state: 'pending'
@@ -58,10 +60,12 @@ function api_getOrderReview(id) {
         {
           productName: 'Apple',
           quantity: 4,
+          price: 1.50,
         },
         {
           productName: 'Banana',
           quantity: 1,
+          price: 2.30,
         }
       ],
       state: 'pending'
@@ -73,7 +77,7 @@ function api_getOrderReview(id) {
 
 function App() {
 
-  const [orderList, setOrderList] = useState([]);
+  
   
   const doDelivery = async (orderId) => {
     /*
@@ -99,15 +103,7 @@ function App() {
 
   };
   
-  useEffect(() => {
-
-    /*
-    api_getOrders.then((orders) => {
-      setOrderList(orders);
-    }).catch((e) => handleErrors(e));*/
-    setOrderList(api_getOrderList());
-
-  })
+  
 
 
   return (
@@ -116,7 +112,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/api/orders">
-            <OrderList orderList={orderList}/>
+            <OrderList />
           </Route>
           <Route exact path="/api/orders/:id" render={({match}) =>
             <OrderReview orderReview={getOrderReview(match.params.id)} onDelivery={doDelivery}/>

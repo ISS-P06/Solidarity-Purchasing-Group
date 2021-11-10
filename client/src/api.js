@@ -12,7 +12,9 @@ export const api_getOrders = async () => {
       if (err.response.status == 500) {
         throw new Error(err.response.data);
       } else {
-        throw new Error('Sorry, there was an error in getting all the services');
+        throw new Error('Sorry, there was an error in getting all the orders');
       }
     }
   };
+
+  export default api_getOrders;
