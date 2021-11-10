@@ -52,14 +52,31 @@ export function listClients() {
 export function insertClient(name, surname, phone, address, mail, balance = 0) {
     console.log(`inserting client ${name}`)
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO Client (name ,surname ,phone, address, mail, balance) VALUES(? , ?, ?, ?, ?,?) ';
-        db.run(sql, [name, surname, phone, address, mail, balance], (err) => {
-            if (err) {
-                console.log(err)
-                reject(err);
-            } else {
-                resolve(0)
-            }
+        const clientQuery = 'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
+        const userQuery = 'INSERT INTO User (username ,password ,role) VALUES (? ,? , ?)'
+        let userID;
+        let clientID;
+        db.serialize(() => {
+            let stmt = db.prepare(userQuery)
+            stmt.run([username, password, role], function (err) {
+                if (err) {
+                    reject(err)
+                }
+                userID = this.lastID;
+                console.log(`newly created userID: ${userID}`)
+                db.serialize(() => {
+                    let stmt = db.prepare(clientQuery)
+                    console.log(`hey from client query userID is ${userID}`)
+                    stmt.run([name, surname, phone, address, mail, balance, userID], function (err) {
+                        if (err) {
+                            reject(err)
+                        }
+                        clientID = this.lastID
+                        resolve(clientID)
+                    })
+                })
+                resolve(userID)
+            })
         })
     })
 

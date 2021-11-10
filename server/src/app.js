@@ -35,7 +35,7 @@ app.get('/api/clients', (req, res) => {
 // TODO PUT ISLOGGEDIN AS A MIDDLEWARE
 app.post('/api/insert_client', async (req, res) => {
     let client = req.body;
-    insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance)
+    insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance, client.username, client.password)
         .then((result) => {
             console.log(result)
             res.end()
