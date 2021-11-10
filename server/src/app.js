@@ -25,7 +25,7 @@ app.use(morgan('dev'));
  * Used to pass current virtual time clock to the frontend
  */
 app.get('/api/time', (_, res) => {
-  res.status(200).json({ currentTime: vtc.get(), day: vtc.day() });
+  res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
 });
 
 /**
@@ -45,7 +45,7 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
 
   try {
     vtc.set(time);
-    res.status(200).json({ currentTime: vtc.get(), day: vtc.day() });
+    res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
   } catch (error) {
     res.status(500).json({ error });
   }

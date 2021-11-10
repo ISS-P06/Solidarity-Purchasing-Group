@@ -14,29 +14,16 @@ class VTC {
    * @param {any} [time=dayjs()]
    */
   constructor(time = dayjs().add(1, 'hour')) {
-    if (process.env.NODE_ENV !== 'production') {
-      this.#currentTime = time;
-    }
+    this.#currentTime = dayjs(time);
   }
 
   /**
    * Return current virtual time.
    *
-   * @return {dayjs.Dayjs} Current virtual time.
+   * @return {dayjs.Dayjs} Current virtual time as ISO8601 string.
    */
-  get() {
-    return this.#currentTime;
-  }
-
-  /**
-   * Set a new virtual time.
-   *
-   * @param {any} time
-   * @return {dayjs.Dayjs} Current virtual time.
-   */
-  set(time) {
-    this.#currentTime = dayjs(time);
-    return this.#currentTime;
+  time() {
+    return this.#currentTime.toISOString();
   }
 
   /**
@@ -47,6 +34,17 @@ class VTC {
   day() {
     const id = this.#currentTime.day();
     return this.#weekdays[id];
+  }
+
+  /**
+   * Set a new virtual time.
+   *
+   * @param {any} time as ISO8601 string.
+   * @return {dayjs.Dayjs} Current virtual time.
+   */
+  set(time) {
+    this.#currentTime = dayjs(time).add(1, 'hour');
+    return this.#currentTime;
   }
 }
 
