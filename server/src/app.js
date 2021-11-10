@@ -1,17 +1,8 @@
-<<<<<<< HEAD
 "use strict";
-
 import {listClients, listProducts, insertClient} from "./dao";
-=======
-'use strict';
->>>>>>> main
-
 import express from 'express';
 import morgan from 'morgan';
-
 import { check, validationResult } from 'express-validator';
-
-import { listClients, listProducts } from './dao';
 import VTC from './vtc';
 
 /** Virtual Time Clock */
@@ -25,10 +16,8 @@ app.use(morgan('dev'));
 
 /*** APIs ***/
 
-<<<<<<< HEAD
 app.get("/", (req, res) => {
-    res.status(200).send("Hello World!");
-=======
+    res.status(200).send("Hello World!")});
 /**
  * GET /api/time
  *
@@ -59,7 +48,6 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   } catch (error) {
     res.status(500).json({ error });
   }
->>>>>>> main
 });
 
 // GET /api/products
@@ -86,15 +74,8 @@ app.post('/api/insert_client', async (req, res) => {
             res.end()
         })
         .catch(err => res.status(500).json(err))
-
 })
 
 /*** End APIs ***/
 
 export default app;
-/*  try {
-    await insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance)
-    res.end();
-  }catch (err){
-    res.status(500).json(err);
-  }*/
