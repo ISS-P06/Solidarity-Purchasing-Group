@@ -10,8 +10,9 @@ import bcrypt from 'bcrypt';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
-import { listProducts } from "../dao";
-import { getUser, getUserById, test_createUser } from "../user-dao";
+
+// --- Imports for passport and login/logout --- //
+import { getUser, getUserById, test_createUser } from "./user-dao";
 
 import passport from 'passport';
 import session from 'express-session';

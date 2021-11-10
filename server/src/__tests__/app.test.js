@@ -97,3 +97,19 @@ describe('TEST POST order ', function () {
       });
   });
 });
+// --- Login/logout routes tests
+describe('Test the login APIs', () => {
+  test('It should respond to the POST method', () => {
+    const user = {username: "pentolino", password: "pentolino"};
+    return request(app).post('/api/sessions').send(user).expect(200);
+  });
+
+  test('The POST method should fail', () => {
+    const user = {username: "pentolino", password: "a"}
+    return request(app).post('/api/sessions').send(user).expect(401);
+  });
+
+  test('It should respond to the DELETE method', () => {
+    return request(app).delete('/api/sessions/current').expect(200);
+  });
+});
