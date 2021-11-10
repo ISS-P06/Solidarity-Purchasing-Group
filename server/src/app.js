@@ -149,7 +149,12 @@ app.post('/api/insert_client', async (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-
+// GET /api/orders
+app.get('/api/orders', (req, res) => {
+  listOrders()
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
 
 
 /*** End APIs ***/
