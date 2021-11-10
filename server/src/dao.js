@@ -49,7 +49,7 @@ export function listClients() {
     });
 }
 
-export function insertClient(name, surname, phone, address, mail, balance = 0) {
+export function insertClient(name, surname, phone, address, mail, balance = 0, username, password, role = 'client') {
     console.log(`inserting client ${name}`)
     return new Promise((resolve, reject) => {
         const clientQuery = 'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
