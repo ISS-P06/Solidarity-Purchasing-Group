@@ -1,15 +1,45 @@
-import { Container, Row, Col, Card, Button, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, ListGroup, Pagination } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 
 const ProductCards = (props) => {
     const { productList } = props;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(12);
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [currentPage])
+
+    // pagination code
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = productList.slice(indexOfFirstProduct, indexOfLastProduct);
+    const pageNumbers = [];
+
+    for (let i = 1; i <= Math.ceil(productList.length / productsPerPage); i++) {
+        pageNumbers.push(i);
+    }
+
+    const changePage = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    }
 
     return <Container style={{ textAlign: "left" }}>
         <Row className="mt-3">
             {
-                productList.map((p) => {
+                currentProducts.map((p) => {
                     return <ProductCard key={p.id} product={p} />
                 })
             }
+        </Row>
+        <Row>
+            <Col style={{ display: "flex", justifyContent: "center" }}>
+                <Pagination size="md">
+                    {pageNumbers.map(i => (
+                        <Pagination.Item key={i} active={currentPage === i} onClick={() => changePage(i)}>{i}</Pagination.Item>
+                    ))}
+                </Pagination>
+            </Col>
         </Row>
     </Container>;
 }
@@ -17,10 +47,10 @@ const ProductCards = (props) => {
 const ProductCard = (props) => {
     const { product } = props;
     const regex = /[ _]/g;
-    let imgName = product.category.replace(regex,"-").toLowerCase() + "-16x11.png";
+    let imgName = product.category.replace(regex, "-").toLowerCase() + "-16x11.png";
     let imgPath = "/img/products/" + imgName;
 
-    return <Col xs={{ span: 6 }} sm={{ span: 4 }} md={{ span: 3 }}className="mb-3">
+    return <Col xs={{ span: 6 }} sm={{ span: 6 }} md={{ span: 4 }} lg={{ span: 3 }} className="mb-3">
         <Card bg="light" border="secondary" text="black">
             <Card.Img variant="top" src={imgPath} />
             <ListGroup variant="flush">
@@ -30,11 +60,11 @@ const ProductCard = (props) => {
                         <Card.Text>{product.description}</Card.Text>
                     </Card.Body>
                 </ListGroup.Item>
-                <ListGroup.Item>Price: {product.price} €/Kg</ListGroup.Item>
-                <ListGroup.Item>Quantity: {product.quantity} Kg</ListGroup.Item>
+                <ListGroup.Item>Price: {product.price} €/{product.unit}</ListGroup.Item>
+                <ListGroup.Item>Quantity: {product.quantity} {product.unit}</ListGroup.Item>
             </ListGroup>
             <Card.Footer>
-                <Button variant="success" className="float-end text-light pt-0 pb-1" style={{ fontSize: 20 }}>+</Button>
+                <Button variant="primary" className="float-end text-light pt-0 pb-1" style={{ fontSize: 20 }}>+</Button>
             </Card.Footer>
         </Card>
     </Col>;

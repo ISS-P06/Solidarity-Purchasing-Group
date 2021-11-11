@@ -4,7 +4,7 @@ import db from "./db";
 
 export function listProducts() {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price
+        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
                      FROM Product p,
                           Prod_descriptor pd
                      WHERE pd.id = p.ref_prod_descriptor`;
@@ -20,6 +20,7 @@ export function listProducts() {
                 category: p.category,
                 quantity: p.quantity,
                 price: p.price,
+                unit: p.unit,
             }));
             resolve(products);
         });
