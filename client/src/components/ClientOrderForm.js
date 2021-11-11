@@ -5,15 +5,19 @@ import { api_getProducts, api_addOrder } from '../Api';
 import AlertBox from "./Message";
 
 function ClientOrderForm(props) {
-    const { show, onHide, setMessage } = props;
+    const { show, onHide, client, alert,setAlert, message,setMessage } = props;
 
+    const [messageModal, setMessageModal] = useState("");
+    const [alertModal, setAlertModal] = useState(false);
     const [productsList, setProductsList] = useState([]);
     const [categoriesList, setCategoriesList] = useState([]);
     const [productsClient, setProductsClient] = useState([]); /* list of the products ordered by the client */
     const [temporaryKey, setTemporaryKey] = useState(0);
     const [partialPrice, setPartialPrice] = useState(0);
     const [insertProduct, setInsertProduct] = useState(true); //is true when the shop employee is adding a new product
+
     useEffect(() => {
+      
         api_getProducts()
             .then((products) => {
                 const distinctCategoriesList = [];
@@ -25,8 +29,8 @@ function ClientOrderForm(props) {
                 setProductsList(products);
                 setCategoriesList(distinctCategoriesList);
             })
-            .catch((e) => console.log(e) /*TODO manage error*/);
-    }, []);
+            .catch((e) =>   setMessage({ msg: e, type: "danger" }));
+    }, [onHide]);
 
 
     const handleClose = () => {
@@ -34,30 +38,46 @@ function ClientOrderForm(props) {
     };
 
     const addOrder = () => {
-        setInsertProduct(false);
-        if (insertProduct) {
-            setMessage({ msg: "Complete the addition of the last product", type: "danger" });
+      
+        if (productsClient.length == 0) {
+            setMessageModal({ msg: "Complete add at least one product", type: "danger" });
+            setAlertModal(true);
         }
-        else if (productsClient.length == 0) {
-            setMessage({ msg: "Complete add at least one product", type: "danger" });
+        else if(insertProduct){
+            setMessageModal({ msg: "Complete the addition of the last product", type: "danger" });
+            setAlertModal(true);
         }
         else {
-            //send the reqeust
+            //send the request
             var order = productsClient.map((p) => ({
                 id: p.id,
                 quantity: p.quantity
             }));
-            api_addOrder(order).then((id)=>{console.log(id)});
+            var orderClient={clientID :client.id, order:order };
+
+            /*Message*/
+            api_addOrder(orderClient).then((id)=>setMessage({ msg: "The order " + id + " is emitted with success ", type: "success" }));
+
+            /*RESET*/
+            setProductsClient([]);
+            setPartialPrice(0);
+            setInsertProduct(true);
+            handleClose();
+
+            /*TODO verify wallet of the customer */
         }
     }
 
     return (
         <Modal size='lg' aria-labelledby='contained-modal-title-vcenter' centered show={show} onHide={handleClose}>
+          
             <Modal.Header closeButton>
                 <Modal.Title id='contained-modal-title-vcenter'> Add a new client order</Modal.Title>
+              
             </Modal.Header>
+            <AlertBox alert={alertModal} setAlert={setAlertModal} message={messageModal} />
             <Modal.Body>
-
+            
                 {productsClient ? productsClient.map((product, index) => (
                     <ProductForm key={product.temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} insertProduct={insertProduct} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} productsClient={productsClient} setProductsClient={setProductsClient} categoriesList={categoriesList} product={product}></ProductForm>
                 )) : ""
@@ -78,6 +98,8 @@ function ClientOrderForm(props) {
                     : ""}
 
                 {!insertProduct && <Button className="mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)} > Add new product </Button>}
+
+               
             </Modal.Body>
             <Modal.Footer>
 
@@ -109,17 +131,16 @@ function ProductForm(props) {
 
     useEffect(() => {
 
+
         const itemsList = productsList.filter((p) => (p.category == categoriesList[0])).filter((p) => (p.quantity > 0));
         setProductsListbyCurrentCategory(itemsList);
-
 
         setProductID(product ? product.id : itemsList[0].id);
         setQuantityOrdered(product ? product.quantityOrdered : 0.1);
         setMaxQuantity(product ? "" : itemsList[0].quantity);
-        setCurrentPrice(product ? 0 : itemsList[0].price * 0.1);
+        setCurrentPrice(product ? 0 : itemsList[0].price * 0.1); 
+      
     }, []);
-
-
 
 
 
@@ -152,6 +173,7 @@ function ProductForm(props) {
                 setPartialPrice(parseFloat(partialPrice) + parseFloat(addPrice));
 
                 setInsertProduct(false);
+
             }
             setValidated(false);
         } else {
