@@ -25,8 +25,8 @@ function App() {
     return (
         <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid>
             <Router>
-                <VirtualClock/>
                 <AppNavbar/>
+                <VirtualClock/>
                 <Switch>
                     <Route exact path='/insert-client'>
                         <InsertClient/>
