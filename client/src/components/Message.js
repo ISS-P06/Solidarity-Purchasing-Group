@@ -15,13 +15,12 @@ function AlertBox(props) {
                 clearTimeout(timeId)
             }
         }
-    }, [alert, setAlert]);
+    }, [alert,setAlert]);
 
 
     if (alert) {
         return (
             <Alert className='mt-3 pb-0' variant={message.type} onClose={() => setAlert(false)} dismissible>
-                {message.type === "danger" ? <Alert.Heading>Oh snap! You got an error!</Alert.Heading> : <></>}
                 <p>{message.msg}</p>
             </Alert>
         );

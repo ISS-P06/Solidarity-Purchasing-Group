@@ -3,7 +3,8 @@ import { Button, Row, Col, Spinner, ListGroup, Card } from 'react-bootstrap/';
 import { api_getClientsList } from "../Api";
 import ClientOrderForm from "./ClientOrderForm";
 
-function ClientsList() {
+function ClientsList(props) {
+    const { alert,setAlert, message,setMessage} = props;
     const [clientsList, setClientsList] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -18,8 +19,7 @@ function ClientsList() {
                 setLoading(false);
             })
             .catch((err) => {
-                /* TODO: handleErrors(err);  */
-                console.log(err);
+                setMessage({ msg: "There are not clients", type: "danger" });
             });
 
     }, []);
@@ -37,7 +37,7 @@ function ClientsList() {
                             clientsList.map(c => {
                                 return (
                                     <ListGroup.Item as="li" key={c.id}>
-                                        <Client client={c} />
+                                        <Client client={c}  alert={alert} setAlert={setAlert} message={message}  setMessage={setMessage} />
                                     </ListGroup.Item>
                                 );
                             })
@@ -53,7 +53,7 @@ function ClientsList() {
 
 
 function Client(props) {
-    const { client } = props;
+    const { client, alert,setAlert, message,setMessage} = props;
     const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
 
     return (
@@ -87,6 +87,7 @@ function Client(props) {
                 show={clientOrderFormShow}
                 onHide={() => setClientOrderFormShow(false)}
                 client={client}
+                alert={alert} setAlert={setAlert} message={message}  setMessage={setMessage}
             />
         </Card>
 

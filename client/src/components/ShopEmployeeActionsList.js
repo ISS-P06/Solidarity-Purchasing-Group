@@ -3,7 +3,10 @@ import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const actionsList = { clientsList: 1, enterNewClient: 2, browsePoducts: 3, handOutProduct: 4, walletTopUp: 5 };
-function ShopEmployeeActionsList() {
+function ShopEmployeeActionsList(props) {
+
+  const { setMessage } = props;
+  
   const [activeAction, setActiveAction] = useState(actionsList.enterClientOrder);
   return (
     <ListGroup defaultActiveKey={actionsList.enterClientOrder} variant='flush'>
