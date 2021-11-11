@@ -1,6 +1,6 @@
 "use strict";
 
-import { listClients, listProducts } from "./dao";
+import { listClients, listProducts, insertOrder } from "./dao.js";
 
 import express from 'express';
 import morgan from 'morgan';
@@ -30,6 +30,13 @@ app.get('/api/clients', (req, res) => {
     .then((clients) => res.json(clients))
     .catch(() => res.status(500).end());
 });
+
+app.post('/api/orders', (req, res) => {
+  insertOrder(req.body)
+    .then((id) => res.json(id))
+    .catch(() => res.status(500).end());
+});
+
 
 /*** End APIs ***/
 

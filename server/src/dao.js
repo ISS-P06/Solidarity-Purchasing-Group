@@ -1,6 +1,7 @@
 "use strict";
 
-import db from "./db";
+import db from "./db.js";
+import dayjs from 'dayjs';
 
 export function listProducts() {
   return new Promise((resolve, reject) => {
@@ -44,6 +45,31 @@ export function listClients() {
         balance: c.balance,
       }));
       resolve(clients);
+    });
+  });
+}
+
+export function insertOrder(order) {
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO Request(status,date) VALUES (?,?)`;
+    db.run(sql, ["confirmed", dayjs()], function (err) {
+      var OrderID = this.lastID;
+      if (err) {
+        reject(err);
+        return;
+      }
+      order.map((product, index) => {
+        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,?,?)`;
+        db.run(sql, [OrderID, product.id, product.quantity], function (err) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (order.length === index + 1) {
+            resolve(OrderID);
+          }
+        });
+      });
     });
   });
 }
