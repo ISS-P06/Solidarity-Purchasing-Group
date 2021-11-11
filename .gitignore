@@ -1,1 +1,6 @@
-.scannerwork
+.scannerworkn
+.idea
+server/tempTest.js
+server/node_modules
+server/database.db
+client/node_modules
