@@ -49,23 +49,23 @@ export function listClients() {
   });
 }
 
-export function insertOrder(order) {
+export function insertOrder(orderClient) {
   return new Promise((resolve, reject) => {
-    const sql = `INSERT INTO Request(status,date) VALUES (?,?)`;
-    db.run(sql, ["confirmed", dayjs()], function (err) {
+    const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
+    db.run(sql, [orderClient.clientID, "confirmed", dayjs()], function (err) {
       var OrderID = this.lastID;
       if (err) {
         reject(err);
         return;
       }
-      order.map((product, index) => {
+      orderClient.order.map((product, index) => {
         const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,?,?)`;
         db.run(sql, [OrderID, product.id, product.quantity], function (err) {
           if (err) {
             reject(err);
             return;
           }
-          if (order.length === index + 1) {
+          if (orderClient.order.length === index + 1) {
             resolve(OrderID);
           }
         });

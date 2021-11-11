@@ -35,9 +35,9 @@ export const api_getClientsList = async () => {
     }
 };
 
-export const api_addOrder= async (order) => {
+export const api_addOrder= async (orderClient) => {
     try {
-        const res = await axios.post('/api/orders', order);
+        const res = await axios.post('/api/orders', orderClient);
         if (res.data) {
             return res.data;
         } else {
