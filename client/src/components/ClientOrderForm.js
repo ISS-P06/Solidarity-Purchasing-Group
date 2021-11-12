@@ -56,13 +56,18 @@ function ClientOrderForm(props) {
             var orderClient={clientID :client.id, order:order };
 
             /*Message*/
-            api_addOrder(orderClient).then((id)=>setMessage({ msg: "The order " + id + " is emitted with success ", type: "success" }));
+            api_addOrder(orderClient)
+            .then((id)=>setMessage({ msg: "The order " + id + " is emitted with success ", type: "success" }))
+            .catch((err)=>{
+                setMessage({ msg: err.message, type: "danger" })
+            });
 
             /*RESET*/
             setProductsClient([]);
             setPartialPrice(0);
             setInsertProduct(true);
             handleClose();
+        
 
             /*TODO verify wallet of the customer */
         }

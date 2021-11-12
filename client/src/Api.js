@@ -46,7 +46,11 @@ export const api_addOrder= async (orderClient) => {
     } catch (err) {
         if (err.response.status == 500) {
             throw new Error(err.response.data);
-        } else {
+        } 
+        else if(err.response.status==422){
+            throw new Error('Sorry, there was an error in the data');
+        }
+        else {
             throw new Error('Sorry, there was an error in adding the order');
         }
     }
