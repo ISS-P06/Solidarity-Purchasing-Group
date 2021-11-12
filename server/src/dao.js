@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 export function listProducts() {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price
+    const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
             FROM Product p, Prod_descriptor pd
             WHERE pd.id = p.ref_prod_descriptor`;
     db.all(sql, [], (err, rows) => {
@@ -20,6 +20,7 @@ export function listProducts() {
         category: p.category,
         quantity: p.quantity,
         price: p.price,
+        unit: p.unit
       }));
       resolve(products);
     });
@@ -52,7 +53,7 @@ export function listClients() {
 export function insertOrder(orderClient) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
-    db.run(sql, [orderClient.clientID, "confirmed", dayjs()], function (err) {
+    db.run(sql, [orderClient.clientID, "confirmed", dayjs().format('YYYY-MM-DD HH:MM') ], function (err) {
       var OrderID = this.lastID;
       if (err) {
         reject(err);
