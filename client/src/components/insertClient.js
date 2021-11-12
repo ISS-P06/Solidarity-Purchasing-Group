@@ -2,10 +2,17 @@ import {Row, Col, Form, Button} from "react-bootstrap";
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 import {Link} from "react-router-dom";
+import {Eye} from "react-bootstrap-icons";
+import {useState} from "react";
+import {insertClient} from "../Api";
+
 
 const InsertClient = function (props) {
+
+    const [passwordType , setPasswordType] = useState('password')
+
     const handleSubmit = (values) => {
-        console.log(values)
+        insertClient(values).then().catch(err=>console.log(err))
     }
 
     const formik = useFormik({
@@ -14,9 +21,10 @@ const InsertClient = function (props) {
             surname: '',
             phone: '',
             address: '',
-            emailAddress: '',
+            mail: '',
             balance: 0,
-
+            username: '',
+            password: '',
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Name is required'),
@@ -24,8 +32,11 @@ const InsertClient = function (props) {
             phone: Yup.string().required('phone number is required')
                 .min(9, 'phone number should be larger than 8 digits')
                 .max(13, 'phone number should be less than 14 digits'),
-            emailAddress: Yup.string().required('email address is required'),
+            mail: Yup.string().required('email address is required'),
             address: Yup.string().required('client address is required'),
+            username :Yup.string().required('user name is required'),
+            password : Yup.string().required('password is required')
+                .min(8, 'password should be at least 8 characters'),
         }),
         onSubmit: handleSubmit,
     })
@@ -54,14 +65,14 @@ const InsertClient = function (props) {
                         <Form.Control.Feedback type="invalid">{formik.errors.surname}</Form.Control.Feedback>
                     </Form.Group>
 
-                        <Form.Group className="mb-3" >
-                        <Form.Label className={'float-sm-start'}>Email address</Form.Label>
-                        <Form.Control id={"emailAddress"} type="email"
-                                      value={formik.values.emailAddress}
+                    <Form.Group className="mb-3" controlId="mail">
+                        <Form.Label className={'float-sm-start'} >Email address</Form.Label>
+                        <Form.Control type="email"
+                                      value={formik.values.mail}
                                       onChange={formik.handleChange}
-                                      isInvalid={formik.touched.emailAddress && formik.errors.emailAddress}
+                                      isInvalid={formik.touched.mail && formik.errors.mail}
                                       placeholder="example@domain"/>
-                        <Form.Control.Feedback type="invalid">{formik.errors.emailAddress}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{formik.errors.mail}</Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="phone">
@@ -94,6 +105,32 @@ const InsertClient = function (props) {
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.balance}</Form.Control.Feedback>
                     </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="username">
+                        <Form.Label className={'float-sm-start'}>Username </Form.Label>
+                        <Form.Control type="text"
+                                      value={formik.values.username}
+                                      onChange={formik.handleChange}
+                                      isInvalid={formik.touched.username && formik.errors.username}
+                        />
+                        <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="password">
+                        <Form.Label className={'float-sm-start'}>Password </Form.Label>
+                        <Form.Control type={passwordType}
+                                      value={formik.values.password}
+                                      onChange={formik.handleChange}
+                                      isInvalid={formik.touched.password && formik.errors.password}
+                        />
+                        <i className="float-md-start" id="password"
+                           onMouseDown={()=>setPasswordType(old => old==='password' ? 'text': 'password')}
+                           onMouseUp={()=>setPasswordType(old => old==='text' ? 'password': 'text')}
+                        ><Eye/><span>show</span> </i>
+
+                        <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+                    </Form.Group>
+
 
                     <Row className={'justify-content-between mb-5'}>
                         <Col>

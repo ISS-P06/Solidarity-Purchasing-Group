@@ -36,14 +36,13 @@ export const api_getClientsList = async () => {
 
 
 export async function insertClient(client) {
+    let res;
     try {
-        const res = await axios.post('api/insert_client', {client: client});
-        if (res.data)
-            return res.data
-        else throw new Error(res.data.message)
+         res = await axios.post('/api/insert_client', client);
     } catch (err) {
         console.log(err);
-        throw err;
+        throw new Error(res.data.message)
+        //throw err;
     }
 }
 

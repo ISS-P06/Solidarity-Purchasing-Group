@@ -4,6 +4,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
 import VTC from './vtc';
+import bcrypt from 'bcrypt'
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -68,12 +69,14 @@ app.get('/api/clients', (req, res) => {
 // TODO PUT ISLOGGEDIN AS A MIDDLEWARE
 app.post('/api/insert_client', async (req, res) => {
     let client = req.body;
-    insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance, client.username, client.password)
-        .then((result) => {
-            console.log(result)
-            res.end()
-        })
-        .catch(err => res.status(500).json(err))
+    const saltRounds = 10;
+    bcrypt.hash(client.password , saltRounds,function (err, hash){
+        insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance, client.username, hash)
+            .then(() => {
+                res.end()
+            })
+            .catch(err => res.status(500).json(err))
+    })
 })
 
 /*** End APIs ***/
