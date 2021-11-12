@@ -65,7 +65,7 @@ Contains global information about a client's order/request. Total price can be c
 | id         | INTEGER | **PK**         | Auto-increment            |
 | ref_client | INTEGER | *FK*, NOT NULL | References `Client("id")` |
 | status     | TEXT    | NOT NULL       |                           |
-| date       | TEXT    | NOT NULL       | Format must be YYYY-MM-DD |
+| date       | TEXT    | NOT NULL       | Format must be `YYYY-MM-DD HH:MM` |
 
 ### Product_Request
 
