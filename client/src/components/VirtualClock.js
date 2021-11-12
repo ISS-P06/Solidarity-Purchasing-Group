@@ -66,7 +66,11 @@ function VirtualClock(props) {
 
   return (
     <>
-      <Button variant="primary" className="mt-2 me-sm-2 float-sm-end" onClick={handleShow}>
+      <Button
+        variant="primary"
+        className="mt-2 me-sm-2 float-sm-end"
+        onClick={handleShow}
+      >
         Virtual clock
       </Button>
 
@@ -83,7 +87,7 @@ function VirtualClock(props) {
                     <b>Select the date</b>
                   </Form.Label>
                 </Row>
-                <Row flex className="align-items-center">
+                <Row flex="true" className="align-items-center">
                   <Col>{renderDate()}</Col>
                   <Col>
                     <Button onClick={() => handleDate()}>Next day</Button>
