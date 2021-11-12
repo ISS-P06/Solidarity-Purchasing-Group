@@ -10,6 +10,9 @@ import {
 import express from "express";
 import morgan from "morgan";
 import { check, validationResult } from "express-validator";
+const vtc = new VTC();
+/** Virtual Time Clock */
+import VTC from './vtc';
 /* express setup */
 const app = new express();
 
@@ -24,7 +27,37 @@ app.use(morgan("dev"));
 /*** APIs ***/
 
 app.get("/", (req, res) => {
-  res.status(200).send("Hello World!");
+    res.status(200).send("Hello World!")});
+/**
+ * GET /api/time
+ *
+ * Used to pass current virtual time clock to the frontend
+ */
+app.get('/api/time', (_, res) => {
+  res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
+});
+
+/**
+ * PUT /api/time
+ *
+ * Used to set current virtual time clock from the frontend
+ *
+ * @param {time}
+ */
+app.put('/api/time', [check('time').isISO8601()], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const time = req.body.time;
+
+  try {
+    vtc.set(time);
+    res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
 // GET /api/products
@@ -98,6 +131,18 @@ app.post(
       .catch(() => res.status(500).end());
   }
 );
+
+// ADD NEW CLIENT
+// TODO PUT ISLOGGEDIN AS A MIDDLEWARE
+app.post('/api/insert_client', async (req, res) => {
+    let client = req.body;
+    insertClient(client.name, client.surname, client.phone, client.address, client.mail, client.balance, client.username, client.password)
+        .then((result) => {
+            console.log(result)
+            res.end()
+        })
+        .catch(err => res.status(500).json(err))
+})
 
 /*** End APIs ***/
 
