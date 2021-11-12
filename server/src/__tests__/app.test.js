@@ -20,3 +20,29 @@ describe("Test the get products api", () => {
       });
   });
 });
+
+describe("Test the clients api", () => {
+  test("It should respond to the GET method", () => {
+    return request(app).get("/api/clients").expect(200);
+  });
+
+  test("It should respond to the PUT method", () => {
+    const id = 1;
+    const amount = 100;
+
+    return request(app)
+      .put(`/api/clients/${id}/topup`)
+      .send({ amount })
+      .expect(200);
+  });
+
+  test("it should fail to the PUT methoh (low amount)", () => {
+    const id = 1;
+    const amount = 3;
+
+    return request(app)
+      .put(`/api/clients/${id}/topup`)
+      .send({ amount })
+      .expect(422);
+  });
+});

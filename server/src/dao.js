@@ -1,7 +1,7 @@
 "use strict";
 
 import db from "./db.js";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 export function listProducts() {
   return new Promise((resolve, reject) => {
@@ -49,6 +49,21 @@ export function listClients() {
   });
 }
 
+/**
+ * Update current balance of a client
+ *
+ * @param {int} id      Client id.
+ * @param {int} amount  Amount of money to add on client's balance.
+ */
+export function updateClientBalance(id, amount) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE Client SET balance = balance + ? WHERE id = ?`;
+    db.run(sql, [amount, id], (err) => {
+      err ? reject(err) : resolve(null);
+    });
+  });
+}
+
 export function insertOrder(orderClient) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
@@ -72,11 +87,10 @@ export function insertOrder(orderClient) {
               return;
             }
             if (orderClient.order.length === index + 1) {
-              console.log(OrderID)
+              console.log(OrderID);
               resolve(OrderID);
             }
           });
-          
         });
       });
     });
