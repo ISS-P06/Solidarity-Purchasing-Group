@@ -105,8 +105,12 @@ describe('Test the login APIs', () => {
   });
 
   test('The POST method should fail', () => {
-    const user = {username: "pentolino", password: "a"}
+    const user = {username: "pentolino", password: "a"};
     return request(app).post('/api/sessions').send(user).expect(401);
+  });
+
+  test('The GET method should fail', () => {
+    return request(app).get('/api/sessions/current').expect(401);
   });
 
   test('It should respond to the DELETE method', () => {

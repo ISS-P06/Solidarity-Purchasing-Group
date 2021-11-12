@@ -227,7 +227,7 @@ app.post('/api/sessions', function(req, res, next) {
       }
 
       if (!user) {
-          // display wrong login messages
+          // display wrong login messages          
           return res.status(401).json(info.message);
       }
       // success, perform the login
