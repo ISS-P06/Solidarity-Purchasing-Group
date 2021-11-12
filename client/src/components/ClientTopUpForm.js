@@ -32,7 +32,7 @@ function ClientTopUpForm(props) {
     >
       <Form
         id="topUp"
-        noValidation
+        novalidation
         validated={validated}
         onSubmit={handleSubmit}
       >
