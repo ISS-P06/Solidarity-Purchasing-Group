@@ -20,3 +20,13 @@ describe("Test the get products api", () => {
       });
   });
 });
+
+describe("Test the get customers api", () => {
+  test("It should respond to the GET method", () => {
+    return request(app)
+      .get("/api/clients")
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
