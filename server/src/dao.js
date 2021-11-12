@@ -65,9 +65,18 @@ export function insertOrder(orderClient) {
             reject(err);
             return;
           }
-          if (orderClient.order.length === index + 1) {
-            resolve(OrderID);
-          }
+          const sql = `UPDATE Product SET quantity=quantity-? WHERE id=?`;
+          db.run(sql, [product.quantity, product.id], function (err) {
+            if (err) {
+              reject(err);
+              return;
+            }
+            if (orderClient.order.length === index + 1) {
+              console.log(OrderID)
+              resolve(OrderID);
+            }
+          });
+          
         });
       });
     });
