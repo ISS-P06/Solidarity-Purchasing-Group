@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button, Row, Col, Spinner, ListGroup, Card } from 'react-bootstrap/';
 import { api_getClientsList } from "../Api";
-import ClientOrderForm from "./ClientOrderForm";
+import {ClientOrderForm} from "./ClientOrderForm";
 
 function ClientsList(props) {
-    const { alert,setAlert, message,setMessage} = props;
+    const { setMessage} = props;
     const [clientsList, setClientsList] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ function ClientsList(props) {
                             clientsList.map(c => {
                                 return (
                                     <ListGroup.Item as="li" key={c.id}>
-                                        <Client client={c}  alert={alert} setAlert={setAlert} message={message}  setMessage={setMessage} />
+                                        <Client client={c}  setMessage={setMessage} />
                                     </ListGroup.Item>
                                 );
                             })
@@ -53,7 +53,7 @@ function ClientsList(props) {
 
 
 function Client(props) {
-    const { client, alert,setAlert, message,setMessage} = props;
+    const { client,setMessage} = props;
     const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
 
     return (
@@ -87,10 +87,10 @@ function Client(props) {
                 show={clientOrderFormShow}
                 onHide={() => setClientOrderFormShow(false)}
                 client={client}
-                alert={alert} setAlert={setAlert} message={message}  setMessage={setMessage}
+               setMessage={setMessage}
             />
         </Card>
 
     );
 }
-export default ClientsList;
+export {ClientsList,Client};

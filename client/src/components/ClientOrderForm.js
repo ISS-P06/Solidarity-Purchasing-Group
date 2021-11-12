@@ -1,11 +1,11 @@
-import { Modal, Button, Form, Col, FloatingLabel, Row, Container } from "react-bootstrap";
+import { Modal, Button, Form, Col, FloatingLabel, Row } from "react-bootstrap";
 
 import { useState, useEffect } from "react";
 import { api_getProducts, api_addOrder } from '../Api';
 import AlertBox from "./Message";
 
 function ClientOrderForm(props) {
-    const { show, onHide, client, alert,setAlert, message,setMessage } = props;
+    const { show, onHide, client, setMessage } = props;
 
     const [messageModal, setMessageModal] = useState("");
     const [alertModal, setAlertModal] = useState(false);
@@ -17,7 +17,7 @@ function ClientOrderForm(props) {
     const [insertProduct, setInsertProduct] = useState(true); //is true when the shop employee is adding a new product
 
     useEffect(() => {
-      
+
         api_getProducts()
             .then((products) => {
                 const distinctCategoriesList = [];
@@ -26,10 +26,11 @@ function ClientOrderForm(props) {
                         distinctCategoriesList.push(c);
                     }
                 })
+
                 setProductsList(products);
                 setCategoriesList(distinctCategoriesList);
             })
-            .catch((e) =>   setMessage({ msg: e, type: "danger" }));
+            .catch((e) => setMessage({ msg: e, type: "danger" }));
     }, [onHide]);
 
 
@@ -38,12 +39,12 @@ function ClientOrderForm(props) {
     };
 
     const addOrder = () => {
-      
-        if (productsClient.length == 0) {
+
+        if (productsClient.length === 0) {
             setMessageModal({ msg: "Complete add at least one product", type: "danger" });
             setAlertModal(true);
         }
-        else if(insertProduct){
+        else if (insertProduct) {
             setMessageModal({ msg: "Complete the addition of the last product", type: "danger" });
             setAlertModal(true);
         }
@@ -53,21 +54,21 @@ function ClientOrderForm(props) {
                 id: p.id,
                 quantity: p.quantity
             }));
-            var orderClient={clientID :client.id, order:order };
+            var orderClient = { clientID: client.id, order: order };
 
             /*Message*/
             api_addOrder(orderClient)
-            .then((id)=>setMessage({ msg: "The order " + id + " is emitted with success ", type: "success" }))
-            .catch((err)=>{
-                setMessage({ msg: err.message, type: "danger" })
-            });
+                .then((id) => setMessage({ msg: "The order " + id + " is emitted with success ", type: "success" }))
+                .catch((err) => {
+                    setMessage({ msg: err.message, type: "danger" })
+                });
 
             /*RESET*/
             setProductsClient([]);
             setPartialPrice(0);
             setInsertProduct(true);
             handleClose();
-        
+
 
             /*TODO verify wallet of the customer */
         }
@@ -75,16 +76,17 @@ function ClientOrderForm(props) {
 
     return (
         <Modal size='lg' aria-labelledby='contained-modal-title-vcenter' centered show={show} onHide={handleClose}>
-          
+
             <Modal.Header closeButton>
                 <Modal.Title id='contained-modal-title-vcenter'> Add a new client order</Modal.Title>
-              
+
             </Modal.Header>
             <AlertBox alert={alertModal} setAlert={setAlertModal} message={messageModal} />
             <Modal.Body>
-            
+
                 {productsClient ? productsClient.map((product, index) => (
-                    <ProductForm key={product.temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} insertProduct={insertProduct} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} productsClient={productsClient} setProductsClient={setProductsClient} categoriesList={categoriesList} product={product}></ProductForm>
+
+                    <ProductForm key={product.temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} product={product}></ProductForm>
                 )) : ""
                 }
                 <Row className="m-2 justify-content-end">
@@ -97,18 +99,19 @@ function ClientOrderForm(props) {
                 {insertProduct && productsList ?
                     <>
                         <h5>New Product</h5>
-                        <ProductForm key={temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} insertProduct={insertProduct} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} productsClient={productsClient} setProductsClient={setProductsClient} categoriesList={categoriesList} ></ProductForm>
+
+                        <ProductForm key={temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} ></ProductForm>
                     </>
 
                     : ""}
 
                 {!insertProduct && <Button className="mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)} > Add new product </Button>}
 
-               
+
             </Modal.Body>
             <Modal.Footer>
 
-                <Button  md='auto' onClick={addOrder}>
+                <Button md='auto' onClick={addOrder}>
                     Add order
                 </Button>
                 <Button variant='danger' onClick={handleClose}>
@@ -120,7 +123,7 @@ function ClientOrderForm(props) {
 }
 
 function ProductForm(props) {
-    const { temporaryKey, setTemporaryKey, insertProduct, setInsertProduct, partialPrice, setPartialPrice, productsList, setProductsList, productsClient, setProductsClient, categoriesList, product } = props;
+    const { temporaryKey, setTemporaryKey, setInsertProduct, partialPrice, setPartialPrice, productsList, setProductsList, setProductsClient, categoriesList, product } = props;
     const [validated, setValidated] = useState(false);
 
 
@@ -136,15 +139,14 @@ function ProductForm(props) {
 
     useEffect(() => {
 
-
-        const itemsList = productsList.filter((p) => (p.category == categoriesList[0])).filter((p) => (p.quantity > 0));
+        const itemsList = productsList.filter((p) => (p.category === categoriesList[0])).filter((p) => (p.quantity > 0));
         setProductsListbyCurrentCategory(itemsList);
 
         setProductID(product ? product.id : itemsList[0].id);
         setQuantityOrdered(product ? product.quantityOrdered : 0.1);
         setMaxQuantity(product ? "" : itemsList[0].quantity);
-        setCurrentPrice(product ? 0 : itemsList[0].price * 0.1); 
-      
+        setCurrentPrice(product ? 0 : itemsList[0].price * 0.1);
+
     }, []);
 
 
@@ -155,7 +157,7 @@ function ProductForm(props) {
         event.stopPropagation();
 
         if (form.checkValidity() === true) {
-            var productToAdd = { ...productsList.find((p) => (p.id == productID)) };
+            var productToAdd = { ...productsList.find((p) => (p.id === productID)) };
 
             if (productToAdd) {
                 productToAdd.quantityOrdered = quantityOrdered;
@@ -164,7 +166,7 @@ function ProductForm(props) {
 
                 setProductsList(productsList.map(p =>
                     /* update available quantity */
-                    p.id == productID
+                    p.id === productID
                         ? { ...p, quantity: (p.quantity - quantityOrdered) }
                         : p
                 ));
@@ -188,7 +190,7 @@ function ProductForm(props) {
 
     const updateCurrentCategory = (event) => {
         setCurrentCategory(event.target.value);
-        const itemsList = productsList.filter((p) => (p.category == event.target.value)).filter((p) => (p.quantity > 0));
+        const itemsList = productsList.filter((p) => (p.category === event.target.value)).filter((p) => (p.quantity > 0));
         setProductsListbyCurrentCategory(itemsList);
         setProductID(itemsList[0].id);
         setQuantityOrdered(0.1);
@@ -197,16 +199,17 @@ function ProductForm(props) {
 
     const updateProduct = (event) => {
         setProductID(event.target.value);
-        setCurrentPrice(productsList.find(((p) => (p.id == event.target.value))).price * quantityOrdered);
+        setCurrentPrice(productsList.find(((p) => (p.id === event.target.value))).price * quantityOrdered);
     }
     const updateQuantity = (event) => {
-        setCurrentPrice(parseFloat(productsList.find(((p) => (p.id == productID))).price * parseFloat(event.target.value)));
+        var prod = productsList.find((p) => (p.id === productID));
+        setCurrentPrice(parseFloat(prod.price) * parseFloat(event.target.value));
         setQuantityOrdered(parseFloat(event.target.value));
-        setMaxQuantity(parseFloat(productsList.find(((p) => (p.id == productID))).quantity));
+        setMaxQuantity(parseFloat(prod.quantity));
     }
 
     return (
-        <Form noValidate validated={validated} id='addOrder' onSubmit={handleSubmit}>
+        <Form noValidate validated={validated} id={temporaryKey} onSubmit={handleSubmit}>
             <Row>
                 <Col xs={12} lg={4}>
                     <FloatingLabel controlId="CategoriesSelect" label="Category" className="mt-2">
@@ -220,13 +223,13 @@ function ProductForm(props) {
                 <Col xs={12} lg={4}>
                     <FloatingLabel controlId="productSelect" label="Product" className="mt-2" >
                         <Form.Select aria-label="Product" defaultValue={productID} onChange={updateProduct} disabled={product}>
-                            {product ? <option value={product.id}>{product.name} </option> : productsListbyCurrentCategory && productsListbyCurrentCategory.map((p) => <option value={p.id}>{p.name} {p.price} $</option>)}
+                            {product ? <option value={product.id}>{product.name} </option> : productsListbyCurrentCategory && productsListbyCurrentCategory.map((p) => <option value={p.id}>{p.name} {p.price}$/{p.unit}</option>)}
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
 
                 <Col xs={12} lg={4}>
-                    <FloatingLabel controlId="Quantity" label="Quantity (Kg)" className="mt-2" required onChange={(event) => updateQuantity(event)}>
+                    <FloatingLabel controlId="Quantity" label="Quantity" className="mt-2" required onChange={(event) => updateQuantity(event)}>
                         <Form.Control type="number" placeholder="number" step="0.1" defaultValue={quantityOrdered} min={0.1} max={maxQuantity} disabled={product} />
                         <Form.Control.Feedback type="invalid">Please insert a quantity between 0.1 and {maxQuantity} </Form.Control.Feedback>
                     </FloatingLabel>
@@ -251,5 +254,5 @@ function ProductForm(props) {
 }
 
 
-export default ClientOrderForm;
+export { ClientOrderForm, ProductForm };
 
