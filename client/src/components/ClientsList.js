@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 
 import { Button, Row, Col, Spinner, ListGroup, Card } from 'react-bootstrap/';
 import { api_getClientsList, api_addTopUpClient } from "../Api";
-import ClientOrderForm from "./ClientOrderForm";
+import {ClientOrderForm} from "./ClientOrderForm";
 import ClientTopUpForm from "./ClientTopUpForm";
-
 function ClientsList(props) {
-  const { setMessage } = props;
+  const { handleToggleSidebar, handleCollapsedChange, setMessage } = props;
   const [clientsList, setClientsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(true);
@@ -30,20 +29,23 @@ function ClientsList(props) {
     loading ?
       <Spinner animation='border' variant='primary' />
       :
-      <Col lg="9">
+      <Col lg="9"  className="btn-toggle" onClick={() => handleToggleSidebar(true)}>
         <h3>Clients List</h3>
         {clientsList.length === 0 ?
           <h1 className="text-center">There are not clients</h1> :
           <ListGroup as="ul" variant="flush" className="mt-2">
-            {
-              clientsList.map(c => {
-                return (
-                  <ListGroup.Item as="li" key={c.id}>
-                    <Client client={c} setMessage={setMessage} reloadList={() => setDirty(true)} />
-                  </ListGroup.Item>
-                );
-              })
-            }
+          <Row>
+          {
+            clientsList.map(c => {
+              return (
+                <ListGroup.Item as="li" key={c.id} lg={3}>
+                  <Client client={c} setMessage={setMessage} reloadList={() => setDirty(true)} />
+                </ListGroup.Item>
+              );
+            })
+          }
+          </Row>
+    
           </ListGroup>
 
         }
@@ -55,7 +57,7 @@ function ClientsList(props) {
 
 function Client(props) {
 
-  const { client, setMessage } = props;
+  const { client, setMessage,reloadList} = props;
   const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
   const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false);
 
