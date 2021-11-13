@@ -88,7 +88,7 @@ export function insertOrder(orderClient) {
               return;
             }
             if (orderClient.order.length === index + 1) {
-              console.log(OrderID);
+              // console.log(OrderID);
               resolve(OrderID);
             }
           });
@@ -99,7 +99,7 @@ export function insertOrder(orderClient) {
 }
 
 export function insertClient(name, surname, phone, address, mail, balance = 0, username, password, role = 'client') {
-    console.log(`inserting client ${name}`)
+    // console.log(`inserting client ${name}`)
     return new Promise((resolve, reject) => {
         const clientQuery = 'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
         const userQuery = 'INSERT INTO User (username ,password ,role) VALUES (? ,? , ?)'
@@ -112,10 +112,10 @@ export function insertClient(name, surname, phone, address, mail, balance = 0, u
                     reject(err)
                 }
                 userID = this.lastID;
-                console.log(`newly created userID: ${userID}`)
+                // console.log(`newly created userID: ${userID}`)
                 db.serialize(() => {
                     let stmt = db.prepare(clientQuery)
-                    console.log(`hey from client query userID is ${userID}`)
+                    // console.log(`hey from client query userID is ${userID}`)
                     stmt.run([name, surname, phone, address, mail, balance, userID], function (err) {
                         if (err) {
                             reject(err)

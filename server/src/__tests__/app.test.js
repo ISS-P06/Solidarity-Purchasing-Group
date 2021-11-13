@@ -1,6 +1,26 @@
 import request from 'supertest';
 import app from '../app';
 
+import { copyFileSync, unlinkSync } from 'fs';
+
+/** During test the database can be modified, so we need to backup it's state */
+
+const dbPath = 'database.db';
+const backupPath = 'database.db.backup';
+
+// Save database current state
+beforeAll(() => {
+  copyFileSync(dbPath, backupPath);
+});
+
+// Reset database current state
+afterAll(() => {
+  copyFileSync(backupPath, dbPath);
+  unlinkSync(backupPath);
+});
+
+/** TEST SUITES */
+
 describe('Test the get products api', () => {
   test('It should respond to the GET method', () => {
     return request(app)
@@ -27,7 +47,7 @@ describe('Test the get virtual time clock', () => {
   });
 });
 
-describe('Test the clients api', () => {
+describe('Test the clients topup api', () => {
   test('It should respond to the GET method', () => {
     return request(app).get('/api/clients').expect(200);
   });
@@ -55,6 +75,15 @@ describe('Test the clients api', () => {
   });
 });
 
+describe('Test the get customers api', () => {
+  test('It should respond to the GET method', () => {
+    return request(app)
+      .get('/api/clients')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
 
 describe('TEST POST order ', function() {
   test('responds with json', function(done) {
