@@ -54,7 +54,7 @@ function ClientOrderForm(props) {
             //send the request
             var order = productsClient.map((p) => ({
                 id: p.id,
-                quantity: p.quantity
+                quantity: p.quantityOrdered
             }));
             var orderClient = { clientID: client.id, order: order };
 
@@ -73,9 +73,9 @@ function ClientOrderForm(props) {
 
 
             /* TODO verify wallet of the customer */
-            if (partialPrice > client.balance){
-                openTopUpForm()
-            }
+            /*  if (partialPrice > client.balance){
+                 openTopUpForm()
+             } */
 
         }
     }
@@ -92,7 +92,7 @@ function ClientOrderForm(props) {
 
                 {productsClient ? productsClient.map((product, index) => (
 
-                    <ProductForm key={product.temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} product={product}></ProductForm>
+                    <ProductForm key={index} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} product={product}></ProductForm>
                 )) : ""
                 }
                 <Row className="m-2 justify-content-end">
@@ -100,20 +100,11 @@ function ClientOrderForm(props) {
 
                 </Row>
 
-
-
-                {insertProduct && productsList ?
-                    <>
-                        <h5>New Product</h5>
-
-                        <ProductForm key={temporaryKey} temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} ></ProductForm>
-                    </>
-
-                    : ""}
+                 {insertProduct && productsList ?
+                    <ProductForm temporaryKey={temporaryKey} setTemporaryKey={setTemporaryKey} setInsertProduct={setInsertProduct} partialPrice={partialPrice} setPartialPrice={setPartialPrice} productsList={productsList} setProductsList={setProductsList} setProductsClient={setProductsClient} categoriesList={categoriesList} ></ProductForm>
+                    : <></>} 
 
                 {!insertProduct && <Button className="mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)} > Add new product </Button>}
-
-
             </Modal.Body>
             <Modal.Footer>
 
@@ -148,10 +139,10 @@ function ProductForm(props) {
         const itemsList = productsList.filter((p) => (p.category === categoriesList[0])).filter((p) => (p.quantity > 0));
         setProductsListbyCurrentCategory(itemsList);
 
-        setProductID(product ? product.id : itemsList[0].id);
+        setProductID(product ? product.id : itemsList[0] ? itemsList[0].id: " ");
         setQuantityOrdered(product ? product.quantityOrdered : 0.1);
-        setMaxQuantity(product ? "" : itemsList[0].quantity);
-        setCurrentPrice(product ? 0 : itemsList[0].price * 0.1);
+        setMaxQuantity(product ? "" : itemsList[0] ? itemsList[0].quantity: " ");
+        setCurrentPrice(product ? 0 : itemsList[0] ? itemsList[0].price * 0.1: " ");
 
     }, []);
 
@@ -248,7 +239,7 @@ function ProductForm(props) {
                     {product ? "" : <Button type="submit" variant="primary" className="mt-3 mb-3" > Add product </Button>}
                 </Col>
                 <Col className="mt-4" xs={6} lg={3}>
-                    {productID && !product ? "Current product: " + currentPrice.toFixed(2) + "$" : ""}
+                    {productID && !product ? "Current product: " + parseFloat(currentPrice).toFixed(2) + "$" : ""}
                 </Col>
             </Row>
 
