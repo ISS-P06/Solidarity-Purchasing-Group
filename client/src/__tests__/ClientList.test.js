@@ -6,17 +6,14 @@ import axios from 'axios';
 
 jest.mock('axios');
 
-test("test visualization of top up wallet", () => {
+ test("test visualization of top up wallet", () => {
     render(<Client client={{ id: 1, name: "Mario", surname: "Rossi", address: "corso duca", balance: 100, id: 1, mail: "mario@rossi", phone: "3333333333" }} setMessage={{ msg: " ", type: "danger" }} />);
-
- 
-    const topUpButton = screen.getByText("Top up wallet");
-    expect(topUpButton).toBeInTheDocument();
+    expect(screen.getByText("Top up wallet")).toBeInTheDocument();
 });
 
 test("test visualization on add order button", () => {
     render(<Client client={{ id: 1, name: "Mario", surname: "Rossi", address: "corso duca", balance: 100, id: 1, mail: "mario@rossi", phone: "3333333333" }} setMessage={{ msg: " ", type: "danger" }} />);
-    const addOrderButton = screen.getByText("Add order");
+    const addOrderButton =  screen.getByText("Add order");
     expect(addOrderButton).toBeInTheDocument();
 });
 
@@ -33,7 +30,8 @@ test("test click on top up wallet", () => {
     )
 });
 
-/* test("test click on add order", () => {
+  
+  test("test click on add order", () => {
     render(<Client client={{ id: 1, name: "Mario", surname: "Rossi", address: "corso duca",  balance: 100,  id: 1, mail: "mario@rossi",  phone:"3333333333"}} setMessage={{msg:" ", type:"danger"}}/>);
   
     //Click on "Add order" button to open the modal
@@ -44,8 +42,7 @@ test("test click on top up wallet", () => {
         cancelable: true,
       })
     )
-}); */
-
+}); 
 
 test('fetches customers from an API and displays them', async () => {
     const customers = [
@@ -57,5 +54,7 @@ test('fetches customers from an API and displays them', async () => {
     );
 
     render(<ClientsList setMessage={{ msg: " ", type: "danger" }} />);
+    screen.debug();
 
 });
+ 

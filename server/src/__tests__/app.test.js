@@ -32,6 +32,8 @@ describe('Test the clients api', () => {
     return request(app).get('/api/clients').expect(200);
   });
 
+ 
+
   test('It should respond to the PUT method', () => {
     const id = 1;
     const amount = 100;
@@ -53,12 +55,18 @@ describe('Test the clients api', () => {
   });
 });
 
-describe("Test the get customers api", () => {
-  test("It should respond to the GET method", () => {
-    return request(app)
-      .get("/api/clients")
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
+
+describe('TEST POST order ', function() {
+  test('responds with json', function(done) {
+    request(app)
+      .post('/api/orders')
+      .send({ clientID: 1, order: [ { id: 55, quantity: 10.0 } ] })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) return done(err);
+        return done();
       });
   });
 });
