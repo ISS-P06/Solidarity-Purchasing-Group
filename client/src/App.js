@@ -10,7 +10,7 @@ import VirtualClock from "./components/VirtualClock";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import ShopEmployeeActionsList from "./components/ShopEmployeeActionsList";
-import { ClientsList } from "./components/ClientsList";
+import ClientsList from "./components/ClientsList";
 import AlertBox from "./components/Message";
 function App() {
   // Product: { id, name, description, category, quantity, price }
@@ -23,16 +23,13 @@ function App() {
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-
   const handleCollapsedChange = (checked) => {
     setCollapsed(checked);
   };
 
-
   const handleToggleSidebar = (value) => {
     setToggled(value);
   };
-
 
   useEffect(() => {
     if (message !== "") {
@@ -41,31 +38,35 @@ function App() {
   }, [message]);
 
   return (
-
     <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid>
       <AppNavbar />
+      <VirtualClock />
+
       <AlertBox alert={alert} setAlert={setAlert} message={message} />
-      <Row className={toggled?'toggled':""}>
-     
-          <ShopEmployeeActionsList toggled={toggled} collapsed={collapsed} handleCollapsedChange={handleCollapsedChange} handleToggleSidebar={handleToggleSidebar} setMessage={setMessage} />
-      
-        <Col className="btn-toggle" onClick={() => { handleCollapsedChange() }}>
-        <ClientsList
+      <Row className={toggled ? "toggled" : ""}>
+        {/* <ShopEmployeeActionsList
+          toggled={toggled}
+          collapsed={collapsed}
+          handleCollapsedChange={handleCollapsedChange}
+          handleToggleSidebar={handleToggleSidebar}
+          setMessage={setMessage}
+        /> */}
+
+        <Col
+          className="btn-toggle"
+          onClick={() => {
+            handleCollapsedChange();
+          }}
+        >
+          <ClientsList
             handleToggleSidebar={handleToggleSidebar}
             handleCollapsedChange={handleCollapsedChange}
-           
             setMessage={setMessage}
-
           />
         </Col>
-        <div >
-        
-
-        </div>
-
       </Row>
-      <Router>
 
+      <Router>
         <Switch>
           <Route exact path="/insert-client">
             <InsertClient />
@@ -73,7 +74,6 @@ function App() {
         </Switch>
       </Router>
     </Container>
-
   );
 }
 

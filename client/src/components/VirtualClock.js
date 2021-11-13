@@ -37,7 +37,7 @@ function VirtualClock(props) {
     event.preventDefault();
 
     const ISODate = humanToISO(date, time / 3600);
-    api_setTime(ISODate);
+    api_setTime(ISODate).catch(() => {});
 
     handleClose();
   };
@@ -53,7 +53,7 @@ function VirtualClock(props) {
       setTime(time);
     };
 
-    getTime();
+    getTime().catch(() => {});
   }, []);
 
   const renderDate = () => {

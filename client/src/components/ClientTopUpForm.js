@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Row, Col, Form, FloatingLabel, Modal } from "react-bootstrap";
 
 function ClientTopUpForm(props) {
-  const { show, handleClose, client, topUpClient } = props;
+  const { show, handleClose, client, topUpClient, setMessage } = props;
 
   const [amount, setAmount] = useState(5);
   const [validated, setValidated] = useState(false);
@@ -13,9 +13,15 @@ function ClientTopUpForm(props) {
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      // TODO gestire meglio l'eccezione
       topUpClient({ id: client.id, amount });
 
+      setMessage({
+        msg: `Updated balance for ${client.name} ${client.surname}`,
+        type: "info",
+      });
+
+      handleClose();
+      setAmount(5);
       setValidated(false);
     } else {
       setValidated(true);
@@ -30,12 +36,7 @@ function ClientTopUpForm(props) {
       show={show}
       onHide={handleClose}
     >
-      <Form
-        id="topUp"
-        novalidation
-        validated={validated}
-        onSubmit={handleSubmit}
-      >
+      <Form id="topUp" noValidate validated={validated} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             Top up {client.name} {client.surname}'s wallet
@@ -76,7 +77,7 @@ function ClientTopUpForm(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button md="auto" type="submit" >
+          <Button md="auto" type="submit">
             Confirm
           </Button>
 

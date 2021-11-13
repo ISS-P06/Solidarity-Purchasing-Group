@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+
 import App from "../App";
+import VirtualClock from "../components/VirtualClock";
 
 test("test virtual clock button", () => {
   render(<App />);
@@ -8,7 +10,7 @@ test("test virtual clock button", () => {
 });
 
 test("test opening virtual clock modal", () => {
-  render(<App />);
+  render(<VirtualClock />);
 
   //Click on "Virtual clock" button to open the modal
   fireEvent(
@@ -28,7 +30,7 @@ test("test opening virtual clock modal", () => {
 });
 
 test("test changing virtual clock time and day", () => {
-  render(<App />);
+  render(<VirtualClock />);
 
   //Click on "Virtual clock" button to open the modal
   fireEvent(
