@@ -1,8 +1,22 @@
 import { Container, Row, Col, Card, Button, ListGroup, Pagination } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
+import { api_getProducts } from '../Api';
 
 const ProductCards = (props) => {
-    const { productList } = props;
+
+    // product code
+    // product: { id, name, description, category, quantity, price, unit }
+    const [productList, setProductList] = useState([]);
+
+    useEffect(() => {
+        api_getProducts()
+            .then((products) => {
+                setProductList(products);
+            })
+            .catch((e) => console.log(e));
+    }, []);
+
+    // pagination code
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
 
@@ -10,7 +24,6 @@ const ProductCards = (props) => {
         window.scrollTo(0, 0)
     }, [currentPage])
 
-    // pagination code
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = productList.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -25,14 +38,19 @@ const ProductCards = (props) => {
     }
 
     return <Container style={{ textAlign: "left" }}>
-        <Row className="mt-3">
+        <Row className="mt-4">
+            <Col style={{ display: "flex", justifyContent: "center" }}>
+                <h2>Browse products</h2>
+            </Col>
+        </Row>
+        <Row className="mt-4">
             {
                 currentProducts.map((p) => {
                     return <ProductCard key={p.id} product={p} />
                 })
             }
         </Row>
-        <Row>
+        <Row className="mt-3 mb-3">
             <Col style={{ display: "flex", justifyContent: "center" }}>
                 <Pagination size="md">
                     {pageNumbers.map(i => (
@@ -70,4 +88,4 @@ const ProductCard = (props) => {
     </Col>;
 }
 
-export default ProductCards;
+export { ProductCards, ProductCard };
