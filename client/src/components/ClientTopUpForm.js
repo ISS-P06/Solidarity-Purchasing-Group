@@ -76,7 +76,7 @@ function ClientTopUpForm(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button md="auto" type="submit" variant="success">
+          <Button md="auto" type="submit" >
             Confirm
           </Button>
 
