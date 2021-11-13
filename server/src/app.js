@@ -10,9 +10,11 @@ import {
 import express from "express";
 import morgan from "morgan";
 import { check, validationResult } from "express-validator";
-const vtc = new VTC();
-/** Virtual Time Clock */
 import VTC from './vtc';
+
+/** Virtual Time Clock */
+const vtc = new VTC();
+
 /* express setup */
 const app = new express();
 
@@ -31,7 +33,7 @@ app.get("/", (req, res) => {
 /**
  * GET /api/time
  *
- * Used to pass current virtual time clock to the frontend
+ * Used to pass current virtual time clock to the frontend.
  */
 app.get('/api/time', (_, res) => {
   res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
@@ -40,9 +42,9 @@ app.get('/api/time', (_, res) => {
 /**
  * PUT /api/time
  *
- * Used to set current virtual time clock from the frontend
+ * Used to set current virtual time clock from the frontend.
  *
- * @param {time}
+ * @param {string} time
  */
 app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   const errors = validationResult(req);
@@ -76,12 +78,14 @@ app.get("/api/clients", (req, res) => {
 
 /**
  * PUT /api/clients/topup
+ * 
+ * Usade to update current client's balance.
  *
  * @param {int} id      Client id.
  * @param {int} amount  Amount of money to add on client's balance.
  */
 app.put(
-  "/api/clients/:id/topup",
+  "/api/clients/topup",
   check("id").isInt(),
   check("amount").isInt({ min: 5 }),
   async (req, res) => {
@@ -90,8 +94,7 @@ app.put(
       return res.status(422).json({ error: errors.array() });
     }
 
-    const id = req.params.id;
-    const amount = req.body.amount;
+    const {id, amount} = req.body;
 
     try {
       updateClientBalance(id, amount);

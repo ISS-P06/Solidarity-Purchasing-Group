@@ -57,7 +57,7 @@ export const api_addOrder = async (orderClient) => {
 
 export const api_addTopUpClient = async ({id, amount}) => {
   try {
-    await axios.put(`/api/clients/${id}/topup`, { amount });
+    await axios.put("/api/clients/topup", { amount, id });
   } catch (err) {
     if (err.response.status == 500) {
       throw new Error(err.response.data);
