@@ -10,10 +10,10 @@ import {
 import express from "express";
 import morgan from "morgan";
 import { check, validationResult } from "express-validator";
-import VTC from './vtc';
+/* import VTC from './vtc';
 
 /** Virtual Time Clock */
-const vtc = new VTC();
+/* const vtc = new VTC(); */
 
 /* express setup */
 const app = new express();
@@ -46,7 +46,7 @@ app.get('/api/time', (_, res) => {
  *
  * @param {string} time
  */
-app.put('/api/time', [check('time').isISO8601()], (req, res) => {
+/* app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -60,7 +60,7 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   } catch (error) {
     res.status(500).json({ error });
   }
-});
+}); */
 
 // GET /api/products
 app.get("/api/products", (req, res) => {
@@ -111,7 +111,6 @@ app.post(
   check("clientID").isInt(),
   check("order").custom((value, { req }) => {
     for (const product of value) {
-      console.log(Number.isInteger(product.quantity));
       if (
         !Number.isInteger(product.id) ||
         !typeof product.quantity === "number" ||
@@ -123,7 +122,6 @@ app.post(
     return true;
   }),
   (req, res) => {
-    console.log(req.body);
     const errors = validationResult(req).formatWith(errorFormatter);
     if (!errors.isEmpty()) {
       console.log(errors);
