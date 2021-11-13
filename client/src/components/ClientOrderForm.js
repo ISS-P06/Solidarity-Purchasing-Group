@@ -5,7 +5,9 @@ import { api_getProducts, api_addOrder } from '../Api';
 import AlertBox from "./Message";
 
 function ClientOrderForm(props) {
-    const { show, onHide, client, setMessage } = props;
+
+    const { show, onHide, client, setMessage, openTopUpForm } = props;
+
 
     const [messageModal, setMessageModal] = useState("");
     const [alertModal, setAlertModal] = useState(false);
@@ -70,7 +72,11 @@ function ClientOrderForm(props) {
             handleClose();
 
 
-            /*TODO verify wallet of the customer */
+            /* TODO verify wallet of the customer */
+            if (partialPrice > client.balance){
+                openTopUpForm()
+            }
+
         }
     }
 
