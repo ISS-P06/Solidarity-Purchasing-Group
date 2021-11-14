@@ -45,13 +45,10 @@ function VirtualClock(props) {
   useEffect(() => {
     const getTime = async () => {
       const apiData = await api_getTime();
-    
-      //   const day = apiData.day
+      const humanTime = ISOtoHuman(apiData.currentTime);
 
-      const { date, time } = ISOtoHuman(apiData.currentTime);
-
-      setDate(date);
-      setTime(time);
+      setDate(humanTime.date);
+      setTime(humanTime.time);
     };
 
     getTime().catch(() => {});
@@ -108,7 +105,7 @@ function VirtualClock(props) {
                       end="23:30"
                       format={24}
                       step={60}
-                      onChange={(time) => setTime(time)}
+                      onChange={(t) => setTime(t)}
                     />
                   </Col>
                   <Col />
