@@ -90,3 +90,20 @@ export function test_createUser(user) {
         });
     });
 };
+
+// --- Remove an user
+// (used for testing purposes only)
+export function test_removeUser(username) {
+    return new Promise((resolve, reject) => {
+        const sql = `
+            DELETE FROM user WHERE username = ?;
+            `;
+        db.run(sql, [username], function (err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve();
+        });
+    });
+};

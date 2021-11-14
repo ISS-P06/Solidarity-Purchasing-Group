@@ -41,8 +41,8 @@ function LoginForm(props) {
             initialValues={{
                 username: "",
                 password: "",
-            }}
-            render={
+            }}>
+            {
                 ({
                     handleSubmit,
                     handleChange,
@@ -72,6 +72,7 @@ function LoginForm(props) {
                                                 required
                                                 name="username"
                                                 type="text"
+                                                placeholder="Username"
                                                 value={values.username}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
@@ -89,6 +90,7 @@ function LoginForm(props) {
                                                 required
                                                 name="password"
                                                 type="password"
+                                                placeholder="Password"
                                                 value={values.password}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
@@ -136,8 +138,9 @@ function LoginForm(props) {
                             <Col xs={2} lg={4}/>
                         </Row>                 
                     </Container>
-                )}
-            />
+                )
+            }
+            </Formik>
     );
 }
 

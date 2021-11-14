@@ -24,15 +24,6 @@ function AppNavbar(props) {
     }
   }
 
-  const userPage = (role) => {
-    switch(role) {
-      case "shop_employee":
-        return "/employee";
-      default:
-        return "/";
-    }
-  }
-
   const userPageText = (role) => {
     switch(role) {
       case "shop_employee":
@@ -81,28 +72,6 @@ function LogoutLink(props) {
           onClick={props.doLogout}>
           Logout
       </Nav.Link>
-  )
-}
-
-// --- Renders a logout link
-function LogoutLink(props) {
-  return(
-      <Nav.Link
-          onClick={props.doLogout}>
-          Logout
-      </Nav.Link>
-  )
-}
-
-// --- Renders a logout button
-function LogoutButton(props) {
-  return(
-      <Button 
-          className = "m-2"
-          variant="secondary outline-light" 
-          onClick={props.doLogout}>
-          Logout
-      </Button>
   )
 }
 

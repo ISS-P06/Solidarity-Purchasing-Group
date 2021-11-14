@@ -1,5 +1,6 @@
 import request from 'supertest';
 import app from '../app';
+import {test_removeUser} from '../user-dao';
 
 import { copyFileSync, unlinkSync } from 'fs';
 
@@ -115,5 +116,15 @@ describe('Test the login APIs', () => {
 
   test('It should respond to the DELETE method', () => {
     return request(app).delete('/api/sessions/current').expect(200);
+  });
+
+  test('(test) Create new user: it should respond to the POST method', () => {
+    const user = {username: "teiera", password: "teiera123", role: "shop_employee"};
+    return request(app).post('/test/addUser').send(user).expect(200);
+    
+  });
+
+  afterAll(async () => {
+    await test_removeUser("teiera");
   });
 });
