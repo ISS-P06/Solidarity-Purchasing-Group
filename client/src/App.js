@@ -5,7 +5,7 @@ import AppNavbar from './components/AppNavbar';
 import InsertClient from "./components/insertClient";
 import VirtualClock from './components/VirtualClock';
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
-import { ProductCards } from './components/ProductCards';
+import ProductCards from './components/ProductCards';
 
 function App() {
 

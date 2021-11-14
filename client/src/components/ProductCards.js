@@ -7,13 +7,14 @@ const ProductCards = (props) => {
     // product code
     // product: { id, name, description, category, quantity, price, unit }
     const [productList, setProductList] = useState([]);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         api_getProducts()
             .then((products) => {
                 setProductList(products);
             })
-            .catch((e) => console.log(e));
+            .catch(() => setError("Error in getting all the products"));
     }, []);
 
     // pagination code
@@ -33,10 +34,6 @@ const ProductCards = (props) => {
         pageNumbers.push(i);
     }
 
-    const changePage = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    }
-
     return <Container style={{ textAlign: "left" }}>
         <Row className="mt-4">
             <Col style={{ display: "flex", justifyContent: "center" }}>
@@ -45,6 +42,9 @@ const ProductCards = (props) => {
         </Row>
         <Row className="mt-4">
             {
+                error && <Col style={{ display: "flex", justifyContent: "center" }}><h4>{error}</h4></Col>
+            }
+            { 
                 currentProducts.map((p) => {
                     return <ProductCard key={p.id} product={p} />
                 })
@@ -54,7 +54,7 @@ const ProductCards = (props) => {
             <Col style={{ display: "flex", justifyContent: "center" }}>
                 <Pagination size="md">
                     {pageNumbers.map(i => (
-                        <Pagination.Item key={i} active={currentPage === i} onClick={() => changePage(i)}>{i}</Pagination.Item>
+                        <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>{i}</Pagination.Item>
                     ))}
                 </Pagination>
             </Col>
@@ -88,4 +88,4 @@ const ProductCard = (props) => {
     </Col>;
 }
 
-export { ProductCards, ProductCard };
+export default ProductCards;
