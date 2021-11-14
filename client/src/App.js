@@ -1,10 +1,9 @@
 import logo from "./logo.svg";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Col, Container, Row } from "react-bootstrap";
+import { Navbar, Col, Container, Row, Button } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
 import InsertClient from "./components/insertClient";
-import ProductCards from './components/ProductCards';
+import ProductCards from "./components/ProductCards";
 import { useState, useEffect } from "react";
 import { api_getProducts } from "./Api";
 import VirtualClock from "./components/VirtualClock";
@@ -13,6 +12,8 @@ import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import ShopEmployeeActionsList from "./components/ShopEmployeeActionsList";
 import ClientsList from "./components/ClientsList";
 import AlertBox from "./components/Message";
+import { FaBars } from "react-icons/fa";
+
 function App() {
   // Product: { id, name, description, category, quantity, price }
   const [productList, setProductList] = useState([]);
@@ -42,23 +43,25 @@ function App() {
     <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid>
       <AppNavbar />
       <VirtualClock />
-
       <AlertBox alert={alert} setAlert={setAlert} message={message} />
-      <Row className={toggled ? "toggled" : ""}>
-        {/* <ShopEmployeeActionsList
-          toggled={toggled}
-          collapsed={collapsed}
-          handleCollapsedChange={handleCollapsedChange}
-          handleToggleSidebar={handleToggleSidebar}
-          setMessage={setMessage}
-        /> */}
 
-        <Col
-          className="btn-toggle"
-          onClick={() => {
-            handleCollapsedChange();
-          }}
-        >
+      <ShopEmployeeActionsList
+        toggled={toggled}
+        collapsed={collapsed}
+        handleToggleSidebar={handleToggleSidebar}
+        setMessage={setMessage}
+      />
+
+      <Row className={toggled ? "toggled" : ""}>
+        <Col>
+          {/* This button shows up when the sidebar is hidden */}
+          <Button
+            className="btn-toggle mt-2"
+            onClick={() => handleToggleSidebar(true)}
+          >
+            <FaBars />
+          </Button>
+
           <ClientsList
             handleToggleSidebar={handleToggleSidebar}
             handleCollapsedChange={handleCollapsedChange}
@@ -66,15 +69,14 @@ function App() {
           />
         </Col>
       </Row>
-
       <Router>
         <Switch>
           <Route exact path="/insert-client">
             <InsertClient />
-          </Route>                    <Route exact path='/browse-products'>
-                        <ProductCards/>
-                    </Route>
-
+          </Route>{" "}
+          <Route exact path="/browse-products">
+            <ProductCards />
+          </Route>
         </Switch>
       </Router>
     </Container>

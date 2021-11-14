@@ -14,7 +14,7 @@ import ClientOrderForm from "./ClientOrderForm";
 import ClientTopUpForm from "./ClientTopUpForm";
 
 function ClientsList(props) {
-  const { handleToggleSidebar, handleCollapsedChange, setMessage } = props;
+  const { setMessage } = props;
 
   const [clientsList, setClientsList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,11 +37,7 @@ function ClientsList(props) {
   return loading ? (
     <Spinner animation="border" variant="primary" />
   ) : (
-    <Col
-      lg="9"
-      className="btn-toggle"
-      onClick={() => handleToggleSidebar(true)}
-    >
+    <Col lg="9">
       <h3 className="my-3">Clients List</h3>
       {clientsList.length === 0 ? (
         <h1 className="text-center">There are not clients</h1>

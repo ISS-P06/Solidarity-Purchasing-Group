@@ -1,12 +1,6 @@
 import { useState } from "react";
 /* import { ListGroup } from "react-bootstrap"; */
 
-import { Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css';
-import { ProSidebar, SidebarHeader, SidebarFooter, SidebarContent } from 'react-pro-sidebar';
-import { FaTachometerAlt, FaGem, FaList, FaGithub, FaRegLaughWink, FaHeart, FaBars } from 'react-icons/fa';
-
-const actionsList = { clientsList: 1, enterNewClient: 2, browsePoducts: 3, handOutProduct: 4, walletTopUp: 5 };
 /*function ShopEmployeeActionsList(props) {
 
 
@@ -42,70 +36,195 @@ const actionsList = { clientsList: 1, enterNewClient: 2, browsePoducts: 3, handO
 
 
     </ListGroup> */
-function ShopEmployeeActionsList(props) {
-  const {toggled, collapsed, handleCollapsedChanged, handleToggleSidebar, setMessage}={props}
-  const [activeAction, setActiveAction] = useState(actionsList.enterClientOrder);
 
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarContent,
+} from "react-pro-sidebar";
+import {
+  FaTachometerAlt,
+  FaGem,
+  FaList,
+  FaGithub,
+  FaRegLaughWink,
+  FaHeart,
+} from "react-icons/fa";
 
+const actionsList = {
+  clientsList: 1,
+  enterNewClient: 2,
+  browsePoducts: 3,
+  handOutProduct: 4,
+  walletTopUp: 5,
+};
 
+function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
   return (
-  
-      <ProSidebar collapsed={collapsed} toggled={toggled} onToggle={handleToggleSidebar}>
-        <SidebarHeader>
-          <div
-            style={{
-              padding: '24px',
-              textTransform: 'uppercase',
-              fontWeight: 'bold',
-              fontSize: 14,
-              letterSpacing: '1px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
+    <ProSidebar
+      image={false}
+      rtl={false}
+      collapsed={collapsed}
+      toggled={toggled}
+      breakPoint="md"
+      onToggle={handleToggleSidebar}
+    >
+      <SidebarHeader>
+        <div
+          style={{
+            padding: "24px",
+            textTransform: "uppercase",
+            fontWeight: "bold",
+            fontSize: 14,
+            letterSpacing: "1px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Title
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <Menu iconShape="circle">
+          <MenuItem
+            icon={<FaTachometerAlt />}
+            suffix={<span className="badge red">new </span>}
           >
-            SIDEBAR
-          </div>
-        </SidebarHeader>
-
-        <SidebarContent>
-          <Menu iconShape="circle">
-            <MenuItem
-              icon={<FaTachometerAlt />}
-              suffix={<span className="badge red">NEW</span>}
-            >
-        
-            </MenuItem>
-            <MenuItem icon={<FaGem />}> AHAHA</MenuItem>
-          </Menu>
-        </SidebarContent>
-
-
-        <SidebarFooter style={{ textAlign: 'center' }}>
-          <div
-            className="sidebar-btn-wrapper"
-            style={{
-              padding: '20px 24px',
-            }}
+            dash
+          </MenuItem>
+          <MenuItem icon={<FaGem />}>comp </MenuItem>
+        </Menu>
+        <Menu iconShape="circle">
+          <SubMenu
+            suffix={<span className="badge yellow">3</span>}
+            title={"withSuffix"}
+            icon={<FaRegLaughWink />}
           >
-            <a
-              href="https://github.com/azouaoui-med/react-pro-sidebar"
-              target="_blank"
-              className="sidebar-btn"
-              rel="noopener noreferrer"
+            <MenuItem> 1</MenuItem>
+            <MenuItem> 2</MenuItem>
+            <MenuItem> 3</MenuItem>
+          </SubMenu>
+          <SubMenu
+            prefix={<span className="badge gray">3</span>}
+            title={"withPrefix"}
+            icon={<FaHeart />}
+          >
+            <MenuItem> 1</MenuItem>
+            <MenuItem> 2</MenuItem>
+            <MenuItem> 3</MenuItem>
+          </SubMenu>
+          <SubMenu title={"multilevel"} icon={<FaList />}>
+            <MenuItem> 1 </MenuItem>
+            <MenuItem> 2 </MenuItem>
+            <SubMenu title={`$ 3`}>
+              <MenuItem> 3.1 </MenuItem>
+              <MenuItem> 3.2 </MenuItem>
+              <SubMenu title={`$ 3.3`}>
+                <MenuItem>3.3.1 </MenuItem>
+                <MenuItem>3.3.2 </MenuItem>
+                <MenuItem>3.3.3 </MenuItem>
+              </SubMenu>
+            </SubMenu>
+          </SubMenu>
+        </Menu>
+      </SidebarContent>
+
+      <SidebarFooter style={{ textAlign: "center" }}>
+        <div
+          className="sidebar-btn-wrapper"
+          style={{
+            padding: "20px 24px",
+          }}
+        >
+          <a
+            href="https://github.com/azouaoui-med/react-pro-sidebar"
+            target="_blank"
+            className="sidebar-btn"
+            rel="noopener noreferrer"
+          >
+            <FaGithub />
+            <span
+              style={{
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
             >
-              <FaGithub />
-              <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                viw
-              </span>
-            </a>
-          </div>
-        </SidebarFooter>
+              viewsource
+            </span>
+          </a>
+        </div>
+      </SidebarFooter>
+    </ProSidebar>
+  );
+}
 
-      </ProSidebar>
+{
+  /*<ProSidebar
+      collapsed={collapsed}
+      toggled={toggled}
+      onToggle={handleToggleSidebar}
+    >
+      <SidebarHeader>
+        <div
+          style={{
+            padding: "24px",
+            textTransform: "uppercase",
+            fontWeight: "bold",
+            fontSize: 14,
+            letterSpacing: "1px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          SIDEBAR
+        </div>
+      </SidebarHeader>
 
-  )
+      <SidebarContent>
+        <Menu iconShape="circle">
+          <MenuItem
+            icon={<FaTachometerAlt />}
+            suffix={<span className="badge red">NEW</span>}
+          ></MenuItem>
+          <MenuItem icon={<FaGem />}> AHAHA</MenuItem>
+        </Menu>
+      </SidebarContent>
+
+      <SidebarFooter style={{ textAlign: "center" }}>
+        <div
+          className="sidebar-btn-wrapper"
+          style={{
+            padding: "20px 24px",
+          }}
+        >
+          <a
+            href="https://github.com/azouaoui-med/react-pro-sidebar"
+            target="_blank"
+            className="sidebar-btn"
+            rel="noopener noreferrer"
+          >
+            <FaGithub />
+            <span
+              style={{
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+              }}
+            >
+              viw
+            </span>
+          </a>
+        </div>
+      </SidebarFooter>
+            </ProSidebar>*/
 }
 
 export default ShopEmployeeActionsList;
-
