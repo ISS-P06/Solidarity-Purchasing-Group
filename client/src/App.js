@@ -48,36 +48,44 @@ function App() {
 
 
 
-      <Row className={toggled ? "toggled" : ""}>
-        <Col>
-          {/* This button shows up when the sidebar is hidden */}
-          <Button
-            className="btn-toggle m-2"
-            onClick={() => handleToggleSidebar(true)}
-          >
-            <FaBars />
-          </Button>
-        </Col>
-      </Row>
+
       <Router>
-        <ShopEmployeeActionsList
-          toggled={toggled}
-          collapsed={collapsed}
-          handleToggleSidebar={handleToggleSidebar}
-          setMessage={setMessage}
-        />
+
         <Switch>
-          <Route exact path="/insert-client">
-            <InsertClient />
-          </Route>
-          <Route exact path="/browse-products">
-            <ProductCards />
-          </Route>
-          <Route exact path="/show-clients">
-            <ClientsList setMessage={setMessage}/>
-          </Route>
+          <Row className={toggled ? "toggled" : ""}>
+            <Col xs={2}>
+              {/* This button shows up when the sidebar is hidden */}
+              <Button
+                className="btn-toggle m-2"
+                onClick={() => handleToggleSidebar(true)}
+              >
+                <FaBars />
+              </Button>
+              <ShopEmployeeActionsList
+                toggled={toggled}
+                collapsed={collapsed}
+                handleToggleSidebar={handleToggleSidebar}
+                setMessage={setMessage}
+              />
+            </Col>
+
+            <Col xs={10}>
+              <Route exact path="/insert-client">
+                <InsertClient />
+              </Route>
+              <Route exact path="/browse-products">
+                <ProductCards />
+              </Route>
+              <Route exact path="/show-clients">
+                <ClientsList setMessage={setMessage} />
+              </Route>
+            </Col>
+
+          </Row>
         </Switch>
+
       </Router>
+
     </Container>
   );
 }

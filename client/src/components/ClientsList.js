@@ -37,14 +37,14 @@ function ClientsList(props) {
   return loading ? (
     <Spinner animation="border" variant="primary" />
   ) : (
-    <Col lg="9">
-      <h3 className="my-3">Clients List</h3>
+    <Row >
+      <h3 className="mt-3">Clients List</h3>
       {clientsList.length === 0 ? (
         <h1 className="text-center">There are not clients</h1>
       ) : (
-        <Row>
-          <Col>
-            <ListGroup as="ul" variant="flush" className="m-auto">
+        <Row  className="justify-content-md-center">
+          <Col lg={8} className="pl-5">
+            <ListGroup as="ul" variant="flush" >
               {clientsList.map((c) => (
                 <ListGroup.Item as="li" key={c.id} lg={3}>
                   <Client
@@ -58,7 +58,7 @@ function ClientsList(props) {
           </Col>
         </Row>
       )}
-    </Col>
+    </Row>
   );
 }
 
@@ -72,7 +72,7 @@ export function Client(props) {
   const handleTopUp = (params) => {
     api_addTopUpClient(params)
       .then(() => reloadList())
-      .catch(() => {});
+      .catch(() => { });
   };
 
   return (
