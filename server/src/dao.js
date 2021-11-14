@@ -26,7 +26,6 @@ export function listProducts() {
             resolve(products);
         });
     });
-  });
 }
 
 export function listClients() {

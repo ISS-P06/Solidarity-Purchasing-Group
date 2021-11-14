@@ -20,7 +20,7 @@ describe("ClientList test", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
     expect(screen.getByText("Top up wallet")).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe("ClientList test", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
     const addOrderButton = screen.getByText("Add order");
@@ -59,7 +59,7 @@ describe("ClientList test", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
 
@@ -86,7 +86,7 @@ describe("ClientList test", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
 
@@ -116,6 +116,6 @@ describe("ClientList test", () => {
 
     axios.get.mockImplementationOnce(() => Promise.resolve(customers));
 
-    render(<ClientsList setMessage={{ msg: " ", type: "danger" }} />);
+    // render(<ClientsList setMessage={{ msg: " ", type: "danger" }} />);
   });
 });

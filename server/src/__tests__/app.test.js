@@ -52,8 +52,6 @@ describe('Test the clients topup api', () => {
     return request(app).get('/api/clients').expect(200);
   });
 
- 
-
   test('It should respond to the PUT method', () => {
     const id = 1;
     const amount = 100;
@@ -85,15 +83,15 @@ describe('Test the get customers api', () => {
   });
 });
 
-describe('TEST POST order ', function() {
-  test('responds with json', function(done) {
+describe('TEST POST order ', function () {
+  test('responds with json', function (done) {
     request(app)
       .post('/api/orders')
-      .send({ clientID: 1, order: [ { id: 55, quantity: 10.0 } ] })
+      .send({ clientID: 1, order: [{ id: 55, quantity: 10.0 }] })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end(function(err, res) {
+      .end(function (err, res) {
         if (err) return done(err);
         return done();
       });

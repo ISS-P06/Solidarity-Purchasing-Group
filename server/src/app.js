@@ -6,7 +6,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
 import VTC from './vtc';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -110,7 +110,7 @@ app.post(
     for (const product of value) {
       if (
         !Number.isInteger(product.id) ||
-        !typeof product.quantity === 'number' ||
+        !typeof product.quantity == 'number' ||
         isNaN(product.quantity)
       ) {
         return false;

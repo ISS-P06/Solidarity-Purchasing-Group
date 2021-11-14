@@ -74,7 +74,7 @@ function ShopEmployeeActionsList(props) {
               icon={<FaTachometerAlt />}
               suffix={<span className="badge red">NEW</span>}
             >
-           AA}
+        
             </MenuItem>
             <MenuItem icon={<FaGem />}> AHAHA</MenuItem>
           </Menu>
@@ -102,7 +102,7 @@ function ShopEmployeeActionsList(props) {
           </div>
         </SidebarFooter>
 
-      </ProSidebar >
+      </ProSidebar>
 
   )
 }

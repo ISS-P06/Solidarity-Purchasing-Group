@@ -38,7 +38,7 @@ describe("ClientOrderForm", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
   });
@@ -121,7 +121,7 @@ describe("ClientOrderForm", () => {
           mail: "mario@rossi",
           phone: "3333333333",
         }}
-        setMessage={{ msg: " ", type: "danger" }}
+        setMessage={jest.fn()}
       />
     );
 
