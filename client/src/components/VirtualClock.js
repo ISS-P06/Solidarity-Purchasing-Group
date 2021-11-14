@@ -45,6 +45,7 @@ function VirtualClock(props) {
   useEffect(() => {
     const getTime = async () => {
       const apiData = await api_getTime();
+    
       //   const day = apiData.day
 
       const { date, time } = ISOtoHuman(apiData.currentTime);

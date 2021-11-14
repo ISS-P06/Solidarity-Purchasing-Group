@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Col, Container, Row } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
 import InsertClient from "./components/insertClient";
+import ProductCards from './components/ProductCards';
 import { useState, useEffect } from "react";
 import { api_getProducts } from "./Api";
 import VirtualClock from "./components/VirtualClock";
@@ -70,7 +71,10 @@ function App() {
         <Switch>
           <Route exact path="/insert-client">
             <InsertClient />
-          </Route>
+          </Route>                    <Route exact path='/browse-products'>
+                        <ProductCards/>
+                    </Route>
+
         </Switch>
       </Router>
     </Container>

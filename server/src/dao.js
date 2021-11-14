@@ -4,25 +4,27 @@ import db from "./db.js";
 import dayjs from "dayjs";
 
 export function listProducts() {
-  return new Promise((resolve, reject) => {
-    const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
-            FROM Product p, Prod_descriptor pd
-            WHERE pd.id = p.ref_prod_descriptor`;
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      const products = rows.map((p) => ({
-        id: p.id,
-        name: p.name,
-        description: p.description,
-        category: p.category,
-        quantity: p.quantity,
-        price: p.price,
-        unit: p.unit
-      }));
-      resolve(products);
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
+                     FROM Product p,
+                          Prod_descriptor pd
+                     WHERE pd.id = p.ref_prod_descriptor`;
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            const products = rows.map((p) => ({
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                category: p.category,
+                quantity: p.quantity,
+                price: p.price,
+                unit: p.unit,
+            }));
+            resolve(products);
+        });
     });
   });
 }
@@ -99,12 +101,10 @@ export function insertOrder(orderClient) {
 }
 
 export function insertClient(name, surname, phone, address, mail, balance = 0, username, password, role = 'client') {
-    // console.log(`inserting client ${name}`)
     return new Promise((resolve, reject) => {
         const clientQuery = 'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
         const userQuery = 'INSERT INTO User (username ,password ,role) VALUES (? ,? , ?)'
         let userID;
-        let clientID;
         db.serialize(() => {
             let stmt = db.prepare(userQuery)
             stmt.run([username, password, role], function (err) {
@@ -112,19 +112,15 @@ export function insertClient(name, surname, phone, address, mail, balance = 0, u
                     reject(err)
                 }
                 userID = this.lastID;
-                // console.log(`newly created userID: ${userID}`)
                 db.serialize(() => {
-                    let stmt = db.prepare(clientQuery)
-                    // console.log(`hey from client query userID is ${userID}`)
-                    stmt.run([name, surname, phone, address, mail, balance, userID], function (err) {
+                    let stmt_1 = db.prepare(clientQuery)
+                    stmt_1.run([name, surname, phone, address, mail, balance, userID], (err)=> {
                         if (err) {
                             reject(err)
                         }
-                        clientID = this.lastID
-                        resolve(clientID)
                     })
                 })
-                resolve(userID)
+                resolve(this.lastID)
             })
         })
     })

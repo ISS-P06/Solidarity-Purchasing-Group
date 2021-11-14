@@ -6,6 +6,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
 import VTC from './vtc';
+import bcrypt from 'bcrypt'
 
 /** Virtual Time Clock */
 const vtc = new VTC();
