@@ -59,9 +59,9 @@ export const api_addTopUpClient = async ({id, amount}) => {
   try {
     await axios.put("/api/clients/topup", { amount, id });
   } catch (err) {
-    if (err.response.status == 500) {
+    if (err.response.status === 500) {
       throw new Error(err.response.data);
-    } else if (err.response.status == 422) {
+    } else if (err.response.status ===422) {
       throw new Error("Sorry, there was an error in the data");
     } else {
       throw new Error("Sorry, there was an error in adding the order");
