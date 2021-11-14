@@ -14,6 +14,7 @@ import ClientsList from "./components/ClientsList";
 import AlertBox from "./components/Message";
 import { FaBars } from "react-icons/fa";
 
+
 function App() {
   // Product: { id, name, description, category, quantity, price }
   const [productList, setProductList] = useState([]);
@@ -42,40 +43,38 @@ function App() {
   return (
     <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid>
       <AppNavbar />
-      <VirtualClock />
+
       <AlertBox alert={alert} setAlert={setAlert} message={message} />
 
-      <ShopEmployeeActionsList
-        toggled={toggled}
-        collapsed={collapsed}
-        handleToggleSidebar={handleToggleSidebar}
-        setMessage={setMessage}
-      />
+
 
       <Row className={toggled ? "toggled" : ""}>
         <Col>
           {/* This button shows up when the sidebar is hidden */}
           <Button
-            className="btn-toggle mt-2"
+            className="btn-toggle m-2"
             onClick={() => handleToggleSidebar(true)}
           >
             <FaBars />
           </Button>
-
-          <ClientsList
-            handleToggleSidebar={handleToggleSidebar}
-            handleCollapsedChange={handleCollapsedChange}
-            setMessage={setMessage}
-          />
         </Col>
       </Row>
       <Router>
+        <ShopEmployeeActionsList
+          toggled={toggled}
+          collapsed={collapsed}
+          handleToggleSidebar={handleToggleSidebar}
+          setMessage={setMessage}
+        />
         <Switch>
           <Route exact path="/insert-client">
             <InsertClient />
-          </Route>{" "}
+          </Route>
           <Route exact path="/browse-products">
             <ProductCards />
+          </Route>
+          <Route exact path="/show-clients">
+            <ClientsList setMessage={setMessage}/>
           </Route>
         </Switch>
       </Router>

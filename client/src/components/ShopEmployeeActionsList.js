@@ -1,69 +1,27 @@
-import { useState } from "react";
-/* import { ListGroup } from "react-bootstrap"; */
-
-/*function ShopEmployeeActionsList(props) {
-
-
-  const [activeAction, setActiveAction] = useState(actionsList.enterClientOrder);
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  return (
-    {/* <ListGroup defaultActiveKey={actionsList.enterClientOrder} variant='flush'>
-
-
-      <ListGroup.Item
-        id={actionsList.enterNewClient}
-        action
-        active={activeAction === actionsList.enterNewClient}
-        onClick={() => {
-          setActiveAction(actionsList.enterNewClient);
-        }}>
-        Enter a new client
-      </ListGroup.Item>
-
-
-      <ListGroup.Item
-        id={actionsList.clientsList}
-        action
-        active={activeAction === actionsList.clientsList}
-        onClick={() => {
-          setActiveAction(actionsList.clientsList);
-        }}>
-        Show the list of clients
-      </ListGroup.Item>
-
-
-    </ListGroup> */
-
 import {
   ProSidebar,
   Menu,
   MenuItem,
   SubMenu,
   SidebarHeader,
-  SidebarFooter,
   SidebarContent,
 } from "react-pro-sidebar";
-import {
-  FaTachometerAlt,
-  FaGem,
-  FaList,
-  FaGithub,
-  FaRegLaughWink,
-  FaHeart,
-} from "react-icons/fa";
 
-const actionsList = {
-  clientsList: 1,
-  enterNewClient: 2,
-  browsePoducts: 3,
-  handOutProduct: 4,
-  walletTopUp: 5,
-};
+import { BsFillPersonPlusFill, BsList, BsPlusCircle } from "react-icons/bs";
+import {GiFruitBowl} from "react-icons/gi"
+import { Link, useParams, useHistory } from "react-router-dom";
+import { Button } from "react-bootstrap";
+
+
+
 
 function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
+  const actionsList = {
+    insertClient: "insert-client",
+    showClient: "show-clients",
+  };
+  const history = useHistory();
+
   return (
     <ProSidebar
       image={false}
@@ -72,6 +30,10 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
       toggled={toggled}
       breakPoint="md"
       onToggle={handleToggleSidebar}
+      style={{
+        height: "300px",
+
+      }}
     >
       <SidebarHeader>
         <div
@@ -84,147 +46,29 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+
           }}
-        >
-          Title
+          className="pro-sidebar">
+
+          Shop employee
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="pro-sidebar">
         <Menu iconShape="circle">
-          <MenuItem
-            icon={<FaTachometerAlt />}
-            suffix={<span className="badge red">new </span>}
-          >
-            dash
-          </MenuItem>
-          <MenuItem icon={<FaGem />}>comp </MenuItem>
+
+          <MenuItem icon={<BsFillPersonPlusFill />} onClick={() => { history.push("insert-client") }}>Enter a new client </MenuItem>
+          <MenuItem icon={<BsList />} onClick={() => { history.push("show-clients") }}> Show clients </MenuItem>
+          <MenuItem icon={<GiFruitBowl />} onClick={() => { history.push("browse-products") }}>  Browse Products </MenuItem>
+
         </Menu>
-        <Menu iconShape="circle">
-          <SubMenu
-            suffix={<span className="badge yellow">3</span>}
-            title={"withSuffix"}
-            icon={<FaRegLaughWink />}
-          >
-            <MenuItem> 1</MenuItem>
-            <MenuItem> 2</MenuItem>
-            <MenuItem> 3</MenuItem>
-          </SubMenu>
-          <SubMenu
-            prefix={<span className="badge gray">3</span>}
-            title={"withPrefix"}
-            icon={<FaHeart />}
-          >
-            <MenuItem> 1</MenuItem>
-            <MenuItem> 2</MenuItem>
-            <MenuItem> 3</MenuItem>
-          </SubMenu>
-          <SubMenu title={"multilevel"} icon={<FaList />}>
-            <MenuItem> 1 </MenuItem>
-            <MenuItem> 2 </MenuItem>
-            <SubMenu title={`$ 3`}>
-              <MenuItem> 3.1 </MenuItem>
-              <MenuItem> 3.2 </MenuItem>
-              <SubMenu title={`$ 3.3`}>
-                <MenuItem>3.3.1 </MenuItem>
-                <MenuItem>3.3.2 </MenuItem>
-                <MenuItem>3.3.3 </MenuItem>
-              </SubMenu>
-            </SubMenu>
-          </SubMenu>
-        </Menu>
+
       </SidebarContent>
 
-      <SidebarFooter style={{ textAlign: "center" }}>
-        <div
-          className="sidebar-btn-wrapper"
-          style={{
-            padding: "20px 24px",
-          }}
-        >
-          <a
-            href="https://github.com/azouaoui-med/react-pro-sidebar"
-            target="_blank"
-            className="sidebar-btn"
-            rel="noopener noreferrer"
-          >
-            <FaGithub />
-            <span
-              style={{
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-              }}
-            >
-              viewsource
-            </span>
-          </a>
-        </div>
-      </SidebarFooter>
     </ProSidebar>
   );
 }
 
-{
-  /*<ProSidebar
-      collapsed={collapsed}
-      toggled={toggled}
-      onToggle={handleToggleSidebar}
-    >
-      <SidebarHeader>
-        <div
-          style={{
-            padding: "24px",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            fontSize: 14,
-            letterSpacing: "1px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          SIDEBAR
-        </div>
-      </SidebarHeader>
 
-      <SidebarContent>
-        <Menu iconShape="circle">
-          <MenuItem
-            icon={<FaTachometerAlt />}
-            suffix={<span className="badge red">NEW</span>}
-          ></MenuItem>
-          <MenuItem icon={<FaGem />}> AHAHA</MenuItem>
-        </Menu>
-      </SidebarContent>
-
-      <SidebarFooter style={{ textAlign: "center" }}>
-        <div
-          className="sidebar-btn-wrapper"
-          style={{
-            padding: "20px 24px",
-          }}
-        >
-          <a
-            href="https://github.com/azouaoui-med/react-pro-sidebar"
-            target="_blank"
-            className="sidebar-btn"
-            rel="noopener noreferrer"
-          >
-            <FaGithub />
-            <span
-              style={{
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-              }}
-            >
-              viw
-            </span>
-          </a>
-        </div>
-      </SidebarFooter>
-            </ProSidebar>*/
-}
 
 export default ShopEmployeeActionsList;
