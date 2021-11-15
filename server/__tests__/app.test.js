@@ -21,6 +21,16 @@ describe("Test the get products api", () => {
   });
 });
 
+describe("Test the orders path", () => {
+  test("It should response GET api/orders", () => {
+    return request(app)
+      .get("/api/orders")
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+    });
+});
+
 describe('Test the login APIs', () => {
   test('It should respond to the POST method', () => {
     const user = {username: "pentolino", password: "pentolino"};
@@ -36,3 +46,5 @@ describe('Test the login APIs', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
 });
+
+  

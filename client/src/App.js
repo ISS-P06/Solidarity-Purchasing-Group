@@ -5,6 +5,9 @@ import { Navbar, Col, Container, Row, Button } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
 import InsertClient from "./components/insertClient";
 import ProductCards from "./components/ProductCards";
+import OrderList from "./components/OrderList";
+import OrderReview from "./components/OrderReview";
+
 import { useState, useEffect } from "react";
 
 import ShopEmployeeActionsList from "./components/ShopEmployeeActionsList";
@@ -201,20 +204,20 @@ function App() {
               </Route>
 
               {/* Employee: order info page route */}
-              <Route path="/employee/orders/:id" render ={({match}) => {
-                if (loggedIn) {
-                  return <div id={match.params.id}/>;
-                }
-                else {
-                  return <RedirectUser userRole={userRole}/>;
-                }
-              }}/>
+              <Route path="/employee/orders/:id"> 
+              {
+                loggedIn ?
+                  <OrderReview />
+                :
+                  <RedirectUser userRole={userRole}/>
+              }
+              </Route>
 
               {/* Employee order list route */}
               <Route path="/employee/orders">
                 {
                   (loggedIn && userRole == "shop_employee") ?
-                    <div/>
+                    <OrderList/>
                     :
                     <RedirectUser
                       userRole={userRole}/>

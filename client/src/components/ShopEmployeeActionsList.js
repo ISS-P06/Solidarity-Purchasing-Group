@@ -54,7 +54,7 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<BsFillPersonPlusFill />}
             onClick={() => {
-              history.push("/employee/clients/new");
+              history.push("/employee/clients/register");
             }}
           >
             Enter a new client
@@ -74,6 +74,14 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             }}
           >
             Browse Products
+             </MenuItem>
+            <MenuItem
+            icon={<BsList />}
+            onClick={() => {
+              history.push("/employee/orders");
+            }}
+          >
+            Browse Orders
           </MenuItem>
         </Menu>
       </SidebarContent>

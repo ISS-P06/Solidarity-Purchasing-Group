@@ -1,6 +1,8 @@
 'use strict';
 
 import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
+import { request } from "http";
+import { getOrders, getOrderById, setOrderDelivered } from "./dao";
 
 import express from 'express';
 import morgan from 'morgan';
@@ -192,6 +194,29 @@ app.post(
       .catch(() => res.status(500).end());
   }
 );
+
+// GET /api/orders
+app.get('/api/orders', (req, res) => {
+  getOrders()
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/orders/:id
+// Route used to get the order review
+app.get('/api/orders/:id', (req, res) => {
+  getOrderById(req.params.id)
+    .then((order) => {console.log(order); res.json(order)})
+    .catch(() => {res.status(500).end()});
+});
+
+// POST /api/orders/:id/deliver
+app.post('/api/orders/:id/deliver', (req, res) => {
+  setOrderDelivered(req.params.id)
+    .then((orderId) => {console.log(orderId); res.json(orderId)})
+    .catch(() => res.status(500).end());
+});
+
 
 // ADD NEW CLIENT
 // TODO PUT ISLOGGEDIN AS A MIDDLEWARE
