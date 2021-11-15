@@ -1,7 +1,7 @@
 "use strict";
 
 import { request } from "http";
-import { getOrders, getOrderById, setOrderDelivered } from "./dao";
+import { getOrders, getOrder, getOrderById, setOrderDelivered } from "./dao";
 
 const express = require("express");
 
@@ -28,7 +28,7 @@ app.get('/api/orders', (req, res) => {
 app.get('/api/orders/:id', (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {console.log(order); res.json(order)})
-    .catch(() => res.status(500).end());
+    .catch(() => {res.status(500).end()});
 });
 
 // POST /api/orders/:id/deliver

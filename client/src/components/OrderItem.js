@@ -10,8 +10,8 @@ function OrderItem(props) {
             <Card.Header left> <div className="id" >ID: #{props.order.orderId} </div> </Card.Header>
             <Card.Body>Owner: {props.order.email} 
             <Link to={{
-      pathname: `/api/orders/${props.order.orderId}` }}><Button> <Eyeglasses /> Read more </Button> </Link> </Card.Body>
-            
+                pathname: `/api/orders/${props.order.orderId}` }}><Button> <Eyeglasses /> Read more </Button> </Link> 
+            </Card.Body>         
         </Card>
     );
 }

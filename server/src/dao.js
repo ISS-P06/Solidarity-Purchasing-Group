@@ -21,6 +21,21 @@ export function getOrders() {
   });
 }
 
+export function getOrder(orderId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT r.id
+            FROM Request r
+            WHERE r.id = ?`;
+    db.get(sql, [orderId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(rows.id);
+    });
+  });
+}
+
 export function getOrderById(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT r.id, c.mail, r.status
@@ -58,6 +73,7 @@ export function getOrderById(orderId) {
       });
 
       productsPromise.then((products) => {
+        
         resolve({"orderId": row.id, "email": row.mail, "products": products, "status": row.status})});
 
     });
