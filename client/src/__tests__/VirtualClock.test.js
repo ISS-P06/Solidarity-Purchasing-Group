@@ -1,15 +1,8 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import App from "../App";
 import VirtualClock from "../components/VirtualClock";
 
 describe("Virtual Time Clock", () => {
-  test("test virtual clock button", () => {
-    render(<App />);
-    const vcButton = screen.getByText("Virtual clock");
-    expect(vcButton).toBeInTheDocument();
-  });
-
   test("test opening virtual clock modal", () => {
     render(<VirtualClock />);
 
