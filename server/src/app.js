@@ -23,10 +23,7 @@ import LocalStrategy from 'passport-local';
     set up "username and password" strategy
 */
 passport.use(
-  new LocalStrategy({
-      usernameField: "username",
-      passwordField: "password"
-  },
+  new LocalStrategy(
       function(username, password, done) {
           getUser(username, password).then((user) => {
               if (!user)
