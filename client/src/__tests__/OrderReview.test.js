@@ -56,8 +56,8 @@ describe('My component OrderReview', async => {
         {/* Test if all elements are rendered */}
 
         const { getByText } = renderWithRouterMatch(OrderReview, {
-            route: "/api/orders/1",
-            path: "/api/orders/:id"
+            route: "/orders/1",
+            path: "/orders/:id"
           });
 
           expect(getByText(/Order Review/)).toBeInTheDocument();
@@ -115,8 +115,8 @@ describe('My component OrderReview', async => {
         {/* Test if an order can be delivered */}
 
         const { getByText } = renderWithRouterMatch(OrderReview, {
-            route: "/api/orders/1",
-            path: "/api/orders/:id"
+            route: "/orders/1",
+            path: "/orders/:id"
           });
 
           await waitFor(() => getByText(/#1/));
