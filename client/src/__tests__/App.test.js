@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from 'react-router-dom';
 import App from "../App";
-import { createMemoryHistory } from 'history';
 
 describe("Test the App component", () => {
   test("Test whether the App component renders properly", () => {
