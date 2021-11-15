@@ -13,7 +13,6 @@ import AlertBox from "./components/Message";
 import { FaBars } from "react-icons/fa";
 
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
-import AppNavbar from './components/AppNavbar';
 import VirtualClock from './components/VirtualClock';
 import { api_getProducts, api_getUserInfo, api_login, api_logout } from './Api';
 import LoginForm from './components/LoginForm';
@@ -102,38 +101,22 @@ function App() {
     checkAuth();
   }, [loggedIn]);
 
-  // async function for logging in
-  const doLogin = async (credentials) => {
-    try {
-      await api_login(credentials);
-      setLoggedIn(true);
-      return {done: true, msg: "ok"};
-    } catch(err) {
-      return {done: false, msg: err.message};
-    }
-  }
-
-  // async function for logging out
-  const doLogout = async () => {
-    await api_logout();
-    setLoggedIn(false);
-  }
-
   return (
     <Container
       className="App bg-light text-dark p-0 m-0 min-vh-100"
       fluid="true"
     >
-      <AppNavbar
-        loggedIn={loggedIn}
-        doLogout={doLogout}
-        doLogin={doLogin}/>
-
-      <AlertBox alert={alert} setAlert={setAlert} message={message} />
-
       <Router>
-        <Switch>
-          <Row className="m-auto">
+        <AppNavbar
+          loggedIn={loggedIn}
+          doLogout={doLogout}
+          userRole={userRole}/>
+
+        <AlertBox alert={alert} setAlert={setAlert} message={message} />
+
+        <Row className="m-auto">
+          {
+            (loggedIn && userRole == "shop_employee") ?
             <Col xs={2} className="p-0">
               {/* This button shows up when the sidebar is hidden */}
               <Button
@@ -151,8 +134,12 @@ function App() {
                 setMessage={setMessage}
               />
             </Col>
+            :
+            <div/>
+          }
 
-            <Col xs={10}>
+          <Col>
+            <Switch>
               {/* Login route */}
               <Route path="/login">
                 {
@@ -267,9 +254,9 @@ function App() {
               <Route>
                 <Redirect to="/"/>
               </Route>
-            </Col>
-          </Row>
-        </Switch>
+            </Switch>
+          </Col>
+        </Row>
       </Router>
     </Container>
   );

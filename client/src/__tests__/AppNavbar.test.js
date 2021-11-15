@@ -1,7 +1,7 @@
 import { render, screen, fireEvent} from "@testing-library/react";
 import App from "../App";
 import AppNavbar from "../components/AppNavbar";
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 describe("Test navbar appearance", () => {
@@ -14,10 +14,19 @@ describe("Test navbar appearance", () => {
     });
 
     test("Test Navbar appearance: user not logged in", () => {
-        render(<AppNavbar
-            loggedIn={false}
-            doLogout={doLogoutFn}
-            userRole={""}/>);
+        const history = createMemoryHistory();
+
+        // mock push function
+        history.push = jest.fn();
+        
+        render(
+            <MemoryRouter history = {history}>
+                <AppNavbar
+                    loggedIn={false}
+                    doLogout={doLogoutFn}
+                    userRole={""}/>
+            </MemoryRouter>
+        );
 
         const loginText = screen.getByText("Login");
         expect(loginText).toBeInTheDocument();

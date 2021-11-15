@@ -105,6 +105,9 @@ export const api_setTime = async (dateTime) => {
         throw new Error(error.message);
     }
 }
+
+// --- Login/Logout APIs
+// Login API
 export const api_login = async (credentials) => {
     try {
         let res = await axios.post("/api/sessions", {
@@ -129,6 +132,7 @@ export const api_login = async (credentials) => {
     }
 }
 
+// Logout API
 export const api_logout = () => {
     axios.delete("/api/sessions/current")
         .then((res) => {
@@ -139,6 +143,7 @@ export const api_logout = () => {
         });
 }
 
+// Get user info API
 export const api_getUserInfo = async () => {
     try {
         const res = await axios.get('/api/sessions/current');

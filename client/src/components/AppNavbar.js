@@ -53,7 +53,7 @@ function AppNavbar(props) {
                 </>
                 :
                 <>
-                  <Nav.Link href="/login">
+                  <Nav.Link onClick = {() => handleClick("/login")}>
                       Login
                   </Nav.Link>
                 </>

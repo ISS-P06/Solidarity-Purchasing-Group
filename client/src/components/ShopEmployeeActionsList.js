@@ -54,7 +54,7 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<BsFillPersonPlusFill />}
             onClick={() => {
-              history.push("insert-client");
+              history.push("/employee/clients/new");
             }}
           >
             Enter a new client
@@ -62,7 +62,7 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<BsList />}
             onClick={() => {
-              history.push("show-clients");
+              history.push("/employee/clients");
             }}
           >
             Show clients
@@ -70,7 +70,7 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<GiFruitBowl />}
             onClick={() => {
-              history.push("browse-products");
+              history.push("/employee/products");
             }}
           >
             Browse Products
