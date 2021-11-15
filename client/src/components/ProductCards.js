@@ -37,7 +37,7 @@ const ProductCards = (props) => {
     return <Container style={{ textAlign: "left" }}>
         <Row className="mt-4">
             <Col style={{ display: "flex", justifyContent: "center" }}>
-                <h2>Browse products</h2>
+                <h3>Browse products</h3>
             </Col>
         </Row>
         <Row className="mt-4">
