@@ -117,11 +117,12 @@ function App() {
         <Row className="m-auto">
           {
             (loggedIn && userRole == "shop_employee") ?
-            <Col xs={2} className="p-0">
+            <Col xs={1} md={4} lg={2} className="p-0">
               {/* This button shows up when the sidebar is hidden */}
               <Button
                 className="btn-toggle m-2"
                 onClick={() => handleToggleSidebar(true)}
+                className={toggled?"d-none":"btn-toggle"}
               >
                 <FaBars />
               </Button>
@@ -138,6 +139,7 @@ function App() {
             <div/>
           }
 
+          {/*<Col xs={11} md={8} lg={10}>*/}
           <Col>
             <Switch>
               {/* Login route */}

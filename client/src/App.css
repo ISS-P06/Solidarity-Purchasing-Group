@@ -31,6 +31,9 @@
   color: #61dafb;
 }
 
+h3{
+  color: #60A3D9;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -43,14 +46,14 @@
 
 
 .pro-sidebar{
-  color: #fff;
-  background-color: #2a60a7;
+  color: #bfd7ed;
+  background-color: #60A3D9;
 }
 
 /* Sidebar css */
 .btn-toggle {
   display: none;
-  color: #fff;
+  color: #bfd7ed;
   background: #2a60a7;
   cursor: pointer;
   width: 35px;

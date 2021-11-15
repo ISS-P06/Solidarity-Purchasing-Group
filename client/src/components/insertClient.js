@@ -43,7 +43,7 @@ const InsertClient = function (props) {
     return (<>
         <Row>
             <Col sm={{span: '6', offset: '3'}}>
-                <h1>Register new client</h1>
+                <h3>Register new client</h3>
                 <Form onSubmit={formik.handleSubmit}>
                     <Form.Group className="mb-3 mt-3" controlId="name">
                         <Form.Label className={'float-sm-start'}>Client name</Form.Label>
