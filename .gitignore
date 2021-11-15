@@ -3,3 +3,4 @@ server/tempTest.js
 .idea
 server/node_modules
 client/node_modules
+server/database.db
