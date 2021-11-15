@@ -8,12 +8,9 @@ import {
 } from "react-pro-sidebar";
 
 import { BsFillPersonPlusFill, BsList, BsPlusCircle } from "react-icons/bs";
-import {GiFruitBowl} from "react-icons/gi"
+import { GiFruitBowl } from "react-icons/gi";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { Button } from "react-bootstrap";
-
-
-
 
 function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
   const actionsList = {
@@ -32,7 +29,6 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
       onToggle={handleToggleSidebar}
       style={{
         height: "300px",
-
       }}
     >
       <SidebarHeader>
@@ -46,29 +42,43 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-
           }}
-          className="pro-sidebar">
-
+          className="pro-sidebar"
+        >
           Shop employee
         </div>
       </SidebarHeader>
 
       <SidebarContent className="pro-sidebar">
         <Menu iconShape="circle">
-
-          <MenuItem icon={<BsFillPersonPlusFill />} onClick={() => { history.push("insert-client") }}>Enter a new client </MenuItem>
-          <MenuItem icon={<BsList />} onClick={() => { history.push("show-clients") }}> Show clients </MenuItem>
-          <MenuItem icon={<GiFruitBowl />} onClick={() => { history.push("browse-products") }}>  Browse Products </MenuItem>
-
+          <MenuItem
+            icon={<BsFillPersonPlusFill />}
+            onClick={() => {
+              history.push("insert-client");
+            }}
+          >
+            Enter a new client
+          </MenuItem>
+          <MenuItem
+            icon={<BsList />}
+            onClick={() => {
+              history.push("show-clients");
+            }}
+          >
+            Show clients
+          </MenuItem>
+          <MenuItem
+            icon={<GiFruitBowl />}
+            onClick={() => {
+              history.push("browse-products");
+            }}
+          >
+            Browse Products
+          </MenuItem>
         </Menu>
-
       </SidebarContent>
-
     </ProSidebar>
   );
 }
-
-
 
 export default ShopEmployeeActionsList;

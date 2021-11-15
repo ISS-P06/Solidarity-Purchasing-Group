@@ -6,14 +6,12 @@ import InsertClient from "./components/insertClient";
 import ProductCards from "./components/ProductCards";
 import { useState, useEffect } from "react";
 import { api_getProducts } from "./Api";
-import VirtualClock from "./components/VirtualClock";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import ShopEmployeeActionsList from "./components/ShopEmployeeActionsList";
 import ClientsList from "./components/ClientsList";
 import AlertBox from "./components/Message";
 import { FaBars } from "react-icons/fa";
-
 
 function App() {
   // Product: { id, name, description, category, quantity, price }
@@ -41,19 +39,18 @@ function App() {
   }, [message]);
 
   return (
-    <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid>
+    <Container
+      className="App bg-light text-dark p-0 m-0 min-vh-100"
+      fluid="true"
+    >
       <AppNavbar />
 
       <AlertBox alert={alert} setAlert={setAlert} message={message} />
 
-
-
-
       <Router>
-
         <Switch>
-          <Row className={toggled ? "toggled" : ""}>
-            <Col xs={2}>
+          <Row className="m-auto">
+            <Col xs={2} className="p-0">
               {/* This button shows up when the sidebar is hidden */}
               <Button
                 className="btn-toggle m-2"
@@ -61,6 +58,8 @@ function App() {
               >
                 <FaBars />
               </Button>
+
+              {/* Aside */}
               <ShopEmployeeActionsList
                 toggled={toggled}
                 collapsed={collapsed}
@@ -80,12 +79,9 @@ function App() {
                 <ClientsList setMessage={setMessage} />
               </Route>
             </Col>
-
           </Row>
         </Switch>
-
       </Router>
-
     </Container>
   );
 }
