@@ -2,7 +2,7 @@
 
 import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
 import { request } from "http";
-import { getOrders, getOrderById, setOrderDelivered } from "./dao";
+import { getOrders, getOrder, getOrderById, setOrderDelivered } from "./dao";
 
 import express from 'express';
 import morgan from 'morgan';

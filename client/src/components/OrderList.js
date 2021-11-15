@@ -9,18 +9,22 @@ function OrderList() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-
-    api_getOrders()
-    	.then((orders) => {
+      /*
+      api_getOrders().then((orders) => {
     	setOrders(orders);
     	}).catch((e) =>console.log(e));
-  }, []);
-
-  const orderList = orders.map((order) => 
-    <div className="OrderItem">
-      <OrderItem key={order.orderId.toString()}  order={order} />
-    </div>
-  );
+    */
+      const loadOrders = async () => {
+        const res = await api_getOrders();
+        setOrders(res);
+      } 
+      loadOrders();
+    }, [setOrders]);
+  
+  const orderList = orders.map( (order) => 
+                            <div key={order.orderId.toString()}  className="OrderItem">
+                            <OrderItem key={order.orderId.toString()} order={order} />
+                            </div>)
 
   return (
     <div>
@@ -30,7 +34,7 @@ function OrderList() {
       <div className="OrderList">
         {orderList}
       </div>
-    </div>    
+    </div>   
   );
 }
 
