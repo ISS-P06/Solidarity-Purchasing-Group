@@ -127,14 +127,16 @@ export function getOrders() {
             FROM Request r, Client c
             WHERE r.ref_client = c.id`;
     db.all(sql, [], (err, rows) => {
+      if(err){
         reject(err);
         return;
-      });
-    const orders = rows.map((p) => ({
-        orderId: p.id,
-        email: p.mail
-    }));
-    resolve(orders);  
+      }
+      const orders = rows.map((p) => ({
+      orderId: p.id,
+      email: p.mail
+      }));
+      resolve(orders);  
+    })
   });
 }
 
