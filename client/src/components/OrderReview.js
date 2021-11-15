@@ -15,7 +15,7 @@ function OrderReview() {
     const [orderReview, setOrderReview] = useState(0, '', [], '');
     const [isUpdated, setIsUpdated] = useState(false);
 
-    let match = useRouteMatch("/orders/:id");
+    let match = useRouteMatch("/employee/orders/:id");
 
     useEffect(() => {
         if(!isUpdated)
