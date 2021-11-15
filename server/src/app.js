@@ -1,24 +1,20 @@
 'use strict';
-
-import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
-import { request } from "http";
-import { getOrders, getOrderById, setOrderDelivered } from "./dao";
-
 import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
-import VTC from './vtc';
-import bcrypt from 'bcrypt';
-
-/** Virtual Time Clock */
-const vtc = new VTC();
-
-// --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from "./user-dao";
-
 import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
+
+import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
+import { getOrders, getOrderById, setOrderDelivered } from "./dao";
+
+import VTC from './vtc';
+// --- Imports for passport and login/logout --- //
+import { getUser, getUserById, test_createUser } from "./user-dao";
+
+/** Virtual Time Clock */
+const vtc = new VTC();
 
 // --- Set up Passport --- //
 /*
@@ -74,7 +70,7 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 };
 
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan('dev', { skip: () => process.env.NODE_ENV === 'test' }));
 
 // set up the session
 app.use(session({
@@ -90,9 +86,6 @@ app.use(passport.session());
 
 /*** APIs ***/
 
-app.get('/', (req, res) => {
-  res.status(200).send('Hello World!');
-});
 /**
  * GET /api/time
  *

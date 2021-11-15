@@ -1,10 +1,10 @@
 import request from 'supertest';
 import app from '../app';
-import {test_removeUser} from '../user-dao';
+import { test_removeUser } from '../user-dao';
 
 import { copyFileSync, unlinkSync } from 'fs';
 
-/** During test the database can be modified, so we need to backup it's state */
+/** During test the database can be modified, so we need to backup its state */
 
 const dbPath = 'database.db';
 const backupPath = 'database.db.backup';
@@ -98,15 +98,16 @@ describe('TEST POST order ', function () {
       });
   });
 });
+
 // --- Login/logout routes tests
 describe('Test the login APIs', () => {
   test('It should respond to the POST method', () => {
-    const user = {username: "pentolino", password: "pentolino"};
+    const user = { username: 'pentolino', password: 'pentolino' };
     return request(app).post('/api/sessions').send(user).expect(200);
   });
 
   test('The POST method should fail', () => {
-    const user = {username: "pentolino", password: "a"};
+    const user = { username: 'pentolino', password: 'a' };
     return request(app).post('/api/sessions').send(user).expect(401);
   });
 
@@ -119,12 +120,11 @@ describe('Test the login APIs', () => {
   });
 
   test('(test) Create new user: it should respond to the POST method', () => {
-    const user = {username: "teiera", password: "teiera123", role: "shop_employee"};
+    const user = { username: 'teiera', password: 'teiera123', role: 'shop_employee' };
     return request(app).post('/test/addUser').send(user).expect(200);
-    
   });
 
   afterAll(async () => {
-    await test_removeUser("teiera");
+    await test_removeUser('teiera');
   });
 });
