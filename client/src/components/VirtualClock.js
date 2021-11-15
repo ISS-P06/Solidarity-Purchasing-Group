@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
-import { Col, Form, Row, Button, Modal } from "react-bootstrap";
+import { useEffect, useState } from 'react';
+import { Col, Form, Row, Button, Modal } from 'react-bootstrap';
 
-import TimePicker from "react-bootstrap-time-picker";
+import TimePicker from 'react-bootstrap-time-picker';
 
-import { api_setTime, api_getTime } from "../Api";
-import { humanToISO, ISOtoHuman } from "../utils";
+import { api_setTime, api_getTime } from '../Api';
+import { humanToISO, ISOtoHuman } from '../utils';
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 function VirtualClock(props) {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(0);
   const [showModalVT, setShowModalVT] = useState(false);
 
-  const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const handleClose = () => setShowModalVT(false);
   const handleShow = () => setShowModalVT(true);
@@ -56,19 +48,14 @@ function VirtualClock(props) {
 
   const renderDate = () => {
     const day = weekdays[date.getDay()];
-    const fullDate =
-      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    const fullDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
-    return fullDate + " - " + day;
+    return fullDate + ' - ' + day;
   };
 
   return (
     <>
-      <Button
-        variant="success"
-        className="mt-2 me-sm-2 float-sm-end"
-        onClick={handleShow}
-      >
+      <Button variant="success" className="mt-2 me-sm-2 float-sm-end" onClick={handleShow}>
         Virtual clock
       </Button>
 
@@ -118,10 +105,7 @@ function VirtualClock(props) {
                     </Button>
                   </Col>
                   <Col>
-                    <Button
-                      variant="danger"
-                      onClick={() => setDate(new Date())}
-                    >
+                    <Button variant="danger" onClick={() => setDate(new Date())}>
                       Reset
                     </Button>
                   </Col>

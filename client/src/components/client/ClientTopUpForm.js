@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button, Row, Col, Form, FloatingLabel, Modal } from "react-bootstrap";
+import { useState } from 'react';
+import { Button, Row, Col, Form, FloatingLabel, Modal } from 'react-bootstrap';
 
 function ClientTopUpForm(props) {
   const { show, handleClose, client, topUpClient, setMessage } = props;
@@ -17,7 +17,7 @@ function ClientTopUpForm(props) {
 
       setMessage({
         msg: `Updated balance for ${client.name} ${client.surname}`,
-        type: "info",
+        type: 'info',
       });
 
       handleClose();
@@ -34,8 +34,7 @@ function ClientTopUpForm(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       show={show}
-      onHide={handleClose}
-    >
+      onHide={handleClose}>
       <Form id="topUp" noValidate validated={validated} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
@@ -54,12 +53,7 @@ function ClientTopUpForm(props) {
 
             {/* Calumn for add to the balance */}
             <Col>
-              <FloatingLabel
-                controlId="TopUp"
-                label="Insert top up"
-                className="mt-2 mb-4"
-                required
-              >
+              <FloatingLabel controlId="TopUp" label="Insert top up" className="mt-2 mb-4" required>
                 <Form.Control
                   type="number"
                   placeholder="Amount"

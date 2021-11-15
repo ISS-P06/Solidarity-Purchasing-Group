@@ -1,13 +1,13 @@
-import { Modal, Button, Form, Col, FloatingLabel, Row } from "react-bootstrap";
+import { Modal, Button, Form, Col, FloatingLabel, Row } from 'react-bootstrap';
 
-import { useState, useEffect } from "react";
-import { api_getProducts, api_addOrder } from "../Api";
-import AlertBox from "./Message";
+import { useState, useEffect } from 'react';
+import { api_getProducts, api_addOrder } from '../../Api';
+import AlertBox from '../Message';
 
 function ClientOrderForm(props) {
   const { show, onHide, client, setMessage, openConfirmationModal } = props;
 
-  const [messageModal, setMessageModal] = useState("");
+  const [messageModal, setMessageModal] = useState('');
   const [alertModal, setAlertModal] = useState(false);
   const [productsList, setProductsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -32,7 +32,7 @@ function ClientOrderForm(props) {
         setProductsList(products);
         setCategoriesList(distinctCategoriesList);
       })
-      .catch((e) => setMessage({ msg: e, type: "danger" }));
+      .catch((e) => setMessage({ msg: e, type: 'danger' }));
   }, [onHide]);
 
   const handleClose = () => {
@@ -42,14 +42,14 @@ function ClientOrderForm(props) {
   const addOrder = () => {
     if (productsClient.length === 0) {
       setMessageModal({
-        msg: "Complete add at least one product",
-        type: "danger",
+        msg: 'Complete add at least one product',
+        type: 'danger',
       });
       setAlertModal(true);
     } else if (insertProduct) {
       setMessageModal({
-        msg: "Complete the addition of the last product",
-        type: "danger",
+        msg: 'Complete the addition of the last product',
+        type: 'danger',
       });
       setAlertModal(true);
     } else {
@@ -64,12 +64,12 @@ function ClientOrderForm(props) {
       api_addOrder(orderClient)
         .then((id) =>
           setMessage({
-            msg: "Order " + id + " emitted with success ",
-            type: "success",
+            msg: 'Order ' + id + ' emitted with success ',
+            type: 'success',
           })
         )
         .catch((err) => {
-          setMessage({ msg: err.message, type: "danger" });
+          setMessage({ msg: err.message, type: 'danger' });
         });
 
       /*RESET*/
@@ -91,18 +91,11 @@ function ClientOrderForm(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       show={show}
-      onHide={handleClose}
-    >
+      onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Add a new client order
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">Add a new client order</Modal.Title>
       </Modal.Header>
-      <AlertBox
-        alert={alertModal}
-        setAlert={setAlertModal}
-        message={messageModal}
-      />
+      <AlertBox alert={alertModal} setAlert={setAlertModal} message={messageModal} />
       <Modal.Body>
         {productsClient
           ? productsClient.map((product, index) => (
@@ -123,8 +116,8 @@ function ClientOrderForm(props) {
           : null}
         <Row className="m-2 justify-content-end">
           {productsClient.length > 0
-            ? "Partial total: " + parseFloat(partialPrice).toFixed(2) + " $"
-            : ""}
+            ? 'Partial total: ' + parseFloat(partialPrice).toFixed(2) + ' $'
+            : ''}
         </Row>
 
         {insertProduct && productsList ? (
@@ -142,11 +135,7 @@ function ClientOrderForm(props) {
         ) : null}
 
         {!insertProduct && (
-          <Button
-            className="mt-3 mb-3"
-            variant="primary"
-            onClick={() => setInsertProduct(true)}
-          >
+          <Button className="mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)}>
             Add new product
           </Button>
         )}
@@ -181,14 +170,11 @@ export function ProductForm(props) {
   const [currentCategory, setCurrentCategory] = useState(
     product ? product.category : categoriesList[0]
   );
-  const [productsListbyCurrentCategory, setProductsListbyCurrentCategory] =
-    useState();
+  const [productsListbyCurrentCategory, setProductsListbyCurrentCategory] = useState();
 
   const [productID, setProductID] = useState(); /* current product id */
-  const [quantityOrdered, setQuantityOrdered] =
-    useState(); /* current quantity of the product  */
-  const [maxQuantity, setMaxQuantity] =
-    useState(); /* quantity available of the product  */
+  const [quantityOrdered, setQuantityOrdered] = useState(); /* current quantity of the product  */
+  const [maxQuantity, setMaxQuantity] = useState(); /* quantity available of the product  */
   const [currentPrice, setCurrentPrice] = useState();
 
   useEffect(() => {
@@ -197,12 +183,10 @@ export function ProductForm(props) {
       .filter((p) => p.quantity > 0);
     setProductsListbyCurrentCategory(itemsList);
 
-    setProductID(product ? product.id : itemsList[0] ? itemsList[0].id : " ");
+    setProductID(product ? product.id : itemsList[0] ? itemsList[0].id : ' ');
     setQuantityOrdered(product ? product.quantityOrdered : 0.1);
-    setMaxQuantity(product ? "" : itemsList[0] ? itemsList[0].quantity : " ");
-    setCurrentPrice(
-      product ? 0 : itemsList[0] ? itemsList[0].price * 0.1 : " "
-    );
+    setMaxQuantity(product ? '' : itemsList[0] ? itemsList[0].quantity : ' ');
+    setCurrentPrice(product ? 0 : itemsList[0] ? itemsList[0].price * 0.1 : ' ');
   }, []);
 
   const handleSubmit = (event) => {
@@ -221,9 +205,7 @@ export function ProductForm(props) {
         setProductsList(
           productsList.map((p) =>
             /* update available quantity */
-            p.id === productID
-              ? { ...p, quantity: p.quantity - quantityOrdered }
-              : p
+            p.id === productID ? { ...p, quantity: p.quantity - quantityOrdered } : p
           )
         );
 
@@ -274,25 +256,15 @@ export function ProductForm(props) {
   };
 
   return (
-    <Form
-      noValidate
-      validated={validated}
-      id={temporaryKey}
-      onSubmit={handleSubmit}
-    >
+    <Form noValidate validated={validated} id={temporaryKey} onSubmit={handleSubmit}>
       <Row>
         <Col xs={12} lg={4}>
-          <FloatingLabel
-            controlId="CategoriesSelect"
-            label="Category"
-            className="mt-2"
-          >
+          <FloatingLabel controlId="CategoriesSelect" label="Category" className="mt-2">
             <Form.Select
               aria-label="Product categories"
               defaultValue={currentCategory}
               onChange={(e) => updateCurrentCategory(e.target.value)}
-              disabled={product}
-            >
+              disabled={product}>
               {categoriesList.map((c, k) => (
                 <option key={k} value={c}>
                   {c}
@@ -303,17 +275,12 @@ export function ProductForm(props) {
         </Col>
 
         <Col xs={12} lg={4}>
-          <FloatingLabel
-            controlId="productSelect"
-            label="Product"
-            className="mt-2"
-          >
+          <FloatingLabel controlId="productSelect" label="Product" className="mt-2">
             <Form.Select
               aria-label="Product"
               defaultValue={productID}
               onChange={(e) => updateProduct(Number(e.target.value))}
-              disabled={product}
-            >
+              disabled={product}>
               {product ? (
                 <option value={product.id}>{product.name} </option>
               ) : (
@@ -334,8 +301,7 @@ export function ProductForm(props) {
             label="Quantity"
             className="mt-2"
             required
-            onChange={(e) => updateQuantity(e.target.value)}
-          >
+            onChange={(e) => updateQuantity(e.target.value)}>
             <Form.Control
               type="number"
               placeholder="number"
@@ -346,7 +312,7 @@ export function ProductForm(props) {
               disabled={product}
             />
             <Form.Control.Feedback type="invalid">
-              Please insert a quantity between 0.1 and {maxQuantity}{" "}
+              Please insert a quantity between 0.1 and {maxQuantity}{' '}
             </Form.Control.Feedback>
           </FloatingLabel>
         </Col>
@@ -355,18 +321,18 @@ export function ProductForm(props) {
       <Row>
         <Col xs={6} lg={9}>
           {product ? (
-            ""
+            ''
           ) : (
             <Button type="submit" variant="primary" className="mt-3 mb-3">
-              {" "}
-              Add product{" "}
+              {' '}
+              Add product{' '}
             </Button>
           )}
         </Col>
         <Col className="mt-4" xs={6} lg={3}>
           {productID && !product
-            ? "Current product: " + parseFloat(currentPrice).toFixed(2) + "$"
-            : ""}
+            ? 'Current product: ' + parseFloat(currentPrice).toFixed(2) + '$'
+            : ''}
         </Col>
       </Row>
     </Form>

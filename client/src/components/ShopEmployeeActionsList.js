@@ -5,17 +5,17 @@ import {
   SubMenu,
   SidebarHeader,
   SidebarContent,
-} from "react-pro-sidebar";
+} from 'react-pro-sidebar';
 
-import { BsFillPersonPlusFill, BsList, BsPlusCircle } from "react-icons/bs";
-import { GiFruitBowl } from "react-icons/gi";
-import { Link, useParams, useHistory } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { BsFillPersonPlusFill, BsList, BsPlusCircle } from 'react-icons/bs';
+import { GiFruitBowl } from 'react-icons/gi';
+import { Link, useParams, useHistory } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
   const actionsList = {
-    insertClient: "insert-client",
-    showClient: "show-clients",
+    insertClient: 'insert-client',
+    showClient: 'show-clients',
   };
   const history = useHistory();
 
@@ -28,23 +28,21 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
       breakPoint="md"
       onToggle={handleToggleSidebar}
       style={{
-        height: "300px",
-      }}
-    >
+        height: '300px',
+      }}>
       <SidebarHeader>
         <div
           style={{
-            padding: "24px",
-            textTransform: "uppercase",
-            fontWeight: "bold",
+            padding: '24px',
+            textTransform: 'uppercase',
+            fontWeight: 'bold',
             fontSize: 14,
-            letterSpacing: "1px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            letterSpacing: '1px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
-          className="pro-sidebar"
-        >
+          className="pro-sidebar">
           Shop employee
         </div>
       </SidebarHeader>
@@ -54,33 +52,29 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<BsFillPersonPlusFill />}
             onClick={() => {
-              history.push("/employee/clients/register");
-            }}
-          >
+              history.push('/employee/clients/register');
+            }}>
             Enter a new client
           </MenuItem>
           <MenuItem
             icon={<BsList />}
             onClick={() => {
-              history.push("/employee/clients");
-            }}
-          >
+              history.push('/employee/clients');
+            }}>
             Show clients
           </MenuItem>
           <MenuItem
             icon={<GiFruitBowl />}
             onClick={() => {
-              history.push("/employee/products");
-            }}
-          >
+              history.push('/employee/products');
+            }}>
             Browse Products
-             </MenuItem>
-            <MenuItem
+          </MenuItem>
+          <MenuItem
             icon={<BsList />}
             onClick={() => {
-              history.push("/employee/orders");
-            }}
-          >
+              history.push('/employee/orders');
+            }}>
             Browse Orders
           </MenuItem>
         </Menu>
