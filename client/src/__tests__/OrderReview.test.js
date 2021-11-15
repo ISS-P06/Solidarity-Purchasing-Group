@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Router, Route } from 'react-router';
+import { Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from "history";
 
 import OrderReview from '../components/OrderReview';
