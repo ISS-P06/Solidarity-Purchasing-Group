@@ -2,7 +2,7 @@
 
 import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
 import { request } from "http";
-import { getOrders, getOrderById, setOrderDelivered } from "./dao";
+import { getOrders, getOrder, getOrderById, setOrderDelivered } from "./dao";
 
 import express from 'express';
 import morgan from 'morgan';
@@ -163,7 +163,7 @@ app.get('/api/orders', (req, res) => {
 app.get('/api/orders/:id', (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {console.log(order); res.json(order)})
-    .catch(() => res.status(500).end());
+    .catch(() => {res.status(500).end()});
 });
 
 // POST /api/orders/:id/deliver
