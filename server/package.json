@@ -38,6 +38,6 @@
     "start": "node -r esm server.js",
     "test": "jest --runInBand --passWithNoTests",
     "test:cov": "jest --coverage --testResultsProcessor=jest-sonar-reporter",
-    "format": "prettier --write \"**/*.js\" \"test/**/*.js\""
+    "format": "prettier --write \"**/*.js\" \"**/__tests__/**/*.js\""
   }
 }

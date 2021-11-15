@@ -2,7 +2,7 @@
 
 Solidarity Purchasing Group is a project developed for Software Engineering II course at Politecnico di Torino.
 
-# Frontend documentation
+## Frontend documentation
 
 ### React Client Application Routes
 
