@@ -68,7 +68,7 @@ const ProductCard = (props) => {
     let imgName = product.category.replace(regex, "-").toLowerCase() + "-16x11.png";
     let imgPath = "/img/products/" + imgName;
 
-    return <Col xs={{ span: 6 }} sm={{ span: 6 }} md={{ span: 4 }} lg={{ span: 3 }} className="mb-3">
+    return <Col  sm={{ span: 6 }} md={{ span: 4 }} lg={{ span: 3 }} className="mb-3">
         <Card bg="light" border="secondary" text="black">
             <Card.Img variant="top" src={imgPath} />
             <ListGroup variant="flush">
