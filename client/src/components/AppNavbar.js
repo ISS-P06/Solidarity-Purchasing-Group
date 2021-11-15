@@ -1,12 +1,17 @@
-import { Navbar, Col } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
+import VirtualClock from "./VirtualClock";
 
-// --- Renders the application navbar
 function AppNavbar(props) {
   return (
-    <Navbar className="bg-primary text-light " fluid="true">
-      <Col className="d-flex justify-content-start ms-sm-2">
+    <Navbar expand="md" bg="primary">
+      <Navbar.Brand className="text-light px-4 my-auto ml-md-0">
         <h3>Solidarity Purchasing Group</h3>
-      </Col>
+      </Navbar.Brand>
+
+      {/* TODO Button on the extreme right */}
+      <Navbar.Brand className="mx-auto mb-3">
+        <VirtualClock />
+      </Navbar.Brand>
     </Navbar>
   );
 }

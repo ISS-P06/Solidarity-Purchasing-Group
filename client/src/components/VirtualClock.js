@@ -37,7 +37,7 @@ function VirtualClock(props) {
     event.preventDefault();
 
     const ISODate = humanToISO(date, time / 3600);
-    api_setTime(ISODate).catch(()=>{});
+    api_setTime(ISODate).catch(() => {});
 
     handleClose();
   };
@@ -45,16 +45,13 @@ function VirtualClock(props) {
   useEffect(() => {
     const getTime = async () => {
       const apiData = await api_getTime();
-    
-      //   const day = apiData.day
+      const humanTime = ISOtoHuman(apiData.currentTime);
 
-      const { date, time } = ISOtoHuman(apiData.currentTime);
-
-      setDate(date);
-      setTime(time);
+      setDate(humanTime.date);
+      setTime(humanTime.time);
     };
 
-    getTime().catch(()=>{});
+    getTime().catch(() => {});
   }, []);
 
   const renderDate = () => {
@@ -67,7 +64,11 @@ function VirtualClock(props) {
 
   return (
     <>
-      <Button variant="primary" className="mt-2 me-sm-2 float-sm-end" onClick={handleShow}>
+      <Button
+        variant="success"
+        className="mt-2 me-sm-2 float-sm-end"
+        onClick={handleShow}
+      >
         Virtual clock
       </Button>
 
@@ -104,7 +105,7 @@ function VirtualClock(props) {
                       end="23:30"
                       format={24}
                       step={60}
-                      onChange={(time) => setTime(time)}
+                      onChange={(t) => setTime(t)}
                     />
                   </Col>
                   <Col />

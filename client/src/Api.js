@@ -34,6 +34,42 @@ export const api_getClientsList = async () => {
     }
 };
 
+export const api_addOrder = async (orderClient) => {
+    try {
+        const res = await axios.post('/api/orders', orderClient);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        }
+        else if (err.response.status === 422) {
+            throw new Error('Sorry, there was an error in the data');
+        }
+        else {
+            throw new Error('Sorry, there was an error in adding the order');
+        }
+    }
+};
+
+export const api_addTopUpClient = async ({id, amount}) => {
+  try {
+    await axios.put("/api/clients/topup", { amount, id });
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else if (err.response.status ===422) {
+      throw new Error("Sorry, there was an error in the data");
+    } else {
+      throw new Error("Sorry, there was an error in adding the order");
+    }
+  }
+};
+
+
 
 export async function insertClient(client) {
     let res;

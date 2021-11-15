@@ -1,40 +1,84 @@
-import { useState } from "react";
-import { ListGroup } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarHeader,
+  SidebarContent,
+} from "react-pro-sidebar";
 
-const actionsList = { clientsList: 1, enterNewClient: 2, browsePoducts: 3, handOutProduct: 4, walletTopUp: 5 };
-function ShopEmployeeActionsList() {
-  const [activeAction, setActiveAction] = useState(actionsList.enterClientOrder);
+import { BsFillPersonPlusFill, BsList, BsPlusCircle } from "react-icons/bs";
+import { GiFruitBowl } from "react-icons/gi";
+import { Link, useParams, useHistory } from "react-router-dom";
+import { Button } from "react-bootstrap";
+
+function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
+  const actionsList = {
+    insertClient: "insert-client",
+    showClient: "show-clients",
+  };
+  const history = useHistory();
+
   return (
-    <ListGroup defaultActiveKey={actionsList.enterClientOrder} variant='flush'>
-    
-      <ListGroup.Item
-          id={actionsList.enterNewClient}
-          action
-          active={activeAction === actionsList.enterNewClient}
-          onClick={() => {
-            setActiveAction(actionsList.enterNewClient);
-          }}>
-          Enter a new client
-        </ListGroup.Item>
+    <ProSidebar
+      image={false}
+      rtl={false}
+      collapsed={collapsed}
+      toggled={toggled}
+      breakPoint="md"
+      onToggle={handleToggleSidebar}
+      style={{
+        height: "300px",
+      }}
+    >
+      <SidebarHeader>
+        <div
+          style={{
+            padding: "24px",
+            textTransform: "uppercase",
+            fontWeight: "bold",
+            fontSize: 14,
+            letterSpacing: "1px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+          className="pro-sidebar"
+        >
+          Shop employee
+        </div>
+      </SidebarHeader>
 
-        <ListGroup.Item
-          id={actionsList.clientsList}
-          action
-          active={activeAction === actionsList.clientsList}
-          onClick={() => {
-            setActiveAction(actionsList.clientsList);
-          }}>
-          Show the list of clients
-        </ListGroup.Item>
-
-   
-        
-      
-    
-    </ListGroup>
+      <SidebarContent className="pro-sidebar">
+        <Menu iconShape="circle">
+          <MenuItem
+            icon={<BsFillPersonPlusFill />}
+            onClick={() => {
+              history.push("insert-client");
+            }}
+          >
+            Enter a new client
+          </MenuItem>
+          <MenuItem
+            icon={<BsList />}
+            onClick={() => {
+              history.push("show-clients");
+            }}
+          >
+            Show clients
+          </MenuItem>
+          <MenuItem
+            icon={<GiFruitBowl />}
+            onClick={() => {
+              history.push("browse-products");
+            }}
+          >
+            Browse Products
+          </MenuItem>
+        </Menu>
+      </SidebarContent>
+    </ProSidebar>
   );
 }
 
 export default ShopEmployeeActionsList;
-
