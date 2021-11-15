@@ -4,6 +4,9 @@ import { Navbar, Col, Container, Row, Button } from "react-bootstrap";
 import AppNavbar from "./components/AppNavbar";
 import InsertClient from "./components/insertClient";
 import ProductCards from "./components/ProductCards";
+import OrderList from "./components/OrderList";
+import OrderReview from "./components/OrderReview";
+
 import { useState, useEffect } from "react";
 import { api_getProducts } from "./Api";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
@@ -78,6 +81,12 @@ function App() {
               </Route>
               <Route exact path="/show-clients">
                 <ClientsList setMessage={setMessage} />
+              </Route>
+              <Route exact path="/orders">
+                <OrderList />
+              </Route>
+              <Route exact path="/orders/:id">
+                <OrderReview />
               </Route>
             </Col>
           </Row>

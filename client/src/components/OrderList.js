@@ -9,16 +9,9 @@ function OrderList() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-      /*
       api_getOrders().then((orders) => {
     	setOrders(orders);
     	}).catch((e) =>console.log(e));
-    */
-      const loadOrders = async () => {
-        const res = await api_getOrders();
-        setOrders(res);
-      } 
-      loadOrders();
     }, [setOrders]);
   
   const orderList = orders.map( (order) => 

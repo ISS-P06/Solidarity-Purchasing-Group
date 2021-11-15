@@ -74,6 +74,14 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             }}
           >
             Browse Products
+             </MenuItem>
+            <MenuItem
+            icon={<BsList />}
+            onClick={() => {
+              history.push("orders");
+            }}
+          >
+            Browse Orders
           </MenuItem>
         </Menu>
       </SidebarContent>
