@@ -116,7 +116,7 @@ function ClientOrderForm(props) {
           : null}
         <Row className="m-2 justify-content-end">
           {productsClient.length > 0
-            ? 'Partial total: ' + parseFloat(partialPrice).toFixed(2) + ' $'
+            ? 'Partial total: ' + parseFloat(partialPrice).toFixed(2) + ' €'
             : ''}
         </Row>
 
@@ -135,7 +135,10 @@ function ClientOrderForm(props) {
         ) : null}
 
         {!insertProduct && (
-          <Button className="btn mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)}>
+          <Button
+            className="btn mt-3 mb-3"
+            variant="primary"
+            onClick={() => setInsertProduct(true)}>
             Add new product
           </Button>
         )}
@@ -287,7 +290,7 @@ export function ProductForm(props) {
                 productsListbyCurrentCategory &&
                 productsListbyCurrentCategory.map((p, k) => (
                   <option key={k} value={p.id}>
-                    {p.name} {p.price}$/{p.unit}
+                    {p.name} {p.price}€/{p.unit}
                   </option>
                 ))
               )}
@@ -331,7 +334,7 @@ export function ProductForm(props) {
         </Col>
         <Col className="mt-4" xs={6} lg={3}>
           {productID && !product
-            ? 'Current product: ' + parseFloat(currentPrice).toFixed(2) + '$'
+            ? 'Current product: ' + parseFloat(currentPrice).toFixed(2) + '€'
             : ''}
         </Col>
       </Row>

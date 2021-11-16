@@ -47,7 +47,7 @@ function ClientTopUpForm(props) {
             <Col xs={6} lg={7}>
               <span>
                 <h5>Current balace: </h5>
-                <h4>$ {client.balance.toFixed(2)} </h4>
+                <h4>€ {client.balance.toFixed(2)} </h4>
               </span>
             </Col>
 
@@ -64,7 +64,7 @@ function ClientTopUpForm(props) {
                   isInvalid={amount < 5}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please insert a valid amount more then $5
+                  Please insert a valid amount more then €5
                 </Form.Control.Feedback>
               </FloatingLabel>
             </Col>

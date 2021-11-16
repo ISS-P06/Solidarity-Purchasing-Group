@@ -6,16 +6,13 @@ import './OrderItem.css';
 
 function OrderItem(props) {
   return (
-    <Card>
+    <Card className="shadow">
       <Card.Header left>
         {' '}
         <div className="id">ID: #{props.order.orderId} </div>{' '}
       </Card.Header>
       <Card.Body>
-        <Row>
-          Owner: {props.order.email}
-        </Row>
-
+        <Row>Owner: {props.order.email}</Row>
 
         <Link
           to={{
