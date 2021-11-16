@@ -38,7 +38,7 @@ function OrderTable(props) {
 
       </Table>
       <Row className="justify-content-end m-1">
-        <h4> Total $ {props.products != null ? computeTotal(props.products) : 0}</h4>
+        <h4> Total € {props.products != null ? computeTotal(props.products) : 0}</h4>
         
       </Row>
     </>
