@@ -140,6 +140,15 @@ describe('Test the login APIs', () => {
           expect(response.statusCode).toBe(200);
         });
     });
+
+    test("It should response POST api/orders/2/deliver", () => {
+      return request(app)
+        .post("/api/orders/2/deliver")
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+
   });
 
   afterAll(async () => {
