@@ -40,7 +40,7 @@ function LoginForm(props) {
         username: '',
         password: '',
       }}>
-      {({ handleSubmit, handleChange, handleBlur, values, errors }) => (
+      {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
         <Container>
           <Row>
             <BiUserCircle size="80" />
@@ -63,7 +63,7 @@ function LoginForm(props) {
                       value={values.username}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={errors.username || validator.isEmpty(values.username)}
+                      isInvalid={touched.username && (errors.username || validator.isEmpty(values.username))}
                     />
                     <Form.Control.Feedback type="invalid">Insert a username</Form.Control.Feedback>
                   </Form.Group>
@@ -80,9 +80,10 @@ function LoginForm(props) {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       isInvalid={
+                        touched.password && (
                         errors.password ||
                         validator.isEmpty(values.password) ||
-                        values.password.length < 8
+                        values.password.length < 8)
                       }
                     />
                     <Form.Control.Feedback type="invalid">
