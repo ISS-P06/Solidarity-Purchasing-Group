@@ -1,4 +1,4 @@
-import { Card,  Button } from 'react-bootstrap';
+import { Card,  Button, Row, Col } from 'react-bootstrap';
 import { BoxArrowInUp } from 'react-bootstrap-icons';
 import OrderTable from './OrderTable';
 
@@ -39,22 +39,25 @@ function OrderReview() {
       <div className="Title">
         <h3>Order Review</h3>
       </div>
-      <Card>
-        <Card.Header>ID: #{orderReview.orderId}</Card.Header>
-        <Card.Body>
-          {' '}
-          <div className="Owner">Owner: {orderReview.email} </div> <br /> <br />
-          <OrderTable products={orderReview.products} />
-          State: {orderReview.status} <br />
-          <br />
-          {orderReview.status!=="delivered"?
-            <Button className="btn" onClick={doDelivery}>
-            <BoxArrowInUp /> Deliver
-          </Button> : <></>
-          }
-        
-        </Card.Body>
-      </Card>
+      <Row className="justify-content-md-center">
+          <Col lg={8} className="pl-5">
+            <Card>
+              <Card.Header>ID: #{orderReview.orderId}</Card.Header>
+              <Card.Body>
+                {' '}
+                <div className="Owner">Owner: {orderReview.email} </div> <br /> <br />
+                <OrderTable products={orderReview.products} />
+                State: {orderReview.status} <br />
+                <br />
+                {orderReview.status!=="delivered"?
+                  <Button className="btn" onClick={doDelivery}>
+                  <BoxArrowInUp /> Deliver
+                </Button> : <></>
+                }
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
     </div>
   );
 }
