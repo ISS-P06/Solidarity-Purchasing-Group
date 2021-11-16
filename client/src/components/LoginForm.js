@@ -41,7 +41,7 @@ function LoginForm(props) {
         password: '',
       }}>
       {({ handleSubmit, handleChange, handleBlur, values, errors }) => (
-        <Container className="bg-light text-dark">
+        <Container>
           <Row>
             <BiUserCircle size="80" />
           </Row>
@@ -96,7 +96,7 @@ function LoginForm(props) {
                   {errorMessage === '' ? <></> : <div className="text-danger">{errorMessage}</div>}
                 </Row>
                 <Row className="d-flex justify-content-center">
-                  <Button className="m-2" variant="info" type="submit">
+                  <Button className="btn m-2" variant="info" type="submit">
                     Login
                   </Button>
                   <Button className="m-2" variant="secondary" onClick={() => handleClick('/')}>
