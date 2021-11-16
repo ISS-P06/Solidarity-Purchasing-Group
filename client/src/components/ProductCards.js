@@ -73,7 +73,7 @@ const ProductCard = (props) => {
 
   return (
     <Col sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 3 }} className="mb-3">
-      <Card  bg="light" border="secondary" text="black">
+      <Card  bg="light" border="secondary" text="black" className="shadow">
         <Card.Img variant="top" src={imgPath} />
         <ListGroup variant="flush">
           <ListGroup.Item>

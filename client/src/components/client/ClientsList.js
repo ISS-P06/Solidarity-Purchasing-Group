@@ -64,7 +64,7 @@ export function Client(props) {
   };
 
   return (
-    <Card className="text-left">
+    <Card className="text-left shadow">
       <Card.Header as="h5">{client.name + ' ' + client.surname}</Card.Header>
       <Card.Body>
         <Card.Text>Address: {client.address}</Card.Text>
