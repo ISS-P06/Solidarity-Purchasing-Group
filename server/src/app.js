@@ -15,11 +15,11 @@ import {
   getOrders,
   getOrderById,
   setOrderDelivered,
-} from './dao';
+} from './dao.js';
 
-import VTC from './vtc';
+import VTC from './vtc.js';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao';
+import { getUser, getUserById, test_createUser } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
