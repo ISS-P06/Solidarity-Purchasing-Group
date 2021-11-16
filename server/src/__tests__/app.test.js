@@ -124,31 +124,30 @@ describe('Test the login APIs', () => {
     return request(app).post('/test/addUser').send(user).expect(200);
   });
 
-  describe("Test the orders path", () => {
-    test("It should response GET api/orders", () => {
+  describe('Test the orders path', () => {
+    test('It should response GET api/orders', () => {
       return request(app)
-        .get("/api/orders")
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
-  
-    test("It should response GET api/orders/1", () => {
-      return request(app)
-        .get("/api/orders/1")
+        .get('/api/orders')
         .then((response) => {
           expect(response.statusCode).toBe(200);
         });
     });
 
-    test("It should response POST api/orders/2/deliver", () => {
+    test('It should response GET api/orders/1', () => {
       return request(app)
-        .post("/api/orders/2/deliver")
+        .get('/api/orders/1')
         .then((response) => {
           expect(response.statusCode).toBe(200);
         });
     });
 
+    test('It should response POST api/orders/2/deliver', () => {
+      return request(app)
+        .post('/api/orders/2/deliver')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
   });
 
   afterAll(async () => {

@@ -8,8 +8,7 @@ function OrderItem(props) {
   return (
     <Card className="shadow">
       <Card.Header left>
-        {' '}
-        <div className="id">ID: #{props.order.orderId} </div>{' '}
+        <div className="id">ID: #{props.order.orderId} </div>
       </Card.Header>
       <Card.Body>
         <Row>Owner: {props.order.email}</Row>
@@ -19,9 +18,8 @@ function OrderItem(props) {
             pathname: `/employee/orders/${props.order.orderId}`,
           }}>
           <Button className="btn">
-            {' '}
-            <Eyeglasses /> Read more{' '}
-          </Button>{' '}
+            <Eyeglasses /> Read more
+          </Button>
         </Link>
       </Card.Body>
     </Card>

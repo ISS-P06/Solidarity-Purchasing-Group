@@ -63,8 +63,8 @@
       "src/**/*.{js,jsx}"
     ],
     "coveragePathIgnorePatterns": [
-      "./src/index.js",
-      "./src/reportWebVitals.js"
+      "src/index.js",
+      "src/reportWebVitals.js"
     ],
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$",

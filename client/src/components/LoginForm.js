@@ -63,7 +63,9 @@ function LoginForm(props) {
                       value={values.username}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={touched.username && (errors.username || validator.isEmpty(values.username))}
+                      isInvalid={
+                        touched.username && (errors.username || validator.isEmpty(values.username))
+                      }
                     />
                     <Form.Control.Feedback type="invalid">Insert a username</Form.Control.Feedback>
                   </Form.Group>
@@ -80,10 +82,10 @@ function LoginForm(props) {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       isInvalid={
-                        touched.password && (
-                        errors.password ||
-                        validator.isEmpty(values.password) ||
-                        values.password.length < 8)
+                        touched.password &&
+                        (errors.password ||
+                          validator.isEmpty(values.password) ||
+                          values.password.length < 8)
                       }
                     />
                     <Form.Control.Feedback type="invalid">

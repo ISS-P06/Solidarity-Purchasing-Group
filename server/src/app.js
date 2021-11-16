@@ -208,7 +208,6 @@ app.get('/api/orders', (req, res) => {
 app.get('/api/orders/:id', (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {
-      console.log(order);
       res.json(order);
     })
     .catch(() => {
@@ -220,7 +219,6 @@ app.get('/api/orders/:id', (req, res) => {
 app.post('/api/orders/:id/deliver', (req, res) => {
   setOrderDelivered(req.params.id)
     .then((orderId) => {
-      console.log(orderId);
       res.json(orderId);
     })
     .catch(() => res.status(500).end());

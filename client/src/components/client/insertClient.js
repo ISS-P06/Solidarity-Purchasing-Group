@@ -164,7 +164,9 @@ const InsertClient = function (props) {
                 </Link>
               </Col>
               <Col>
-                <Button className="btn" type="submit">Submit</Button>
+                <Button className="btn" type="submit">
+                  Submit
+                </Button>
               </Col>
             </Row>
           </Form>
