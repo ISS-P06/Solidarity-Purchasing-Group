@@ -6,8 +6,16 @@ import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
 
-import { listClients, listProducts, insertOrder, updateClientBalance } from './dao.js';
-import { getOrders, getOrderById, setOrderDelivered } from './dao';
+import {
+  listClients,
+  listProducts,
+  insertOrder,
+  updateClientBalance,
+  insertClient,
+  getOrders,
+  getOrderById,
+  setOrderDelivered,
+} from './dao';
 
 import VTC from './vtc';
 // --- Imports for passport and login/logout --- //
@@ -219,24 +227,28 @@ app.post('/api/orders/:id/deliver', (req, res) => {
 });
 
 // ADD NEW CLIENT
-// TODO PUT ISLOGGEDIN AS A MIDDLEWARE
-app.post('/api/insert_client', async (req, res) => {
-  let client = req.body;
-  insertClient(
-    client.name,
-    client.surname,
-    client.phone,
-    client.address,
-    client.mail,
-    client.balance,
-    client.username,
-    client.password
-  )
-    .then((result) => {
-      res.end();
-    })
-    .catch((err) => res.status(500).json(err));
-});
+app.post(
+  '/api/insert_client',
+  // isLoggedIn,
+  async (req, res) => {
+    const client = req.body;
+
+    insertClient(
+      client.name,
+      client.surname,
+      client.phone,
+      client.address,
+      client.mail,
+      client.balance,
+      client.username,
+      client.password
+    )
+      .then((result) => {
+        res.end();
+      })
+      .catch((err) => res.status(500).json(err));
+  }
+);
 
 // --- Login/Logout routes --- //
 // Login

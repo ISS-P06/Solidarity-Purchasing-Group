@@ -1,22 +1,9 @@
-import {
-  ProSidebar,
-  Menu,
-  MenuItem,
-  SubMenu,
-  SidebarHeader,
-  SidebarContent,
-} from 'react-pro-sidebar';
-
-import { BsFillPersonPlusFill, BsList, BsPlusCircle } from 'react-icons/bs';
+import { useHistory } from 'react-router-dom';
+import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
+import { BsFillPersonPlusFill, BsList } from 'react-icons/bs';
 import { GiFruitBowl } from 'react-icons/gi';
-import { Link, useParams, useHistory } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 
 function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
-  const actionsList = {
-    insertClient: 'insert-client',
-    showClient: 'show-clients',
-  };
   const history = useHistory();
 
   return (
@@ -52,7 +39,7 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
           <MenuItem
             icon={<BsFillPersonPlusFill />}
             onClick={() => {
-              history.push('/employee/clients/register');
+              history.push('/employee/register');
             }}>
             Enter a new client
           </MenuItem>

@@ -14,6 +14,7 @@ Solidarity Purchasing Group is a project developed for Software Engineering II c
 - Route `/employee/orders`: employee-side page containing a list of all orders.
 - Route `/employee/orders/:id`: employee-side page containing information about a specific order; `id`: order id.
 - Route `/employee/products`: employee-side page containing a list of all available products.
+- Route `/employee/register`: employee-side page containing a form for user registration.
 
 ## Database documentation
 

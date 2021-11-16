@@ -1,17 +1,21 @@
+import { useState } from 'react';
 import { Row, Col, Form, Button, Container } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Eye } from 'react-bootstrap-icons';
-import { useState } from 'react';
+
 import { insertClient } from '../../Api';
 
 const InsertClient = function (props) {
   const [passwordType, setPasswordType] = useState('password');
+  const history = useHistory();
 
   const handleSubmit = (values) => {
     insertClient(values)
-      .then()
+      .then(() => {
+        history.push('/');
+      })
       .catch((err) => console.log(err));
   };
 
