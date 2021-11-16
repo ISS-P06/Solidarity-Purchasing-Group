@@ -15,7 +15,7 @@ function OrderItem(props) {
         Owner: {props.order.email}
         <Link
           to={{
-            pathname: `/orders/${props.order.orderId}`,
+            pathname: `/employee/orders/${props.order.orderId}`,
           }}>
           <Button>
             {' '}
