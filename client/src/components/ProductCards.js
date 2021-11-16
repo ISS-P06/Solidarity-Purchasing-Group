@@ -1,4 +1,4 @@
-import { Container, Row, Col, Card, Button, ListGroup, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Card,  ListGroup, Pagination } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { api_getProducts } from '../Api';
 
@@ -52,9 +52,9 @@ const ProductCards = (props) => {
       </Row>
       <Row className="mt-3 mb-3">
         <Col style={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination size="md">
+          <Pagination  size="md">
             {pageNumbers.map((i) => (
-              <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+              <Pagination.Item   key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
                 {i}
               </Pagination.Item>
             ))}
@@ -72,8 +72,8 @@ const ProductCard = (props) => {
   let imgPath = '/img/products/' + imgName;
 
   return (
-    <Col sm={{ span: 6 }} md={{ span: 4 }} lg={{ span: 3 }} className="mb-3">
-      <Card bg="light" border="secondary" text="black">
+    <Col sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 3 }} className="mb-3">
+      <Card  bg="light" border="secondary" text="black">
         <Card.Img variant="top" src={imgPath} />
         <ListGroup variant="flush">
           <ListGroup.Item>

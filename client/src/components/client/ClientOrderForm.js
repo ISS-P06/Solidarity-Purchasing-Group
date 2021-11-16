@@ -135,16 +135,16 @@ function ClientOrderForm(props) {
         ) : null}
 
         {!insertProduct && (
-          <Button className="mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)}>
+          <Button className="btn mt-3 mb-3" variant="primary" onClick={() => setInsertProduct(true)}>
             Add new product
           </Button>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button md="auto" onClick={addOrder}>
+        <Button className="btn" md="auto" onClick={addOrder}>
           Add order
         </Button>
-        <Button variant="danger" onClick={handleClose}>
+        <Button className="btn-danger" variant="danger" onClick={handleClose}>
           Close
         </Button>
       </Modal.Footer>

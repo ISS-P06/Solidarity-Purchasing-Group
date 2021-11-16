@@ -48,9 +48,9 @@ const InsertClient = function (props) {
   });
   return (
     <Container>
-      <Row>
-        <Col sm={{ span: '6', offset: '3' }}>
-          <h3>Register new client</h3>
+      <Row className="justify-content-center">
+        <Col sm={8} lg={5}>
+          <h3 className="mt-3">Register new client</h3>
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group className="mb-3 mt-3" controlId="name">
               <Form.Label className={'float-sm-start'}>Client name</Form.Label>
@@ -160,11 +160,11 @@ const InsertClient = function (props) {
             <Row className={'justify-content-between mb-5'}>
               <Col>
                 <Link to="/" style={{ textDecoration: 'none' }}>
-                  <Button variant={'secondary'}>Cancel</Button>
+                  <Button className="btn-danger">Cancel</Button>
                 </Link>
               </Col>
               <Col>
-                <Button type="submit">Submit</Button>
+                <Button className="btn" type="submit">Submit</Button>
               </Col>
             </Row>
           </Form>

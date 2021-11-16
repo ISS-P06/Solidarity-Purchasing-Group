@@ -74,12 +74,12 @@ export function Client(props) {
 
         <Row>
           <Col>
-            <Button variant="primary" className="mr-2" onClick={() => setClientTopUpFormShow(true)}>
+            <Button  className="btn mr-2" onClick={() => setClientTopUpFormShow(true)}>
               Top up wallet
             </Button>
           </Col>
           <Col>
-            <Button variant="primary" className="mr-2" onClick={() => setClientOrderFormShow(true)}>
+            <Button  className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
               Add order
             </Button>
           </Col>
@@ -132,7 +132,7 @@ export function ConfirmationModal(props) {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button md="auto" onClick={handleConfirm}>
+        <Button className="btn" md="auto" onClick={handleConfirm}>
           Top up
         </Button>
 

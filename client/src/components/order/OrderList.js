@@ -23,7 +23,7 @@ function OrderList() {
   return (
     <div>
       <div className="Title">
-        <h2>Orders</h2>
+        <h3>Orders</h3>
       </div>
       <div className="OrderList">{orderList}</div>
     </div>

@@ -102,7 +102,7 @@ function App() {
   }, [loggedIn]);
 
   return (
-    <Container className="App bg-light text-dark p-0 m-0 min-vh-100" fluid="true">
+    <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
       <Router>
         <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
 

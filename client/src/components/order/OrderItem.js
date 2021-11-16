@@ -1,4 +1,4 @@
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Row } from 'react-bootstrap';
 import { Eyeglasses } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 
@@ -12,12 +12,16 @@ function OrderItem(props) {
         <div className="id">ID: #{props.order.orderId} </div>{' '}
       </Card.Header>
       <Card.Body>
-        Owner: {props.order.email}
+        <Row>
+          Owner: {props.order.email}
+        </Row>
+
+
         <Link
           to={{
-            pathname: `/orders/${props.order.orderId}`,
+            pathname: `/employee/orders/${props.order.orderId}`,
           }}>
-          <Button>
+          <Button className="btn">
             {' '}
             <Eyeglasses /> Read more{' '}
           </Button>{' '}

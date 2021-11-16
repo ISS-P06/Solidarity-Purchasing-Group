@@ -1,4 +1,4 @@
-import { Card, CardGroup, Button } from 'react-bootstrap';
+import { Card,  Button } from 'react-bootstrap';
 import { BoxArrowInUp } from 'react-bootstrap-icons';
 import OrderTable from './OrderTable';
 
@@ -37,7 +37,7 @@ function OrderReview() {
   return (
     <div calssName="OrderReview">
       <div className="Title">
-        <h2>Order Review</h2>
+        <h3>Order Review</h3>
       </div>
       <Card>
         <Card.Header>ID: #{orderReview.orderId}</Card.Header>
@@ -47,10 +47,12 @@ function OrderReview() {
           <OrderTable products={orderReview.products} />
           State: {orderReview.status} <br />
           <br />
-          <Button onClick={doDelivery}>
-            {' '}
-            <BoxArrowInUp /> Deliver{' '}
-          </Button>{' '}
+          {orderReview.status!=="delivered"?
+            <Button className="btn" onClick={doDelivery}>
+            <BoxArrowInUp /> Deliver
+          </Button> : <></>
+          }
+        
         </Card.Body>
       </Card>
     </div>
