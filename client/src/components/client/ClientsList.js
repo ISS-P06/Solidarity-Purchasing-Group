@@ -36,13 +36,13 @@ function ClientsList(props) {
       ) : (
         <Row className="justify-content-md-center">
           <Col lg={8} className="pl-5">
-            <ListGroup as="ul" variant="flush">
+            <div as="ul" variant="flush">
               {clientsList.map((c) => (
-                <ListGroup.Item as="li" key={c.id} lg={3}>
+                <div as="li" className="mt-1 mb-4" key={c.id} lg={3}>
                   <Client client={c} setMessage={setMessage} reloadList={() => setDirty(true)} />
-                </ListGroup.Item>
+                </div>
               ))}
-            </ListGroup>
+            </div>
           </Col>
         </Row>
       )}
@@ -70,16 +70,16 @@ export function Client(props) {
         <Card.Text>Address: {client.address}</Card.Text>
         <Card.Text>E-mail: {client.mail}</Card.Text>
         <Card.Text>Phone number: {client.phone}</Card.Text>
-        <Card.Text>Balance: {client.balance} $</Card.Text>
+        <Card.Text>Balance: {client.balance} €</Card.Text>
 
         <Row>
           <Col>
-            <Button  className="btn mr-2" onClick={() => setClientTopUpFormShow(true)}>
+            <Button className="btn mr-2" onClick={() => setClientTopUpFormShow(true)}>
               Top up wallet
             </Button>
           </Col>
           <Col>
-            <Button  className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
+            <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
               Add order
             </Button>
           </Col>
