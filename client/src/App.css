@@ -103,3 +103,21 @@ h3{
   overflow: hidden;
 
 }
+
+/* pagination css begin */
+
+.page-item.active .page-link {
+  color: #ffffff !important;
+  border-color: #38782a;
+  background: #38782a !important;
+}
+
+.pagination > li > a,
+.pagination > li > a:hover,
+.pagination > li > a:focus
+{
+    background-color: #ffffff;
+    color: #292b2c;
+}
+
+/* pagination css end */

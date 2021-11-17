@@ -37,7 +37,7 @@ function LoginForm(props) {
     <Formik
       onSubmit={(values) => submitData(values)}
       initialValues={{
-        username: '',
+        username: 'pentolino',
         password: '',
       }}>
       {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (

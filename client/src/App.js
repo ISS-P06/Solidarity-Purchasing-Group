@@ -18,9 +18,6 @@ import {
 import { api_getUserInfo, api_login, api_logout } from './Api';
 
 function App() {
-  // Product: { id, name, description, category, quantity, price }
-  const [productList, setProductList] = useState([]);
-
   // Session-related states
   const [loggedIn, setLoggedIn] = useState(false);
   /*

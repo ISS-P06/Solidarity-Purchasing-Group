@@ -29,7 +29,14 @@ const ProductCards = (props) => {
   const currentProducts = productList.slice(indexOfFirstProduct, indexOfLastProduct);
   const pageNumbers = [];
 
-  for (let i = 1; i <= Math.ceil(productList.length / productsPerPage); i++) {
+  let endPage = Math.ceil(productList.length / productsPerPage);
+  let startPage = currentPage - 2;
+  if (startPage < 1)
+    startPage = 1;
+  if (startPage > endPage - 4)
+    startPage = endPage - 4;
+
+  for (let i = startPage; i <= startPage + 4; i++) {
     pageNumbers.push(i);
   }
 
@@ -53,11 +60,15 @@ const ProductCards = (props) => {
       <Row className="mt-3 mb-3">
         <Col style={{ display: 'flex', justifyContent: 'center' }}>
           <Pagination size="md">
+            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
+            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
             {pageNumbers.map((i) => (
               <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
                 {i}
               </Pagination.Item>
             ))}
+            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
           </Pagination>
         </Col>
       </Row>
