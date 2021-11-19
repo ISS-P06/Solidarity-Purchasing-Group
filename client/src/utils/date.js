@@ -25,12 +25,7 @@ export function ISOtoHuman(dateTime) {
  * @return date and time in a ISO string
  */
 export function humanToISO(date, time) {
-  const dateTime = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    time
-  );
+  const dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), time);
 
   return dateTime.toISOString();
 }

@@ -1,4 +1,6 @@
-import app from "./src/app.js";
+'use strict';
+
+import app from './src/app.js';
 
 const port = 3001;
 

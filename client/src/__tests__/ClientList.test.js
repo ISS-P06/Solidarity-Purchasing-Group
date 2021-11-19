@@ -1,63 +1,63 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
-import axios from "axios";
+import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import axios from 'axios';
 
-import ClientsList, { Client } from "../components/ClientsList.js";
+import { Client } from '../components/client/ClientsList';
 
-jest.mock("axios");
+jest.mock('axios');
 
-describe("ClientList test", () => {
-  test("test visualization of top up wallet", () => {
+describe('ClientList test', () => {
+  test('test visualization of top up wallet', () => {
     render(
       <Client
         client={{
           id: 1,
-          name: "Mario",
-          surname: "Rossi",
-          address: "corso duca",
+          name: 'Mario',
+          surname: 'Rossi',
+          address: 'corso duca',
           balance: 100,
           id: 1,
-          mail: "mario@rossi",
-          phone: "3333333333",
+          mail: 'mario@rossi',
+          phone: '3333333333',
         }}
         setMessage={jest.fn()}
       />
     );
-    expect(screen.getByText("Top up wallet")).toBeInTheDocument();
+    expect(screen.getByText('Top up wallet')).toBeInTheDocument();
   });
 
-  test("test visualization on add order button", () => {
+  test('test visualization on add order button', () => {
     render(
       <Client
         client={{
           id: 1,
-          name: "Mario",
-          surname: "Rossi",
-          address: "corso duca",
+          name: 'Mario',
+          surname: 'Rossi',
+          address: 'corso duca',
           balance: 100,
           id: 1,
-          mail: "mario@rossi",
-          phone: "3333333333",
+          mail: 'mario@rossi',
+          phone: '3333333333',
         }}
         setMessage={jest.fn()}
       />
     );
-    const addOrderButton = screen.getByText("Add order");
+    const addOrderButton = screen.getByText('Add order');
     expect(addOrderButton).toBeInTheDocument();
   });
 
-  test("test click on top up wallet", () => {
+  test('test click on top up wallet', () => {
     render(
       <Client
         client={{
           id: 1,
-          name: "Mario",
-          surname: "Rossi",
-          address: "corso duca",
+          name: 'Mario',
+          surname: 'Rossi',
+          address: 'corso duca',
           balance: 100,
           id: 1,
-          mail: "mario@rossi",
-          phone: "3333333333",
+          mail: 'mario@rossi',
+          phone: '3333333333',
         }}
         setMessage={jest.fn()}
       />
@@ -65,26 +65,26 @@ describe("ClientList test", () => {
 
     //Click on "Top up wallet" button to open the modal
     fireEvent(
-      screen.getByText("Top up wallet"),
-      new MouseEvent("click", {
+      screen.getByText('Top up wallet'),
+      new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
       })
     );
   });
 
-  test("test click on add order", () => {
+  test('test click on add order', () => {
     render(
       <Client
         client={{
           id: 1,
-          name: "Mario",
-          surname: "Rossi",
-          address: "corso duca",
+          name: 'Mario',
+          surname: 'Rossi',
+          address: 'corso duca',
           balance: 100,
           id: 1,
-          mail: "mario@rossi",
-          phone: "3333333333",
+          mail: 'mario@rossi',
+          phone: '3333333333',
         }}
         setMessage={jest.fn()}
       />
@@ -92,25 +92,25 @@ describe("ClientList test", () => {
 
     //Click on "Add order" button to open the modal
     fireEvent(
-      screen.getByText("Add order"),
-      new MouseEvent("click", {
+      screen.getByText('Add order'),
+      new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
       })
     );
   });
 
-  test("fetches customers from an API and displays them", async () => {
+  test('fetches customers from an API and displays them', async () => {
     const customers = [
       {
         id: 1,
-        name: "Mario",
-        surname: "Rossi",
-        address: "corso duca",
+        name: 'Mario',
+        surname: 'Rossi',
+        address: 'corso duca',
         balance: 100,
         id: 1,
-        mail: "mario@rossi",
-        phone: "3333333333",
+        mail: 'mario@rossi',
+        phone: '3333333333',
       },
     ];
 

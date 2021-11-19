@@ -1,9 +1,10 @@
 import request from 'supertest';
 import app from '../app';
+import { test_removeUser } from '../user-dao';
 
 import { copyFileSync, unlinkSync } from 'fs';
 
-/** During test the database can be modified, so we need to backup it's state */
+/** During test the database can be modified, so we need to backup its state */
 
 const dbPath = 'database.db';
 const backupPath = 'database.db.backup';
@@ -95,5 +96,61 @@ describe('TEST POST order ', function () {
         if (err) return done(err);
         return done();
       });
+  });
+});
+
+// --- Login/logout routes tests
+describe('Test the login APIs', () => {
+  test('It should respond to the POST method', () => {
+    const user = { username: 'pentolino', password: 'pentolino' };
+    return request(app).post('/api/sessions').send(user).expect(200);
+  });
+
+  test('The POST method should fail', () => {
+    const user = { username: 'pentolino', password: 'a' };
+    return request(app).post('/api/sessions').send(user).expect(401);
+  });
+
+  test('The GET method should fail', () => {
+    return request(app).get('/api/sessions/current').expect(401);
+  });
+
+  test('It should respond to the DELETE method', () => {
+    return request(app).delete('/api/sessions/current').expect(200);
+  });
+
+  test('(test) Create new user: it should respond to the POST method', () => {
+    const user = { username: 'teiera', password: 'teiera123', role: 'shop_employee' };
+    return request(app).post('/test/addUser').send(user).expect(200);
+  });
+
+  describe('Test the orders path', () => {
+    test('It should response GET api/orders', () => {
+      return request(app)
+        .get('/api/orders')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+
+    test('It should response GET api/orders/1', () => {
+      return request(app)
+        .get('/api/orders/1')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+
+    test('It should response POST api/orders/2/deliver', () => {
+      return request(app)
+        .post('/api/orders/2/deliver')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+  });
+
+  afterAll(async () => {
+    await test_removeUser('teiera');
   });
 });

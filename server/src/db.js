@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-import sqlite3 from "sqlite3";
+import sqlite3 from 'sqlite3';
 
 // open database
-const db = new sqlite3.Database("database.db", (err) => {
+const db = new sqlite3.Database('database.db', (err) => {
   if (err) throw err;
 });
 
