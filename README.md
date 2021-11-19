@@ -2,6 +2,30 @@
 
 Solidarity Purchasing Group is a project developed for Software Engineering II course at Politecnico di Torino.
 
+## Docker documentation
+
+### Development
+
+```sh
+docker-compose stop && docker-compose up --build -d --remove-orphans
+```
+
+or only
+
+```sh
+docker-compose up
+```
+
+the `-d` flag is for [detached mode](https://stackoverflow.com/questions/34029680/docker-detached-mode)
+
+### Production
+
+```sh
+docker-compose -f docker-compose.prod.yml stop && docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+the `-f` flag is for custom docker file path
+
 ## Frontend documentation
 
 ### React Client Application Routes

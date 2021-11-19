@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./client/
+    volumes:
+      - ./client/:/app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    links:
+      - backend:server
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+
+  backend:
+    build:
+      context: ./server/
+    volumes:
+      - ./server/:/app
+      - /app/node_modules
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"

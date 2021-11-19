@@ -1,6 +1,6 @@
 {
   "name": "solidarity_purchasing_group",
-  "proxy": "http://localhost:3001",
+  "proxy": "http://server:3001",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

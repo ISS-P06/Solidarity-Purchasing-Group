@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      context: ./client/
+      dockerfile: Dockerfile.prod
+    restart: always
+    # prodaction mode is on port 80
+    ports:
+      - 80:80
+    depends_on:
+      - server
+    environment:
+      NODE_ENV: production
+
+  server:
+    build:
+      context: ./server/
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3001
