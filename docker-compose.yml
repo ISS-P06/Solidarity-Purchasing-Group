@@ -6,7 +6,6 @@ services:
       context: ./client/
     volumes:
       - ./client/:/app
-    restart: always
     ports:
       - "3000:3000"
     depends_on:
@@ -23,7 +22,6 @@ services:
     volumes:
       - ./server/:/app
       - /app/node_modules
-    restart: always
     ports:
       - "3001:3001"
     environment:
