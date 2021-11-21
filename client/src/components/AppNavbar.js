@@ -1,7 +1,8 @@
 import VirtualClock from './VirtualClock';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-
+import { GrBasket } from 'react-icons/gr';
+import { BsBasket2 } from 'react-icons/bs';
 function AppNavbar(props) {
   const loggedIn = props.loggedIn;
   const doLogout = props.doLogout;
@@ -33,28 +34,26 @@ function AppNavbar(props) {
   };
 
   return (
-    <Navbar collapseOnSelect className="bg-primary text-light" fluid="true" expand="lg">
-      <Container>
-        <Navbar.Brand>Solidarity Purchasing Group</Navbar.Brand>
+    <Navbar collapseOnSelect className=" navbar text-light" fluid="true" expand="lg">
+      <Navbar.Brand style={{ color: '#fff' }}>
+        {' '}
+        <BsBasket2 size={30} /> Solidarity Purchasing Group
+      </Navbar.Brand>
 
-        {/* TODO Button on the extreme right */}
-        <Navbar.Brand className="mx-auto mb-3">
-          <VirtualClock />
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="">
-            {loggedIn ? (
-              <>
-                <Nav.Link onClick={() => goToUserPage(userRole)}>{userPageText(userRole)}</Nav.Link>
-                <LogoutLink doLogout={doLogout} />
-              </>
-            ) : (
-              <Nav.Link onClick={() => handleClick('/login')}>Login</Nav.Link>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
+        <VirtualClock />
+        <Nav className="">
+          {loggedIn ? (
+            <>
+              <Nav.Link onClick={() => goToUserPage(userRole)}>{userPageText(userRole)}</Nav.Link>
+              <LogoutLink doLogout={doLogout} />
+            </>
+          ) : (
+            <Nav.Link onClick={() => handleClick('/login')}>Login</Nav.Link>
+          )}
+        </Nav>
+      </Navbar.Collapse>
     </Navbar>
   );
 }

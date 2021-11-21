@@ -12,8 +12,10 @@ const InsertClient = function (props) {
   const history = useHistory();
 
   const handleSubmit = (values) => {
+    console.log(values)
     insertClient(values)
-      .then(() => {
+      .then((res) => {
+        //console.log(res)
         history.push('/');
       })
       .catch((err) => console.log(err));
@@ -48,10 +50,10 @@ const InsertClient = function (props) {
   });
   return (
     <Container>
-      <Row>
-        <Col sm={{ span: '6', offset: '3' }}>
-          <h3>Register new client</h3>
-          <Form onSubmit={formik.handleSubmit}>
+      <Row className="justify-content-center">
+        <Col sm={8} lg={5}>
+          <h3 className="mt-3">Register new client</h3>
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3 mt-3" controlId="name">
               <Form.Label className={'float-sm-start'}>Client name</Form.Label>
               <Form.Control
@@ -159,12 +161,16 @@ const InsertClient = function (props) {
 
             <Row className={'justify-content-between mb-5'}>
               <Col>
-                <Link to="/" style={{ textDecoration: 'none' }}>
-                  <Button variant={'secondary'}>Cancel</Button>
-                </Link>
+                  <Button className="btn-danger"
+                  onClick={()=>{
+                    history.push('/')
+                  }}
+                  >Cancel</Button>
               </Col>
               <Col>
-                <Button type="submit">Submit</Button>
+                <Button className="btn" type="submit">
+                  Submit
+                </Button>
               </Col>
             </Row>
           </Form>

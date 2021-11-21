@@ -40,8 +40,8 @@ function LoginForm(props) {
         username: '',
         password: '',
       }}>
-      {({ handleSubmit, handleChange, handleBlur, values, errors }) => (
-        <Container className="bg-light text-dark">
+      {({ handleSubmit, handleChange, handleBlur, values, errors, touched }) => (
+        <Container>
           <Row>
             <BiUserCircle size="80" />
           </Row>
@@ -63,7 +63,9 @@ function LoginForm(props) {
                       value={values.username}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      isInvalid={errors.username || validator.isEmpty(values.username)}
+                      isInvalid={
+                        touched.username && (errors.username || validator.isEmpty(values.username))
+                      }
                     />
                     <Form.Control.Feedback type="invalid">Insert a username</Form.Control.Feedback>
                   </Form.Group>
@@ -80,9 +82,10 @@ function LoginForm(props) {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       isInvalid={
-                        errors.password ||
-                        validator.isEmpty(values.password) ||
-                        values.password.length < 8
+                        touched.password &&
+                        (errors.password ||
+                          validator.isEmpty(values.password) ||
+                          values.password.length < 8)
                       }
                     />
                     <Form.Control.Feedback type="invalid">
@@ -96,7 +99,7 @@ function LoginForm(props) {
                   {errorMessage === '' ? <></> : <div className="text-danger">{errorMessage}</div>}
                 </Row>
                 <Row className="d-flex justify-content-center">
-                  <Button className="m-2" variant="info" type="submit">
+                  <Button className="btn m-2" variant="info" type="submit">
                     Login
                   </Button>
                   <Button className="m-2" variant="secondary" onClick={() => handleClick('/')}>

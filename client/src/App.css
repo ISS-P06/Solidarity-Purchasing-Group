@@ -3,37 +3,39 @@
 
 .App {
   text-align: center;
-}
+  background-color:#a5ce97;
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 h3{
-  color: #60A3D9;
+  color: #499F36;
+  font-style:italic;
+  font-style: bold;
 }
+
+.btn{
+  color:#fff;
+  background-color: #499F36;
+  border-color: #38782a;
+}
+.btn-danger{
+  background-color: rgb(240, 9, 9);
+  color:#fff;
+  border-color: rgb(246, 9, 9);
+}
+
+.btn:hover, .btn:active, .btn:focus {
+  color:#fff;
+  background-color: #38782a;
+  border-color: #27511d;
+}
+
+.btn-danger:hover , .btn-danger:active{
+  background-color: rgb(216, 9, 9);
+  color:#fff;
+  border-color: rgb(220, 9, 9);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -44,17 +46,22 @@ h3{
   }
 }
 
+.navbar{
+  background-color:#38782a;
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
 .pro-sidebar{
-  color: #bfd7ed;
-  background-color: #60A3D9;
+  color: #ffffff;
+  background-color: #499F36;
 }
 
 /* Sidebar css */
 .btn-toggle {
   display: none;
-  color: #bfd7ed;
-  background: #2a60a7;
+  color: #7eb06d;
+  background: #499F36;
   cursor: pointer;
   width: 35px;
   height: 35px;
@@ -77,7 +84,6 @@ h3{
   justify-content: center;
   border-radius: 40px;
 
-
 }
 
 .sidebar-btn {
@@ -86,7 +92,7 @@ h3{
   padding: 1px 15px;
   border-radius: 40px;
   background: rgba(255, 255, 255, 0.05);
-  color: #adadad;
+  color: #7eb06d;
   text-decoration: none;
   margin: 0 auto;
   height: 35px;

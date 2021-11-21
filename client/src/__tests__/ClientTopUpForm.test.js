@@ -27,7 +27,7 @@ describe('ClientTopUpForm', () => {
     const title = screen.getByText(`Top up ${client.name} ${client.surname}'s wallet`);
     expect(title).toBeInTheDocument();
 
-    const clientBalance = screen.getByText(`$ ${client.balance.toFixed(2)}`);
+    const clientBalance = screen.getByText(`€ ${client.balance.toFixed(2)}`);
     expect(clientBalance).toBeInTheDocument();
 
     const inputForm = screen.getByText(/Insert top up/);
