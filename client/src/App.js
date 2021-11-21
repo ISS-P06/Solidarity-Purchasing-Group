@@ -112,7 +112,7 @@ function App() {
         <AlertBox alert={alert} setAlert={setAlert} message={message} />
 
         <Row className="m-auto">
-          {loggedIn && userRole == 'shop_employee' ? (
+          {loggedIn && userRole === 'shop_employee' ? (
             <Col xs={1} md={4} lg={2} className="p-0">
               {/* This button shows up when the sidebar is hidden */}
               <Button
@@ -156,7 +156,7 @@ function App() {
               />
               {/* Employee client list route */}
               <Route path="/employee/clients">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <ClientsList setMessage={setMessage} />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -165,7 +165,7 @@ function App() {
 
               {/* Employee client registration route */}
               <Route path="/employee/register">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <InsertClient />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -174,7 +174,7 @@ function App() {
 
               {/* Employee product browsing route */}
               <Route path="/employee/products">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <ProductCards />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -188,7 +188,7 @@ function App() {
 
               {/* Employee order list route */}
               <Route path="/employee/orders">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <OrderList />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -197,7 +197,7 @@ function App() {
 
               {/* Employee order creation route */}
               <Route path="/employee/orders/new">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <div />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -206,7 +206,7 @@ function App() {
 
               {/* Employee home page route */}
               <Route path="/employee">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <div />
                 ) : (
                   <RedirectUser userRole={userRole} />

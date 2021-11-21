@@ -3,6 +3,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { GrBasket } from 'react-icons/gr';
 import { BsBasket2 } from 'react-icons/bs';
+
 function AppNavbar(props) {
   const loggedIn = props.loggedIn;
   const doLogout = props.doLogout;

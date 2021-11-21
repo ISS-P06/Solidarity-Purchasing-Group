@@ -4,7 +4,6 @@ import OrderTable from './OrderTable';
 
 import { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import './OrderReview.css';
 
 import { api_getOrderReview, api_doDelivery } from '../../Api';
 
@@ -35,7 +34,7 @@ function OrderReview() {
   };
 
   return (
-    <div calssName="OrderReview">
+    <div>
       <div className="Title">
         <h3>Order Review</h3>
       </div>

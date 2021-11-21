@@ -59,17 +59,19 @@ const ProductCards = (props) => {
       </Row>
       <Row className="mt-3 mb-3">
         <Col style={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination size="md">
-            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
-            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
-            {pageNumbers.map((i) => (
-              <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
-                {i}
-              </Pagination.Item>
-            ))}
-            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
-            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
-          </Pagination>
+          {productList.length !== 0 &&
+            <Pagination size="md">
+              {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
+              {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
+              {pageNumbers.map((i) => (
+                <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+                  {i}
+                </Pagination.Item>
+              ))}
+              {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+              {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
+            </Pagination>
+          }
         </Col>
       </Row>
     </Container>
