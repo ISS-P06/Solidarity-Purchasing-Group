@@ -58,7 +58,7 @@ describe('My component Basket', () => {
         expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
     });
 
-    test('Is Rendered without product', async () => {
+    test('Is able to buy itmes', async () => {
 
         let db = [{
             category: "fruits-and-vegetables",
@@ -101,6 +101,20 @@ describe('My component Basket', () => {
         expect(db).toStrictEqual([]);
         //await waitFor(() => screen.getByText(/There are no products in the basket/));
         //expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+
+    });
+
+    test('Is able to handle error in response', async () => {
+
+        server.use(
+            rest.get('/api/client/3/basket', (req, res, ctx) => {
+                return res(ctx.status(500)
+            );
+        }))
+
+        render(<Basket userId={3} />);
+        await waitFor(() => screen.getByText(/There are no products in the basket/));
+        expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
 
     });
 
