@@ -213,9 +213,9 @@ export const api_getUserInfo = async () => {
   }
 };
 
-export const api_getBasket = async (clientId) => {
+export const api_getBasket = async (userId) => {
   try {
-    const res = await axios.get('/api/client/' + clientId + '/basket');
+    const res = await axios.get('/api/client/' + userId + '/basket');
     if (res.data) {
       return res.data;
     } else {
@@ -230,9 +230,9 @@ export const api_getBasket = async (clientId) => {
   }
 };
 
-export const api_buyNow = async (clientId) => {
+export const api_buyNow = async (userId) => {
   try {
-    const res = await axios.put('/api/client/' + clientId + '/basket/buy', {});
+    const res = await axios.put('/api/client/' + userId + '/basket/buy', {});
     if (res.data) {
       return res.data;
     } else {

@@ -1,32 +1,18 @@
 import { useEffect, useState } from 'react';
 import ProductList from './ProductList';
-import {Button, Card} from 'react-bootstrap';
+import {Button, Card, Alert} from 'react-bootstrap';
 import { api_getBasket, api_buyNow } from '../../Api';
-
-const productListData = [ 
-    {
-        category: "fruits-and-vegetables",
-        name: "Onion",
-        price: 0.8,
-        quantity: 2.6
-    },
-    {
-        category: "fruits-and-vegetables",
-        name: "Apple",
-        price: 1.5,
-        quantity: 1.5
-    }
-
-]
 
 export default function Basket(props) {
 
     const [basket, setBasket ] = useState([]);
     const [isEmpty, setIsEmpty ] = useState(true);
+    const [wellDone, setWellDone] = useState(false);
 
-    const handleBuyNow = async (clientId) => {
+    const handleBuyNow = async (userId) => {
         if(!isEmpty){
-            api_buyNow(clientId);
+            await api_buyNow(userId);
+            setWellDone(true);
         }
     }
 
@@ -39,15 +25,15 @@ export default function Basket(props) {
       }
 
     useEffect(() => {
-        api_getBasket(props.clientId).then((products) => {
+        api_getBasket(props.userId).then((products) => {
                 setBasket(products);
                 if(products != null)
                     setIsEmpty(false);
+                    else
+                    setIsEmpty(true);
             }).catch((e) => {
                 console.log(e);
         })
-        setBasket(productListData);
-        setIsEmpty(false);
     }, [])
 
     return(
@@ -64,9 +50,12 @@ export default function Basket(props) {
                 }
                 {isEmpty ? <div></div> :
                     <Card.Footer>
-                        <Button className="float-end btn mr-2" onClick={() => handleBuyNow(props.clientId)} > Buy Now</Button>
+                        <Button className="float-end btn mr-2" onClick={() => handleBuyNow(props.userId)} >Buy Now</Button>
                     </Card.Footer>}                   
             </Card>
+            {wellDone ? <Alert variant="success">
+                Well done, your order has been inserted!
+            </Alert> : <div></div>}
         </div>           
     );
 
