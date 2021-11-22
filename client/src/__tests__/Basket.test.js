@@ -108,7 +108,7 @@ describe('My component Basket', () => {
 
         server.use(
             rest.get('/api/client/3/basket', (req, res, ctx) => {
-                return res(ctx.status(500)
+                return res(ctx.status(500), ctx.json({ data: `Error` })
             );
         }))
 
