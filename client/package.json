@@ -35,8 +35,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false && react-scripts build",
-    "test": "react-scripts test",
-    "test:cov": "react-scripts test --coverage --testResultsProcessor=jest-sonar-reporter",
+    "test": "react-scripts test --silent",
+    "test:cov": "react-scripts test --coverage --silent --testResultsProcessor=jest-sonar-reporter",
     "format": "prettier --write \"**/*.js\" \"**/__tests__/**/*.js\"",
     "eject": "react-scripts eject"
   },
