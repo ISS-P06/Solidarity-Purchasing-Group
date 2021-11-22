@@ -1,0 +1,18 @@
+.icon{
+    color:#38782a;
+}
+
+@media only screen
+and (min-device-width : 320px)
+ {
+    .icon {font-size: 30px;}
+}
+@media only screen
+and (min-device-width : 768px)
+{
+    .icon {font-size: 60px;}
+    .img{
+        width: 1000px;
+        height: 400px;
+    }
+}

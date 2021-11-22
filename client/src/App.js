@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Col, Container, Row, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
+import HomePage from "./HomePage";
 import {
   Notification,
   AppNavbar,
@@ -122,6 +123,12 @@ function App() {
           {/*<Col xs={11} md={8} lg={10}>*/}
           <Col>
             <Switch>
+
+              {/* HomePage */}
+              <Route path="/">
+                {<HomePage/>}
+              </Route>
+
               {/* Login route */}
               <Route path="/login">
                 {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
