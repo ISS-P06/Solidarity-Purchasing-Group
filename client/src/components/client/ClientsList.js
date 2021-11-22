@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Row, Col, Spinner, ListGroup, Card, Modal } from 'react-bootstrap/';
+import { Button, Row, Col, Spinner, Card, Modal } from 'react-bootstrap/';
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
-import {addMessage} from "../Message";
+import { addMessage } from '../Message';
 
-function ClientsList(props) {
+function ClientsList() {
   const [clientsList, setClientsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(true);

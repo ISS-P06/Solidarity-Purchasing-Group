@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Col, Container, Row, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
-import HomePage from "./HomePage";
 import {
   Notification,
   AppNavbar,
@@ -17,6 +16,8 @@ import {
 
 import { api_getUserInfo, api_login, api_logout } from './Api';
 
+import Basket from './components/order/Basket';
+
 function App() {
   // Session-related states
   const [loggedIn, setLoggedIn] = useState(false);
@@ -29,6 +30,7 @@ function App() {
     when necessary
   */
   const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState();
 
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -41,21 +43,6 @@ function App() {
     setToggled(value);
   };
 
-  // useEffect for getting user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const info = await api_getUserInfo();
-        setLoggedIn(true);
-        setUserRole(info.role);
-      } catch (err) {
-        setUserRole('');
-        console.error(err);
-      }
-    };
-    checkAuth();
-  }, [loggedIn]);
-
   // async function for logging in
   const doLogin = async (credentials) => {
     try {
@@ -67,12 +54,6 @@ function App() {
     }
   };
 
-  // async function for logging out
-  const doLogout = async () => {
-    await api_logout();
-    setLoggedIn(false);
-  };
-
   // useEffect for getting user info
   useEffect(() => {
     const checkAuth = async () => {
@@ -80,6 +61,7 @@ function App() {
         const info = await api_getUserInfo();
         setLoggedIn(true);
         setUserRole(info.role);
+        setUserId(info.id);
       } catch (err) {
         setUserRole('');
         console.error(err);
@@ -88,14 +70,17 @@ function App() {
     checkAuth();
   }, [loggedIn]);
 
+  // async function for logging out
+  const doLogout = async () => {
+    await api_logout();
+    setLoggedIn(false);
+  };
+
   return (
     <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
       <Router>
-
         <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
         <Notification />
-        {/*<AlertBox alert={alert} setAlert={setAlert} message={message} />*/}
-
 
         <Row className="m-auto">
           {loggedIn && userRole == 'shop_employee' ? (
@@ -113,7 +98,6 @@ function App() {
                 toggled={toggled}
                 collapsed={collapsed}
                 handleToggleSidebar={handleToggleSidebar}
-
               />
             </Col>
           ) : (
@@ -123,12 +107,6 @@ function App() {
           {/*<Col xs={11} md={8} lg={10}>*/}
           <Col>
             <Switch>
-
-              {/* HomePage */}
-              <Route path="/">
-                {<HomePage/>}
-              </Route>
-
               {/* Login route */}
               <Route path="/login">
                 {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
@@ -149,7 +127,7 @@ function App() {
               {/* Employee client list route */}
               <Route path="/employee/clients">
                 {loggedIn && userRole == 'shop_employee' ? (
-                  <ClientsList  />
+                  <ClientsList />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
@@ -209,6 +187,7 @@ function App() {
               <Route path="/">
                 {/* Replace div with homepage component */}
                 <div />
+                <Basket userId={userId} />
               </Route>
 
               <Route>

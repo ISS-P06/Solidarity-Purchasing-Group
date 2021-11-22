@@ -153,8 +153,6 @@ export const api_setTime = async (dateTime) => {
     const res = await axios.put('/api/time', { time: dateTime });
     return res;
   } catch (error) {
-    //alert("Error in api_setTime()");
-    //console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -209,6 +207,40 @@ export const api_getUserInfo = async () => {
       throw new Error(err.response.data.error);
     } else {
       throw new Error('Sorry, there was an error in logging in');
+    }
+  }
+};
+
+export const api_getBasket = async (userId) => {
+  try {
+    const res = await axios.get('/api/client/' + userId + '/basket');
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in getting the basket');
+    }
+  }
+};
+
+export const api_buyNow = async (userId) => {
+  try {
+    const res = await axios.put('/api/client/' + userId + '/basket/buy', {});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in buying');
     }
   }
 };
