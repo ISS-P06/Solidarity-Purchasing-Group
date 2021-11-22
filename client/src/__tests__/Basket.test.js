@@ -10,8 +10,6 @@ import { setupServer } from 'msw/node';
 
 import '@testing-library/jest-dom/extend-expect';
 
-jest.setTimeout(10000);
-
 const server = setupServer();
 
 beforeAll(() => server.listen());

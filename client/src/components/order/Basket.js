@@ -27,7 +27,7 @@ export default function Basket(props) {
     useEffect(() => {
         api_getBasket(props.userId).then((products) => {
                 setBasket(products);
-                if(products != null)
+                if(products != [])
                     setIsEmpty(false);
                     else
                     setIsEmpty(true);
