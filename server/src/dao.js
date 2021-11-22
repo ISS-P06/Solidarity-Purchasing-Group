@@ -3,6 +3,7 @@
 import db from './db.js';
 import dayjs from 'dayjs';
 
+//UPDATED
 export function listProducts() {
   return new Promise((resolve, reject) => {
     const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
@@ -28,10 +29,12 @@ export function listProducts() {
   });
 }
 
+//UPDATED
 export function listClients() {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT id, name, surname, phone, address, mail, balance
-                     FROM Client c`;
+    const sql = `    SELECT u.id, u.name, u.surname, u.email, u.phone, c.address, c.balance
+                     FROM Client c, User u
+                     WHERE u.id = c.ref_user `;
     db.all(sql, [], (err, rows) => {
       if (err) {
         reject(err);
@@ -57,6 +60,8 @@ export function listClients() {
  * @param {int} id      Client id.
  * @param {int} amount  Amount of money to add on client's balance.
  */
+
+//UPDATED
 export function updateClientBalance(id, amount) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Client SET balance = balance + ? WHERE id = ?`;
@@ -66,6 +71,7 @@ export function updateClientBalance(id, amount) {
   });
 }
 
+//UPDATED
 export function insertOrder(orderClient) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
@@ -99,6 +105,7 @@ export function insertOrder(orderClient) {
   });
 }
 
+//UPDATED
 export function insertClient(
   name,
   surname,
@@ -112,19 +119,19 @@ export function insertClient(
 ) {
   return new Promise((resolve, reject) => {
     const clientQuery =
-      'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
-    const userQuery = 'INSERT INTO User (username ,password ,role) VALUES (? ,? , ?)';
+      'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, mail, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
-      stmt.run([username, password, role], function (err) {
+      stmt.run([username, password, role, name, surname, mail, phone], function (err) {
         if (err) {
           reject(err);
         }
         userID = this.lastID;
         db.serialize(() => {
           let stmt_1 = db.prepare(clientQuery);
-          stmt_1.run([name, surname, phone, address, mail, balance, userID], (err) => {
+          stmt_1.run([address, balance, userID], (err) => {
             if (err) {
               reject(err);
             }
@@ -136,11 +143,12 @@ export function insertClient(
   });
 }
 
+//UPDATED
 export function getOrders() {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, c.mail
-            FROM Request r, Client c
-            WHERE r.ref_client = c.id`;
+    const sql = `SELECT r.id, u.mail
+            FROM Request r, Client c, User u
+            WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
     db.all(sql, [], (err, rows) => {
       if (err) {
         reject(err);
@@ -155,6 +163,7 @@ export function getOrders() {
   });
 }
 
+//UPDATED
 export function getOrder(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT r.id
@@ -170,11 +179,12 @@ export function getOrder(orderId) {
   });
 }
 
+//UPDATED
 export function getOrderById(orderId) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, c.mail, r.status
-                  FROM Request r, Client c
-                  WHERE r.ref_client = c.id
+    const sql = `SELECT r.id, u.mail, r.status
+                  FROM Request r, Client c, User u
+                  WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
                     AND r.id=?`;
 
     const sql2 = `SELECT pd.name, pr.quantity, p.price
@@ -212,6 +222,7 @@ export function getOrderById(orderId) {
   });
 }
 
+//UPDATED
 export function setOrderDelivered(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Request
