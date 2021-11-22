@@ -10,6 +10,8 @@ import { setupServer } from 'msw/node';
 
 import '@testing-library/jest-dom/extend-expect';
 
+jest.setTimeout(10000);
+
 const server = setupServer();
 
 beforeAll(() => server.listen());
@@ -22,7 +24,7 @@ describe('My component Basket', () => {
 
         server.use(
             rest.get('/api/client/1/basket', (req, res, ctx) => {
-                return res(ctx.json({})
+                return res(ctx.json([])
             );
         }))
 
