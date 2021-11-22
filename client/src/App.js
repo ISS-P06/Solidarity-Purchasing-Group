@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Col, Container, Row, Button } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
-
 import {
-  AlertBox,
+  Notification,
   AppNavbar,
   ClientsList,
   InsertClient,
@@ -30,10 +29,6 @@ function App() {
   */
   const [userRole, setUserRole] = useState('');
 
-  /* for giving feedback to the user*/
-  const [message, setMessage] = useState('');
-  const [alert, setAlert] = useState(false);
-
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -44,12 +39,6 @@ function App() {
   const handleToggleSidebar = (value) => {
     setToggled(value);
   };
-
-  useEffect(() => {
-    if (message !== '') {
-      setAlert(true);
-    }
-  }, [message]);
 
   // useEffect for getting user info
   useEffect(() => {
@@ -101,9 +90,11 @@ function App() {
   return (
     <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
       <Router>
-        <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
 
-        <AlertBox alert={alert} setAlert={setAlert} message={message} />
+        <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
+        <Notification />
+        {/*<AlertBox alert={alert} setAlert={setAlert} message={message} />*/}
+
 
         <Row className="m-auto">
           {loggedIn && userRole == 'shop_employee' ? (
@@ -121,7 +112,7 @@ function App() {
                 toggled={toggled}
                 collapsed={collapsed}
                 handleToggleSidebar={handleToggleSidebar}
-                setMessage={setMessage}
+
               />
             </Col>
           ) : (
@@ -151,7 +142,7 @@ function App() {
               {/* Employee client list route */}
               <Route path="/employee/clients">
                 {loggedIn && userRole == 'shop_employee' ? (
-                  <ClientsList setMessage={setMessage} />
+                  <ClientsList  />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}

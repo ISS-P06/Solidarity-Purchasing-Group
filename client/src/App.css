@@ -1,5 +1,6 @@
 @import "react-pro-sidebar/dist/css/styles.css";
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import 'react-notifications-component/dist/theme.css';
 
 .App {
   text-align: center;

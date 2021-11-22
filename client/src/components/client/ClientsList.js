@@ -4,10 +4,9 @@ import { Button, Row, Col, Spinner, ListGroup, Card, Modal } from 'react-bootstr
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
+import {addMessage} from "../Message";
 
 function ClientsList(props) {
-  const { setMessage } = props;
-
   const [clientsList, setClientsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(true);
@@ -21,7 +20,7 @@ function ClientsList(props) {
           setDirty(false);
         })
         .catch(() => {
-          setMessage({ msg: 'There are no clients', type: 'danger' });
+          addMessage({ message: 'There are no clients', type: 'danger' });
         });
     }
   }, [dirty]);
@@ -39,7 +38,7 @@ function ClientsList(props) {
             <div as="ul" variant="flush">
               {clientsList.map((c) => (
                 <div as="li" className="mt-1 mb-4" key={c.id} lg={3}>
-                  <Client client={c} setMessage={setMessage} reloadList={() => setDirty(true)} />
+                  <Client client={c} reloadList={() => setDirty(true)} />
                 </div>
               ))}
             </div>
@@ -51,7 +50,7 @@ function ClientsList(props) {
 }
 
 export function Client(props) {
-  const { client, setMessage, reloadList } = props;
+  const { client, reloadList } = props;
 
   const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
   const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false);
@@ -89,7 +88,6 @@ export function Client(props) {
         show={clientOrderFormShow}
         onHide={() => setClientOrderFormShow(false)}
         client={client}
-        setMessage={setMessage}
         openConfirmationModal={() => setConfirmationModalShow(true)}
       />
       <ClientTopUpForm
@@ -97,7 +95,6 @@ export function Client(props) {
         handleClose={() => setClientTopUpFormShow(false)}
         client={client}
         topUpClient={handleTopUp}
-        setMessage={setMessage}
       />
       <ConfirmationModal
         show={confirmationModalShow}
