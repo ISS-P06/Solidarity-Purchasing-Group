@@ -153,8 +153,6 @@ export const api_setTime = async (dateTime) => {
     const res = await axios.put('/api/time', { time: dateTime });
     return res;
   } catch (error) {
-    //alert("Error in api_setTime()");
-    //console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -246,4 +244,3 @@ export const api_buyNow = async (userId) => {
     }
   }
 };
-

@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import axios from 'axios';
 
-import { Client } from '../components/client/ClientsList';
+import ClientsList, { Client } from '../components/client/ClientsList';
 
 jest.mock('axios');
 
@@ -20,7 +20,6 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
     expect(screen.getByText('Top up wallet')).toBeInTheDocument();
@@ -39,7 +38,6 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
     const addOrderButton = screen.getByText('Add order');
@@ -59,7 +57,6 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
 
@@ -86,7 +83,6 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
 
@@ -116,6 +112,6 @@ describe('ClientList test', () => {
 
     axios.get.mockImplementationOnce(() => Promise.resolve(customers));
 
-    // render(<ClientsList setMessage={{ msg: " ", type: "danger" }} />);
+    render(<ClientsList />);
   });
 });

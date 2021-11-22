@@ -2,6 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import ClientTopUpForm from '../components/client/ClientTopUpForm';
+import { addMessage } from '../components/Message';
+
+// add mock function for an external function
+jest.mock('../components/Message.js', () => ({
+  addMessage: jest.fn(),
+}));
 
 describe('ClientTopUpForm', () => {
   // mock client
@@ -45,7 +51,6 @@ describe('ClientTopUpForm', () => {
       client,
       show: true,
       topUpClient: jest.fn(),
-      setMessage: jest.fn(),
       handleClose: jest.fn(),
     };
 
@@ -55,7 +60,7 @@ describe('ClientTopUpForm', () => {
     fireEvent.click(buttonSubmit);
 
     expect(props.topUpClient).toHaveBeenCalledTimes(1);
-    expect(props.setMessage).toHaveBeenCalledTimes(1);
+    expect(addMessage).toHaveBeenCalledTimes(1);
     expect(props.handleClose).toHaveBeenCalledTimes(1);
   });
 
