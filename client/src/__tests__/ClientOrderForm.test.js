@@ -4,6 +4,11 @@ import axios from 'axios';
 
 import ClientOrderForm, { ProductForm } from '../components/client/ClientOrderForm';
 
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
+
 jest.mock('axios');
 
 describe('ClientOrderForm', () => {

@@ -5,7 +5,7 @@ import ClientTopUpForm from '../components/client/ClientTopUpForm';
 import { addMessage } from '../components/Message';
 
 // add mock function for an external function
-jest.mock('../components/Message.js', () => ({
+jest.mock('../components/Message', () => ({
   addMessage: jest.fn(),
 }));
 

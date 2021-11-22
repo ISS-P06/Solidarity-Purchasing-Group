@@ -9,9 +9,9 @@ export default function Basket(props) {
     const [isEmpty, setIsEmpty ] = useState(true);
     const [wellDone, setWellDone] = useState(false);
 
-    const handleBuyNow = async (userId) => {
+    const handleBuyNow = (userId) => {
         if(!isEmpty){
-            await api_buyNow(userId);
+            api_buyNow(userId);
             setWellDone(true);
         }
     }

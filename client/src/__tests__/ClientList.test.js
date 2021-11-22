@@ -4,6 +4,11 @@ import axios from 'axios';
 
 import ClientsList, { Client } from '../components/client/ClientsList';
 
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
+
 jest.mock('axios');
 
 describe('ClientList test', () => {
