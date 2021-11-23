@@ -46,7 +46,7 @@ export function listClients() {
         surname: c.surname,
         phone: c.phone,
         address: c.address,
-        mail: c.mail,
+        mail: c.email,
         balance: c.balance,
       }));
       resolve(clients);
@@ -64,7 +64,7 @@ export function listClients() {
 //UPDATED
 export function updateClientBalance(id, amount) {
   return new Promise((resolve, reject) => {
-    const sql = `UPDATE Client SET balance = balance + ? WHERE id = ?`;
+    const sql = `UPDATE Client SET balance = balance + ? WHERE ref_user = ?`;
     db.run(sql, [amount, id], (err) => {
       err ? reject(err) : resolve(null);
     });
@@ -111,7 +111,7 @@ export function insertClient(
   surname,
   phone,
   address,
-  mail,
+  email,
   balance = 0,
   username,
   password,
@@ -120,11 +120,11 @@ export function insertClient(
   return new Promise((resolve, reject) => {
     const clientQuery =
       'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
-    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, mail, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
-      stmt.run([username, password, role, name, surname, mail, phone], function (err) {
+      stmt.run([username, password, role, name, surname, email, phone], function (err) {
         if (err) {
           reject(err);
         }
@@ -146,7 +146,7 @@ export function insertClient(
 //UPDATED
 export function getOrders() {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, u.mail
+    const sql = `SELECT r.id, u.email
             FROM Request r, Client c, User u
             WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
     db.all(sql, [], (err, rows) => {
@@ -156,7 +156,7 @@ export function getOrders() {
       }
       const orders = rows.map((p) => ({
         orderId: p.id,
-        email: p.mail,
+        email: p.email,
       }));
       resolve(orders);
     });
@@ -182,7 +182,7 @@ export function getOrder(orderId) {
 //UPDATED
 export function getOrderById(orderId) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, u.mail, r.status
+    const sql = `SELECT r.id, u.email, r.status
                   FROM Request r, Client c, User u
                   WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
                     AND r.id=?`;
@@ -216,7 +216,7 @@ export function getOrderById(orderId) {
       });
 
       productsPromise.then((products) => {
-        resolve({ orderId: row.id, email: row.mail, products: products, status: row.status });
+        resolve({ orderId: row.id, email: row.email, products: products, status: row.status });
       });
     });
   });
