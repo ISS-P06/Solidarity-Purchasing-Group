@@ -176,5 +176,17 @@ describe('Test the login APIs', () => {
     });
   });
 
+  describe('Test the client path', () => {
+    test('It should response GET api/client/4/basket', () => {
+      return request(app)
+        .get('/api/client/4/basket')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+  });
 
+  afterAll(async () => {
+    await test_removeUser('teiera');
+  });
 });

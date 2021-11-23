@@ -15,6 +15,7 @@ import {
   getOrders,
   getOrderById,
   setOrderDelivered,
+  getBasketByClientId,
 } from './dao.js';
 
 import VTC from './vtc.js';
@@ -301,6 +302,43 @@ app.get('/api/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
   } else res.status(401).json({ message: 'Unauthenticated user' });
+});
+
+// --- --- --- //
+// --- Route used for adding an admin (used only for testing purposes)
+app.post(
+  '/test/addUser',
+  [
+    check('username').isString().isLength({ min: 1 }),
+    check('password').isString().isLength({ min: 8 }),
+    check('role').isString().isLength({ min: 1 }),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let user = {
+      username: req.body.username,
+      password: req.body.password,
+      role: req.body.role,
+    };
+
+    test_createUser(user)
+      .then((err) => {
+        return res.status(200).end();
+      })
+      .catch(() => res.status(500).end());
+  }
+);
+// --- --- --- //
+
+// GET /api/clients/:clientId/basket
+app.get('/api/client/:clientId/basket', (req, res) => {
+  getBasketByClientId(req.params.clientId)
+    .then((products) => res.json(products))
+    .catch(() => res.status(500).end());
 });
 
 /*** End APIs ***/

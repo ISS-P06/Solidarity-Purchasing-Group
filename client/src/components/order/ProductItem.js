@@ -20,7 +20,7 @@ export default function ProductItem(props) {
                     <h5>{props.product.name}</h5>
                     <div style={{position: 'absolute', bottom: '10%'}} >
                         Reserved quantity: {props.product.quantity} Kg.<br />
-                        Unit Price: €/Kg {props.product.price}. <br />
+                        Unit Price: €/{props.product.unit} {props.product.price}. <br />
                         Price: € {(props.product.price * props.product.quantity).toFixed(2)}.
                     </div>
                 </Col>

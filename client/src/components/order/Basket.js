@@ -8,6 +8,7 @@ let productData = [{
     category: "fruits-and-vegetables",
     name: "Onion",
     price: 0.8,
+    unit: 'Kg',
     quantity: 2.6
 },
 {
@@ -15,6 +16,7 @@ let productData = [{
     category: "fruits-and-vegetables",
     name: "Apple",
     price: 1.5,
+    unit: 'Kg',
     quantity: 1.5
 }];
 
@@ -33,8 +35,8 @@ export default function Basket(props) {
 
     const handleRemoveProduct = async (productId) => {
         await api_removePruductFromBasket(props.userId, productId).then(() => {
+            setIsUpdated(false);
         }).catch((e) => { console.log(e);})
-        setIsUpdated(false);
     }
 
     function computeTotal(products) {
