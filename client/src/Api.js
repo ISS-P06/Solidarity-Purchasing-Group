@@ -212,3 +212,38 @@ export const api_getUserInfo = async () => {
     }
   }
 };
+
+export const api_getBasket = async (userId) => {
+  try {
+    const res = await axios.get('/api/client/' + userId + '/basket');
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in getting the basket');
+    }
+  }
+};
+
+export const api_buyNow = async (userId) => {
+  try {
+    const res = await axios.put('/api/client/' + userId + '/basket/buy', {});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in buying');
+    }
+  }
+};
+

@@ -12,7 +12,10 @@ import {
   OrderReview,
   ProductCards,
   ShopEmployeeActionsList,
+  
 } from './components';
+
+import Basket from './components/order/Basket'
 
 import { api_getUserInfo, api_login, api_logout } from './Api';
 
@@ -28,6 +31,7 @@ function App() {
     when necessary
   */
   const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState();
 
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -47,6 +51,7 @@ function App() {
         const info = await api_getUserInfo();
         setLoggedIn(true);
         setUserRole(info.role);
+        setUserId(info.id);
       } catch (err) {
         setUserRole('');
         console.error(err);
@@ -89,6 +94,7 @@ function App() {
 
   return (
     <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
+      
       <Router>
 
         <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
@@ -202,6 +208,7 @@ function App() {
               <Route path="/">
                 {/* Replace div with homepage component */}
                 <div />
+                <Basket userId={userId}/>
               </Route>
 
               <Route>
