@@ -112,7 +112,7 @@ const ProductCard = (props) => {
         return;
       }
 
-      api_addProductToBasket(props.userId, props.product.productId, reservedQuantity);
+    api_addProductToBasket(props.userId, props.product.productId, reservedQuantity).catch((e) => console.log(e));
 
   }
 
@@ -134,7 +134,7 @@ const ProductCard = (props) => {
             Quantity: {product.quantity} {product.unit}
           </ListGroup.Item>
         </ListGroup>
-        {props.userRole == "shop_employee" ? 
+        {props.userRole == "client" ? 
             <Card.Footer>
               <Button 
                 variant="primary"

@@ -122,4 +122,55 @@ describe('My component Basket', () => {
 
     });
 
+    test('Is able to remove product from basket', async () => {
+
+        let db = [{
+            productId: 1,
+            category: "fruits-and-vegetables",
+            name: "Onion",
+            price: 0.8,
+            quantity: 2.6
+        },
+        {
+            productId: 2,
+            category: "fruits-and-vegetables",
+            name: "Apple",
+            price: 1.5,
+            quantity: 1.5
+        }];
+
+        server.use(
+            rest.get('/api/client/1/basket', (req, res, ctx) => {
+                return res(ctx.json(db)
+            );
+        }))
+
+        server.use(
+                rest.put('/api/client/1/basket/remove', (req, res, ctx) => {
+                const {productId} = req.body;
+                for(let i = 0; i < db.length; i++) {
+                    if(productId == db[i].productId){
+                        db.splice(i, 1);
+                    }
+                }
+                return res(ctx.status(200), ctx.json()
+            )
+        }));
+
+        render(<Basket userId={1} />);
+        await waitFor(() => screen.getByText(/Onion/));
+        expect(screen.getByText(/Onion/)).toBeInTheDocument();
+        expect(screen.getByText(/Apple/)).toBeInTheDocument();
+
+        const removeButtons = screen.getAllByText(/Remove/);
+
+        await userEvent.click(removeButtons[0]);
+
+        await waitFor(() => screen.getAllByText(/Remove/));
+
+        expect(db).toHaveLength(1);
+        //expect(screen.getAllByText(/Remove/)).toHaveLength(1);
+
+    });
+
 });
