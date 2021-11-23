@@ -174,8 +174,8 @@ function App() {
 
               {/* Employee product browsing route */}
               <Route path="/employee/products">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <ProductCards />
+                {loggedIn && userRole == 'shop_employee' ? (
+                  <ProductCards userRole={userRole} userId={userId} />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
@@ -228,8 +228,8 @@ function App() {
               {/* Home page route */}
               <Route path="/">
                 {/* Replace div with homepage component */}
+                <Basket/>
                 <div />
-                <Basket userId={userId}/>
               </Route>
 
 

@@ -37,12 +37,14 @@ describe('My component Basket', () => {
         server.use(
             rest.get('/api/client/1/basket', (req, res, ctx) => {
                 return res(ctx.json([{
+                    productId: 1,
                     category: "fruits-and-vegetables",
                     name: "Onion",
                     price: 0.8,
                     quantity: 2.6
                 },
                 {
+                    productId: 2,
                     category: "fruits-and-vegetables",
                     name: "Apple",
                     price: 1.5,
@@ -61,12 +63,14 @@ describe('My component Basket', () => {
     test('Is able to buy itmes', async () => {
 
         let db = [{
+            productId: 1,
             category: "fruits-and-vegetables",
             name: "Onion",
             price: 0.8,
             quantity: 2.6
         },
         {
+            productId: 2,
             category: "fruits-and-vegetables",
             name: "Apple",
             price: 1.5,

@@ -1,10 +1,14 @@
-import {Row, Col, ListGroup, Image} from 'react-bootstrap'
+import {Row, Col, ListGroup, Image, Button} from 'react-bootstrap'
 
 export default function ProductItem(props) {
 
     const regex = /[ _]/g;
     let imgName = props.product.category.replace(regex, '-').toLowerCase() + '-16x11.png';
     let imgPath = '/img/products/' + imgName;
+
+    const handleRemoveProduct = (productId) => {
+        props.removeProduct(productId);
+    };
 
     return(
         <ListGroup.Item>
@@ -19,6 +23,9 @@ export default function ProductItem(props) {
                         Unit Price: €/Kg {props.product.price}. <br />
                         Price: € {(props.product.price * props.product.quantity).toFixed(2)}.
                     </div>
+                </Col>
+                <Col>
+                <Button style={{position: 'absolute', bottom: '10%'}} className="float-end btn mr-2" variant="primary" onClick={() => handleRemoveProduct(props.product.productId)} >Remove</Button>
                 </Col>
             </Row>
         </ListGroup.Item>
