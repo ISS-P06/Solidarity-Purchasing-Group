@@ -14,16 +14,16 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-export function mail_sendBalanceReminder(clientMail) {
+export function mail_sendBalanceReminder(userMail, orderID) {
     let mailOptions = {
         from: senderMail,
-        to: clientMail,
-        subject: 'Insufficient balance for orders',
+        to: userMail,
+        subject: 'SPG - Insufficient balance for orders',
         text: 'Hello,\n' +
             'we would like to inform you that your current balance ' +
-            'is insufficient to pay for the order(s) you made for the current week. Please ' +
+            'is insufficient to pay for the order with ID#' + orderID + ' you made for the current week. Please ' +
             'make sure to top up your wallet as soon as possible, otherwise ' +
-            'your order(s) will be canceled.\n' +
+            'your order will be canceled.\n' +
             '\nBest regards,\nThe SPG team\n\n' +
             '---\nThis is an automated email, please do not respond.'
     };
@@ -39,4 +39,4 @@ export function mail_sendBalanceReminder(clientMail) {
                 reject("error: " + err);
             });
     });
-}
+};
