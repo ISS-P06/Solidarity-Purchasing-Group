@@ -119,11 +119,6 @@ describe('Test the login APIs', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
 
-  test('(test) Create new user: it should respond to the POST method', () => {
-    const user = { username: 'teiera', password: 'teiera123', role: 'shop_employee' };
-    return request(app).post('/test/addUser').send(user).expect(200);
-  });
-
   describe('Test the orders path', () => {
     test('It should response GET api/orders', () => {
       return request(app)
@@ -150,7 +145,5 @@ describe('Test the login APIs', () => {
     });
   });
 
-  afterAll(async () => {
-    await test_removeUser('teiera');
-  });
+
 });
