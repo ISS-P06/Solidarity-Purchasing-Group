@@ -113,6 +113,7 @@ const ProductCard = (props) => {
       }
 
     api_addProductToBasket(props.userId, props.product.productId, reservedQuantity).catch((e) => console.log(e));
+    setShow(false);
 
   }
 

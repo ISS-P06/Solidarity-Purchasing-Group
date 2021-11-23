@@ -78,9 +78,12 @@ test("test ProductCards component adds a product to the basket'", async () => {
       console.log(ok);
       db = [{productId: productId,
             reservedQuantity: reservedQuantity}];
-      return res(ctx.json());
+      return res(
+        ctx.status(200),
+        ctx.json({}));
     })
   );
+
   // test code
   window.scrollTo = jest.fn();
   render(<ProductCards userRole="client" userId="1"/>);
@@ -95,7 +98,7 @@ test("test ProductCards component adds a product to the basket'", async () => {
   userEvent.type(textArea , '0.5');
 
   await userEvent.click(screen.getByText(/Add product to Basket/));
-  
+
   //expect(db).toHaveLength(1);
 
 });
