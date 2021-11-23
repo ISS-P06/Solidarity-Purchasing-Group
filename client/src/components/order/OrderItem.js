@@ -5,13 +5,16 @@ import { Link } from 'react-router-dom';
 function OrderItem(props) {
   return (
     <Card className="shadow">
-      
-      <Card.Header  className="pb-0">
-        <Container>
-        <Row>
-          {/*<Col xs={{ span: 3 }}><div className="border border-primary rounded-pill">status</div></Col>*/}
-          <Col xs={{ offset: 11, span: 1 }}><h5 className="ml-auto"><strong>#{props.order.orderId}</strong></h5></Col>
-        </Row>
+      <Card.Header className="pb-0">
+        <Container className="pr-0">
+          <Row>
+            {/*<Col xs={{ span: 3 }}><div className="border border-primary rounded-pill">status</div></Col>*/}
+            <Col xs={{ offset: 11, span: 1 }} className="p-0">
+              <h5 className="ml-auto" style={{ textAlign: 'right' }}>
+                <strong>#{props.order.orderId}</strong>
+              </h5>
+            </Col>
+          </Row>
         </Container>
       </Card.Header>
       <Card.Body>

@@ -32,6 +32,23 @@ describe('Test the get products api', () => {
   });
 });
 
+describe('Test the get client orders api', () => {
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/client-orders/4')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/client-orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
+      });
+  });
+});
+
 describe('Test the get virtual time clock', () => {
   test('It should respond to the GET method', () => {
     return request(app).get('/api/time').expect(200);

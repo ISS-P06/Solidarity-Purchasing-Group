@@ -183,13 +183,13 @@ function App() {
 
               {/* Employee: order info page route */}
               <Route path="/employee/orders/:id">
-                {loggedIn ? <OrderReview /> : <RedirectUser userRole={userRole} />}
+                {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole} />}
               </Route>
 
               {/* Employee order list route */}
               <Route path="/employee/orders">
                 {loggedIn && userRole === 'shop_employee' ? (
-                  <OrderList />
+                  <OrderList userRole={userRole} userId={userId}/>
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
@@ -218,6 +218,7 @@ function App() {
                 {/* Replace div with homepage component */}
                 <div />
                 <Basket userId={userId}/>
+                <OrderList userRole={userRole} userId={userId}/>
               </Route>
 
               <Route>

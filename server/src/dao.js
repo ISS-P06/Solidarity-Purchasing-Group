@@ -237,3 +237,66 @@ export function setOrderDelivered(orderId) {
     resolve(orderId);
   });
 }
+
+export function getClientOrders(clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT r.id, u.email
+            FROM Request r, Client c, User u
+            WHERE r.ref_client = c.ref_user
+            AND c.ref_user = u.id
+            AND u.id = ?`;
+    db.all(sql, clientId, (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const orders = rows.map((p) => ({
+        orderId: p.id,
+        email: p.email,
+      }));
+      resolve(orders);
+    });
+  });
+}
+/*
+export function getClientOrderById(orderId, clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT r.id, u.email, r.status
+                  FROM Request r, Client c, User u
+                  WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
+                    AND r.id=?`;
+
+    const sql2 = `SELECT pd.name, pr.quantity, p.price
+                  FROM Request r, Product_Request pr, Product p, Prod_descriptor pd
+                  WHERE r.id = pr.ref_request 
+                    AND pr.ref_product = p.id 
+                    AND p.ref_prod_descriptor = pd.id
+                    AND r.id=?`;
+
+    db.get(sql, orderId, function (err, row) {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      let productsPromise = new Promise((resolve, reject) => {
+        db.all(sql2, orderId, (err, rows) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          const products = rows.map((p) => ({
+            name: p.name,
+            quantity: p.quantity,
+            price: p.price,
+          }));
+          resolve(products);
+        });
+      });
+
+      productsPromise.then((products) => {
+        resolve({ orderId: row.id, email: row.email, products: products, status: row.status });
+      });
+    });
+  });
+}*/
