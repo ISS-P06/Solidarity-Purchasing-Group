@@ -229,6 +229,7 @@ function App() {
               <Route path="/">
                 {/* Replace div with homepage component */}
                 <Basket userId="4"/>
+                <ProductCards userRole="client" userId="4" />
                 <div />
               </Route>
 

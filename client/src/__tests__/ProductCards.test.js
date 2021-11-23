@@ -143,3 +143,44 @@ test("test ProductCards component throws an error if added quantity less than 0.
   expect(screen.getByText(/You cannot add less than 0.1 Kg/)).toBeInTheDocument();
 
 });
+
+test("test ProductCards component throws an error if added quantity more than the available", async () => {
+
+  server.use(
+    rest.get('/api/products', (req, res, ctx) => {
+      return res(
+        ctx.json([
+          {
+            id: 1,
+            name: 'Baguette',
+            description: 'Delicious',
+            category: 'bread',
+            quantity: 1,
+            price: 1,
+            unit: 'Kg',
+          },
+        ])
+      );
+    })
+  );
+  
+  // test code
+  window.scrollTo = jest.fn();
+  render(<ProductCards userRole="client" userId="1"/>);
+  
+  await waitFor(() => screen.getByText('Baguette'));
+  expect(screen.getByText('Baguette')).toBeInTheDocument();
+
+  const addButton = screen.getByText('+');
+  await userEvent.click(addButton);
+
+  const textArea = screen.getByPlaceholderText(/Insert Quantity/);
+  userEvent.type(textArea , '20');
+
+  await userEvent.click(screen.getByText(/Add product to Basket/));
+  
+  await waitFor(() => screen.getByText(/You cannot add more than the available quantity/));
+  expect(screen.getByText(/You cannot add more than the available quantity/)).toBeInTheDocument();
+
+});
+
