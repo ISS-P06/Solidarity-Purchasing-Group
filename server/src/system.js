@@ -26,11 +26,16 @@ class SYS {
          * Check if the current day and time is
          * Monday, 9am
          */
+<<<<<<< HEAD
 
         let time = new Date(currTime);
 
         if (time.getDay() == 1
          && time.getHours() == 10) {
+=======
+        if (currTime.day() == 1
+         && currTime.hour() == 9) {
+>>>>>>> f62979f (feat: added methods to SYS)
             this.event_updateOrders();
         }
     }
@@ -65,7 +70,11 @@ class SYS {
         for (let mail of mailingList) {
             mail_sendBalanceReminder(mail.email, mail.id)
                 .then((res) => {
+<<<<<<< HEAD
                     // ok
+=======
+                    //console.log("ok");
+>>>>>>> f62979f (feat: added methods to SYS)
                 })
                 .catch((err) => console.log(err));
         }        
