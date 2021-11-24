@@ -200,7 +200,7 @@ function App() {
                             {/* Home page route */}
                             <Route path="/">
                                 {/* Replace div with homepage component */}
-                                <div/>
+                                <HomePage/>
                                 <Basket userId={userId}/>
                             </Route>
 

@@ -3,7 +3,7 @@ import {api_getUserInfo} from "../../Api";
 import {Button, Col, Image, Row} from "react-bootstrap";
 import "./ClientHomePage.css";
 import {useHistory} from "react-router-dom";
-import img from "../../img/clientpage/vegetables-2977888_1280.jpg";
+//import img from "../../img/clientpage/vegetables-2977888_1280.jpg";
 import {Link} from "react-bootstrap-icons";
 
 {/*Pixabay License*/
@@ -26,7 +26,7 @@ function ClientHomePage(props) {
                             <Button style={{background:"#fff"}}   onClick={() => {
                                 history.push('/employee/products'); {/*Todo update with the correct path*/}
                             }}>
-                            <Image src={img} style={{width: "100%", paddingTop: "20px"}}></Image>
+                            {/*<Image src={img} style={{width: "100%", paddingTop: "20px"}}></Image>*/}
                             <Row class="containerImage"><h3> Add products to my basket! </h3></Row>
                             </Button>
                         </Row>
