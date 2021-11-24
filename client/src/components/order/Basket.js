@@ -74,7 +74,7 @@ export default function Basket(props) {
                 { isEmpty ? <div style={{padding: '4%'}}> <h5> There are no products in the basket </h5> </div> : 
                 <div>
                     <div style={{padding: '2%'}} class="productList"><ProductList productList={basket} removeProduct={handleRemoveProduct}/></div>
-                    <div style={{padding: '0 4% 2% 0', float: 'right'}} >
+                    <div style={{padding: '0 4% 2% 0'}} >
                         <h5>Total: € {computeTotal(basket).toFixed(2)}</h5>
                     </div>
                 </div>
