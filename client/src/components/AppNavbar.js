@@ -1,5 +1,6 @@
 import VirtualClock from './VirtualClock';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav,  Button } from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { GrBasket } from 'react-icons/gr';
 import { BsBasket2 } from 'react-icons/bs';
@@ -48,7 +49,9 @@ function AppNavbar(props) {
           {loggedIn ? (
             <>
               <Nav.Link onClick={() => goToUserPage(userRole)}>{userPageText(userRole)}</Nav.Link>
+              {userRole === "client" ? <Link to={{pathname: '/client/basket'}}><Button variant="primary"><BsBasket2 size={30}/></Button></Link> : <div></div>}
               <LogoutLink doLogout={doLogout} />
+              
             </>
           ) : (
             <Nav.Link onClick={() => handleClick('/login')}>Login</Nav.Link>

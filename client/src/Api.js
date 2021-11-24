@@ -281,3 +281,38 @@ export const api_buyNow = async (userId) => {
   }
 };
 
+export const api_removePruductFromBasket = async (userId, productId) => {
+  try {
+    const res = await axios.put('/api/client/' + userId + '/basket/remove', {productId});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in removing a product from basket');
+    }
+  }
+};
+
+export const api_addProductToBasket = async (userId, productId, reservedQuantity) => {
+  try {
+    const res = await axios.post('/api/client/' + userId + '/basket/add', {productId, reservedQuantity});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in adding to the basket');
+    }
+  }
+};
+
+

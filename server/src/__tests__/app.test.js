@@ -149,15 +149,16 @@ describe('Test the login APIs', () => {
   test('It should respond to the DELETE method', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
+});
 
-  describe('Test the orders path', () => {
-    test('It should response GET api/orders', () => {
-      return request(app)
-        .get('/api/orders')
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
+describe('Test the orders path', () => {
+  test('It should response GET api/orders', () => {
+    return request(app)
+      .get('/api/orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
 
     test('It should response GET api/orders/1', () => {
       return request(app)
@@ -176,5 +177,12 @@ describe('Test the login APIs', () => {
     });
   });
 
-
-});
+  describe('Test the client path', () => {
+    test('It should response GET api/client/4/basket', () => {
+      return request(app)
+        .get('/api/client/4/basket')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+  });

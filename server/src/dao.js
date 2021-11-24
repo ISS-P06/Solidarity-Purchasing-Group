@@ -261,3 +261,28 @@ export function setOrderDelivered(orderId) {
     resolve(orderId);
   });
 }
+
+export function getBasketByClientId(clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT p.id, pd.name, pd.category, b.quantity, p.price, pd.unit
+                     FROM Product p, Basket b, Prod_descriptor pd
+                     WHERE p.id = b.ref_product
+                     AND pd.id = p.ref_prod_descriptor
+                     AND b.ref_client = ?`;
+    db.all(sql, [clientId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const products = rows.map((p) => ({
+        productId: p.id,
+        name: p.name,
+        category: p.category,
+        quantity: p.quantity,
+        price: p.price,
+        unit: p.unit,
+      }));
+      resolve(products);
+    });
+  });
+}
