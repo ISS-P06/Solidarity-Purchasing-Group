@@ -13,8 +13,6 @@ import {
   updateClientBalance,
   insertClient,
   getOrders,
-  getClientOrders,
-  getClientOrderById,
   getOrderById,
   setOrderDelivered,
 } from './dao.js';
@@ -207,14 +205,14 @@ app.get('/api/orders', (req, res) => {
 
 // GET /api/clients/:clientId/orders
 app.get('/api/clients/:clientId/orders', (req, res) => {
-  getClientOrders(req.params.clientId)
+  getOrders(req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders/:orderId
 app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
-  getClientOrderById(req.params.clientId, req.params.orderId)
+  getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
