@@ -18,6 +18,8 @@ import {
 import {api_getUserInfo, api_login, api_logout} from './Api';
 
 import Basket from './components/order/Basket';
+import ClientHomePage from "./components/client/ClientHomePage";
+import HomePage from "./HomePage";
 
 function App() {
     // Session-related states
@@ -60,6 +62,7 @@ function App() {
         const checkAuth = async () => {
             try {
                 const info = await api_getUserInfo();
+                console.log(info);
                 setLoggedIn(true);
                 setUserRole(info.role);
                 setUserId(info.id);
@@ -109,11 +112,20 @@ function App() {
                     {/*<Col xs={11} md={8} lg={10}>*/}
                     <Col>
                         <Switch>
+                            <Route exact path="/">
+                                <HomePage></HomePage>
+                            </Route>
+
                             {/* Login route */}
+
                             <Route path="/login">
                                 {loggedIn ? <RedirectUser userRole={userRole}/> : <LoginForm doLogin={doLogin}/>}
                             </Route>
                             {/* Shop employee-only routes */}
+
+                            <Route path="/client">
+                                {loggedIn ? <ClientHomePage userId={userId}/> : <LoginForm doLogin={doLogin}/>}
+                            </Route>
 
                             {/* Employee: client info page route */}
                             <Route
