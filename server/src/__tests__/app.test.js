@@ -35,14 +35,28 @@ describe('Test the get products api', () => {
 describe('Test the get client orders api', () => {
   test('It should respond 200 to the GET method', () => {
     return request(app)
-      .get('/api/client-orders/4')
+      .get('/api/clients/4/orders')
       .then((response) => {
         expect(response.statusCode).toBe(200);
       });
   });
   test('It should respond 404 to the GET method', () => {
     return request(app)
-      .get('/api/client-orders')
+      .get('/api/clients//orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
+      });
+  });
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/clients/4/orders/2')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/clients//orders/2')
       .then((response) => {
         expect(response.statusCode).toBe(404);
       });

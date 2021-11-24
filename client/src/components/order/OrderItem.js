@@ -14,7 +14,7 @@ function OrderItem(props) {
     <Card className="shadow">
       <Card.Header className="pt-1 pb-2">
         <h5 className="pt-2">
-          Order number:<strong> {props.order.orderId}</strong>
+          Order number: <strong>{props.order.orderId}</strong>
         </h5>
       </Card.Header>
       <Card.Body>
