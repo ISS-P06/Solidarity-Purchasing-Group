@@ -9,11 +9,13 @@ describe('My component OrderTable', () => {
         name: 'onion',
         quantity: 3,
         price: 1.15,
+        unit: 'kg',
       },
       {
         name: 'apple',
         quantity: 4,
         price: 1.6,
+        unit: 'kg',
       },
     ];
 

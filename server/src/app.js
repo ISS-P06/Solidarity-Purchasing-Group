@@ -19,7 +19,7 @@ import {
 
 import VTC from './vtc.js';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -199,6 +199,20 @@ app.post(
 // GET /api/orders
 app.get('/api/orders', (req, res) => {
   getOrders()
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders
+app.get('/api/clients/:clientId/orders', (req, res) => {
+  getOrders(req.params.clientId)
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+  getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
