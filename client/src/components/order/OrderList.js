@@ -7,24 +7,24 @@ function OrderList(props) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    if(props.userRole === 'shop_employee'){
+    if (props.userRole === 'shop_employee') {
       api_getOrders()
-      .then((orders) => {
-        setOrders(orders);
-      })
-      .catch((e) => console.log(e));
-    }else{
+        .then((orders) => {
+          setOrders(orders);
+        })
+        .catch((e) => console.log(e));
+    } else if (props.userRole === 'client') {
       api_getClientOrders(props.userId)
-      .then((orders) => {
-        setOrders(orders);
-      })
-      .catch((e) => console.log(e));
+        .then((orders) => {
+          setOrders(orders);
+        })
+        .catch((e) => console.log(e));
     }
   }, [setOrders]);
 
   const orderList = orders.map((order) => (
     <div key={order.orderId.toString()} className="pb-3">
-      <OrderItem key={order.orderId.toString()} order={order} />
+      <OrderItem key={order.orderId.toString()} order={order} userRole={props.userRole} userId={props.userId} />
     </div>
   ));
 
@@ -36,7 +36,7 @@ function OrderList(props) {
       <Container className="OrderList">
         <Row className="justify-content-md-center">
           <Col lg={8} className="pl-5 pb-4">
-            {orders.length===0 ? <h5>No orders found </h5> : orderList}
+            {orders.length === 0 ? <h5>No orders found </h5> : orderList}
           </Col>
         </Row>
       </Container>

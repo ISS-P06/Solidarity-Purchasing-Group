@@ -213,13 +213,25 @@ function App() {
                 )}
               </Route>
 
+              {/*
+              Routes to test client orders component
+              TO DO: remove or improve these routes
+              Thank you, Marco
+              */}
+              <Route path="/client/orders/:id">
+                <OrderReview userRole="client" userId="4"/>
+              </Route>
+              <Route path="/client/orders">
+                <OrderList userRole="client" userId="4"/>
+              </Route>
+
               {/* Home page route */}
               <Route path="/">
                 {/* Replace div with homepage component */}
                 <div />
                 <Basket userId={userId}/>
-                <OrderList userRole={userRole} userId={userId}/>
               </Route>
+
 
               <Route>
                 <Redirect to="/" />

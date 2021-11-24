@@ -14,13 +14,14 @@ import {
   insertClient,
   getOrders,
   getClientOrders,
+  getClientOrderById,
   getOrderById,
   setOrderDelivered,
 } from './dao.js';
 
 import VTC from './vtc.js';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -204,9 +205,16 @@ app.get('/api/orders', (req, res) => {
     .catch(() => res.status(500).end());
 });
 
-// GET /api/orders
-app.get('/api/client-orders/:clientId', (req, res) => {
+// GET /api/clients/:clientId/orders
+app.get('/api/clients/:clientId/orders', (req, res) => {
   getClientOrders(req.params.clientId)
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+  getClientOrderById(req.params.clientId, req.params.orderId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });

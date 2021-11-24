@@ -3,24 +3,42 @@ import { BoxArrowInUp } from 'react-bootstrap-icons';
 import OrderTable from './OrderTable';
 
 import { useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
 
-import { api_getOrderReview, api_doDelivery } from '../../Api';
+import { api_getOrderReview, api_getClientOrderReview, api_doDelivery } from '../../Api';
 
 function OrderReview(props) {
   const [orderReview, setOrderReview] = useState(0, '', [], '');
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const match = useRouteMatch('/employee/orders/:id');
+  let text, back;
+  if (props.userRole === 'shop_employee') {
+    text = 'employee';
+    back = `/employee/orders/`;
+  } else if (props.userRole === 'client') {
+    text = 'client';
+    back = `/client/orders/`;
+  }
+  const match = useRouteMatch('/' + text + '/orders/:id');
 
   useEffect(() => {
-    if (!isUpdated)
-      api_getOrderReview(match.params.id)
-        .then((order) => {
-          setOrderReview(order);
-          setIsUpdated(true);
-        })
-        .catch((e) => console.log(e));
+    if (!isUpdated) {
+      if (props.userRole === 'shop_employee') {
+        api_getOrderReview(match.params.id)
+          .then((order) => {
+            setOrderReview(order);
+            setIsUpdated(true);
+          })
+          .catch((e) => console.log(e));
+      } else if (props.userRole === 'client') {
+        api_getClientOrderReview(props.userId, match.params.id)
+          .then((order) => {
+            setOrderReview(order);
+            setIsUpdated(true);
+          })
+          .catch((e) => console.log(e));
+      }
+    }
   }, [match]);
 
   const doDelivery = async () => {
@@ -41,32 +59,41 @@ function OrderReview(props) {
       <Row className="justify-content-md-center">
         <Col lg={8} className="pl-5">
           <Card className="shadow">
-            <Card.Header>
-              <Container className="pr-0">
+            <Card.Header className="pt-1 pb-2">
+              <h5 className="pt-2">
+                Order number:<strong> {orderReview.orderId}</strong>
+              </h5>
+            </Card.Header>
+            <Card.Body>
+              <Container>
                 <Row>
-                  {/*<Col xs={{ span: 3 }}><div className="border border-primary rounded-pill">status</div></Col>*/}
-                  <Col xs={{ offset: 11, span: 1 }} className="p-0">
-                    <h5 className="ml-auto  mb-0" style={{ textAlign: 'right' }}>
-                      <strong>#{orderReview.orderId}</strong>
-                    </h5>
+                  <Col>Date: {orderReview.date}</Col>
+                </Row>
+                <Row className="pb-4">
+                  <Col>Email: {orderReview.email}</Col>
+                </Row>
+              </Container>
+              <OrderTable products={orderReview.products} />
+              <Container>
+                <Row>
+                  <Col className="pt-3 pb-3">
+                    <span className="border border-success rounded-pill p-2">{orderReview.status}</span>
                   </Col>
                 </Row>
               </Container>
-
-            </Card.Header>
-            <Card.Body>
-              <div className="Owner">Owner: {orderReview.email} </div> <br /> <br />
-              <OrderTable products={orderReview.products} />
-              State: {orderReview.status} <br />
-              <br />
-              {orderReview.status !== 'delivered' ? (
-                props.userRole==="shop_employee" && <Button className="btn" onClick={doDelivery}>
+            </Card.Body>
+            <Card.Footer>
+              <Link to={{ pathname: back, }}>
+                <Button variant="primary" className="float-start text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
+                  Back
+                </Button>
+              </Link>
+              {orderReview.status !== 'delivered' && props.userRole === "shop_employee" && (
+                <Button variant="primary" className="float-end text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
                   <BoxArrowInUp /> Deliver
                 </Button>
-              ) : (
-                <></>
               )}
-            </Card.Body>
+            </Card.Footer>
           </Card>
         </Col>
       </Row>
