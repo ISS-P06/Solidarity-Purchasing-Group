@@ -25,7 +25,7 @@ function Layout(props) {
     <Container className="d-flex text-dark min-vh-100 min-vw-100" fluid="true">
       <Notification />
       <Navbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
-      <Aside toggled={toggled} collapsed={collapsed} handleToggleSidebar={handleToggleSidebar} />
+      {/*<Aside toggled={toggled} collapsed={collapsed} handleToggleSidebar={handleToggleSidebar} />*/}
 
       {/* This button shows up when the sidebar is hidden */}
       <Button as={FaBars} className="aside-toggle" onClick={() => handleToggleSidebar(true)}>
