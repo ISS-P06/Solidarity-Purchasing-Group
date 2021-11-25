@@ -1,5 +1,4 @@
-
-.footer{
+.footer {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -9,9 +8,9 @@
     text-align: center;
 }
 
-.footerText{
+.footerText {
     color: #fff;
-    textAlign: center;
+    text-align: center;
     background-color: #38782a;
     padding: 20px;
 }
