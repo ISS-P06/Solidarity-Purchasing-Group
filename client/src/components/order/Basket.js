@@ -28,9 +28,10 @@ export default function Basket(props) {
     const [isUpdated, setIsUpdated] = useState(false);
 
     const handleBuyNow = async (userId) => {
-        await api_buyNow(userId);
-        setWellDone(true);
-        setIsUpdated(false);
+        await api_buyNow(userId).then(() => {
+            setWellDone(true);
+            setIsUpdated(false);
+        }).catch((e) => console.log(e));
     }
 
     const handleRemoveProduct = async (productId) => {
