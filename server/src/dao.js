@@ -3,6 +3,7 @@
 import db from './db.js';
 import dayjs from 'dayjs';
 
+//UPDATED
 export function listProducts() {
   return new Promise((resolve, reject) => {
     const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
@@ -28,10 +29,12 @@ export function listProducts() {
   });
 }
 
+//UPDATED
 export function listClients() {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT id, name, surname, phone, address, mail, balance
-                     FROM Client c`;
+    const sql = `    SELECT u.id, u.name, u.surname, u.email, u.phone, c.address, c.balance
+                     FROM Client c, User u
+                     WHERE u.id = c.ref_user `;
     db.all(sql, [], (err, rows) => {
       if (err) {
         reject(err);
@@ -43,7 +46,7 @@ export function listClients() {
         surname: c.surname,
         phone: c.phone,
         address: c.address,
-        mail: c.mail,
+        mail: c.email,
         balance: c.balance,
       }));
       resolve(clients);
@@ -57,15 +60,18 @@ export function listClients() {
  * @param {int} id      Client id.
  * @param {int} amount  Amount of money to add on client's balance.
  */
+
+//UPDATED
 export function updateClientBalance(id, amount) {
   return new Promise((resolve, reject) => {
-    const sql = `UPDATE Client SET balance = balance + ? WHERE id = ?`;
+    const sql = `UPDATE Client SET balance = balance + ? WHERE ref_user = ?`;
     db.run(sql, [amount, id], (err) => {
       err ? reject(err) : resolve(null);
     });
   });
 }
 
+//UPDATED
 export function insertOrder(orderClient) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
@@ -99,12 +105,13 @@ export function insertOrder(orderClient) {
   });
 }
 
+//UPDATED
 export function insertClient(
   name,
   surname,
   phone,
   address,
-  mail,
+  email,
   balance = 0,
   username,
   password,
@@ -112,19 +119,19 @@ export function insertClient(
 ) {
   return new Promise((resolve, reject) => {
     const clientQuery =
-      'INSERT INTO Client (name ,surname ,phone, address, mail, balance,ref_user) VALUES(? , ?, ?, ?, ?,?,?) ';
-    const userQuery = 'INSERT INTO User (username ,password ,role) VALUES (? ,? , ?)';
+      'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
-      stmt.run([username, password, role], function (err) {
+      stmt.run([username, password, role, name, surname, email, phone], function (err) {
         if (err) {
           reject(err);
         }
         userID = this.lastID;
         db.serialize(() => {
           let stmt_1 = db.prepare(clientQuery);
-          stmt_1.run([name, surname, phone, address, mail, balance, userID], (err) => {
+          stmt_1.run([address, balance, userID], (err) => {
             if (err) {
               reject(err);
             }
@@ -136,25 +143,36 @@ export function insertClient(
   });
 }
 
-export function getOrders() {
+//UPDATED
+// clientId can be specified or not
+// if specified the query selects only orders of a specific client
+export function getOrders(clientId = -1) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, c.mail
-            FROM Request r, Client c
-            WHERE r.ref_client = c.id`;
-    db.all(sql, [], (err, rows) => {
+    let sql = `SELECT r.id, u.email, r.date, r.status
+            FROM Request r, Client c, User u
+            WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
+    let deps = [];
+    if(clientId !== -1){
+      sql += ` AND u.id = ?`;
+      deps.push(clientId);
+    }
+    db.all(sql, deps, (err, rows) => {
       if (err) {
         reject(err);
         return;
       }
       const orders = rows.map((p) => ({
         orderId: p.id,
-        email: p.mail,
+        email: p.email,
+        date: p.date,
+        status: p.status,
       }));
       resolve(orders);
     });
   });
 }
 
+//UPDATED
 export function getOrder(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `SELECT r.id
@@ -170,21 +188,30 @@ export function getOrder(orderId) {
   });
 }
 
-export function getOrderById(orderId) {
+//UPDATED
+// clientId can be specified or not
+// if specified the query selects only the order of a specific client
+export function getOrderById(orderId, clientId = -1) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, c.mail, r.status
-                  FROM Request r, Client c
-                  WHERE r.ref_client = c.id
+    let sql = `SELECT r.id, u.email, r.status, r.date
+                  FROM Request r, Client c, User u
+                  WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
                     AND r.id=?`;
 
-    const sql2 = `SELECT pd.name, pr.quantity, p.price
+    const sql2 = `SELECT pd.name, pr.quantity, p.price, pd.unit
                   FROM Request r, Product_Request pr, Product p, Prod_descriptor pd
                   WHERE r.id = pr.ref_request 
                     AND pr.ref_product = p.id 
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
+    
+    let deps = [orderId];
+    if(clientId !== -1){
+      sql += ` AND u.id = ?`;
+      deps.push(clientId);
+    }
 
-    db.get(sql, orderId, function (err, row) {
+    db.get(sql, deps, function (err, row) {
       if (err) {
         reject(err);
         return;
@@ -200,18 +227,26 @@ export function getOrderById(orderId) {
             name: p.name,
             quantity: p.quantity,
             price: p.price,
+            unit: p.unit,
           }));
           resolve(products);
         });
       });
 
       productsPromise.then((products) => {
-        resolve({ orderId: row.id, email: row.mail, products: products, status: row.status });
+        resolve({
+          orderId: row.id,
+          email: row.email,
+          date: row.date,
+          status: row.status,
+          products: products,
+        });
       });
     });
   });
 }
 
+//UPDATED
 export function setOrderDelivered(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Request
@@ -224,5 +259,30 @@ export function setOrderDelivered(orderId) {
       }
     });
     resolve(orderId);
+  });
+}
+
+export function getBasketByClientId(clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT p.id, pd.name, pd.category, b.quantity, p.price, pd.unit
+                     FROM Product p, Basket b, Prod_descriptor pd
+                     WHERE p.id = b.ref_product
+                     AND pd.id = p.ref_prod_descriptor
+                     AND b.ref_client = ?`;
+    db.all(sql, [clientId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const products = rows.map((p) => ({
+        productId: p.id,
+        name: p.name,
+        category: p.category,
+        quantity: p.quantity,
+        price: p.price,
+        unit: p.unit,
+      }));
+      resolve(products);
+    });
   });
 }
