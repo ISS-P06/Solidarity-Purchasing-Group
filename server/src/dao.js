@@ -193,7 +193,7 @@ export function getOrder(orderId) {
 // if specified the query selects only the order of a specific client
 export function getOrderById(orderId, clientId = -1) {
   return new Promise((resolve, reject) => {
-    let sql = `SELECT r.id, u.email, r.status, r.date
+    let sql = `SELECT r.id, u.email, r.status, r.date, c.address, u.username, u.name, u.surname, u.role, u.phone
                   FROM Request r, Client c, User u
                   WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
                     AND r.id=?`;
@@ -235,10 +235,9 @@ export function getOrderById(orderId, clientId = -1) {
 
       productsPromise.then((products) => {
         resolve({
-          orderId: row.id,
-          email: row.email,
-          date: row.date,
-          status: row.status,
+          orderId: row.id, date: row.date, status: row.status,
+          email: row.email, username: row.username, role: row.role,
+          name: row.name, surname: row.surname, phone: row.phone, address: row.address,
           products: products,
         });
       });
