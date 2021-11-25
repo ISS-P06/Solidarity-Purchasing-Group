@@ -11,86 +11,96 @@ body {
   height: 100%;
 }
 
-.App {
+h3 {
+  color: #499F36;
+  font-style: italic;
+  font-style: bold;
+}
+
+.app-container {
   text-align: center;
   background-color: #b8c7b0;
   text-align: center;
   width: 100%;
-  position:relative;
-  top:0;
+  position: relative;
+  top: 0;
 }
 
-.containerApp{
-  padding-bottom: 100px;
-}
-h3{
-  color: #499F36;
-  font-style:italic;
-  font-style: bold;
+.main-view {
+  flex-grow: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  margin-top: 100px;
 }
 
-.btn{
-  color:#fff;
+.navbar {
+  max-height: 100px;
+}
+
+.btn {
+  color: #fff;
   background-color: #499F36;
   border-color: #38782a;
 }
-.btn-danger{
+
+.btn-danger {
   background-color: rgb(240, 9, 9);
-  color:#fff;
+  color: #fff;
   border-color: rgb(246, 9, 9);
 }
 
-.btn:hover, .btn:active, .btn:focus {
-  color:#fff;
+.btn:hover,
+.btn:active,
+.btn:focus {
+  color: #fff;
   background-color: #38782a;
   border-color: #27511d;
 }
 
-.btn-danger:hover , .btn-danger:active{
+.btn-danger:hover,
+.btn-danger:active {
   background-color: rgb(216, 9, 9);
-  color:#fff;
+  color: #fff;
   border-color: rgb(220, 9, 9);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.navbar{
-  background-color:#38782a;
+.navbar {
+  background-color: #38782a;
   padding-left: 20px;
   padding-right: 20px;
 }
 
-.pro-sidebar{
+.nav-link {
+  color: white !important;
+}
+
+.pro-sidebar {
   color: #ffffff;
   background-color: #499F36;
 }
 
 /* Sidebar css */
-.btn-toggle {
-  display: none;
-  color: #7eb06d;
-  background: #499F36;
+
+.aside-toggle {
+  position: absolute;
   cursor: pointer;
-  width: 35px;
-  height: 35px;
+  width: 50px;
+  height: 50px;
   text-align: center;
-  border-radius: 50%;
+  border-radius: 0%;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  display: none;
+  margin-top: 100px;
 }
 
 @media (max-width: 768px) {
-  .btn-toggle {
+  .aside-toggle {
     display: flex;
+  }
+
+  .pro-sidebar {
+    height: 100% !important;
   }
 }
 
@@ -128,12 +138,11 @@ h3{
   background: #38782a !important;
 }
 
-.pagination > li > a,
-.pagination > li > a:hover,
-.pagination > li > a:focus
-{
-    background-color: #ffffff;
-    color: #292b2c;
+.pagination>li>a,
+.pagination>li>a:hover,
+.pagination>li>a:focus {
+  background-color: #ffffff;
+  color: #292b2c;
 }
 
 /* pagination css end */

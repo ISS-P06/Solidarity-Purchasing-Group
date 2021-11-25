@@ -1,21 +1,28 @@
 import { useHistory } from 'react-router-dom';
-import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+} from 'react-pro-sidebar';
 import { BsFillPersonPlusFill, BsList } from 'react-icons/bs';
 import { GiFruitBowl } from 'react-icons/gi';
+import { VirtualClock } from '../components';
 
 function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
   const history = useHistory();
 
   return (
     <ProSidebar
-      image={false}
-      rtl={false}
       collapsed={collapsed}
       toggled={toggled}
       breakPoint="md"
       onToggle={handleToggleSidebar}
       style={{
-        height: '300px',
+        paddingTop: '66px',
+        height: 'auto',
       }}>
       <SidebarHeader>
         <div
@@ -65,6 +72,10 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             Browse Orders
           </MenuItem>
         </Menu>
+        <SidebarFooter>
+          {/* todo aggiustare posizione virtual clock */}
+          <VirtualClock />
+        </SidebarFooter>
       </SidebarContent>
     </ProSidebar>
   );

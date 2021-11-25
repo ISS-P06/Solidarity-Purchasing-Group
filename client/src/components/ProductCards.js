@@ -31,10 +31,8 @@ const ProductCards = (props) => {
 
   let endPage = Math.ceil(productList.length / productsPerPage);
   let startPage = currentPage - 2;
-  if (startPage < 1)
-    startPage = 1;
-  if (startPage > endPage - 4)
-    startPage = endPage - 4;
+  if (startPage < 1) startPage = 1;
+  if (startPage > endPage - 4) startPage = endPage - 4;
 
   for (let i = startPage; i <= startPage + 4; i++) {
     pageNumbers.push(i);
@@ -61,13 +59,17 @@ const ProductCards = (props) => {
         <Col style={{ display: 'flex', justifyContent: 'center' }}>
           <Pagination size="md">
             {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
-            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
+            {currentPage !== 1 && (
+              <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />
+            )}
             {pageNumbers.map((i) => (
               <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
                 {i}
               </Pagination.Item>
             ))}
-            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+            {currentPage !== endPage && (
+              <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />
+            )}
             {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
           </Pagination>
         </Col>
@@ -97,7 +99,7 @@ const ProductCard = (props) => {
             Price: {product.price} €/{product.unit}
           </ListGroup.Item>
           <ListGroup.Item>
-            Quantity: {product.quantity} {product.unit}
+            Quantity: {product.quantity.toFixed(2)} {product.unit}
           </ListGroup.Item>
         </ListGroup>
         {/* <Card.Footer>

@@ -98,14 +98,11 @@ function LoginForm(props) {
                 <Row>
                   {errorMessage === '' ? <></> : <div className="text-danger">{errorMessage}</div>}
                 </Row>
-                <Row className="d-flex justify-content-center">
-                  <Button className="btn m-2" variant="info" type="submit">
+                <Col>
+                  <Button className="btn mt-2" md="auto" variant="info" type="submit">
                     Login
                   </Button>
-                  <Button className="m-2" variant="secondary" onClick={() => handleClick('/')}>
-                    Back to home
-                  </Button>
-                </Row>
+                </Col>
               </Form>
             </Col>
             <Col xs={2} lg={4} />
