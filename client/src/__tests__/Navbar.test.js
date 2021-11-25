@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
-import AppNavbar from '../components/AppNavbar';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { default as AppNavbar } from '../containers/Navbar';
+import { MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 describe('Test navbar appearance', () => {
@@ -43,11 +43,13 @@ describe('Test navbar appearance', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Employee page')).toBeInTheDocument();
-    expect(screen.getByText('Logout')).toBeInTheDocument();
+    const nav1 = screen.getByText('Home Page');
+    const nav2 = screen.getByText('Logout');
 
-    fireEvent.click(screen.getByText('Logout'));
+    expect(nav1).toBeInTheDocument();
+    expect(nav2).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Employee page'));
+    fireEvent.click(nav1);
+    fireEvent.click(nav2);
   });
 });
