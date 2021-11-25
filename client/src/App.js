@@ -10,7 +10,7 @@ import {
   Basket,
   ClientHomePage,
 } from './components';
-import HomePage from './HomePage';
+import HomePage from './containers/HomePage';
 
 import { Layout } from './containers';
 import { getUserRoute, RedirectRoute } from './utils/route.js';

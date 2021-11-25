@@ -1,7 +1,7 @@
 import {Carousel, Image, Row, Col, Container} from 'react-bootstrap';
-import image1 from './img/homepage/Agriculture.jpg';
-import image2 from './img/homepage/Strawberry.jpg';
-import image3 from './img/homepage/Zucchini.jpg';
+import image1 from '../img/homepage/Agriculture.jpg';
+import image2 from '../img/homepage/Strawberry.jpg';
+import image3 from '../img/homepage/Zucchini.jpg';
 import {BsFillPersonPlusFill} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
 import {GiWallet} from 'react-icons/gi';
