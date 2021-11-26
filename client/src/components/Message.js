@@ -6,14 +6,17 @@ export function addMessage({ title, message, type }) {
   store.addNotification({
     title: title || '',
     message: message || '',
-    type: type || 'info',
+    type: type || 'success',
     insert: 'top',
     container: 'top-right',
     animationIn: ['animate__animated', 'animate__fadeIn'],
     animationOut: ['animate__animated', 'animate__fadeOut'],
+    width: 300,
     dismiss: {
-      duration: 5000,
+      duration: 3000,
       onScreen: true,
+      pauseOnHover: true,
+      showIcon: true,
     },
   });
 }
