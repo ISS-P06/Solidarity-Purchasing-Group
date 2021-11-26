@@ -4,6 +4,7 @@
   "description": "",
   "author": "",
   "license": "ISC",
+  "type": "commonjs",
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^5.0.1",
