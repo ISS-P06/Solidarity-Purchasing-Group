@@ -1,7 +1,9 @@
-.pro-sidebar {
+.pro-sidebar,
+.pro-sidebar-footer {
     color: #ffffff;
     background-color: #499F36;
 }
+
 
 /* Sidebar css */
 

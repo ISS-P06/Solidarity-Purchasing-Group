@@ -13,22 +13,24 @@ function Layout(props) {
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleCollapsedChange = (checked) => {
+  const handleCollapse = (checked) => {
     setCollapsed(checked);
   };
 
-  const handleToggleSidebar = (value) => {
+  const handleToggle = (value) => {
     setToggled(value);
   };
+
+  const AsideProps = { toggled, collapsed, userRole, handleCollapse };
 
   return (
     <Container className="d-flex text-dark min-vh-100" fluid="true">
       <Notification />
       <Navbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
-      <Aside toggled={toggled} collapsed={collapsed} handleToggleSidebar={handleToggleSidebar} />
+      <Aside {...AsideProps} />
 
       {/* This button shows up when the sidebar is hidden */}
-      <Button as={FaBars} className="aside-toggle" onClick={() => handleToggleSidebar(true)}>
+      <Button as={FaBars} className="aside-toggle" onClick={() => handleToggle(true)}>
         <FaBars />
       </Button>
 

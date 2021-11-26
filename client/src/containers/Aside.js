@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   ProSidebar,
   Menu,
@@ -11,15 +11,19 @@ import { BsFillPersonPlusFill, BsList } from 'react-icons/bs';
 import { GiFruitBowl } from 'react-icons/gi';
 import { VirtualClock } from '../components';
 
-function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
-  const history = useHistory();
+// todo add collaspse change
 
-  return (
+function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole }) {
+  const roleMenu = {
+    shop_employee: <EmployeeMenu />,
+  };
+
+  return !userRole ? null : (
     <ProSidebar
       collapsed={collapsed}
       toggled={toggled}
       breakPoint="md"
-      onToggle={handleToggleSidebar}
+      onToggle={handleToggle}
       style={{
         paddingTop: '66px',
         height: 'auto',
@@ -37,48 +41,43 @@ function ShopEmployeeActionsList({ collapsed, toggled, handleToggleSidebar }) {
             whiteSpace: 'nowrap',
           }}
           className="pro-sidebar">
-          Shop employee
+          {userRole.replace('_', ' ')}
         </div>
       </SidebarHeader>
-
-      <SidebarContent className="pro-sidebar">
-        <Menu iconShape="circle">
-          <MenuItem
-            icon={<BsFillPersonPlusFill />}
-            onClick={() => {
-              history.push('/employee/register');
-            }}>
-            Enter a new client
-          </MenuItem>
-          <MenuItem
-            icon={<BsList />}
-            onClick={() => {
-              history.push('/employee/clients');
-            }}>
-            Show clients
-          </MenuItem>
-          <MenuItem
-            icon={<GiFruitBowl />}
-            onClick={() => {
-              history.push('/employee/products');
-            }}>
-            Browse Products
-          </MenuItem>
-          <MenuItem
-            icon={<BsList />}
-            onClick={() => {
-              history.push('/employee/orders');
-            }}>
-            Browse Orders
-          </MenuItem>
-        </Menu>
-        <SidebarFooter>
-          {/* todo aggiustare posizione virtual clock */}
-          <VirtualClock />
-        </SidebarFooter>
-      </SidebarContent>
+      <SidebarContent className="pro-sidebar">{roleMenu[userRole]}</SidebarContent>
+      <SidebarFooter className="pro-sidebar-footer">
+        {/* todo aggiustare posizione virtual clock */}
+        <VirtualClock />
+      </SidebarFooter>
     </ProSidebar>
   );
 }
 
-export default ShopEmployeeActionsList;
+function EmployeeMenu() {
+  return (
+    <Menu iconShape="circle">
+      <MenuItem icon={<BsFillPersonPlusFill />}>
+        <Link className="text-light" to="/employee/register">
+          Enter a new client
+        </Link>
+      </MenuItem>
+      <MenuItem icon={<BsList />}>
+        <Link className="text-light" to="/employee/clients">
+          Show clients
+        </Link>
+      </MenuItem>
+      <MenuItem icon={<GiFruitBowl />}>
+        <Link className="text-light" to="/employee/products">
+          Browse Products
+        </Link>
+      </MenuItem>
+      <MenuItem icon={<BsList />}>
+        <Link className="text-light" to="/employee/orders">
+          Browse Orders
+        </Link>
+      </MenuItem>
+    </Menu>
+  );
+}
+
+export default Aside;

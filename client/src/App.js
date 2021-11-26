@@ -65,7 +65,7 @@ function App() {
     setLoggedIn(false);
   };
 
-  const NavbarProps = {
+  const LayoutProps = {
     loggedIn,
     doLogout,
     userRole,
@@ -75,7 +75,7 @@ function App() {
     <div className="app-container">
       <Router>
         <Switch>
-          <Layout {...NavbarProps}>
+          <Layout {...LayoutProps}>
             <Route exact path="/">
               <HomePage />
             </Route>

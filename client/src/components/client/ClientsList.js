@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Row, Col, Spinner, Card, Modal } from 'react-bootstrap/';
+import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstrap/';
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
@@ -28,7 +28,7 @@ function ClientsList() {
   return loading ? (
     <Spinner animation="border" variant="primary" />
   ) : (
-    <Row>
+    <Container>
       <h3 className="mt-3">Clients List</h3>
       {clientsList.length === 0 ? (
         <h1 className="text-center">There are no clients</h1>
@@ -45,7 +45,7 @@ function ClientsList() {
           </Col>
         </Row>
       )}
-    </Row>
+    </Container>
   );
 }
 
