@@ -15,6 +15,7 @@ import HomePage from './containers/HomePage';
 import { Layout } from './containers';
 import { getUserRoute, RedirectRoute } from './utils/route.js';
 import { api_getUserInfo, api_login, api_logout } from './Api';
+import { addMessage } from './components/Message';
 
 function App() {
   // Session-related states
@@ -60,6 +61,7 @@ function App() {
   // async function for logging out
   const doLogout = async () => {
     api_logout();
+    addMessage({ title: 'Logout', message: 'You are now logged out' });
     setLoggedIn(false);
   };
 

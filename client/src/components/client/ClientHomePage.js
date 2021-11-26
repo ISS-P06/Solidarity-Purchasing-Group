@@ -1,7 +1,6 @@
 import {useEffect} from "react";
 import {api_getUserInfo} from "../../Api";
 import {Button, Col, Image, Row} from "react-bootstrap";
-import "./ClientHomePage.css";
 import {useHistory} from "react-router-dom";
 //import img from "../../img/clientpage/vegetables-2977888_1280.jpg";
 import {Link} from "react-bootstrap-icons";

@@ -1,6 +1,4 @@
-@import "react-pro-sidebar/dist/css/styles.css";
-@import "bootstrap/dist/css/bootstrap.min.css";
-@import 'react-notifications-component/dist/theme.css';
+@import './styles/style.css';
 
 html {
   height: 100%;
@@ -32,9 +30,6 @@ h3 {
   margin-top: 100px;
 }
 
-.navbar {
-  max-height: 100px;
-}
 
 .btn {
   color: #fff;
@@ -61,72 +56,6 @@ h3 {
   background-color: rgb(216, 9, 9);
   color: #fff;
   border-color: rgb(220, 9, 9);
-}
-
-.navbar {
-  background-color: #38782a;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.nav-link {
-  color: white !important;
-}
-
-.pro-sidebar {
-  color: #ffffff;
-  background-color: #499F36;
-}
-
-/* Sidebar css */
-
-.aside-toggle {
-  position: absolute;
-  cursor: pointer;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  border-radius: 0%;
-  align-items: center;
-  justify-content: center;
-  display: none;
-  margin-top: 100px;
-}
-
-@media (max-width: 768px) {
-  .aside-toggle {
-    display: flex;
-  }
-
-  .pro-sidebar {
-    height: 100% !important;
-  }
-}
-
-.sidebar-btn-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40px;
-
-}
-
-.sidebar-btn {
-  transition: width 0.3s;
-  width: 150px;
-  padding: 1px 15px;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #7eb06d;
-  text-decoration: none;
-  margin: 0 auto;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
 }
 
 /* pagination css begin */

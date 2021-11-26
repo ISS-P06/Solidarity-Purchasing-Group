@@ -1,14 +1,13 @@
 import {Carousel, Image, Row, Col, Container} from 'react-bootstrap';
-import image1 from '../img/homepage/Agriculture.jpg';
-import image2 from '../img/homepage/Strawberry.jpg';
-import image3 from '../img/homepage/Zucchini.jpg';
 import {BsFillPersonPlusFill} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
 import {GiWallet} from 'react-icons/gi';
 import {RiShoppingBasketFill} from 'react-icons/ri';
-import "./HomePage.css"
 
 function HomePage() {
+    const image1 = '/img/homepage/Agriculture.jpg';
+    const image2 = '/img/homepage/Strawberry.jpg';
+    const image3 = '/img/homepage/Zucchini.jpg';
 
 
     return (
@@ -73,7 +72,6 @@ function HomePage() {
                         </Carousel.Item>
                     </Carousel>
                 </Col>
-
                 <h3 className={"mt-5"} >
                     We are a self-organized group of citizens and farmers that try to promote a sustainable and
                     high-quality network of food in order to buy and sell products at a fair price.
@@ -124,7 +122,7 @@ function HomePage() {
             </Row>
         </Container>
     )
-        ;
+        
 }
 
 export default HomePage;

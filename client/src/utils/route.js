@@ -7,6 +7,11 @@ const rolesPathRedirect = {
   shop_employee: '/employee',
 };
 
+/**
+ * Get home route of the user
+ * @param {string} role
+ * @returns {string}
+ */
 export function getUserRoute(role) {
   return rolesPathRedirect[role] || '';
 }

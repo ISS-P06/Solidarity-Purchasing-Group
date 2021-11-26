@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Col, Button, Row, Container } from 'react-bootstrap';
 import validator from 'validator';
 import { useState } from 'react';
