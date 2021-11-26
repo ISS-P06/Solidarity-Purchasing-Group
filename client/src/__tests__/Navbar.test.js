@@ -9,7 +9,7 @@ describe('Test navbar appearance', () => {
 
   test('The Navbar should appear when the App component is loaded', () => {
     render(<App />);
-    const navbar = screen.getByText('Solidarity Purchasing Group');
+    const navbar = screen.getByText('SPG');
     expect(navbar).toBeInTheDocument();
   });
 
@@ -25,10 +25,14 @@ describe('Test navbar appearance', () => {
       </MemoryRouter>
     );
 
-    const loginText = screen.getByText('Login');
-    expect(loginText).toBeInTheDocument();
+    const dropdown = screen.getByTestId('settings-dd');
+    expect(dropdown).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Login'));
+    fireEvent.click(dropdown);
+
+    // screen.getByRole('');
+    const login = screen.getByText(/Login/);
+    expect(login).toBeInTheDocument();
   });
 
   test('Test Navbar appearance: user is logged in', () => {
@@ -43,13 +47,14 @@ describe('Test navbar appearance', () => {
       </MemoryRouter>
     );
 
-    const nav1 = screen.getByText('Home Page');
-    const nav2 = screen.getByText('Logout');
+    const dropdown = screen.getByTestId('settings-dd');
+    expect(dropdown).toBeInTheDocument();
+    fireEvent.click(dropdown);
 
-    expect(nav1).toBeInTheDocument();
-    expect(nav2).toBeInTheDocument();
+    const logout = screen.getByText(/Logout/);
+    expect(logout).toBeInTheDocument();
 
-    fireEvent.click(nav1);
-    fireEvent.click(nav2);
+    fireEvent.click(logout);
+    expect(doLogoutFn).toHaveBeenCalledTimes(1);
   });
 });

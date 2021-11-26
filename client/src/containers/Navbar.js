@@ -29,7 +29,7 @@ function SettingsDropdown(props) {
 
   return (
     <Dropdown drop="start" className="settings-dd">
-      <Dropdown.Toggle variant="success">
+      <Dropdown.Toggle variant="success" data-testid="settings-dd">
         <BsPersonCircle size={20} className="my-1" />
       </Dropdown.Toggle>
 
