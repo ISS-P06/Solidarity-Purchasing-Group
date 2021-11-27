@@ -1,263 +1,285 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { Col, Container, Row, Button } from 'react-bootstrap';
-import { FaBars } from 'react-icons/fa';
-
+import {useState, useEffect} from 'react';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import {Col, Container, Row, Button} from 'react-bootstrap';
+import {FaBars} from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
 import {
-  AlertBox,
-  AppNavbar,
-  ClientsList,
-  InsertClient,
-  LoginForm,
-  OrderList,
-  OrderReview,
-  ProductCards,
-  ShopEmployeeActionsList,
-  
+    AlertBox,
+    AppNavbar,
+    ClientsList,
+    InsertClient,
+    LoginForm,
+    OrderList,
+    OrderReview,
+    ProductCards,
+    ShopEmployeeActionsList,
+
 } from './components';
 
 import Basket from './components/order/Basket'
 
-import { api_getUserInfo, api_login, api_logout } from './Api';
+import {api_getUserInfo, api_login, api_logout} from './Api';
+import FarmerHomePage from "./components/farmer/FarmerHomePage";
 
 function App() {
-  // Session-related states
-  const [loggedIn, setLoggedIn] = useState(false);
-  /*
-    userRole: current user's role; possible values:
-    - shop_employee
-    - (empty string/none, i.e. not logged in)
+    // Session-related states
+    const history = useHistory();
+    const [loggedIn, setLoggedIn] = useState(false);
+    /*
+      userRole: current user's role; possible values:
+      - shop_employee: id, username, role, name, email, phone
+      - farmer:id, username, role, name, email, phone, address, farm_name
+      - client: id, username, role, name, email, phone, address, balance
+      - (empty string/none, i.e. not logged in)
 
-    other values will be considered in subsequent sprints
-    when necessary
-  */
-  const [userRole, setUserRole] = useState('');
-  const [userId, setUserId] = useState();
+      other values will be considered in subsequent sprints
+      when necessary
+    */
+    const [userRole, setUserRole] = useState('');
+    const [userId, setUserId] = useState();
+    const [user, setUser] = useState();
 
-  /* for giving feedback to the user*/
-  const [message, setMessage] = useState('');
-  const [alert, setAlert] = useState(false);
+    /* for giving feedback to the user*/
+    const [message, setMessage] = useState('');
+    const [alert, setAlert] = useState(false);
 
-  const [toggled, setToggled] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+    const [toggled, setToggled] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
-  const handleCollapsedChange = (checked) => {
-    setCollapsed(checked);
-  };
 
-  const handleToggleSidebar = (value) => {
-    setToggled(value);
-  };
 
-  useEffect(() => {
-    if (message !== '') {
-      setAlert(true);
-    }
-  }, [message]);
-
-  // useEffect for getting user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const info = await api_getUserInfo();
-        setLoggedIn(true);
-        setUserRole(info.role);
-        setUserId(info.id);
-      } catch (err) {
-        setUserRole('');
-        console.error(err);
-      }
+    const handleCollapsedChange = (checked) => {
+        setCollapsed(checked);
     };
-    checkAuth();
-  }, [loggedIn]);
 
-  // async function for logging in
-  const doLogin = async (credentials) => {
-    try {
-      await api_login(credentials);
-      setLoggedIn(true);
-      return { done: true, msg: 'ok' };
-    } catch (err) {
-      return { done: false, msg: err.message };
-    }
-  };
-
-  // async function for logging out
-  const doLogout = async () => {
-    await api_logout();
-    setLoggedIn(false);
-  };
-
-  // useEffect for getting user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const info = await api_getUserInfo();
-        setLoggedIn(true);
-        setUserRole(info.role);
-      } catch (err) {
-        setUserRole('');
-        console.error(err);
-      }
+    const handleToggleSidebar = (value) => {
+        setToggled(value);
     };
-    checkAuth();
-  }, [loggedIn]);
 
-  return (
-    <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
-      
-      <Router>
-        <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
+    useEffect(() => {
+        if (message !== '') {
+            setAlert(true);
+        }
+    }, [message]);
 
-        <AlertBox alert={alert} setAlert={setAlert} message={message} />
+    // useEffect for getting user info
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const info = await api_getUserInfo();
+                setLoggedIn(true);
+                setUserRole(info.role);
+                setUserId(info.id);
+                setUser(info);
+                console.log(info)
+                if(info.role==="farmer"){
+                    console.log("he")
+                    history.push("/farmer");
+                }
+                else if(info.role==="client"){
+                    history.push("/client");
+                }
+                else if(info.role==="shop_employee"){
+                    history.push("/shop_employee");
+                }
+                console.log(history);
+            } catch (err) {
+                setUserRole('');
+                console.error(err);
+            }
+        };
+        checkAuth();
 
-        <Row className="m-auto">
-          {loggedIn && userRole === 'shop_employee' ? (
-            <Col xs={1} md={4} lg={2} className="p-0">
-              {/* This button shows up when the sidebar is hidden */}
-              <Button
-                className="btn-toggle m-2"
-                onClick={() => handleToggleSidebar(true)}
-                className={toggled ? 'd-none' : 'btn-toggle'}>
-                <FaBars />
-              </Button>
+    }, [loggedIn]);
 
-              {/* Aside */}
-              <ShopEmployeeActionsList
-                toggled={toggled}
-                collapsed={collapsed}
-                handleToggleSidebar={handleToggleSidebar}
-                setMessage={setMessage}
-              />
-            </Col>
-          ) : (
-            <div />
-          )}
+    // async function for logging in
+    const doLogin = async (credentials) => {
+        try {
+            await api_login(credentials);
+            setLoggedIn(true);
+            return {done: true, msg: 'ok'};
+        } catch (err) {
+            return {done: false, msg: err.message};
+        }
+    };
 
-          {/*<Col xs={11} md={8} lg={10}>*/}
-          <Col>
-            <Switch>
-              {/* Login route */}
-              <Route path="/login">
-                {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
-              </Route>
-              {/* Shop employee-only routes */}
+    // async function for logging out
+    const doLogout = async () => {
+        await api_logout();
+        setLoggedIn(false);
+    };
 
-              {/* Employee: client info page route */}
-              <Route
-                path="/employee/clients/:id"
-                render={({ match }) => {
-                  if (loggedIn) {
-                    return <div id={match.params.id} />;
-                  } else {
-                    return <RedirectUser userRole={userRole} />;
-                  }
-                }}
-              />
-              {/* Employee client list route */}
-              <Route path="/employee/clients">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <ClientsList setMessage={setMessage} />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
 
-              {/* Employee client registration route */}
-              <Route path="/employee/register">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <InsertClient />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+    return (
+        <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
 
-              {/* Employee product browsing route */}
-              <Route path="/employee/products">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <ProductCards userRole={userRole} userId={userId} />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+            <Router>
+                <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole}/>
 
-              {/* Employee: order info page route */}
-              <Route path="/employee/orders/:id">
-                {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole} />}
-              </Route>
+                <AlertBox alert={alert} setAlert={setAlert} message={message}/>
 
-              {/* Employee order list route */}
-              <Route path="/employee/orders">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <OrderList userRole={userRole} userId={userId}/>
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+                <Row className="m-auto">
+                    {loggedIn && userRole === 'shop_employee' ? (
+                        <Col xs={1} md={4} lg={2} className="p-0">
+                            {/* This button shows up when the sidebar is hidden */}
+                            <Button
+                                className="btn-toggle m-2"
+                                onClick={() => handleToggleSidebar(true)}
+                                className={toggled ? 'd-none' : 'btn-toggle'}>
+                                <FaBars/>
+                            </Button>
 
-              {/* Employee order creation route */}
-              <Route path="/employee/orders/new">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+                            {/* Aside */}
+                            <ShopEmployeeActionsList
+                                toggled={toggled}
+                                collapsed={collapsed}
+                                handleToggleSidebar={handleToggleSidebar}
+                                setMessage={setMessage}
+                            />
+                        </Col>
+                    ) : (
+                        <div/>
+                    )}
 
-              {/* Employee home page route */}
-              <Route path="/employee">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+                    {/*<Col xs={11} md={8} lg={10}>*/}
+                    <Col>
+                        <Switch>
+                            {/* Login route */}
+                            <Route path="/login">
+                                {loggedIn ? <RedirectUser userRole={userRole}/> : <LoginForm doLogin={doLogin}/>}
+                            </Route>
+                            {/* Shop employee-only routes */}
 
-              {/*
+                            {/* Employee: client info page route */}
+                            <Route path="/farmer">
+                                <FarmerHomePage user={user}/>;
+                            </Route>
+
+
+                        {/* Employee: client info page route */}
+                        <Route
+                            path="/employee/clients/:id"
+                            render={({match}) => {
+                                if (loggedIn) {
+                                    return <div id={match.params.id}/>;
+                                } else {
+                                    return <RedirectUser userRole={userRole}/>;
+                                }
+                            }}
+                        />
+                        {/* Employee client list route */}
+                        <Route path="/employee/clients">
+                            {loggedIn && userRole === 'shop_employee' ? (
+                                <ClientsList setMessage={setMessage}/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Employee client registration route */}
+                        <Route path="/employee/register">
+                            {loggedIn && userRole === 'shop_employee' ? (
+                                <InsertClient/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Employee product browsing route */}
+                        <Route path="/employee/products">
+                            {loggedIn && userRole == 'shop_employee' ? (
+                                <ProductCards userRole={userRole} userId={userId}/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Employee: order info page route */}
+                        <Route path="/employee/orders/:id">
+                            {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole}/>}
+                        </Route>
+
+                        {/* Employee order list route */}
+                        <Route path="/employee/orders">
+                            {loggedIn && userRole === 'shop_employee' ? (
+                                <OrderList userRole={userRole} userId={userId}/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Employee order creation route */}
+                        <Route path="/employee/orders/new">
+                            {loggedIn && userRole === 'shop_employee' ? (
+                                <div/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Employee home page route */}
+                        <Route path="/employee">
+                            {loggedIn && userRole === 'shop_employee' ? (
+                                <div/>
+                            ) : (
+                                <RedirectUser userRole={userRole}/>
+                            )}
+                        </Route>
+
+                        {/* Farmer; only routes */}
+
+
+                        {/*
               Routes to test client orders component
               TO DO: remove or improve these routes
               Thank you, Marco
               */}
-              <Route path="/client/orders/:id">
-                <OrderReview userRole="client" userId="4"/>
-              </Route>
-              <Route path="/client/orders">
-                <OrderList userRole="client" userId="4"/>
-              </Route>
+                        <Route path="/client/orders/:id">
+                            <OrderReview userRole="client" userId="4"/>
+                        </Route>
+                        <Route path="/client/orders">
+                            <OrderList userRole="client" userId="4"/>
+                        </Route>
 
-              {/* Home page route */}
-              <Route path="/">
-                {/* Replace div with homepage component */}
-                <Basket userId="4"/>
-                <ProductCards userRole="client" userId="4" />
-                <div />
-              </Route>
+                        {/* Home page route */}
+                        <Route path="/">
+                            {/* Replace div with homepage component */}
+                            <Basket userId="4"/>
+                            <ProductCards userRole="client" userId="4"/>
+                            <div/>
+                        </Route>
 
 
-              <Route>
-                <Redirect to="/" />
-              </Route>
-            </Switch>
-          </Col>
-        </Row>
-      </Router>
-    </Container>
-  );
+                        <Route>
+                            <Redirect to="/"/>
+                        </Route>
+                    </Switch>
+                </Col>
+            </Row>
+        </Router>
+</Container>
+)
+    ;
 }
 
 function RedirectUser(props) {
-  const userRole = props.userRole;
+    const userRole = props.userRole;
+    console.log(userRole)
 
-  const renderSwitch = (role) => {
-    switch (role) {
-      case 'shop_employee':
-        return <Redirect to="/employee" />;
-      default:
-        return <Redirect to="/" />;
-    }
-  };
+    const renderSwitch = (role) => {
+        switch (role) {
+            case 'shop_employee':
+                return <Redirect to="/employee"/>;
+            case 'client':
+                return <Redirect to="/client"/>;
+            case 'farmer':
+                return <Redirect to="/farmer"/>;
+            default:
+                return <Redirect to="/"/>;
+        }
+    };
 
-  return renderSwitch(userRole);
+    return renderSwitch(userRole);
 }
 
 export default App;
