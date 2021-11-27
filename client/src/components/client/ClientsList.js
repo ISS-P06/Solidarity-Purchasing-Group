@@ -4,10 +4,7 @@ import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstr
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
-<<<<<<< HEAD
 import {addMessage} from "../Message";
-=======
->>>>>>> 2a94f9f (feat: integrated VTC for orders)
 import { checkOrderInterval } from '../../utils/date.js';
 
 function ClientsList(props) {
