@@ -10,9 +10,10 @@ import db from './db.js';
 export function checksClientBalance() {
     return new Promise((resolve, reject) => {
         const sql = `
-                    SELECT C.email, R.id
-                    FROM Request R, Product_Request PR, Product P, Client C
-                    WHERE R.ref_client = C.id AND PR.ref_request = R.id AND PR.ref_product = P.id 
+                    SELECT U.email, R.id
+                    FROM Request R, Product_Request PR, Product P, Client C, User U
+                    WHERE R.ref_client = C.ref_user AND PR.ref_request = R.id AND PR.ref_product = P.id
+                        AND C.ref_user = U.id 
                     AND R.status = 'pending'
                     AND C.balance < (
                                         SELECT SUM(P1.price * PR1.quantity)
@@ -32,7 +33,7 @@ export function checksClientBalance() {
             const sql = `
                     SELECT R.id
                     FROM Request R, Product_Request PR, Product P, Client C
-                    WHERE R.ref_client = C.id AND PR.ref_request = R.id AND PR.ref_product = P.id 
+                    WHERE R.ref_client = C.ref_user AND PR.ref_request = R.id AND PR.ref_product = P.id 
                     AND R.status = 'pending'
                     AND C.balance >= (
                                         SELECT SUM(P1.price * PR1.quantity)

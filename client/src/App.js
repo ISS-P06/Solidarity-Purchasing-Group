@@ -13,7 +13,10 @@ import {
   OrderReview,
   ProductCards,
   ShopEmployeeActionsList,
+  
 } from './components';
+
+import Basket from './components/order/Basket'
 
 import { api_getUserInfo, api_login, api_logout } from './Api';
 
@@ -29,6 +32,7 @@ function App() {
     when necessary
   */
   const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState();
 
   /* for giving feedback to the user*/
   const [message, setMessage] = useState('');
@@ -58,6 +62,7 @@ function App() {
         const info = await api_getUserInfo();
         setLoggedIn(true);
         setUserRole(info.role);
+        setUserId(info.id);
       } catch (err) {
         setUserRole('');
         console.error(err);
@@ -100,13 +105,14 @@ function App() {
 
   return (
     <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
+      
       <Router>
         <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
 
         <AlertBox alert={alert} setAlert={setAlert} message={message} />
 
         <Row className="m-auto">
-          {loggedIn && userRole == 'shop_employee' ? (
+          {loggedIn && userRole === 'shop_employee' ? (
             <Col xs={1} md={4} lg={2} className="p-0">
               {/* This button shows up when the sidebar is hidden */}
               <Button
@@ -150,7 +156,7 @@ function App() {
               />
               {/* Employee client list route */}
               <Route path="/employee/clients">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <ClientsList setMessage={setMessage} />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -159,7 +165,7 @@ function App() {
 
               {/* Employee client registration route */}
               <Route path="/employee/register">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <InsertClient />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -169,7 +175,7 @@ function App() {
               {/* Employee product browsing route */}
               <Route path="/employee/products">
                 {loggedIn && userRole == 'shop_employee' ? (
-                  <ProductCards />
+                  <ProductCards userRole={userRole} userId={userId} />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
@@ -177,13 +183,13 @@ function App() {
 
               {/* Employee: order info page route */}
               <Route path="/employee/orders/:id">
-                {loggedIn ? <OrderReview /> : <RedirectUser userRole={userRole} />}
+                {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole} />}
               </Route>
 
               {/* Employee order list route */}
               <Route path="/employee/orders">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <OrderList />
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <OrderList userRole={userRole} userId={userId}/>
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
@@ -191,7 +197,7 @@ function App() {
 
               {/* Employee order creation route */}
               <Route path="/employee/orders/new">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <div />
                 ) : (
                   <RedirectUser userRole={userRole} />
@@ -200,18 +206,33 @@ function App() {
 
               {/* Employee home page route */}
               <Route path="/employee">
-                {loggedIn && userRole == 'shop_employee' ? (
+                {loggedIn && userRole === 'shop_employee' ? (
                   <div />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
               </Route>
 
+              {/*
+              Routes to test client orders component
+              TO DO: remove or improve these routes
+              Thank you, Marco
+              */}
+              <Route path="/client/orders/:id">
+                <OrderReview userRole="client" userId="4"/>
+              </Route>
+              <Route path="/client/orders">
+                <OrderList userRole="client" userId="4"/>
+              </Route>
+
               {/* Home page route */}
               <Route path="/">
                 {/* Replace div with homepage component */}
+                <Basket userId="4"/>
+                <ProductCards userRole="client" userId="4" />
                 <div />
               </Route>
+
 
               <Route>
                 <Redirect to="/" />

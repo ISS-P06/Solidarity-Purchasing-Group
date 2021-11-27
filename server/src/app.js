@@ -15,12 +15,13 @@ import {
   getOrders,
   getOrderById,
   setOrderDelivered,
+  getBasketByClientId,
 } from './dao.js';
 
 import VTC from './vtc.js';
 import SYS from './system';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -123,8 +124,8 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   const time = req.body.time;
 
   try {
-    vtc.set(time);
-    sys.checkTimedEvents();
+    let newTime = vtc.set(time);
+    sys.checkTimedEvents(newTime);
     res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
   } catch (error) {
     res.status(500).json({ error });
@@ -204,6 +205,20 @@ app.post(
 // GET /api/orders
 app.get('/api/orders', (req, res) => {
   getOrders()
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders
+app.get('/api/clients/:clientId/orders', (req, res) => {
+  getOrders(req.params.clientId)
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+  getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
@@ -323,6 +338,13 @@ app.post(
   }
 );
 // --- --- --- //
+
+// GET /api/clients/:clientId/basket
+app.get('/api/client/:clientId/basket', (req, res) => {
+  getBasketByClientId(req.params.clientId)
+    .then((products) => res.json(products))
+    .catch(() => res.status(500).end());
+});
 
 /*** End APIs ***/
 

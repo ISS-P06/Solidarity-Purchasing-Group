@@ -24,15 +24,13 @@ class SYS {
      * Check for time-based events every time the
      * virtual clock is updated.
      */
-    checkTimedEvents() {
-        const currTime = dayjs(vtc.time());
-
+    checkTimedEvents(currTime) {
         /**
          * Check if the current day and time is
          * Monday, 9am
          */
         if (currTime.day() == 1
-         && currTime.hour() == 9) {
+         && currTime.hour() == 10) {
             this.event_updateOrders();
         }
     }
@@ -67,7 +65,7 @@ class SYS {
         for (let mail of mailingList) {
             mail_sendBalanceReminder(mail.email, mail.id)
                 .then((res) => {
-                    //console.log("ok");
+                    // ok
                 })
                 .catch((err) => console.log(err));
         }        
