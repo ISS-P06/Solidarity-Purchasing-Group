@@ -16,9 +16,6 @@ class SYS {
      * related operations.
      * 
      */
-    constructor() {
-        // boh
-    }
 
     /*
      * Check for time-based events every time the
@@ -29,8 +26,11 @@ class SYS {
          * Check if the current day and time is
          * Monday, 9am
          */
-        if (currTime.day() == 1
-         && currTime.hour() == 10) {
+
+        let time = new Date(currTime);
+
+        if (time.getDay() == 1
+         && time.getHours() == 9) {
             this.event_updateOrders();
         }
     }

@@ -1,6 +1,7 @@
 'use strict';
 
 import db from './db.js';
+import dayjs from 'dayjs';
 
 /*
     Checks client balance before confirm their order.
@@ -75,5 +76,53 @@ export function checksClientBalance() {
                 });
             });
         });
+    });
+}
+
+export function test_addDummyOrders() {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM Request WHERE id = 0 OR id = -1';
+
+        db.serialize(() => {
+            db.run(sql, [], (err) => {
+                if (err) reject(err);
+    
+                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (0, 2, pending, ?)`;
+                db.run(
+                    sql,
+                    [dayjs().format('YYYY-MM-DD HH:MM')],
+                    function (err) {
+                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (0,1,9999.0)`;
+                        db.run(sql, [], function (err) {
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+                        });
+                    }
+                );
+            });
+            db.run(sql, [], (err) => {
+                if (err) reject(err);
+    
+                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`;
+                db.run(
+                    sql,
+                    [dayjs().format('YYYY-MM-DD HH:MM')],
+                    function (err) {
+                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,0.1)`;
+                        db.run(sql, [], function (err) {
+                            if (err) {
+                                reject(err);
+                                return;
+                            }
+                            
+                            resolve(0);
+                        });
+                    }
+                );
+            });
+        });
+        
     });
 }
