@@ -31,11 +31,9 @@ export function mail_sendBalanceReminder(userMail, orderID) {
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions)
             .then((res) => {
-                console.log("email sent");
                 resolve("email sent");
             })
             .catch((err) => {
-                console.log("error: " + err);
                 reject("error: " + err);
             });
     });
