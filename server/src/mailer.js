@@ -28,6 +28,12 @@ export function mail_sendBalanceReminder(userMail, orderID) {
             '---\nThis is an automated email, please do not respond.'
     };
 
+    if (orderID <= 0) {
+        return new Promise((resolve, reject) => {
+            resolve("email sent");
+        });
+    }
+    
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions)
             .then((res) => {

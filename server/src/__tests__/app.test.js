@@ -1,6 +1,5 @@
 import request from 'supertest';
 import app from '../app';
-import { test_removeUser } from '../user-dao';
 
 import { copyFileSync, unlinkSync } from 'fs';
 
@@ -150,6 +149,7 @@ describe('Test the login APIs', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
 });
+// --- --- --- //
 
 describe('Test the orders path', () => {
   test('It should response GET api/orders', () => {
