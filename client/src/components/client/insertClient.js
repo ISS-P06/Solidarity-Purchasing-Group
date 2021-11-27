@@ -66,7 +66,7 @@ const InsertClient = function (props) {
                 case 'client':
                     insertClient(values)
                         .then(() => {
-                            history.push('/'); /*TODO redirect in the correct home page*/
+                            history.push('/client'); /*TODO redirect in the correct home page*/
                             addMessage("", 'Registration is completed with success', 'success');
 
                         })
@@ -79,8 +79,14 @@ const InsertClient = function (props) {
                 default:
                     insertUser(user)
                         .then(() => {
-                            history.push('/'); /*TODO redirect in the correct home page*/
+
                             addMessage("", 'Registration is completed with success', 'success');
+                            if(user.typeUser==="shop_employee"){
+                                history.push('/shop_employee');
+                            }
+                            else if(user.typeUser==="farmer"){
+                                history.push('/farmer');
+                            }
                         })
                         .catch(err=>{
                             addMessage("Error", err.message, 'danger');
