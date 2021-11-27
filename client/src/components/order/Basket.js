@@ -1,24 +1,9 @@
 import { useEffect, useState } from 'react';
 import ProductList from './ProductList';
 import {Button, Card, Alert} from 'react-bootstrap';
-import { api_getBasket, api_buyNow, api_removePruductFromBasket } from '../../Api';
+import { api_getBasket, api_buyNow, api_removeProductFromBasket } from '../../Api';
 
-let productData = [{
-    productId: 1,
-    category: "fruits-and-vegetables",
-    name: "Onion",
-    price: 0.8,
-    unit: 'Kg',
-    quantity: 2.6
-},
-{
-    productId: 2,
-    category: "fruits-and-vegetables",
-    name: "Apple",
-    price: 1.5,
-    unit: 'Kg',
-    quantity: 1.5
-}];
+
 
 export default function Basket(props) {
 
@@ -35,8 +20,8 @@ export default function Basket(props) {
     }
 
     const handleRemoveProduct = async (productId) => {
-        await api_removePruductFromBasket(props.userId, productId).then(() => {
-            setIsUpdated(false);
+        await api_removeProductFromBasket(props.userId, productId).then(() => {
+            setIsUpdated(true);
         }).catch((e) => { console.log(e);})
     }
 
@@ -56,17 +41,12 @@ export default function Basket(props) {
                 } else {
                     setIsEmpty(true);
                 }
-                setIsUpdated(true);
+                setIsUpdated(false);
             }).catch((e) => {
                 console.log(e);
         })
 
-        /*
-        setBasket(productData);
-        setIsEmpty(false);
-        setIsUpdated(true);
-        */
-    }, [])
+    }, [isUpdated,setIsUpdated])
 
     return(
         <div class="main">

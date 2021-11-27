@@ -285,3 +285,31 @@ export function getBasketByClientId(clientId) {
     });
   });
 }
+
+export function  addProductToBasket(clientId,productId, quantity) {
+  return new Promise((resolve, reject) => {
+    const sql = `INSERT INTO Basket(ref_client, ref_product,quantity) VALUES (?, ?,?)`;
+    db.run(sql, [clientId,productId, quantity], (err, rows) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+        return;
+      }
+      resolve(productId);
+    });
+  });
+}
+
+export function  removeProductToBasket(clientId,productId) {
+  return new Promise((resolve, reject) => {
+    const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
+    db.run(sql, [clientId,productId], (err, rows) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+        return;
+      }
+      resolve(productId);
+    });
+  });
+}
