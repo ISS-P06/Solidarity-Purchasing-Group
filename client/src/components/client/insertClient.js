@@ -6,7 +6,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {Eye} from 'react-bootstrap-icons';
 import Notification, {addMessage} from '../Message';
 
-import {insertClient} from '../../Api';
+import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
     const {loggedIn} = props;
@@ -16,8 +16,8 @@ const InsertClient = function (props) {
     const history = useHistory();
 
     const handleSubmit = (values) => {
-        console.log(values);
-        const user = {};
+        //console.log(values);
+        let user = {};
         const typeUser = values.typeUser;
         if (typeUser === "client") {
             user = {
@@ -26,7 +26,7 @@ const InsertClient = function (props) {
                 surname: values.surname,
                 phone: values.phone,
                 address: values.address,
-                mail: values.email,
+                mail: values.mail,
                 balance: values.balance
             }
         } else if (typeUser === "farmer") {
@@ -36,8 +36,10 @@ const InsertClient = function (props) {
                 surname: values.surname,
                 phone: values.phone,
                 address: values.address,
-                mail: values.email,
-                farmName: values.farmName
+                mail: values.mail,
+                farmName: values.farmName,
+                username : values.username,
+                password : values.password
             }
         } else if (typeUser === "shop_employee") {
             user = {
@@ -45,20 +47,50 @@ const InsertClient = function (props) {
                 name: values.name,
                 surname: values.surname,
                 phone: values.phone,
-                mail: values.email
+                mail: values.mail,
+                username : values.username,
+                password : values.password
             }
         }
+        if(loggedIn){
+            insertClient(values)
+                .then(() => {
+                    history.push('/'); /*TODO redirect in the correct home page*/
+                    addMessage("", 'Registration is completed with success', 'success');
 
-        insertClient(values)
-            .then(() => {
-                history.push('/'); /*TODO redirect in the correct home page*/
-                addMessage("", 'Registration is completed with success', 'success');
+                })
+                .catch((err) => {
+                    addMessage("Error", err.message, 'danger');
+                    console.log(err);
+                });
+        }else{
+            switch (values.typeUser){
+                case 'client':
+                    insertClient(values)
+                        .then(() => {
+                            history.push('/'); /*TODO redirect in the correct home page*/
+                            addMessage("", 'Registration is completed with success', 'success');
 
-            })
-            .catch((err) => {
-                addMessage("Error", err.message, 'danger');
-                console.log(err);
-            });
+                        })
+                        .catch((err) => {
+                            addMessage("Error", err.message, 'danger');
+                            console.log(err);
+                        });
+                    break;
+
+                default:
+                    insertUser(user)
+                        .then(() => {
+                            history.push('/'); /*TODO redirect in the correct home page*/
+                            addMessage("", 'Registration is completed with success', 'success');
+                        })
+                        .catch(err=>{
+                            addMessage("Error", err.message, 'danger');
+                            console.log(err);
+                        })
+            }
+
+        }
     };
 
     const formik = useFormik({
@@ -69,7 +101,7 @@ const InsertClient = function (props) {
             phone: '',
             address: '',
             mail: '',
-            balance: 10,
+            balance: '',
             username: '',
             password: '',
             farmName: ""

@@ -15,11 +15,12 @@ import {
   getOrders,
   getOrderById,
   setOrderDelivered,
+  registerUser,
 } from './dao.js';
 
 import VTC from './vtc.js';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -239,7 +240,8 @@ app.post(
       client.mail,
       client.balance,
       client.username,
-      client.password
+      client.password,
+      client.typeUser
     )
       .then((result) => {
         res.end();
@@ -247,6 +249,14 @@ app.post(
       .catch((err) => res.status(500).json(err));
   }
 );
+
+app.post('/api/register_user' , (req ,res)=>{
+    const user = req.body;
+    registerUser(user)
+        .then(()=> res.end())
+        .catch((err)=> {
+            res.status(500).json(err)});
+})
 
 // --- Login/Logout routes --- //
 // Login
