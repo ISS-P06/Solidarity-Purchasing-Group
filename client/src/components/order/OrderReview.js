@@ -102,11 +102,11 @@ function OrderReview(props) {
             </Card.Body>
             <Card.Footer>
               <Link to={{ pathname: back, }}>
-                <Button variant="primary" className="float-start text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
+                <Button variant="primary" className="float-start text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }}>
                   Back
                 </Button>
               </Link>
-              {orderReview.status !== 'delivered' && props.userRole === "shop_employee" && (
+              {orderReview.status === 'confirmed' && props.userRole === "shop_employee" && (
                 <Button variant="primary" className="float-end text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
                   <BoxArrowInUp /> Deliver
                 </Button>
