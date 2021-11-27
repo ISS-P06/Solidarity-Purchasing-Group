@@ -18,7 +18,7 @@ import {
 
 import Basket from './components/order/Basket'
 
-import { api_getUserInfo, api_login, api_logout } from './Api';
+import { api_getUserInfo, api_login, api_logout, api_getTime } from './Api';
 
 function App() {
   // Session-related states
@@ -33,6 +33,13 @@ function App() {
   */
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState();
+
+  // This state is used to update (and monitor) the time on front-end
+  // Some functionalities can be used only at a certain time
+  const [dirtyVT, setDirtyVT] = useState(true);
+
+  // State used to store the system's virtual time
+  const [virtualTime, setVirtualTime] = useState({});
 
   /* for giving feedback to the user*/
   const [message, setMessage] = useState('');
@@ -71,6 +78,23 @@ function App() {
     checkAuth();
   }, [loggedIn]);
 
+  // useEffect used to get the system's virtual time
+  useEffect(() => {
+    const getVT = async () => {
+      try {
+        const data = await api_getTime();
+        console.log(data);
+        setVirtualTime(new Date(data.currentTime));
+        setDirtyVT(false);
+      } catch (err) {
+        setVirtualTime(new Date().toISOString());
+        setDirtyVT(false);
+        console.error(err);
+      }
+    };
+    getVT();
+  }, [dirtyVT]);
+
   // async function for logging in
   const doLogin = async (credentials) => {
     try {
@@ -105,9 +129,15 @@ function App() {
 
   return (
     <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
-      
       <Router>
-        <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
+        <AppNavbar 
+          loggedIn={loggedIn} 
+          doLogout={doLogout} 
+          userRole={userRole} 
+          dirtyVT={dirtyVT}
+          setDirtyVT={setDirtyVT} 
+          virtualTime={virtualTime}
+          />
 
         <AlertBox alert={alert} setAlert={setAlert} message={message} />
 
@@ -157,7 +187,9 @@ function App() {
               {/* Employee client list route */}
               <Route path="/employee/clients">
                 {loggedIn && userRole === 'shop_employee' ? (
-                  <ClientsList setMessage={setMessage} />
+                  <ClientsList 
+                    setMessage={setMessage} 
+                    virtualTime={virtualTime} />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}

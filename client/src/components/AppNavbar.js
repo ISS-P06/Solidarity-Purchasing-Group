@@ -9,6 +9,9 @@ function AppNavbar(props) {
   const loggedIn = props.loggedIn;
   const doLogout = props.doLogout;
   const userRole = props.userRole;
+  const dirtyVT = props.dirtyVT;
+  const setDirtyVT = props.setDirtyVT;
+  const virtualTime = props.virtualTime;
   const history = useHistory();
 
   const handleClick = (path) => {
@@ -44,7 +47,11 @@ function AppNavbar(props) {
 
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
-        <VirtualClock />
+        <VirtualClock 
+          dirtyVT={dirtyVT}
+          setDirtyVT={setDirtyVT}
+          virtualTime={virtualTime}
+          />
         <Nav className="">
           {loggedIn ? (
             <>

@@ -77,7 +77,7 @@ export function insertOrder(orderClient) {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(
       sql,
-      [orderClient.clientID, 'confirmed', dayjs().format('YYYY-MM-DD HH:MM')],
+      [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
       function (err) {
         var OrderID = this.lastID;
         orderClient.order.map((product, index) => {
