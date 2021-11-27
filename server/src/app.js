@@ -125,8 +125,8 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   const time = req.body.time;
 
   try {
-    vtc.set(time);
-    sys.checkTimedEvents();
+    let newTime = vtc.set(time);
+    sys.checkTimedEvents(newTime);
     res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
   } catch (error) {
     res.status(500).json({ error });
