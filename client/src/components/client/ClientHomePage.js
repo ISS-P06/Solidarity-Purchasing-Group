@@ -14,11 +14,11 @@ function ClientHomePage(props) {
     const history = useHistory();
     return (
         <Row>
-            <h2 className="mt-3 mb-3">Welcome on Solidarity Purchase
-                Group, {userId} !</h2> {/*Todo update with the name of the user*/}
-            <h4 className="mt-3 mb-3">Your current balance is 10€</h4> {/*Todo update with the real balance*/}
+            <h1 className="mt-3 mb-3"  style={{color:"#27511D"}}>Welcome on Solidarity Purchase
+                Group, {userId} !</h1> {/*Todo update with the name of the user*/}
+            <h4 className="mt-3 mb-3">Your current balance is 10€ </h4> {/*Todo update with the real balance*/}
             <h3 className="pt-5">What would you like to do?</h3>
-            <h4 className="pb-5"> Choose one of the options below by clicking on the image! </h4>
+            <h4 className="pb-5"> Choose one of the options below by clicking on the images! </h4>
             <Row className="justify-content-center pt-2">
                 <Col xs={6} lg={4} className="ml-auto">
                         <Row className="polaroid justify-content-center">
