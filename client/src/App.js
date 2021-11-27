@@ -87,6 +87,10 @@ function App() {
     const getVT = async () => {
       try {
         const data = await api_getTime();
+<<<<<<< HEAD
+=======
+        console.log(data);
+>>>>>>> 2a94f9f (feat: integrated VTC for orders)
         setVirtualTime(new Date(data.currentTime));
         setDirtyVT(false);
       } catch (err) {
@@ -141,9 +145,12 @@ function App() {
           setDirtyVT={setDirtyVT} 
           virtualTime={virtualTime}
           />
+<<<<<<< HEAD
         <Notification />
         {/*<AlertBox alert={alert} setAlert={setAlert} message={message} />*/}
         
+=======
+>>>>>>> 2a94f9f (feat: integrated VTC for orders)
 
 
         <Row className="m-auto">
@@ -176,8 +183,95 @@ function App() {
               <Route path="/login">
                 {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
               </Route>
+<<<<<<< HEAD
               <Route path="/register">
                 {!loggedIn ?  <InsertClient loggedIn={loggedIn}/>  : "" } {/*TODO: page of the user registered*/}
+=======
+              {/* Shop employee-only routes */}
+
+              {/* Employee: client info page route */}
+              <Route
+                path="/employee/clients/:id"
+                render={({ match }) => {
+                  if (loggedIn) {
+                    return <div id={match.params.id} />;
+                  } else {
+                    return <RedirectUser userRole={userRole} />;
+                  }
+                }}
+              />
+              {/* Employee client list route */}
+              <Route path="/employee/clients">
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <ClientsList 
+                    setMessage={setMessage} 
+                    virtualTime={virtualTime} />
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/* Employee client registration route */}
+              <Route path="/employee/register">
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <InsertClient />
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/* Employee product browsing route */}
+              <Route path="/employee/products">
+                {loggedIn && userRole == 'shop_employee' ? (
+                  <ProductCards userRole={userRole} userId={userId} />
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/* Employee: order info page route */}
+              <Route path="/employee/orders/:id">
+                {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole} />}
+              </Route>
+
+              {/* Employee order list route */}
+              <Route path="/employee/orders">
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <OrderList userRole={userRole} userId={userId}/>
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/* Employee order creation route */}
+              <Route path="/employee/orders/new">
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <div />
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/* Employee home page route */}
+              <Route path="/employee">
+                {loggedIn && userRole === 'shop_employee' ? (
+                  <div />
+                ) : (
+                  <RedirectUser userRole={userRole} />
+                )}
+              </Route>
+
+              {/*
+              Routes to test client orders component
+              TO DO: remove or improve these routes
+              Thank you, Marco
+              */}
+              <Route path="/client/orders/:id">
+                <OrderReview userRole="client" userId="4"/>
+              </Route>
+              <Route path="/client/orders">
+                <OrderList userRole="client" userId="4"/>
+>>>>>>> 2a94f9f (feat: integrated VTC for orders)
               </Route>
               {/* Shop employee-only routes */}
               <RoutesEmployee

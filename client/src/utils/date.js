@@ -30,6 +30,10 @@ export function humanToISO(date, time) {
   return dateTime.toISOString();
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2a94f9f (feat: integrated VTC for orders)
 /**
  * Check if the virtual time is in the interval: Sat, 9am - Sun, 11pm.
  * If so, orders can be made by clients
@@ -38,9 +42,15 @@ export function checkOrderInterval(virtualTime) {
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
   const timeOfDay = virtualTime.getHours(); // 0 ... 23
 
+<<<<<<< HEAD
   if(dayOfWeek==6 && timeOfDay>=10){
     return true;
   } else if (dayOfWeek==0 && timeOfDay<24) {
+=======
+  if(dayOfWeek==6 && timeOfDay>=9){
+    return true;
+  } else if (dayOfWeek==0 && timeOfDay<23) {
+>>>>>>> 2a94f9f (feat: integrated VTC for orders)
     return true;
   } else {
     return false;
