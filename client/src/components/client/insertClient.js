@@ -7,7 +7,7 @@ import { Eye } from 'react-bootstrap-icons';
 import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
-    const {loggedIn} = props;
+    const {loggedIn,doLogin} = props;
     /* if loggedIn is true, the shop employee insert the information for a client. Otherwise it's the client that registers himself*/
 
     const [passwordType, setPasswordType] = useState('password');
@@ -25,7 +25,9 @@ const InsertClient = function (props) {
                 phone: values.phone,
                 address: values.address,
                 mail: values.mail,
-                balance: values.balance
+                balance: values.balance,
+                username : values.username,
+                password : values.password
             }
         } else if (typeUser === "farmer") {
             user = {
@@ -53,7 +55,7 @@ const InsertClient = function (props) {
         if(loggedIn){
             insertClient(values)
                 .then(() => {
-                    history.push('/'); /*TODO redirect in the correct home page*/
+                    history.push('/client');
                     addMessage("", 'Registration is completed with success', 'success');
 
                 })
@@ -79,7 +81,6 @@ const InsertClient = function (props) {
                 default:
                     insertUser(user)
                         .then(() => {
-
                             addMessage("", 'Registration is completed with success', 'success');
                             if(user.typeUser==="shop_employee"){
                                 history.push('/shop_employee');
@@ -93,7 +94,6 @@ const InsertClient = function (props) {
                             console.log(err);
                         })
             }
-
         }
     };
 
