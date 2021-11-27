@@ -53,7 +53,7 @@ function HomePage() {
                             </Carousel.Caption>
                         </Carousel.Item>
                         <Carousel.Item>
-                            <Image src={image3} className="img" alt="First slide" style={{width: "60%", paddingTop: "20px"}} />
+                            <Image src={image3} className="img" alt="Sustainable agriculture" style={{width: "60%", paddingTop: "20px"}} />
                             <Carousel.Caption>
                                 <Container>
                                     <Row>
