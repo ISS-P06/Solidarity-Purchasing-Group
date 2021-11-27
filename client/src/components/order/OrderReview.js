@@ -1,27 +1,44 @@
-import { Card, Button, Row, Col } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BoxArrowInUp } from 'react-bootstrap-icons';
 import OrderTable from './OrderTable';
 
 import { useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import './OrderReview.css';
+import { useRouteMatch, Link } from 'react-router-dom';
 
-import { api_getOrderReview, api_doDelivery } from '../../Api';
+import { api_getOrderReview, api_getClientOrderReview, api_doDelivery } from '../../Api';
 
-function OrderReview() {
+function OrderReview(props) {
   const [orderReview, setOrderReview] = useState(0, '', [], '');
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const match = useRouteMatch('/employee/orders/:id');
+  let text, back;
+  if (props.userRole === 'shop_employee') {
+    text = 'employee';
+    back = `/employee/orders/`;
+  } else if (props.userRole === 'client') {
+    text = 'client';
+    back = `/client/orders/`;
+  }
+  const match = useRouteMatch('/' + text + '/orders/:id');
 
   useEffect(() => {
-    if (!isUpdated)
-      api_getOrderReview(match.params.id)
-        .then((order) => {
-          setOrderReview(order);
-          setIsUpdated(true);
-        })
-        .catch((e) => console.log(e));
+    if (!isUpdated) {
+      if (props.userRole === 'shop_employee') {
+        api_getOrderReview(match.params.id)
+          .then((order) => {
+            setOrderReview(order);
+            setIsUpdated(true);
+          })
+          .catch((e) => console.log(e));
+      } else if (props.userRole === 'client') {
+        api_getClientOrderReview(props.userId, match.params.id)
+          .then((order) => {
+            setOrderReview(order);
+            setIsUpdated(true);
+          })
+          .catch((e) => console.log(e));
+      }
+    }
   }, [match]);
 
   const doDelivery = async () => {
@@ -35,27 +52,66 @@ function OrderReview() {
   };
 
   return (
-    <div calssName="OrderReview">
-      <div className="Title">
-        <h3>Order Review</h3>
+    <div>
+      <div className="pt-4 pb-3">
+        <h3>Order review</h3>
       </div>
       <Row className="justify-content-md-center">
         <Col lg={8} className="pl-5">
-          <Card>
-            <Card.Header>ID: #{orderReview.orderId}</Card.Header>
+          <Card className="shadow">
+            <Card.Header className="pt-1 pb-2">
+              <h5 className="pt-2">
+                Order number:<strong> {orderReview.orderId}</strong>
+              </h5>
+            </Card.Header>
             <Card.Body>
-              <div className="Owner">Owner: {orderReview.email} </div> <br /> <br />
+              <Container>
+                <Row>
+                  <Col>Date: {orderReview.date}</Col>
+                </Row>
+                <Row>
+                  <Col>Email: {orderReview.email}</Col>
+                </Row>
+                <Row>
+                  <Col>Username: {orderReview.username}</Col>
+                </Row>
+                <Row>
+                  <Col>Name: {orderReview.name}</Col>
+                </Row>
+                <Row>
+                  <Col>Surname: {orderReview.surname}</Col>
+                </Row>
+                <Row>
+                  <Col>Role: {orderReview.role}</Col>
+                </Row>
+                <Row>
+                  <Col>Phone: {orderReview.phone}</Col>
+                </Row>
+                <Row className="pb-4">
+                  <Col>Address: {orderReview.address}</Col>
+                </Row>
+              </Container>
               <OrderTable products={orderReview.products} />
-              State: {orderReview.status} <br />
-              <br />
-              {orderReview.status !== 'delivered' ? (
-                <Button className="btn" onClick={doDelivery}>
+              <Container>
+                <Row>
+                  <Col className="pt-3 pb-3">
+                    <span className="border border-success rounded-pill p-2">{orderReview.status}</span>
+                  </Col>
+                </Row>
+              </Container>
+            </Card.Body>
+            <Card.Footer>
+              <Link to={{ pathname: back, }}>
+                <Button variant="primary" className="float-start text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
+                  Back
+                </Button>
+              </Link>
+              {orderReview.status !== 'delivered' && props.userRole === "shop_employee" && (
+                <Button variant="primary" className="float-end text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }} onClick={doDelivery}>
                   <BoxArrowInUp /> Deliver
                 </Button>
-              ) : (
-                <></>
               )}
-            </Card.Body>
+            </Card.Footer>
           </Card>
         </Col>
       </Row>

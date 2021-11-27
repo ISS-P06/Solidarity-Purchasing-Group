@@ -15,11 +15,12 @@ import {
   getOrders,
   getOrderById,
   setOrderDelivered,
+  getBasketByClientId,
 } from './dao.js';
 
 import VTC from './vtc.js';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById, test_createUser } from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -203,6 +204,20 @@ app.get('/api/orders', (req, res) => {
     .catch(() => res.status(500).end());
 });
 
+// GET /api/clients/:clientId/orders
+app.get('/api/clients/:clientId/orders', (req, res) => {
+  getOrders(req.params.clientId)
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+  getOrderById(req.params.orderId, req.params.clientId)
+    .then((orders) => res.json(orders))
+    .catch(() => res.status(500).end());
+});
+
 // GET /api/orders/:id
 // Route used to get the order review
 app.get('/api/orders/:id', (req, res) => {
@@ -287,6 +302,43 @@ app.get('/api/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
   } else res.status(401).json({ message: 'Unauthenticated user' });
+});
+
+// --- --- --- //
+// --- Route used for adding an admin (used only for testing purposes)
+app.post(
+  '/test/addUser',
+  [
+    check('username').isString().isLength({ min: 1 }),
+    check('password').isString().isLength({ min: 8 }),
+    check('role').isString().isLength({ min: 1 }),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let user = {
+      username: req.body.username,
+      password: req.body.password,
+      role: req.body.role,
+    };
+
+    test_createUser(user)
+      .then((err) => {
+        return res.status(200).end();
+      })
+      .catch(() => res.status(500).end());
+  }
+);
+// --- --- --- //
+
+// GET /api/clients/:clientId/basket
+app.get('/api/client/:clientId/basket', (req, res) => {
+  getBasketByClientId(req.params.clientId)
+    .then((products) => res.json(products))
+    .catch(() => res.status(500).end());
 });
 
 /*** End APIs ***/

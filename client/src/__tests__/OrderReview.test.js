@@ -16,6 +16,11 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
+function WrapperComponent(props) {
+  let userRole='shop_employee', userId='1';
+  return <OrderReview userRole={userRole} userId={userId}/>;
+};
+
 export function renderWithRouterMatch(
   ui,
   { path = '/', route = '/', history = createMemoryHistory({ initialEntries: [route] }) } = {}
@@ -23,13 +28,13 @@ export function renderWithRouterMatch(
   return {
     ...render(
       <Router history={history}>
-        <Route path={path} component={ui} />
+        <Route path={path} component={ui}/>
       </Router>
     ),
   };
 }
 
-describe('My component OrderReview', (async) => {
+describe('My component OrderReview', () => {
   test('Is Rendered', async () => {
     server.use(
       rest.get('/api/orders/1', (req, res, ctx) => {
@@ -37,34 +42,34 @@ describe('My component OrderReview', (async) => {
           ctx.json({
             orderId: 1,
             email: 'massimo.rossi@mail.com',
+            date: '2021-11-16 12:12',
+            status: 'pending',
             products: [
               {
                 name: 'onion',
                 quantity: 1.3,
                 price: 1.6,
+                unit: 'kg',
               },
             ],
-            status: 'pending',
+            
           })
         );
       })
     );
 
-    {
-      /* Test if all elements are rendered */
-    }
+    {/* Test if all elements are rendered */}
 
-    const { getByText } = renderWithRouterMatch(OrderReview, {
+    const { getByText } = renderWithRouterMatch(WrapperComponent, {
       route: '/employee/orders/1',
       path: '/employee/orders/:id',
     });
 
-    expect(getByText(/Order Review/)).toBeInTheDocument();
-    await waitFor(() => getByText(/#1/));
-    expect(getByText(/#1/)).toBeInTheDocument();
-    screen.debug();
-    expect(getByText(/massimo.rossi@mail.com/)).toBeInTheDocument();
-    expect(getByText(/onion/)).toBeInTheDocument();
+    expect(getByText('Order review')).toBeInTheDocument();
+    await waitFor(() => getByText('Email: massimo.rossi@mail.com'));
+    expect(getByText('Email: massimo.rossi@mail.com')).toBeInTheDocument();
+    expect(getByText('onion')).toBeInTheDocument();
+    //screen.debug();
   });
 
   test('Delivers an order', async () => {
@@ -77,14 +82,16 @@ describe('My component OrderReview', (async) => {
             ctx.json({
               orderId: 1,
               email: 'massimo.rossi@mail.com',
+              date: '2021-11-16 12:12',
+              status: 'pending',
               products: [
                 {
                   name: 'onion',
                   quantity: 1.3,
                   price: 1.6,
+                  unit: 'kg',
                 },
               ],
-              status: 'pending',
             })
           );
         else {
@@ -113,20 +120,16 @@ describe('My component OrderReview', (async) => {
       })
     );
 
-    {
-      /* Test if an order can be delivered */
-    }
+    {/* Test if an order can be delivered */}
 
-    const { getByText } = renderWithRouterMatch(OrderReview, {
+    const { getByText } = renderWithRouterMatch(WrapperComponent, {
       route: '/employee/orders/1',
       path: '/employee/orders/:id',
     });
 
-    await waitFor(() => getByText(/#1/));
-    expect(getByText(/#1/)).toBeInTheDocument();
-
+    await waitFor(() => getByText('Email: massimo.rossi@mail.com'));
+    expect(getByText('Email: massimo.rossi@mail.com')).toBeInTheDocument();
     userEvent.click(getByText(/Deliver/));
-
     await waitFor(() => getByText(/delivered/));
     expect(getByText(/delivered/)).toBeInTheDocument();
   });

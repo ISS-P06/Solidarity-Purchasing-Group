@@ -32,6 +32,37 @@ describe('Test the get products api', () => {
   });
 });
 
+describe('Test the get client orders api', () => {
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/clients/4/orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/clients//orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
+      });
+  });
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/clients/4/orders/2')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/clients//orders/2')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
+      });
+  });
+});
+
 describe('Test the get virtual time clock', () => {
   test('It should respond to the GET method', () => {
     return request(app).get('/api/time').expect(200);
@@ -118,15 +149,16 @@ describe('Test the login APIs', () => {
   test('It should respond to the DELETE method', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
+});
 
-  describe('Test the orders path', () => {
-    test('It should response GET api/orders', () => {
-      return request(app)
-        .get('/api/orders')
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
+describe('Test the orders path', () => {
+  test('It should response GET api/orders', () => {
+    return request(app)
+      .get('/api/orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
 
     test('It should response GET api/orders/1', () => {
       return request(app)
@@ -145,5 +177,12 @@ describe('Test the login APIs', () => {
     });
   });
 
-
-});
+  describe('Test the client path', () => {
+    test('It should response GET api/client/4/basket', () => {
+      return request(app)
+        .get('/api/client/4/basket')
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        });
+    });
+  });
