@@ -337,15 +337,25 @@ app.post(
 );
 // --- --- --- //
 
-app.post('/api/client/:userId/basket/add', (req, res) => {
+app.post('/api/client/:userId/basket/add', [
+    check('productId').isInt(),
+    check('reservedQuantity').isNumeric()
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+
     addProductToBasket(req.params.userId, req.body.productId, req.body.reservedQuantity)
         .then((productId) => res.json(productId))
         .catch(() => res.status(500).end());
 });
 
-app.delete('/api/client/:userId/basket/remove', (req, res) => {
-    console.log(req.body.productId);
-
+app.delete('/api/client/:userId/basket/remove',    [check('productId').isInt()],  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
     removeProductToBasket(req.params.userId, req.body.productId)
         .then((productId) => res.json(productId))
         .catch(() => res.status(500).end());
