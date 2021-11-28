@@ -3,9 +3,7 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom
 import {Col, Container, Row, Button} from 'react-bootstrap';
 import {FaBars} from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
-import {
-    AlertBox,
-    AppNavbar,
+
 import {
     ClientsList,
     InsertClient,
@@ -22,10 +20,6 @@ import {getUserRoute, RedirectRoute} from './utils/route.js';
 import {addMessage} from './components/Message';
 import {api_getUserInfo, api_login, api_logout} from './Api';
 import FarmerHomePage from "./components/farmer/FarmerHomePage";
-import Basket from './components/order/Basket';
-
-
-
 function App() {
     // Session-related states
     const [loggedIn, setLoggedIn] = useState(false);
