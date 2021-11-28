@@ -47,6 +47,7 @@ export function getUserById(id) {
         reject(err);
         return;
       }
+      const role=row.role;
       if (row == undefined) {
         resolve(false);
       } else {
@@ -54,9 +55,45 @@ export function getUserById(id) {
           id: row.id,
           username: row.username,
           role: row.role,
+          name: row.name,
+          email: row.email,
+          phone: row.phone,
         };
-        resolve(user);
+        if (role === "farmer") {
+          const sql = 'SELECT * FROM farmer WHERE ref_user=?;';
+          db.get(sql, [id], (err, row) => {
+            if (err) {
+
+              reject(err);
+              return;
+            }
+            if (row == undefined) {
+              resolve(false);
+            } else {
+              user.address = row.address;
+              user.farm_name = row.farm_name;
+              resolve(user);
+            }
+          })
+        } else if (role === "client") {
+          const sql = 'SELECT * FROM client WHERE ref_user=?;';
+          db.get(sql, [id], (err, row) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            if (row == undefined) {
+              resolve(false);
+            } else {
+              user.address = row.address;
+              user.balance = row.balance;
+              resolve(user);
+            }
+          })
+        } else if (role === "shop_employee") {
+          resolve(user);
+        }
       }
+    })
     });
-  });
-}
+  }

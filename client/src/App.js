@@ -1,5 +1,11 @@
 import {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import {Col, Container, Row, Button} from 'react-bootstrap';
+import {FaBars} from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
+import {
+    AlertBox,
+    AppNavbar,
 import {
     ClientsList,
     InsertClient,
@@ -11,11 +17,14 @@ import {
     ClientHomePage,
 } from './components';
 import HomePage from './containers/HomePage';
-
 import {Layout} from './containers';
 import {getUserRoute, RedirectRoute} from './utils/route.js';
-import {api_getUserInfo, api_login, api_logout} from './Api';
 import {addMessage} from './components/Message';
+import {api_getUserInfo, api_login, api_logout} from './Api';
+import FarmerHomePage from "./components/farmer/FarmerHomePage";
+import Basket from './components/order/Basket';
+
+
 
 function App() {
     // Session-related states
@@ -30,7 +39,22 @@ function App() {
       */
     const [userRole, setUserRole] = useState('');
     const [userId, setUserId] = useState();
+    const [user, setUser] = useState();
+    const [toggled, setToggled] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+  
+   const handleCollapsedChange = (checked) => {
+        setCollapsed(checked);
+    };
 
+    const handleToggleSidebar = (value) => {
+        setToggled(value);
+    };
+  
+    /* for giving feedback to the user*/
+    const [message, setMessage] = useState('');
+    const [alert, setAlert] = useState(false);
+  
     // async function for logging in
     const doLogin = async (credentials) => {
         try {
@@ -41,7 +65,12 @@ function App() {
             return {done: false, msg: err.message};
         }
     };
-
+ useEffect(() => {
+        if (message !== '') {
+            setAlert(true);
+        }
+    }, [message]);
+  
     // useEffect for getting user info
     useEffect(() => {
         const checkAuth = async () => {
@@ -50,13 +79,14 @@ function App() {
                 setLoggedIn(true);
                 setUserRole(info.role);
                 setUserId(info.id);
+                setUser(info);
             } catch (err) {
                 setUserRole('');
                 console.error(err);
             }
         };
         checkAuth();
-    }, [loggedIn]);
+         }, [loggedIn]);
 
     // async function for logging out
     const doLogout = async () => {
@@ -70,6 +100,7 @@ function App() {
         doLogout,
         userRole,
     };
+ 
 
     return (
         <div className="app-container">
@@ -94,6 +125,10 @@ function App() {
                             component={<ClientHomePage userId={userId}/>}
                             redirect={<LoginForm doLogin={doLogin}/>}
                         />
+
+  <Route path="/farmer">
+                                <FarmerHomePage user={user}/>;
+                            </Route>
 
                         {/* Shop employee-only routes */}
 
