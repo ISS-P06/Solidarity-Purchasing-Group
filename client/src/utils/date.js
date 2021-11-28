@@ -30,12 +30,13 @@ export function humanToISO(date, time) {
   return dateTime.toISOString();
 }
 
-
 /**
  * Check if the virtual time is in the interval: Sat, 9am - Sun, 11pm.
  * If so, orders can be made by clients
  */
 export function checkOrderInterval(virtualTime) {
+  console.log(virtualTime);
+
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
   const timeOfDay = virtualTime.getHours(); // 0 ... 23
 
