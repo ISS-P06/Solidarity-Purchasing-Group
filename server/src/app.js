@@ -228,16 +228,16 @@ app.post('/api/orders/:id/deliver', (req, res) => {
 // ADD NEW CLIENT
 app.post(
     '/api/insert_client',
-/*    check('name').isString(),
+    check('name').isString(),
     check('surname').isString(),
     check('balance').isInt(),
     check('mail').isString(),
-    check('typeUser').isString(),*/
+    check('typeUser').isString(),
     async (req, res) => {
-/*        const errors = validationResult(req);
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({error: errors.array()});
-        }*/
+        }
         const client = req.body;
         insertClient(
             client.name,
@@ -258,15 +258,15 @@ app.post(
 );
 
 app.post('/api/register_user',
-/*    check('name').isString(),
+    check('name').isString(),
     check('surname').isString(),
     check('mail').isString(),
-    check('typeUser').isString(),*/
-    (req, res) => {
-/*        const errors = validationResult(req);
+    check('typeUser').isString(),
+    function (req, res) {
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({error: errors.array()});
-        }*/
+        }
 
         const user = req.body;
         registerUser(user)
@@ -276,7 +276,8 @@ app.post('/api/register_user',
             .catch((err) => {
                 res.status(500).json(err)
             });
-    })
+    }
+)
 
 // --- Login/Logout routes --- //
 // Login

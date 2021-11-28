@@ -7,7 +7,7 @@ const saltRounds = 10;
 // --- Get user info by providing username and password
 export function getUser(username, password) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM user WHERE username=?;';
+    const sql = 'SELECT * FROM User WHERE username=?;';
     db.get(sql, [username], (err, row) => {
       if (err) {
         reject({ msg: 'Connection problem, please try again later.' });
@@ -41,7 +41,7 @@ export function getUser(username, password) {
 // --- Get user info by providing the user id
 export function getUserById(id) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM user WHERE id=?;';
+    const sql = 'SELECT * FROM User WHERE id=?;';
     db.get(sql, [id], (err, row) => {
       if (err) {
         reject(err);
