@@ -20,6 +20,7 @@ import { getUserRoute, RedirectRoute } from './utils/route.js';
 import { addMessage } from './components/Message';
 import { api_getUserInfo, api_login, api_logout } from './Api';
 import FarmerHomePage from './components/farmer/FarmerHomePage';
+
 function App() {
   // Session-related states
   const [loggedIn, setLoggedIn] = useState(false);
@@ -34,20 +35,6 @@ function App() {
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState();
   const [user, setUser] = useState();
-  const [toggled, setToggled] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-
-  const handleCollapsedChange = (checked) => {
-    setCollapsed(checked);
-  };
-
-  const handleToggleSidebar = (value) => {
-    setToggled(value);
-  };
-
-  /* for giving feedback to the user*/
-  const [message, setMessage] = useState('');
-  const [alert, setAlert] = useState(false);
 
   // async function for logging in
   const doLogin = async (credentials) => {
@@ -59,11 +46,6 @@ function App() {
       return { done: false, msg: err.message };
     }
   };
-  useEffect(() => {
-    if (message !== '') {
-      setAlert(true);
-    }
-  }, [message]);
 
   // useEffect for getting user info
   useEffect(() => {
