@@ -6,6 +6,7 @@ import { FaBars } from 'react-icons/fa';
 
 import Aside from './Aside';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 function Layout(props) {
   const { loggedIn, doLogout, userRole } = props;
@@ -35,6 +36,7 @@ function Layout(props) {
       </Button>
 
       <main className="main-view">{props.children}</main>
+      <Footer />
     </Container>
   );
 }

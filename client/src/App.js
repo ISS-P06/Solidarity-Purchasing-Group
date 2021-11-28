@@ -16,7 +16,6 @@ import {Layout} from './containers';
 import {getUserRoute, RedirectRoute} from './utils/route.js';
 import {api_getUserInfo, api_login, api_logout} from './Api';
 import {addMessage} from './components/Message';
-import Footer from "./components/Footer";
 
 function App() {
     // Session-related states
@@ -174,7 +173,6 @@ function App() {
                     </Layout>
                 </Switch>
             </Router>
-            <Footer></Footer>
         </div>
     );
 }
