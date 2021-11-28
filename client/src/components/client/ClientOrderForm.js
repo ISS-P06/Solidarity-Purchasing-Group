@@ -2,13 +2,10 @@ import { Modal, Button, Form, Col, FloatingLabel, Row } from 'react-bootstrap';
 
 import { useState, useEffect } from 'react';
 import { api_getProducts, api_addOrder } from '../../Api';
-import AlertBox from '../Message';
+import { addMessage } from '../Message';
 
 function ClientOrderForm(props) {
-  const { show, onHide, client, setMessage, openConfirmationModal } = props;
-
-  const [messageModal, setMessageModal] = useState('');
-  const [alertModal, setAlertModal] = useState(false);
+  const { show, onHide, client, openConfirmationModal } = props;
   const [productsList, setProductsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
 
@@ -32,7 +29,7 @@ function ClientOrderForm(props) {
         setProductsList(products);
         setCategoriesList(distinctCategoriesList);
       })
-      .catch((e) => setMessage({ msg: e, type: 'danger' }));
+      .catch((e) => addMessage({ message: e.message, type: 'danger' }));
   }, [onHide]);
 
   const handleClose = () => {
@@ -41,17 +38,9 @@ function ClientOrderForm(props) {
 
   const addOrder = () => {
     if (productsClient.length === 0) {
-      setMessageModal({
-        msg: 'Complete add at least one product',
-        type: 'danger',
-      });
-      setAlertModal(true);
+      addMessage({ message: 'Complete add at least one product', type: 'danger' });
     } else if (insertProduct) {
-      setMessageModal({
-        msg: 'Complete the addition of the last product',
-        type: 'danger',
-      });
-      setAlertModal(true);
+      addMessage({ message: 'Complete the addition of the last product', type: 'danger' });
     } else {
       //send the request
       const order = productsClient.map((p) => ({
@@ -63,13 +52,10 @@ function ClientOrderForm(props) {
       /*Message*/
       api_addOrder(orderClient)
         .then((id) =>
-          setMessage({
-            msg: 'Order ' + id + ' emitted with success ',
-            type: 'success',
-          })
+          addMessage({ message: 'Order ' + id + ' emitted with success ', type: 'success' })
         )
         .catch((err) => {
-          setMessage({ msg: err.message, type: 'danger' });
+          addMessage({ title: 'Error', message: err.message, type: 'danger' });
         });
 
       /*RESET*/
@@ -95,7 +81,6 @@ function ClientOrderForm(props) {
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">Add a new client order</Modal.Title>
       </Modal.Header>
-      <AlertBox alert={alertModal} setAlert={setAlertModal} message={messageModal} />
       <Modal.Body>
         {productsClient
           ? productsClient.map((product, index) => (

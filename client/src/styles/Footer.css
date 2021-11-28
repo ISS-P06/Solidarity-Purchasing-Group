@@ -1,0 +1,16 @@
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    z-index: 1500;
+}
+
+.footer-text {
+    color: #fff;
+    text-align: center;
+    background-color: #38782a;
+    margin-bottom: 0px;
+    padding: 20px;
+}
