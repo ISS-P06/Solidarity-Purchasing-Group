@@ -150,8 +150,8 @@ export function insertClient(
 }
 
 export function registerUser(user){
-  console.log(user)
-  return new Promise((resolve , reject)=>{
+
+    return new Promise((resolve , reject)=>{
     let userID;
     const farmerQuery = 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)'
     const userQuery =  'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';

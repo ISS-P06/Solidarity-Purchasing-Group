@@ -145,5 +145,89 @@ describe('Test the login APIs', () => {
     });
   });
 
+  describe('test client insertion' , ()=>{
+    test('test post method to insert new client', ()=>{
+      const client ={
+        name:"saly",
+        surname:"ashraf",
+        phone:"123456789",
+        mail:"saly@ashraf",
+        address : "Milano",
+        balance: "5",
+        username:"salyAshraf",
+        password:"salyAshraf"
+      }
+      return request(app)
+          .post('/api/insert_client')
+          .send(client)
+          .expect(200);
+    });
+
+    test('test post method failure to insert new client due to wrong parameters', ()=>{
+      const client ={}
+      return request(app)
+          .post('/api/insert_client')
+          .send(client)
+          .expect(500);
+    });
+
+  })
+
+
+  describe('test user insertion' , ()=>{
+    test('testing post method to insert a shop employee in the backend' , ()=>{
+      const shop_employee = {
+       typeUser:"shop_employee",
+          name:"saly",
+          surname:"ashraf",
+          phone:"123456789",
+          mail:"saly@ashraf",
+          username:"salyAshraf",
+          password:"salyAshraf"
+      }
+      return request(app)
+          .post('/api/register_user')
+          .send(shop_employee)
+          .expect(200);
+    })
+  })
+
+  test('test failure of post method due to missing parameters' , ()=>{
+    return request(app)
+        .post('/api/register_user')
+        .send( {
+          typeUser:"shop_employee",
+        }) .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+  })
+
+  test('test farmer insertion into backend with post method', ()=>{
+    const farmer = {
+      typeUser : 'farmer',
+      name : 'Muhammad',
+      surname: 'Ibrahim',
+      mail: 'mohammad@ibrahim',
+      phone : '123456789',
+      address : 'Milano',
+      farmName : 'paradise vegetables',
+      username : 'muhammadibrahim',
+      password : 'muhammadibrahim'
+    }
+    return request(app)
+        .post('/api/register_user')
+        .send(farmer)
+        .expect(200)
+  })
+
+  test('test failure of post method due to missing parameters with farmer insertion' , ()=>{
+    return request(app)
+        .post('/api/register_user')
+        .send( {
+          typeUser:"farmer",
+        }) .then((response) => {
+          expect(response.statusCode).toBe(500);
+        });
+  })
 
 });
