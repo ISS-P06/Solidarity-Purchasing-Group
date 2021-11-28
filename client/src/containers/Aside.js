@@ -44,11 +44,11 @@ function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole }) {
           {userRole.replace('_', ' ')}
         </div>
       </SidebarHeader>
-      <SidebarContent className="pro-sidebar">{roleMenu[userRole]}</SidebarContent>
-      <SidebarFooter className="pro-sidebar-footer">
+      <SidebarContent className="pro-sidebar">
+        {roleMenu[userRole]}
         {/* todo aggiustare posizione virtual clock */}
         <VirtualClock />
-      </SidebarFooter>
+      </SidebarContent>
     </ProSidebar>
   );
 }

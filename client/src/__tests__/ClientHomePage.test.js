@@ -37,7 +37,7 @@ describe('Test the client homepage component', () => {
         }
 
         fireEvent(
-            screen.getByText(/Add products to my basket!/),
+            screen.getByText(/Add products to my basket/),
             new MouseEvent('click', {
                 bubbles: true,
                 cancelable: true,
