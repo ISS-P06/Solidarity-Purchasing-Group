@@ -276,7 +276,8 @@ app.post('/api/register_user',
             .catch((err) => {
                 res.status(500).json(err)
             });
-    })
+    }
+)
 
 // --- Login/Logout routes --- //
 // Login

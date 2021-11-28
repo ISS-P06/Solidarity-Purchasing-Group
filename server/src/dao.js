@@ -121,7 +121,7 @@ export function insertClient(
   return new Promise((resolve, reject) => {
     const clientQuery =
       'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
-    const userQuery = 'INSERT INTO user (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
@@ -152,8 +152,8 @@ export function registerUser(user){
 
     return new Promise((resolve , reject)=>{
     let userID;
-    const farmerQuery = 'INSERT INTO farmer (ref_user , address , farm_name) VALUES (?, ?, ?)'
-    const userQuery =  'INSERT INTO user (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+    const farmerQuery = 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)'
+    const userQuery =  'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
 
     if(user.typeUser === 'shop_employee'){
       db.serialize(()=>{
