@@ -151,9 +151,9 @@ describe('Test the login APIs', () => {
         name:"saly",
         surname:"ashraf",
         phone:"123456789",
-        mail:"saly@ashraf",
+        mail: "saly@ashraf",
         address : "Milano",
-        balance: "5",
+        balance: 5,
         username:"salyAshraf",
         password:"salyAshraf"
       }
