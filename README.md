@@ -15,6 +15,12 @@ Solidarity Purchasing Group is a project developed for Software Engineering II c
 - Route `/employee/orders/:id`: employee-side page containing information about a specific order; `id`: order id.
 - Route `/employee/products`: employee-side page containing a list of all available products.
 - Route `/employee/register`: employee-side page containing a form for user registration.
+- Route `/client`: client homepage, from which the user can access all routes reserved to clients only.
+- Route `/client/basket`: client-side page containing information about the client's own basket.
+- Route `/client/orders`: client-side page containing information about the client's own orders.
+- Route `/client/orders/:id`: client-side page containing information about one of the client's orders.
+- Route `/client/products`: client-side page containing a list of all available products.
+- Route `/farmer`: farmer homepage.
 
 # Database documentation
 
