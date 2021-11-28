@@ -1,5 +1,5 @@
 import {Carousel, Image, Row, Col, Container} from 'react-bootstrap';
-import {BsFillPersonPlusFill} from 'react-icons/bs';
+import {BsFillPersonPlusFill,BsBox} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
 import {GiWallet} from 'react-icons/gi';
 import {RiShoppingBasketFill} from 'react-icons/ri';
@@ -15,7 +15,7 @@ function HomePage() {
             <Row className="justify-content-center">
                 <Col xs={0} md={10}>
                     <h1 style={{color:"#27511D"}}>Welcome on Solidarity Purchase Group!</h1>
-                    <Carousel className="mt-3">
+                    <Carousel className="mt-3 d-none d-md-block" >
                         <Carousel.Item>
                             <Image src={image1} className="img" alt="A non profit organization" style={{width: "60%", paddingTop: "20px"}}/>
                             <Carousel.Caption>
@@ -116,6 +116,12 @@ function HomePage() {
                         <RiShoppingBasketFill className="icon"/>
                         <h5>
                             Add product to basket
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <BsBox className="icon"/>
+                        <h5>
+                          Browse orders
                         </h5>
                     </Col>
                 </Row>
