@@ -21,7 +21,9 @@ export function getUserRoute(role) {
  * the user based on its role
  */
 export function RedirectRoute({ component, path, role, redirect, condition = true }) {
-  const defaultRedirect = redirect || <Redirect to={getUserRoute(role)} />;
+  const redirectRoute = getUserRoute(role);
 
-  return <Route path={path}>{condition ? component : defaultRedirect}</Route>;
+  return (
+    <Route path={path}>{condition ? component : redirect || <Redirect to={redirectRoute} />}</Route>
+  );
 }

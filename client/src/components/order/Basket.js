@@ -7,7 +7,6 @@ import { ProductCards } from '..';
 
 
 export default function Basket(props) {
-
     const [basket, setBasket] = useState([]);
     const [isEmpty, setIsEmpty] = useState(true);
     const [wellDone, setWellDone] = useState(false);
