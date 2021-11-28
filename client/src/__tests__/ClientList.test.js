@@ -21,6 +21,7 @@ describe('ClientList test', () => {
           phone: '3333333333',
         }}
         setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
     expect(screen.getByText('Top up wallet')).toBeInTheDocument();
@@ -40,6 +41,7 @@ describe('ClientList test', () => {
           phone: '3333333333',
         }}
         setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
     const addOrderButton = screen.getByText('Add order');
@@ -60,6 +62,7 @@ describe('ClientList test', () => {
           phone: '3333333333',
         }}
         setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
 
@@ -87,6 +90,7 @@ describe('ClientList test', () => {
           phone: '3333333333',
         }}
         setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
 
