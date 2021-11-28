@@ -1,25 +1,18 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Col, Button, Row, Container } from 'react-bootstrap';
 import validator from 'validator';
 import { useState } from 'react';
 import { Formik } from 'formik';
-import { useHistory } from 'react-router-dom';
 import { BiUserCircle } from 'react-icons/bi';
 
 // --- Renders a modal with "username" and "password" fields to log in
 function LoginForm(props) {
   const doLogin = props.doLogin;
   const [errorMessage, setErrorMessage] = useState('');
-  const history = useHistory();
-
-  const handleClick = (path) => {
-    history.push(path);
-  };
 
   // function used for submitting user data
   const submitData = async function (values) {
-    let validUsername = !validator.isEmpty(values.username);
-    let validPassword = !validator.isEmpty(values.password) && values.password.length >= 8;
+    const validUsername = !validator.isEmpty(values.username);
+    const validPassword = !validator.isEmpty(values.password) && values.password.length >= 8;
 
     if (validUsername && validPassword) {
       const user = {
@@ -27,7 +20,7 @@ function LoginForm(props) {
         password: values.password,
       };
 
-      let res = await doLogin(user);
+      const res = await doLogin(user);
       if (res.done) return;
       else setErrorMessage(res.msg);
     }
@@ -98,14 +91,11 @@ function LoginForm(props) {
                 <Row>
                   {errorMessage === '' ? <></> : <div className="text-danger">{errorMessage}</div>}
                 </Row>
-                <Row className="d-flex justify-content-center">
-                  <Button className="btn m-2" variant="info" type="submit">
+                <Col>
+                  <Button className="btn mt-2" md="auto" variant="info" type="submit">
                     Login
                   </Button>
-                  <Button className="m-2" variant="secondary" onClick={() => handleClick('/')}>
-                    Back to home
-                  </Button>
-                </Row>
+                </Col>
               </Form>
             </Col>
             <Col xs={2} lg={4} />

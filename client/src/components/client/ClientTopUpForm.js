@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button, Row, Col, Form, FloatingLabel, Modal } from 'react-bootstrap';
+import { addMessage } from '../Message';
 
 function ClientTopUpForm(props) {
-  const { show, handleClose, client, topUpClient, setMessage } = props;
+  const { show, handleClose, client, topUpClient } = props;
 
   const [amount, setAmount] = useState(5);
   const [validated, setValidated] = useState(false);
@@ -15,9 +16,9 @@ function ClientTopUpForm(props) {
     if (form.checkValidity()) {
       topUpClient({ id: client.id, amount });
 
-      setMessage({
-        msg: `Updated balance for ${client.name} ${client.surname}`,
-        type: 'info',
+      addMessage({
+        message: `Updated balance for ${client.name} ${client.surname}`,
+        type: 'success',
       });
 
       handleClose();

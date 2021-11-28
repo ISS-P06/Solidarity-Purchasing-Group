@@ -1,0 +1,17 @@
+.settings-dd>.dropdown-toggle::before {
+    display: none !important;
+}
+
+.navbar {
+    max-height: 100px;
+}
+
+.navbar {
+    background-color: #38782a;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.nav-link {
+    color: white !important;
+}

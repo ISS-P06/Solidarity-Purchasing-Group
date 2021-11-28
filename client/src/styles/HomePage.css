@@ -1,0 +1,17 @@
+.icon{
+    color:#b8c7b0;
+    background-color: #839d7c;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+@media only screen
+and (min-device-width : 320px)
+ {
+    .icon {font-size: 60px;}
+}
+@media only screen
+and (min-device-width : 768px)
+{
+    .icon {font-size: 100px;}
+}
