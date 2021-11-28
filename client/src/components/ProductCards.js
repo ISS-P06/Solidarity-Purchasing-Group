@@ -55,9 +55,8 @@ const ProductCards = (props) => {
     }
 
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
-
         await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
-            /*Todo add useEffect*/
+            props.handleAddProduct();
             setSuccess('Product correctly added to the basket');
 
         }).catch((e) => console.log(e));
