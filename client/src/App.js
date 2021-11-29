@@ -18,8 +18,10 @@ import HomePage from './containers/HomePage';
 import {Layout} from './containers';
 import {getUserRoute, RedirectRoute} from './utils/route.js';
 import {addMessage} from './components/Message';
-import {api_getUserInfo, api_login, api_logout} from './Api';
+import {api_getUserInfo, api_login, api_logout, api_getTime} from './Api';
 import FarmerHomePage from "./components/farmer/FarmerHomePage";
+import {checkOrderInterval} from "./utils/date";
+
 function App() {
     // Session-related states
     const [loggedIn, setLoggedIn] = useState(false);
@@ -27,7 +29,6 @@ function App() {
         userRole: current user's role; possible values:
         - shop_employee
         - (empty string/none, i.e. not logged in)
-
         other values will be considered in subsequent sprints
         when necessary
       */
@@ -36,6 +37,13 @@ function App() {
     const [user, setUser] = useState();
     const [toggled, setToggled] = useState(false);
     const [collapsed, setCollapsed] = useState(false);
+
+    // This state is used to update (and monitor) the time on front-end
+    // Some functionalities can be used only at a certain time
+    const [dirtyVT, setDirtyVT] = useState(true);
+
+    // State used to store the system's virtual time
+    const [virtualTime, setVirtualTime] = useState({});
   
    const handleCollapsedChange = (checked) => {
         setCollapsed(checked);
@@ -59,29 +67,45 @@ function App() {
             return {done: false, msg: err.message};
         }
     };
- useEffect(() => {
-        if (message !== '') {
-            setAlert(true);
-        }
+    useEffect(() => {
+      if (message !== '') {
+          setAlert(true);
+      }
     }, [message]);
+
+    // useEffect used to get the system's virtual time
+    useEffect(() => {
+      const getVT = async () => {
+        try {
+          const data = await api_getTime();
+          setVirtualTime(new Date(data.currentTime));
+          setDirtyVT(false);
+        } catch (err) {
+          setVirtualTime(new Date().toISOString());
+          setDirtyVT(false);
+          console.error(err);
+        }
+      };
+      getVT();
+    }, [dirtyVT]);
   
     // useEffect for getting user info
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const info = await api_getUserInfo();
-                setLoggedIn(true);
-                setUserRole(info.role);
-                setUserId(info.id);
-                setUser(info);
-                console.log(info);
-            } catch (err) {
-                setUserRole('');
-                console.error(err);
-            }
-        };
-        checkAuth();
-         }, [loggedIn]);
+      const checkAuth = async () => {
+          try {
+              const info = await api_getUserInfo();
+              setLoggedIn(true);
+              setUserRole(info.role);
+              setUserId(info.id);
+              setUser(info);
+              console.log(info);
+          } catch (err) {
+              setUserRole('');
+              console.error(err);
+          }
+      };
+      checkAuth();
+    }, [loggedIn]);
 
     // async function for logging out
     const doLogout = async () => {
@@ -94,8 +118,10 @@ function App() {
         loggedIn,
         doLogout,
         userRole,
+        dirtyVT,
+        setDirtyVT, 
+        virtualTime
     };
- 
 
     return (
         <div className="app-container">
@@ -116,6 +142,39 @@ function App() {
                             component={<LoginForm doLogin={doLogin}/>}
                         />
 
+                        {/* Client-only routes */}
+                        <RedirectRoute
+                            path="/client/basket"
+                            role={userRole}
+                            condition={loggedIn}
+                            component={<Basket userId={user}/>}
+                            redirect={<LoginForm doLogin={doLogin}/>}
+                        />
+
+                        <RedirectRoute
+                            path="/client/orders"
+                            role={userRole}
+                            condition={loggedIn}
+                            component={<OrderList userRole={userRole} userId={userId}/>}
+                            redirect={<LoginForm doLogin={doLogin}/>}
+                        />
+
+                        <RedirectRoute
+                            path="/client/basket"
+                            role={userRole}
+                            condition={loggedIn}
+                            component={<Basket userRole={userRole} userId={userId}/>}
+                            redirect={<LoginForm doLogin={doLogin}/>}
+                        />
+
+                        <RedirectRoute
+                            path="/client/products"
+                            role={userRole}
+                            condition={loggedIn}
+                            component={<ProductCards userRole={userRole} userId={userId}/>}
+                            redirect={<LoginForm doLogin={doLogin}/>}
+                        />
+
                         <RedirectRoute
                             path="/client"
                             role={userRole}
@@ -124,13 +183,11 @@ function App() {
                             redirect={<LoginForm doLogin={doLogin}/>}
                         />
 
-  <Route path="/farmer">
-                                <FarmerHomePage user={user}/>
-                            </Route>
+                        <Route path="/farmer">
+                            <FarmerHomePage user={user}/>
+                        </Route>
 
                         {/* Shop employee-only routes */}
-
-                        {/* Employee: client info page route */}
                         {/* Employee: client info page route */}
                         <Route
                             path="/employee"
@@ -157,7 +214,7 @@ function App() {
                             path="/employee/clients"
                             role={userRole}
                             condition={loggedIn && userRole === 'shop_employee'}
-                            component={<ClientsList/>}
+                            component={<ClientsList setMessage={setMessage} virtualTime={virtualTime}/>}
                         />
 
                         {/* Employee client registration route */}
@@ -196,7 +253,7 @@ function App() {
                         <RedirectRoute
                             path="/employee/orders/new"
                             role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
+                            condition={loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)}
                             component={<div/>}
                         />
 
@@ -205,7 +262,7 @@ function App() {
                             path="/employee"
                             role={userRole}
                             condition={loggedIn && userRole === 'shop_employee'}
-                            component={<div/>}
+                            component={<Redirect to="/employee/clients"/>}
                         />
 
                         {/* Home page route */}

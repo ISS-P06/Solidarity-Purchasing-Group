@@ -3,10 +3,14 @@ import { Col, Form, Row, Button, Modal } from 'react-bootstrap';
 
 import TimePicker from 'react-bootstrap-time-picker';
 
-import { api_setTime, api_getTime } from '../Api';
+import { api_setTime } from '../Api';
 import { humanToISO, ISOtoHuman } from '../utils';
 
 function VirtualClock(props) {
+  const setDirtyVT = props.setDirtyVT;
+  const virtualTime = props.virtualTime;
+  const dirtyVT = props.dirtyVT;
+
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(0);
   const [showModalVT, setShowModalVT] = useState(false);
@@ -27,22 +31,21 @@ function VirtualClock(props) {
     event.preventDefault();
 
     const ISODate = humanToISO(date, time / 3600);
-    api_setTime(ISODate).catch(() => {});
+    await api_setTime(ISODate).catch(() => {});
+
+    setDirtyVT(true);
 
     handleClose();
   };
 
   useEffect(() => {
-    const getTime = async () => {
-      const apiData = await api_getTime();
-      const humanTime = ISOtoHuman(apiData.currentTime);
+    if (!dirtyVT) {
+      const humanTime = ISOtoHuman(virtualTime.toISOString());
 
       setDate(humanTime.date);
-      setTime(humanTime.time);
-    };
-
-    getTime().catch(() => {});
-  }, []);
+      setTime(humanTime.time); 
+    }       
+  }, [dirtyVT]);
 
   const renderDate = () => {
     const day = weekdays[date.getDay()];

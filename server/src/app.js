@@ -20,11 +20,15 @@ import {
 } from './dao.js';
 
 import VTC from './vtc.js';
+import SYS from './system';
 // --- Imports for passport and login/logout --- //
 import { getUser, getUserById} from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
+
+/* System class */
+const sys = new SYS();
 
 // --- Set up Passport --- //
 /*
@@ -121,7 +125,8 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   const time = req.body.time;
 
   try {
-    vtc.set(time);
+    let newTime = vtc.set(time);
+    sys.checkTimedEvents(newTime);
     res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
   } catch (error) {
     res.status(500).json({ error });
