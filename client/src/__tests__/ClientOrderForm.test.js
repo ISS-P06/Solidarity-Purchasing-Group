@@ -4,6 +4,11 @@ import axios from 'axios';
 
 import ClientOrderForm, { ProductForm } from '../components/client/ClientOrderForm';
 
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
+
 jest.mock('axios');
 
 describe('ClientOrderForm', () => {
@@ -14,12 +19,9 @@ describe('ClientOrderForm', () => {
         name: 'lemon',
         description: 'lemon',
         category: 'fruits and vegetables',
-        description: 'lemon',
-        id: 1,
-        name: 'lemon',
         price: 1.2,
         quantity: 0,
-      },
+      }
     ];
 
     axios.get.mockImplementationOnce(() => Promise.resolve(products));
@@ -34,11 +36,9 @@ describe('ClientOrderForm', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
   });
@@ -59,9 +59,6 @@ describe('ClientOrderForm', () => {
             name: 'lemon',
             description: 'lemon',
             category: 'fruits and vegetables',
-            description: 'lemon',
-            id: 1,
-            name: 'lemon',
             price: 1.2,
             quantity: 0,
           },
@@ -117,11 +114,9 @@ describe('ClientOrderForm', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
       />
     );
 

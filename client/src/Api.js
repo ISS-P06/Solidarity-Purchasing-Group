@@ -167,6 +167,16 @@ export async function insertClient(client) {
   }
 }
 
+export async function insertUser(user){
+  let res;
+  try{
+    res = await axios.post('/api/register_user' , user)
+  }catch(err){
+    console.log(err);
+    throw err;
+  }
+}
+
 export const api_getTime = async () => {
   try {
     const res = await axios.get('/api/time');
@@ -187,8 +197,6 @@ export const api_setTime = async (dateTime) => {
     const res = await axios.put('/api/time', { time: dateTime });
     return res;
   } catch (error) {
-    //alert("Error in api_setTime()");
-    //console.log(error.message);
     throw new Error(error.message);
   }
 };

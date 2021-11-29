@@ -44,10 +44,8 @@ const ProductCards = (props) => {
 
   let endPage = Math.ceil(productList.length / productsPerPage);
   let startPage = currentPage - 2;
-  if (startPage < 1)
-    startPage = 1;
-  if (startPage > endPage - 4)
-    startPage = endPage - 4;
+  if (startPage < 1) startPage = 1;
+  if (startPage > endPage - 4) startPage = endPage - 4;
 
   for (let i = startPage; i <= startPage + 4; i++) {
     pageNumbers.push(i);
@@ -155,7 +153,7 @@ const ProductCard = (props) => {
             Price: {product.price} €/{product.unit}
           </ListGroup.Item>
           <ListGroup.Item>
-            Quantity: {product.quantity} {product.unit}
+            Quantity: {product.quantity.toFixed(2)} {product.unit}
           </ListGroup.Item>
         </ListGroup>
         {props.userRole == "client" ? 

@@ -1,64 +1,108 @@
-import {useState} from 'react';
-import {Row, Col, Form, Button, Container, FloatingLabel} from 'react-bootstrap';
-import {useFormik} from 'formik';
+import { useState } from 'react';
+import { Row, Col, Form, Button, Container } from 'react-bootstrap';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
+
 import {Link, useHistory} from 'react-router-dom';
 import {Eye} from 'react-bootstrap-icons';
 import Notification, {addMessage} from '../Message';
-
-import {insertClient} from '../../Api';
+import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
-    const {loggedIn} = props;
+    const {loggedIn,setLoggedIn, user, setUser} = props;
     /* if loggedIn is true, the shop employee insert the information for a client. Otherwise it's the client that registers himself*/
 
     const [passwordType, setPasswordType] = useState('password');
     const history = useHistory();
 
     const handleSubmit = (values) => {
-        console.log(values);
-        const user = {};
+        //console.log(values);
+        let userAdd = {};
         const typeUser = values.typeUser;
         if (typeUser === "client") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
                 phone: values.phone,
                 address: values.address,
-                mail: values.email,
-                balance: values.balance
+                mail: values.mail,
+                balance: values.balance,
+                username : values.username,
+                password : values.password
             }
         } else if (typeUser === "farmer") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
                 phone: values.phone,
                 address: values.address,
-                mail: values.email,
-                farmName: values.farmName
+                mail: values.mail,
+                farmName: values.farmName,
+                username : values.username,
+                password : values.password
             }
         } else if (typeUser === "shop_employee") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
                 phone: values.phone,
-                mail: values.email
+                mail: values.mail,
+                username : values.username,
+                password : values.password
             }
         }
+        if(loggedIn){
+            insertClient(userAdd)
+                .then(() => {
+                    history.push('/employee/clients');
+                    addMessage({title:"",message: 'Registration is completed with success', type: 'success'});
 
-        insertClient(values)
-            .then(() => {
-                history.push('/'); /*TODO redirect in the correct home page*/
-                addMessage("", 'Registration is completed with success', 'success');
+                })
+                .catch((err) => {
+                    addMessage({title: "Error",message: err.message,type: 'danger'});
+                    console.log(err);
+                });
+        }else{
+            switch (userAdd.typeUser){
+                case 'client':
+                    insertClient(userAdd)
+                        .then(() => {
+                            history.push('/client'); /*TODO redirect in the correct home page*/
 
-            })
-            .catch((err) => {
-                addMessage("Error", err.message, 'danger');
-                console.log(err);
-            });
+                            addMessage({title:"",message: 'Registration is completed with success',type: 'success'});
+                            setLoggedIn(true);
+                            setUser(userAdd);
+                        })
+                        .catch((err) => {
+                            addMessage({title:"Error",message: err.message, type:'danger'});
+                            console.log(err);
+                        });
+                    break;
+
+                default:
+                    insertUser(user)
+                        .then(() => {
+                            addMessage({title:"", message:'Registration is completed with success',type: 'success'});
+                            if(user.typeUser==="shop_employee"){
+                                history.push('/shop_employee');
+                                setLoggedIn(true);
+                                setUser(userAdd);
+                            }
+                            else if(user.typeUser==="farmer"){
+                                history.push('/farmer');
+                                setLoggedIn(true);
+                                setUser(userAdd);
+                            }
+                        })
+                        .catch(err=>{
+                            addMessage({title:"Error", message: err.message,type: 'danger'});
+                            console.log(err);
+                        })
+            }
+        }
     };
 
     const formik = useFormik({
@@ -69,7 +113,7 @@ const InsertClient = function (props) {
             phone: '',
             address: '',
             mail: '',
-            balance: 10,
+            balance: '',
             username: '',
             password: '',
             farmName: ""
@@ -108,6 +152,7 @@ const InsertClient = function (props) {
     });
     return (
         <Container>
+            {console.log(user)}
             <Row className="justify-content-center">
                 <Col sm={10} lg={8}>
                     <h3 className="mt-3">{loggedIn ? "Register new client" : "Register"}</h3>
@@ -288,9 +333,8 @@ const InsertClient = function (props) {
 
                     </Form>
                 </Col>
-            </Row>
-        </Container>
-    )
-        ;
+      </Row>
+    </Container>
+  );
 };
 export default InsertClient;

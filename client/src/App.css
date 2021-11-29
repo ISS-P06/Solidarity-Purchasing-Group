@@ -1,108 +1,62 @@
-@import "react-pro-sidebar/dist/css/styles.css";
-@import "bootstrap/dist/css/bootstrap.min.css";
-@import 'react-notifications-component/dist/theme.css';
+@import './styles/style.css';
 
-.App {
-  text-align: center;
-  background-color:#a5ce97;
-
+html {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
-h3{
+body {
+  height: 100%;
+}
+
+h3 {
   color: #499F36;
-  font-style:italic;
+  font-style: italic;
   font-style: bold;
 }
 
-.btn{
-  color:#fff;
+.app-container {
+  background-color: #b8c7b0;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  top: 0;
+}
+
+.main-view {
+  flex-grow: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+
+.btn {
+  color: #fff;
   background-color: #499F36;
   border-color: #38782a;
 }
-.btn-danger{
+
+.btn-danger {
   background-color: rgb(240, 9, 9);
-  color:#fff;
+  color: #fff;
   border-color: rgb(246, 9, 9);
 }
 
-.btn:hover, .btn:active, .btn:focus {
-  color:#fff;
+.btn:hover,
+.btn:active,
+.btn:focus {
+  color: #fff;
   background-color: #38782a;
   border-color: #27511d;
 }
 
-.btn-danger:hover , .btn-danger:active{
+.btn-danger:hover,
+.btn-danger:active {
   background-color: rgb(216, 9, 9);
-  color:#fff;
+  color: #fff;
   border-color: rgb(220, 9, 9);
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.navbar{
-  background-color:#38782a;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.pro-sidebar{
-  color: #ffffff;
-  background-color: #499F36;
-}
-
-/* Sidebar css */
-.btn-toggle {
-  display: none;
-  color: #7eb06d;
-  background: #499F36;
-  cursor: pointer;
-  width: 35px;
-  height: 35px;
-  text-align: center;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-}
-
-@media (max-width: 768px) {
-  .btn-toggle {
-    display: flex;
-  }
-}
-
-.sidebar-btn-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40px;
-
-}
-
-.sidebar-btn {
-  transition: width 0.3s;
-  width: 150px;
-  padding: 1px 15px;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #7eb06d;
-  text-decoration: none;
-  margin: 0 auto;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
 }
 
 /* pagination css begin */
@@ -113,12 +67,11 @@ h3{
   background: #38782a !important;
 }
 
-.pagination > li > a,
-.pagination > li > a:hover,
-.pagination > li > a:focus
-{
-    background-color: #ffffff;
-    color: #292b2c;
+.pagination>li>a,
+.pagination>li>a:hover,
+.pagination>li>a:focus {
+  background-color: #ffffff;
+  color: #292b2c;
 }
 
 /* pagination css end */
