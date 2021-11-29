@@ -7,7 +7,8 @@ import {
   AppNavbar,
   LoginForm,
   ProductCards,
-  ShopEmployeeActionsList
+  ShopEmployeeActionsList,
+  InsertClient
 } from './components';
 
 import RoutesEmployee from './components/routes/RoutesEmployee';
@@ -76,7 +77,6 @@ function App() {
     const getVT = async () => {
       try {
         const data = await api_getTime();
-        console.log(data);
         setVirtualTime(new Date(data.currentTime));
         setDirtyVT(false);
       } catch (err) {

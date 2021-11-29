@@ -94,7 +94,6 @@ export function insertOrder(orderClient) {
                 return;
               }
               if (orderClient.order.length === index + 1) {
-                // console.log(OrderID);
                 resolve(OrderID);
               }
             });
