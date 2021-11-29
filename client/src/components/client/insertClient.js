@@ -57,7 +57,7 @@ const InsertClient = function (props) {
         if(loggedIn){
             insertClient(userAdd)
                 .then(() => {
-                    history.push('/client');
+                    history.push('/employee/clients');
                     addMessage({title:"",message: 'Registration is completed with success', type: 'success'});
 
                 })
