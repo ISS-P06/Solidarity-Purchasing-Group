@@ -30,10 +30,10 @@ describe('testing InsertClient component', () => {
       </Router>
     );
 
-    const clientName = screen.getByLabelText('Client name');
+    const clientName = screen.getByLabelText('Name');
     expect(clientName).toBeInTheDocument();
 
-    const clientSurname = screen.getByLabelText('Client surname');
+    const clientSurname = screen.getByLabelText('Surname');
     expect(clientSurname).toBeInTheDocument();
 
     const clientMail = screen.getByLabelText('Email address');
