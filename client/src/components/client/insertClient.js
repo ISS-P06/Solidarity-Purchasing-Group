@@ -152,7 +152,6 @@ const InsertClient = function (props) {
     });
     return (
         <Container>
-            {console.log(user)}
             <Row className="justify-content-center">
                 <Col sm={10} lg={8}>
                     <h3 className="mt-3">{loggedIn ? "Register new client" : "Register"}</h3>
