@@ -58,11 +58,11 @@ const InsertClient = function (props) {
             insertClient(values)
                 .then(() => {
                     history.push('/client');
-                    addMessage("", 'Registration is completed with success', 'success');
+                    addMessage({title:"",message: 'Registration is completed with success', type: 'success'});
 
                 })
                 .catch((err) => {
-                    addMessage("Error", err.message, 'danger');
+                    addMessage({title: "Error",message: err.message,type: 'danger'});
                     console.log(err);
                 });
         }else{
@@ -71,11 +71,11 @@ const InsertClient = function (props) {
                     insertClient(values)
                         .then(() => {
                             history.push('/client'); /*TODO redirect in the correct home page*/
-                            addMessage("", 'Registration is completed with success', 'success');
+                            addMessage({title:"",message: 'Registration is completed with success',type: 'success'});
 
                         })
                         .catch((err) => {
-                            addMessage("Error", err.message, 'danger');
+                            addMessage({title:"Error",message: err.message, type:'danger'});
                             console.log(err);
                         });
                     break;
@@ -83,7 +83,7 @@ const InsertClient = function (props) {
                 default:
                     insertUser(user)
                         .then(() => {
-                            addMessage("", 'Registration is completed with success', 'success');
+                            addMessage({title:"", message:'Registration is completed with success',type: 'success'});
                             if(user.typeUser==="shop_employee"){
                                 history.push('/shop_employee');
                             }
@@ -92,7 +92,7 @@ const InsertClient = function (props) {
                             }
                         })
                         .catch(err=>{
-                            addMessage("Error", err.message, 'danger');
+                            addMessage({title:"Error", message: err.message,type: 'danger'});
                             console.log(err);
                         })
             }
