@@ -87,12 +87,12 @@ export function test_addDummyOrders() {
             db.run(sql, [], (err) => {
                 if (err) reject(err);
     
-                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (0, 2, pending, ?)`;
+                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`;
                 db.run(
                     sql,
                     [dayjs().format('YYYY-MM-DD HH:MM')],
                     function (err) {
-                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (0,1,9999.0)`;
+                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
                         db.run(sql, [], function (err) {
                             if (err) {
                                 reject(err);
@@ -105,12 +105,12 @@ export function test_addDummyOrders() {
             db.run(sql, [], (err) => {
                 if (err) reject(err);
     
-                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`;
+                const sql = `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, pending, ?)`;
                 db.run(
                     sql,
                     [dayjs().format('YYYY-MM-DD HH:MM')],
                     function (err) {
-                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,0.1)`;
+                        const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-2,2,0.1)`;
                         db.run(sql, [], function (err) {
                             if (err) {
                                 reject(err);
