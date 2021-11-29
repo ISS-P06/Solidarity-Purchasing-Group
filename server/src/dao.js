@@ -118,9 +118,9 @@ export function insertClient(
   role = 'client'
 ) {
   return new Promise((resolve, reject) => {
-    const clientQuery =
-      'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
-    const userQuery = 'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+    const clientQuery = 'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+    const userQuery =
+      'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
@@ -152,7 +152,7 @@ export function getOrders(clientId = -1) {
             FROM Request r, Client c, User u
             WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
     let deps = [];
-    if(clientId !== -1){
+    if (clientId !== -1) {
       sql += ` AND u.id = ?`;
       deps.push(clientId);
     }
@@ -204,9 +204,9 @@ export function getOrderById(orderId, clientId = -1) {
                     AND pr.ref_product = p.id 
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
-    
+
     let deps = [orderId];
-    if(clientId !== -1){
+    if (clientId !== -1) {
       sql += ` AND u.id = ?`;
       deps.push(clientId);
     }
@@ -235,9 +235,16 @@ export function getOrderById(orderId, clientId = -1) {
 
       productsPromise.then((products) => {
         resolve({
-          orderId: row.id, date: row.date, status: row.status,
-          email: row.email, username: row.username, role: row.role,
-          name: row.name, surname: row.surname, phone: row.phone, address: row.address,
+          orderId: row.id,
+          date: row.date,
+          status: row.status,
+          email: row.email,
+          username: row.username,
+          role: row.role,
+          name: row.name,
+          surname: row.surname,
+          phone: row.phone,
+          address: row.address,
           products: products,
         });
       });
@@ -286,10 +293,10 @@ export function getBasketByClientId(clientId) {
   });
 }
 
-export function  addProductToBasket(clientId,productId, quantity) {
+export function addProductToBasket(clientId, productId, quantity) {
   return new Promise((resolve, reject) => {
     const sql = `INSERT INTO Basket(ref_client, ref_product,quantity) VALUES (?, ?,?)`;
-    db.run(sql, [clientId,productId, quantity], (err, rows) => {
+    db.run(sql, [clientId, productId, quantity], (err, rows) => {
       if (err) {
         console.log(err);
         reject(err);
@@ -300,10 +307,10 @@ export function  addProductToBasket(clientId,productId, quantity) {
   });
 }
 
-export function  removeProductToBasket(clientId,productId) {
+export function removeProductFromBasket(clientId, productId) {
   return new Promise((resolve, reject) => {
     const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
-    db.run(sql, [clientId,productId], (err, rows) => {
+    db.run(sql, [clientId, productId], (err, rows) => {
       if (err) {
         console.log(err);
         reject(err);
@@ -311,5 +318,41 @@ export function  removeProductToBasket(clientId,productId) {
       }
       resolve(productId);
     });
+  });
+}
+
+export function getBalanceByClientId(clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT balance FROM Client WHERE ref_user = ?';
+
+    db.get(sql, [clientId], (err, row) => (err ? reject(err) : resolve(row.balance)));
+  });
+}
+
+export function insertOrderFromBasket(clientId, basket, balance, date) {
+  return new Promise((resolve, reject) => {
+    const totalAmount = basket
+      .map((p) => p.price * p.quantity)
+      .reduce((a, b) => a + b, 0)
+      .toFixed(2);
+
+    const status = totalAmount <= balance ? 'confirmed' : 'pending_canc';
+
+    const sql = 'INSERT INTO Request(ref_client, status, date) VALUES(?, ?, ?)';
+
+    db.run(sql, [clientId, status, date], (err) => (err ? reject(err) : resolve(null)));
+  });
+}
+
+export function removeOrderedProducts(basket) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE Product(ref_client, date, id) VALUES(?, ?, ?)';
+
+    basket.forEach((prod) => {
+      console.log(prod);
+    });
+    resolve(null);
+
+    // db.run(sql, [clientId, status, date], (err) => (err ? reject(err) : resolve(null)));
   });
 }

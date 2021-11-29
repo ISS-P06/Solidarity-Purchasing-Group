@@ -195,7 +195,7 @@ function App() {
               path="/basket"
               role={userRole}
               condition={loggedIn && userRole === 'client'}
-              component={<Basket userRole={userRole} userId={4} />}
+              component={<Basket userRole={userRole} userId={userId} />}
             />
 
             {/* Default redirect the user on his default route */}

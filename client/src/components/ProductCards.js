@@ -14,13 +14,13 @@ import {
 
 import {useState, useEffect} from 'react';
 import {api_getProducts, api_addProductToBasket} from '../Api';
+import { addMessage } from './Message';
 
 const ProductCards = (props) => {
     // product code
     // product: { id, name, description, category, quantity, price, unit }
     const [productList, setProductList] = useState([]);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
     useEffect(() => {
         api_getProducts()
@@ -57,7 +57,7 @@ const ProductCards = (props) => {
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
             props.handleAddProduct();
-            setSuccess('Product correctly added to the basket');
+            addMessage({message:'Product correctly added to the basket', type: "info"});
 
         }).catch((e) => console.log(e));
 
@@ -74,11 +74,6 @@ const ProductCards = (props) => {
                 {error && (
                     <Col style={{display: 'flex', justifyContent: 'center'}}>
                         <h4>{error}</h4>
-                    </Col>
-                )}
-                {success && (
-                    <Col style={{display: 'flex', justifyContent: 'center'}}>
-                        <h4>{success}</h4>
                     </Col>
                 )}
                 {currentProducts.map((p) => {
