@@ -40,7 +40,6 @@ function VirtualClock(props) {
 
   useEffect(() => {
     if (!dirtyVT) {
-      console.log(virtualTime);
       const humanTime = ISOtoHuman(virtualTime.toISOString());
 
       setDate(humanTime.date);
