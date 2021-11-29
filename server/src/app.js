@@ -231,7 +231,7 @@ app.post(
     check('name').isString(),
     check('surname').isString(),
     check('balance').isInt(),
-    check('mail').isString(),
+    check('mail').isEmail(),
     check('typeUser').isString(),
     async (req, res) => {
         const errors = validationResult(req);
@@ -260,9 +260,9 @@ app.post(
 app.post('/api/register_user',
     check('name').isString(),
     check('surname').isString(),
-    check('mail').isString(),
+    check('mail').isEmail(),
     check('typeUser').isString(),
-    function (req, res) {
+    (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({error: errors.array()});

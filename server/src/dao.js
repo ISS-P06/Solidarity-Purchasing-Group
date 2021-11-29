@@ -126,6 +126,8 @@ export function insertClient(
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
       bcrypt.hash(password, 10, function(err, hash) {
+
+        // Store hash in your password DB.
         stmt.run([username, hash, role, name, surname, email, phone], function (err) {
           if (err) {
             reject(err);

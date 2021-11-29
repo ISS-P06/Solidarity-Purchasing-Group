@@ -1,11 +1,11 @@
-import {useState} from 'react';
-import {Row, Col, Form, Button, Container, FloatingLabel} from 'react-bootstrap';
-import {useFormik} from 'formik';
+import { useState } from 'react';
+import { Row, Col, Form, Button, Container } from 'react-bootstrap';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
+
 import {Link, useHistory} from 'react-router-dom';
 import {Eye} from 'react-bootstrap-icons';
 import Notification, {addMessage} from '../Message';
-
 import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
@@ -326,9 +326,8 @@ const InsertClient = function (props) {
 
                     </Form>
                 </Col>
-            </Row>
-        </Container>
-    )
-        ;
+      </Row>
+    </Container>
+  );
 };
 export default InsertClient;

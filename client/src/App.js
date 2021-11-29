@@ -132,9 +132,6 @@ function App() {
               <Route path="/login">
                 {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
               </Route>
-              <Route path="/register">
-                {!loggedIn ?  <InsertClient loggedIn={loggedIn}/>  : "" } {/*TODO: page of the user registered*/}
-              </Route>
               {/* Shop employee-only routes */}
 
               {/* Employee: client info page route */}
@@ -160,7 +157,7 @@ function App() {
               {/* Employee client registration route */}
               <Route path="/employee/register">
                 {loggedIn && userRole == 'shop_employee' ? (
-                  <InsertClient loggedIn={loggedIn}/>
+                  <InsertClient />
                 ) : (
                   <RedirectUser userRole={userRole} />
                 )}
