@@ -85,7 +85,7 @@ function App() {
     // async function for logging out
     const doLogout = async () => {
         api_logout();
-        addMessage({title: 'Logout', message: 'You are now logged out'});
+        addMessage({title:'Logout',message: 'You are now logged out'});
         setLoggedIn(false);
     };
 
@@ -105,6 +105,9 @@ function App() {
                             <HomePage/>
                         </Route>
 
+                        <Route exact path="/register">
+                            <InsertClient/>
+                        </Route>
                         <RedirectRoute
                             path="/login"
                             role={userRole}
@@ -127,6 +130,17 @@ function App() {
                         {/* Shop employee-only routes */}
 
                         {/* Employee: client info page route */}
+                        {/* Employee: client info page route */}
+                        <Route
+                            path="/employee"
+                            render={({match}) =>
+                                loggedIn ? (
+                                    <div id={match.params.id}/>
+                                ) : (
+                                    <Redirect to={getUserRoute(userRole) || '/'}/>
+                                )
+                            }
+                        />
                         <Route
                             path="/employee/clients/:id"
                             render={({match}) =>

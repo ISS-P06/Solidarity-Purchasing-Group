@@ -167,6 +167,16 @@ export async function insertClient(client) {
   }
 }
 
+export async function insertUser(user){
+  let res;
+  try{
+    res = await axios.post('/api/register_user' , user)
+  }catch(err){
+    console.log(err);
+    throw err;
+  }
+}
+
 export const api_getTime = async () => {
   try {
     const res = await axios.get('/api/time');
