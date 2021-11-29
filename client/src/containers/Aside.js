@@ -84,7 +84,7 @@ function ClientMenu() {
         </Link>
       </MenuItem>
       <MenuItem icon={<FaRegListAlt />}>
-        <Link className="text-light" to="/clients/order">
+        <Link className="text-light" to="/client/orders">
           Browse order history list
         </Link>
       </MenuItem>

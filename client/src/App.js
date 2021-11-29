@@ -50,10 +50,10 @@ function App() {
     const checkAuth = async () => {
       try {
         const info = await api_getUserInfo();
-        setLoggedIn(true);
-        setUserRole(info.role);
-        setUserId(info.id);
         setUser(info);
+        setUserId(info.id);
+        setUserRole(info.role);
+        setLoggedIn(true);
       } catch (err) {
         setUserRole('');
         console.error(err);
@@ -95,7 +95,7 @@ function App() {
               path="/client"
               role={userRole}
               condition={loggedIn}
-              component={<ClientHomePage userId={userId} />}
+              component={<ClientHomePage user={user} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
@@ -196,11 +196,11 @@ function App() {
               role={userRole}
               condition={loggedIn && userRole === 'client'}
               component={<Basket userRole={userRole} userId={4} />}
-              redirect={<HomePage />}
             />
 
+            {/* Default redirect the user on his default route */}
             <Route>
-              <Redirect to="/" />
+              <Redirect to={getUserRoute(userRole)} />
             </Route>
           </Layout>
         </Switch>

@@ -5,6 +5,8 @@ import { Route, Redirect } from 'react-router-dom';
  */
 const rolesPathRedirect = {
   shop_employee: '/employee',
+  client: '/client',
+  farmer: '/farmer',
 };
 
 /**
