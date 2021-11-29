@@ -6,15 +6,15 @@ import { FaBars } from 'react-icons/fa';
 import {
   AlertBox,
   AppNavbar,
-  ClientsList,
-  InsertClient,
   LoginForm,
-  OrderList,
-  OrderReview,
   ProductCards,
-  ShopEmployeeActionsList,
-  
+  ShopEmployeeActionsList
 } from './components';
+
+import RoutesEmployee from './components/routes/RoutesEmployee';
+import RoutesClient from './components/routes/RoutesClient';
+import RoutesFarmer from './components/routes/RoutesFarmer';
+import RedirectUser from './components/routes/RedirectUser';
 
 import Basket from './components/order/Basket'
 
@@ -172,100 +172,37 @@ function App() {
                 {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
               </Route>
               {/* Shop employee-only routes */}
+              <RoutesEmployee
+                loggedIn={loggedIn}
+                userRole={userRole}
+                userId={userId}
+                setMessage={setMessage}
+                virtualTime={virtualTime}
+                dirtyVT={dirtyVT}
+                />
 
-              {/* Employee: client info page route */}
-              <Route
-                path="/employee/clients/:id"
-                render={({ match }) => {
-                  if (loggedIn) {
-                    return <div id={match.params.id} />;
-                  } else {
-                    return <RedirectUser userRole={userRole} />;
-                  }
-                }}
-              />
-              {/* Employee client list route */}
-              <Route path="/employee/clients">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <ClientsList 
-                    setMessage={setMessage} 
-                    virtualTime={virtualTime} />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
+              {/* Client-only routes */}
+              <RoutesClient
+                loggedIn={loggedIn}
+                userRole={userRole}
+                userId={userId}
+                />
 
-              {/* Employee client registration route */}
-              <Route path="/employee/register">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <InsertClient />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee product browsing route */}
-              <Route path="/employee/products">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <ProductCards userRole={userRole} userId={userId} />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee: order info page route */}
-              <Route path="/employee/orders/:id">
-                {loggedIn ? <OrderReview userRole={userRole}/> : <RedirectUser userRole={userRole} />}
-              </Route>
-
-              {/* Employee order list route */}
-              <Route path="/employee/orders">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <OrderList userRole={userRole} userId={userId}/>
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee order creation route */}
-              <Route path="/employee/orders/new">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee home page route */}
-              <Route path="/employee">
-                {loggedIn && userRole === 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/*
-              Routes to test client orders component
-              TO DO: remove or improve these routes
-              Thank you, Marco
-              */}
-              <Route path="/client/orders/:id">
-                <OrderReview userRole="client" userId="4"/>
-              </Route>
-              <Route path="/client/orders">
-                <OrderList userRole="client" userId="4"/>
-              </Route>
+              {/* Farmer-only routes */}
+              <RoutesFarmer
+                loggedIn={loggedIn}
+                userRole={userRole}
+                />
 
               {/* Home page route */}
               <Route path="/">
-                {/* Replace div with homepage component */}
+                {/* ???????? */}
                 <Basket userId="4"/>
                 <ProductCards userRole="client" userId="4" />
                 <div />
               </Route>
 
-
+              {/* Default route; redirects to / */}
               <Route>
                 <Redirect to="/" />
               </Route>
@@ -275,21 +212,6 @@ function App() {
       </Router>
     </Container>
   );
-}
-
-function RedirectUser(props) {
-  const userRole = props.userRole;
-
-  const renderSwitch = (role) => {
-    switch (role) {
-      case 'shop_employee':
-        return <Redirect to="/employee" />;
-      default:
-        return <Redirect to="/" />;
-    }
-  };
-
-  return renderSwitch(userRole);
 }
 
 export default App;

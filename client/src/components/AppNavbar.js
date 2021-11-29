@@ -23,6 +23,12 @@ function AppNavbar(props) {
       case 'shop_employee':
         handleClick('/employee');
         break;
+      case 'client':
+        handleClick('/client');
+        break;
+      case 'farmer':
+        handleClick('/farmer');
+        break;
       default:
         handleClick('/');
         break;
@@ -33,6 +39,10 @@ function AppNavbar(props) {
     switch (role) {
       case 'shop_employee':
         return 'Employee page';
+      case 'client':
+        return 'Client page';
+      case 'farmer':
+        return 'Farmer page';
       default:
         return 'Home page';
     }

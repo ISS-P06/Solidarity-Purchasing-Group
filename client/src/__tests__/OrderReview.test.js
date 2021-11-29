@@ -83,7 +83,7 @@ describe('My component OrderReview', () => {
               orderId: 1,
               email: 'massimo.rossi@mail.com',
               date: '2021-11-16 12:12',
-              status: 'pending',
+              status: 'confirmed',
               products: [
                 {
                   name: 'onion',
