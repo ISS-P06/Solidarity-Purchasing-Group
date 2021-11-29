@@ -208,12 +208,19 @@ export function registerUser(user){
 }
 
 //UPDATED
-export function getOrders() {
+// clientId can be specified or not
+// if specified the query selects only orders of a specific client
+export function getOrders(clientId = -1) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, u.email
+    let sql = `SELECT r.id, u.email, r.date, r.status
             FROM Request r, Client c, User u
             WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
-    db.all(sql, [], (err, rows) => {
+    let deps = [];
+    if(clientId !== -1){
+      sql += ` AND u.id = ?`;
+      deps.push(clientId);
+    }
+    db.all(sql, deps, (err, rows) => {
       if (err) {
         reject(err);
         return;
@@ -221,6 +228,8 @@ export function getOrders() {
       const orders = rows.map((p) => ({
         orderId: p.id,
         email: p.email,
+        date: p.date,
+        status: p.status,
       }));
       resolve(orders);
     });
@@ -244,21 +253,29 @@ export function getOrder(orderId) {
 }
 
 //UPDATED
-export function getOrderById(orderId) {
+// clientId can be specified or not
+// if specified the query selects only the order of a specific client
+export function getOrderById(orderId, clientId = -1) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT r.id, u.email, r.status
+    let sql = `SELECT r.id, u.email, r.status, r.date, c.address, u.username, u.name, u.surname, u.role, u.phone
                   FROM Request r, Client c, User u
                   WHERE r.ref_client = c.ref_user AND c.ref_user = u.id
                     AND r.id=?`;
 
-    const sql2 = `SELECT pd.name, pr.quantity, p.price
+    const sql2 = `SELECT pd.name, pr.quantity, p.price, pd.unit
                   FROM Request r, Product_Request pr, Product p, Prod_descriptor pd
                   WHERE r.id = pr.ref_request 
                     AND pr.ref_product = p.id 
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
+    
+    let deps = [orderId];
+    if(clientId !== -1){
+      sql += ` AND u.id = ?`;
+      deps.push(clientId);
+    }
 
-    db.get(sql, orderId, function (err, row) {
+    db.get(sql, deps, function (err, row) {
       if (err) {
         reject(err);
         return;
@@ -274,13 +291,19 @@ export function getOrderById(orderId) {
             name: p.name,
             quantity: p.quantity,
             price: p.price,
+            unit: p.unit,
           }));
           resolve(products);
         });
       });
 
       productsPromise.then((products) => {
-        resolve({ orderId: row.id, email: row.email, products: products, status: row.status });
+        resolve({
+          orderId: row.id, date: row.date, status: row.status,
+          email: row.email, username: row.username, role: row.role,
+          name: row.name, surname: row.surname, phone: row.phone, address: row.address,
+          products: products,
+        });
       });
     });
   });
@@ -299,5 +322,30 @@ export function setOrderDelivered(orderId) {
       }
     });
     resolve(orderId);
+  });
+}
+
+export function getBasketByClientId(clientId) {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT p.id, pd.name, pd.category, b.quantity, p.price, pd.unit
+                     FROM Product p, Basket b, Prod_descriptor pd
+                     WHERE p.id = b.ref_product
+                     AND pd.id = p.ref_prod_descriptor
+                     AND b.ref_client = ?`;
+    db.all(sql, [clientId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const products = rows.map((p) => ({
+        productId: p.id,
+        name: p.name,
+        category: p.category,
+        quantity: p.quantity,
+        price: p.price,
+        unit: p.unit,
+      }));
+      resolve(products);
+    });
   });
 }

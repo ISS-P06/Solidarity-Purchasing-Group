@@ -6,8 +6,6 @@ import TimePicker from 'react-bootstrap-time-picker';
 import { api_setTime, api_getTime } from '../Api';
 import { humanToISO, ISOtoHuman } from '../utils';
 
-import 'react-datepicker/dist/react-datepicker.css';
-
 function VirtualClock(props) {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(0);
@@ -55,7 +53,7 @@ function VirtualClock(props) {
 
   return (
     <>
-      <Button variant="success" className="mt-2 me-sm-2 float-sm-end" onClick={handleShow}>
+      <Button variant="success" onClick={handleShow}>
         Virtual clock
       </Button>
 

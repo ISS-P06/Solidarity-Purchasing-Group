@@ -1,12 +1,25 @@
-import { Container, Row, Col, Card, ListGroup, Pagination } from 'react-bootstrap';
+import { Container,
+  Row,
+  Col,
+  Card,
+  ListGroup,
+  Pagination,
+  Button,
+  Modal,
+  Image,
+  Form,
+  Alert
+} from 'react-bootstrap';
+
 import { useState, useEffect } from 'react';
-import { api_getProducts } from '../Api';
+import { api_getProducts, api_addProductToBasket } from '../Api';
 
 const ProductCards = (props) => {
   // product code
   // product: { id, name, description, category, quantity, price, unit }
   const [productList, setProductList] = useState([]);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     api_getProducts()
@@ -31,13 +44,21 @@ const ProductCards = (props) => {
 
   let endPage = Math.ceil(productList.length / productsPerPage);
   let startPage = currentPage - 2;
-  if (startPage < 1)
-    startPage = 1;
-  if (startPage > endPage - 4)
-    startPage = endPage - 4;
+  if (startPage < 1) startPage = 1;
+  if (startPage > endPage - 4) startPage = endPage - 4;
 
   for (let i = startPage; i <= startPage + 4; i++) {
     pageNumbers.push(i);
+  }
+
+  const handleAddProductToBasket = async (reservedQuantity, productId) => {
+
+    await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
+
+      setSuccess('Product correctly added to the basket');
+
+    }).catch((e) => console.log(e));
+    
   }
 
   return (
@@ -53,23 +74,30 @@ const ProductCards = (props) => {
             <h4>{error}</h4>
           </Col>
         )}
+        {success && (
+          <Col style={{ display: 'flex', justifyContent: 'center' }}>
+            <h4>{success}</h4>
+          </Col>
+        )}
         {currentProducts.map((p) => {
-          return <ProductCard key={p.id} product={p} />;
+          return <ProductCard key={p.id} product={p} userRole={props.userRole} onBasketAdd={handleAddProductToBasket} />;
         })}
       </Row>
       <Row className="mt-3 mb-3">
         <Col style={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination size="md">
-            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
-            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
-            {pageNumbers.map((i) => (
-              <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
-                {i}
-              </Pagination.Item>
-            ))}
-            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
-            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
-          </Pagination>
+          {productList.length !== 0 &&
+            <Pagination size="md">
+              {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
+              {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
+              {pageNumbers.map((i) => (
+                <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+                  {i}
+                </Pagination.Item>
+              ))}
+              {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+              {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
+            </Pagination>
+          }  
         </Col>
       </Row>
     </Container>
@@ -81,6 +109,34 @@ const ProductCard = (props) => {
   const regex = /[ _]/g;
   let imgName = product.category.replace(regex, '-').toLowerCase() + '-16x11.png';
   let imgPath = '/img/products/' + imgName;
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {setShow(false); setReservedQuantity(0)};
+  const handleShow = () => setShow(true);
+
+  const [reservedQuantity, setReservedQuantity] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  const handleAddProductToBasket = async () => {
+ 
+    if(reservedQuantity < 0.1)
+    {
+      setErrorMessage('You cannot add less than 0.1 Kg');
+      return;
+    }
+    
+    if(reservedQuantity > props.product.quantity) 
+    {
+      setErrorMessage('You cannot add more than the available quantity');
+      return;
+    }
+    
+
+    props.onBasketAdd(reservedQuantity, props.product.productId);
+    setShow(false);
+
+  }
 
   return (
     <Col sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 3 }} className="mb-3">
@@ -97,12 +153,61 @@ const ProductCard = (props) => {
             Price: {product.price} €/{product.unit}
           </ListGroup.Item>
           <ListGroup.Item>
-            Quantity: {product.quantity} {product.unit}
+            Quantity: {product.quantity.toFixed(2)} {product.unit}
           </ListGroup.Item>
         </ListGroup>
-        {/* <Card.Footer>
-                <Button variant="primary" className="float-end text-light pt-0 pb-1" style={{ fontSize: 20 }}>+</Button>
-            </Card.Footer> */}
+        {props.userRole == "client" ? 
+            <Card.Footer>
+              <Button 
+                variant="primary"
+                className="float-end text-light pt-0 pb-1" 
+                style={{ fontSize: 20 }}
+                onClick={handleShow}>
+                +
+            </Button>
+            <Modal show={show} onHide={handleClose} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Please insert the quantity</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Row>
+                  <Col>
+                  <Image src={imgPath} fluid rounded/>
+                  </Col>
+                  <Col xs={2}>
+                    {product.name}
+                  </Col>
+                  <Col xs={6}>
+                    <Form.Control 
+                      type="text" 
+                      placeholder="Insert Quantity"
+                      onChange={(e) => setReservedQuantity(e.target.value)}
+                    />
+                  </Col>
+                  <Col xs={1}>
+                    {product.unit}
+                  </Col>
+                </Row>
+              </Modal.Body>
+              <Modal.Footer>
+                <Row>
+                  <Col style={{left: '10%'}}>
+                  <h5> Total € {(reservedQuantity * product.price).toFixed(2) }</h5>
+                  </Col>
+                  <Col>
+                    <Button variant="primary" onClick={handleAddProductToBasket}>
+                      Add product to Basket
+                    </Button>
+                  </Col>
+                </Row>
+              </Modal.Footer>
+              {
+                errorMessage ? <Alert variant="danger">
+                  {errorMessage}
+              </Alert> : <></>
+              }
+            </Modal>
+            </Card.Footer> : <></> }
       </Card>
     </Col>
   );

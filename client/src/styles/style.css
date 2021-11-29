@@ -1,0 +1,13 @@
+/* deps imports  */
+@import 'react-datepicker/dist/react-datepicker.css';
+@import "react-pro-sidebar/dist/css/styles.css";
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import 'react-notifications-component/dist/theme.css';
+
+
+/* Custom css */
+@import "./HomePage.css";
+@import "./Footer.css";
+@import "./ClientHomePage.css";
+@import "./Aside.css";
+@import "./Navbar.css";

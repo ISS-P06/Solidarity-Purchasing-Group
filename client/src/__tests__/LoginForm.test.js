@@ -11,12 +11,10 @@ describe('Test login form', () => {
     const usernameField = screen.getByPlaceholderText('Username');
     const passwordField = screen.getByPlaceholderText('Password');
     const loginButton = screen.getByText('Login');
-    const homeButton = screen.getByText('Back to home');
 
     expect(usernameField).toBeInTheDocument();
     expect(passwordField).toBeInTheDocument();
     expect(loginButton).toBeInTheDocument();
-    expect(homeButton).toBeInTheDocument();
   });
 
   test('Test filling out login form', () => {
@@ -64,7 +62,5 @@ describe('Test login form', () => {
     act(() => {
       fireEvent.click(screen.getByText('Login'));
     });
-
-    fireEvent.click(screen.getByText('Back to home'));
   });
 });

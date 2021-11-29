@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import App from '../App';
-import AppNavbar from '../components/AppNavbar';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { default as AppNavbar } from '../containers/Navbar';
+import { MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 describe('Test navbar appearance', () => {
@@ -9,7 +9,7 @@ describe('Test navbar appearance', () => {
 
   test('The Navbar should appear when the App component is loaded', () => {
     render(<App />);
-    const navbar = screen.getByText('Solidarity Purchasing Group');
+    const navbar = screen.getByText('SPG');
     expect(navbar).toBeInTheDocument();
   });
 
@@ -25,10 +25,14 @@ describe('Test navbar appearance', () => {
       </MemoryRouter>
     );
 
-    const loginText = screen.getByText('Login');
-    expect(loginText).toBeInTheDocument();
+    const dropdown = screen.getByTestId('settings-dd');
+    expect(dropdown).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Login'));
+    fireEvent.click(dropdown);
+
+    // screen.getByRole('');
+    const login = screen.getByText(/Login/);
+    expect(login).toBeInTheDocument();
   });
 
   test('Test Navbar appearance: user is logged in', () => {
@@ -43,11 +47,14 @@ describe('Test navbar appearance', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Employee page')).toBeInTheDocument();
-    expect(screen.getByText('Logout')).toBeInTheDocument();
+    const dropdown = screen.getByTestId('settings-dd');
+    expect(dropdown).toBeInTheDocument();
+    fireEvent.click(dropdown);
 
-    fireEvent.click(screen.getByText('Logout'));
+    const logout = screen.getByText(/Logout/);
+    expect(logout).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Employee page'));
+    fireEvent.click(logout);
+    expect(doLogoutFn).toHaveBeenCalledTimes(1);
   });
 });

@@ -36,9 +36,43 @@ export const api_getOrders = async () => {
 
 export default api_getOrders;
 
+export const api_getClientOrders = async (clientId) => {
+  try {
+    const res = await axios.get('/api/clients/'+clientId+'/orders');
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in getting all the client orders');
+    }
+  }
+};
+
 export const api_getOrderReview = async (orderId) => {
   try {
     const res = await axios.get('/api/orders/' + orderId);
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in getting the order review');
+    }
+  }
+};
+
+export const api_getClientOrderReview = async (clientId, orderId) => {
+  try {
+    const res = await axios.get('/api/clients/' + clientId + '/orders/' + orderId);
     if (res.data) {
       return res.data;
     } else {
@@ -163,8 +197,6 @@ export const api_setTime = async (dateTime) => {
     const res = await axios.put('/api/time', { time: dateTime });
     return res;
   } catch (error) {
-    //alert("Error in api_setTime()");
-    //console.log(error.message);
     throw new Error(error.message);
   }
 };
@@ -256,4 +288,39 @@ export const api_buyNow = async (userId) => {
     }
   }
 };
+
+export const api_removePruductFromBasket = async (userId, productId) => {
+  try {
+    const res = await axios.put('/api/client/' + userId + '/basket/remove', {productId});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in removing a product from basket');
+    }
+  }
+};
+
+export const api_addProductToBasket = async (userId, productId, reservedQuantity) => {
+  try {
+    const res = await axios.post('/api/client/' + userId + '/basket/add', {productId, reservedQuantity});
+    if (res.data) {
+      return res.data;
+    } else {
+      throw new Error(res.data.message);
+    }
+  } catch (err) {
+    if (err.response.status === 500) {
+      throw new Error(err.response.data);
+    } else {
+      throw new Error('Sorry, there was an error in adding to the basket');
+    }
+  }
+};
+
 
