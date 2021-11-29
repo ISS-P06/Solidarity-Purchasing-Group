@@ -8,6 +8,7 @@ const senderMail = process.env.EMAIL;
 // Set up transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    secure: true,
     auth: {
       user: senderMail,
       pass: process.env.PASSWORD

@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 export function checksClientBalance() {
     return new Promise((resolve, reject) => {
         const sql = `
-                    SELECT U.email, R.id
+                    SELECT DISTINCT U.email, R.id
                     FROM Request R, Product_Request PR, Product P, Client C, User U
                     WHERE R.ref_client = C.ref_user AND PR.ref_request = R.id AND PR.ref_product = P.id
                         AND C.ref_user = U.id 
