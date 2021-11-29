@@ -83,15 +83,15 @@ const InsertClient = function (props) {
                     break;
 
                 default:
-                    insertUser(user)
+                    insertUser(userAdd)
                         .then(() => {
                             addMessage({title:"", message:'Registration is completed with success',type: 'success'});
-                            if(user.typeUser==="shop_employee"){
+                            if(userAdd.typeUser==="shop_employee"){
                                 history.push('/shop_employee');
                                 setLoggedIn(true);
                                 setUser(userAdd);
                             }
-                            else if(user.typeUser==="farmer"){
+                            else if(userAdd.typeUser==="farmer"){
                                 history.push('/farmer');
                                 setLoggedIn(true);
                                 setUser(userAdd);
