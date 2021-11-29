@@ -42,22 +42,22 @@ describe('testing InsertClient component', () => {
     const clientPhone = screen.getByLabelText('Phone number');
     expect(clientPhone).toBeInTheDocument();
 
-    const clientAddress = screen.getByLabelText('Address');
+    const clientAddress = screen.getByLabelText(/Address/);
     expect(clientAddress).toBeInTheDocument();
 
-    const clientBalance = screen.getByLabelText('Balance');
+    const clientBalance = screen.getByLabelText(/Balance/);
     expect(clientBalance).toBeInTheDocument();
 
-    const clientUsername = screen.getByLabelText('Username');
+    const clientUsername = screen.getByLabelText(/Username/);
     expect(clientUsername).toBeInTheDocument();
 
-    const clientPassword = screen.getByLabelText('Password');
+    const clientPassword = screen.getByLabelText(/Password/);
     expect(clientPassword).toBeInTheDocument();
 
     const cancelButton = screen.getByText('Cancel');
     expect(cancelButton).toBeInTheDocument();
 
-    const submitButton = screen.getByText('Submit');
+    const submitButton = screen.getByText(/Submit/);
     expect(submitButton).toBeInTheDocument();
   });
 
@@ -114,21 +114,21 @@ describe('testing InsertClient component', () => {
     expect(clientPhone.value).toBe(clientData.phone);
 
 
-    const address = screen.getByLabelText('Address');
+    const address = screen.getByLabelText(/Address/);
     userEvent.type(address, clientData.address);
     expect(address.value).toBe(clientData.address);
 
 
-    const clientBalance = screen.getByLabelText('Balance');
+    const clientBalance = screen.getByLabelText(/Balance/);
     userEvent.type(clientBalance, clientData.balance);
     expect(clientBalance.value).toBe(clientData.balance);
 
-    const clientUsername = screen.getByLabelText('Username');
+    const clientUsername = screen.getByLabelText(/Username/);
     userEvent.type(clientUsername, clientData.username);
     expect(clientUsername.value).toBe(clientData.username);
 
 
-    const clientPassword = screen.getByLabelText('Password');
+    const clientPassword = screen.getByLabelText(/Password/);
     userEvent.type(clientPassword, clientData.password);
     expect(clientPassword.value).toBe(clientData.password);
 
