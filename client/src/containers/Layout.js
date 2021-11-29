@@ -9,7 +9,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 function Layout(props) {
-  const { loggedIn, doLogout, userRole } = props;
+  const { loggedIn, doLogout, userRole, dirtyVT, setDirtyVT, virtualTime } = props;
 
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -22,7 +22,7 @@ function Layout(props) {
     setToggled(value);
   };
 
-  const AsideProps = { toggled, collapsed, userRole, handleCollapse };
+  const AsideProps = { toggled, collapsed, userRole, handleCollapse, dirtyVT, setDirtyVT, virtualTime };
 
   return (
     <Container className="d-flex text-dark min-vh-100" fluid="true">

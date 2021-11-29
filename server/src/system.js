@@ -64,11 +64,7 @@ class SYS {
         for (let mail of mailingList) {
             mail_sendBalanceReminder(mail.email, mail.id)
                 .then((res) => {
-<<<<<<< HEAD
                     // ok
-=======
-                    //console.log("ok");
->>>>>>> f62979f (feat: added methods to SYS)
                 })
                 .catch((err) => console.log(err));
         }        
