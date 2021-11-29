@@ -81,7 +81,14 @@ function AppNavbar(props) {
 
 // --- Renders a logout link
 function LogoutLink(props) {
-  return <Nav.Link onClick={props.doLogout}>Logout</Nav.Link>;
+  const history = useHistory();
+
+  const redirectToHome = () => {
+    history.push('/');
+    props.doLogout();
+  }
+
+  return <Nav.Link onClick={redirectToHome}>Logout</Nav.Link>;
 }
 
 export default AppNavbar;
