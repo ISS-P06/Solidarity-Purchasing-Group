@@ -3,6 +3,24 @@ import app from '../app';
 
 import {test_addDummyOrders} from '../system-dao';
 
+import { copyFileSync, unlinkSync } from 'fs';
+
+/** During test the database can be modified, so we need to backup its state */
+
+const dbPath = 'database.db';
+const backupPath = 'database.db.backup.system';
+
+// Save database current state
+beforeAll(() => {
+  copyFileSync(dbPath, backupPath);
+});
+
+// Reset database current state
+afterAll(() => {
+  copyFileSync(backupPath, dbPath);
+  unlinkSync(backupPath);
+});
+
 import SYS from '../system';
 
 const sys = new SYS();
