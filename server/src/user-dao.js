@@ -56,6 +56,7 @@ export function getUserById(id) {
           username: row.username,
           role: row.role,
           name: row.name,
+          surname: row.surname,
           email: row.email,
           phone: row.phone,
         };

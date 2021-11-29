@@ -15,15 +15,15 @@ function FarmerHomePage(props) {
     const history = useHistory();
     return (
         <Row>
-            {console.log(props)}
+
             <h1 className="mt-3 mb-3"  style={{color:"#27511D"}}>Welcome on Solidarity Purchase
-                Group, {user.name} !</h1>
-            <h3 className="mt-3 mb-3">We are happy to share your farm {user.farm_name} with us</h3>
+                Group, {user && user.name} {user && user.surname} !</h1>
+            <h3 className="mt-3 mb-3">We are happy to share your farm {user && user.farm_name} with us</h3>
         </Row>
 
 
     )
-        ;
+
 }
 
 export default FarmerHomePage;
