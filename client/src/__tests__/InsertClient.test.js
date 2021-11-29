@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import {render, screen, fireEvent, act, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
@@ -68,7 +68,7 @@ describe('testing InsertClient component', () => {
       phone: '0123456789',
       address: 'via braccini, Torino',
       mail: 'dario@giordano',
-      balance: 10,
+      balance: '10',
       username: 'Dario',
       password: 'xxxxxxxxxx',
     };
@@ -94,45 +94,44 @@ describe('testing InsertClient component', () => {
     userEvent.type(clientName, clientData.name);
     expect(clientName.value).toBe(clientData.name);
 
+
     const clientSurname = screen.getByLabelText('Client surname');
     userEvent.type(clientSurname, clientData.surname);
     expect(clientSurname.value).toBe(clientData.surname);
 
-    // todo fix tests
-    //
-    // const clientMail = screen.getByLabelText('Email address');
-    // userEvent.type(clientMail, {
-    //   target: { value: clientData.mail },
-    // });
 
-    // const clientPhone = screen.getByLabelText('Phone number');
-    // userEvent.type(clientPhone, {
-    //   target: { value: clientData.phone },
-    // });
+    const clientMail = screen.getByLabelText('Email address');
+    userEvent.type(clientMail, clientData.mail);
+    expect(clientMail.value).toBe(clientData.mail);
 
-    // const address = screen.getByLabelText('Address');
-    // userEvent.type(address, {
-    //   target: {
-    //     value: clientData.address,
-    //   },
-    // });
 
-    // const clientBalance = screen.getByLabelText('Balance');
-    // userEvent.type(clientBalance, {
-    //   target: { value: clientData.balance },
-    // });
+    const clientPhone = screen.getByLabelText('Phone number');
+    userEvent.type(clientPhone, clientData.phone);
+    expect(clientPhone.value).toBe(clientData.phone);
 
-    // const clientUsername = screen.getByLabelText('Username');
-    // userEvent.type(clientUsername, {
-    //   target: { value: clientData.username },
-    // });
 
-    // const clientPassword = screen.getByLabelText('Password');
-    // userEvent.type(clientPassword, {
-    //   target: { value: clientData.password },
-    // });
+    const address = screen.getByLabelText('Address');
+    userEvent.type(address, clientData.address);
+    expect(address.value).toBe(clientData.address);
+
+
+    const clientBalance = screen.getByLabelText('Balance');
+    userEvent.type(clientBalance, clientData.balance);
+    expect(clientBalance.value).toBe(clientData.balance);
+
+    const clientUsername = screen.getByLabelText('Username');
+    userEvent.type(clientUsername, clientData.username);
+    expect(clientUsername.value).toBe(clientData.username);
+
+
+    const clientPassword = screen.getByLabelText('Password');
+    userEvent.type(clientPassword, clientData.password);
+    expect(clientPassword.value).toBe(clientData.password);
 
     const submitButton = screen.getByText('Submit');
-    userEvent.click(submitButton);
+    act(()=>{
+      userEvent.click(submitButton);
+    })
+
   });
 });

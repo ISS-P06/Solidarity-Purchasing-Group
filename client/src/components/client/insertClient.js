@@ -26,7 +26,7 @@ const InsertClient = function (props) {
       phone: '',
       address: '',
       mail: '',
-      balance: 0,
+      balance: '',
       username: '',
       password: '',
     },
@@ -115,7 +115,7 @@ const InsertClient = function (props) {
             <Form.Group className="mb-3" controlId="balance">
               <Form.Label className={'float-sm-start'}>Balance </Form.Label>
               <Form.Control
-                type="text"
+                  type = "number"
                 value={formik.values.balance}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.balance && formik.errors.balance}

@@ -29,7 +29,7 @@ export function renderWithRouterMatch(
   };
 }
 
-describe('My component OrderReview', (async) => {
+describe('My component OrderReview', () => {
   test('Is Rendered', async () => {
     server.use(
       rest.get('/api/orders/1', (req, res, ctx) => {

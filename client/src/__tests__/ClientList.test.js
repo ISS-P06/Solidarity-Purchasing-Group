@@ -16,7 +16,6 @@ describe('ClientList test', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
@@ -35,7 +34,6 @@ describe('ClientList test', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
@@ -55,7 +53,6 @@ describe('ClientList test', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
@@ -82,7 +79,6 @@ describe('ClientList test', () => {
           surname: 'Rossi',
           address: 'corso duca',
           balance: 100,
-          id: 1,
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
@@ -108,7 +104,6 @@ describe('ClientList test', () => {
         surname: 'Rossi',
         address: 'corso duca',
         balance: 100,
-        id: 1,
         mail: 'mario@rossi',
         phone: '3333333333',
       },
