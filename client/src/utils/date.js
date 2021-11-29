@@ -35,14 +35,12 @@ export function humanToISO(date, time) {
  * If so, orders can be made by clients
  */
 export function checkOrderInterval(virtualTime) {
-  console.log(virtualTime);
-
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
   const timeOfDay = virtualTime.getHours(); // 0 ... 23
 
-  if(dayOfWeek==6 && timeOfDay>=9){
+  if(dayOfWeek==6 && timeOfDay>=10){
     return true;
-  } else if (dayOfWeek==0 && timeOfDay<23) {
+  } else if (dayOfWeek==0 && timeOfDay<24) {
     return true;
   } else {
     return false;
