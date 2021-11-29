@@ -9,6 +9,11 @@ import { rest } from 'msw';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
+
 const server = setupServer();
 
 beforeAll(() => server.listen());
