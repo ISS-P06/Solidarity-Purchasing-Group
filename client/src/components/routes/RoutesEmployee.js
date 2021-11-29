@@ -100,7 +100,7 @@ function RoutesEmployee(props) {
             {/* Employee home page route */}
             <Route path="/employee">
                 {loggedIn && userRole === 'shop_employee' ? (
-                <div />
+                <Redirect to="/employee/clients"/>
                 ) : (
                 <RedirectUser userRole={userRole} />
                 )}
