@@ -33,7 +33,7 @@ export function listProducts() {
 //UPDATED
 export function listClients() {
   return new Promise((resolve, reject) => {
-    const sql = `    SELECT c.id, c.name, c.surname, c.mail, c.phone, c.address, c.balance
+    const sql = `    SELECT u.id, u.name, u.surname, u.email, u.phone, c.address, c.balance
                      FROM Client c, User u
                      WHERE u.id = c.ref_user `;
     db.all(sql, [], (err, rows) => {

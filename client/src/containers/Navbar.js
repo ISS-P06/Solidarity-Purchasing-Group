@@ -20,6 +20,9 @@ function Navbar(props) {
         className="justify-content-end"></BNavbar.Collapse>
 
       <SettingsDropdown {...props} />
+      {!props.loggedIn && 
+        <Link to="/register" style={{color: 'white', marginLeft: '12px' }}>Sign-Up</Link>
+      }    
     </BNavbar>
   );
 }
