@@ -74,6 +74,7 @@ function App() {
                 setUserRole(info.role);
                 setUserId(info.id);
                 setUser(info);
+                console.log(info);
             } catch (err) {
                 setUserRole('');
                 console.error(err);
@@ -106,7 +107,7 @@ function App() {
                         </Route>
 
                         <Route exact path="/register">
-                            <InsertClient/>
+                            <InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} user={user} setUser={setUser}/>
                         </Route>
                         <RedirectRoute
                             path="/login"
@@ -119,12 +120,12 @@ function App() {
                             path="/client"
                             role={userRole}
                             condition={loggedIn}
-                            component={<ClientHomePage userId={userId}/>}
+                            component={<ClientHomePage user={user}/>}
                             redirect={<LoginForm doLogin={doLogin}/>}
                         />
 
   <Route path="/farmer">
-                                <FarmerHomePage user={user}/>;
+                                <FarmerHomePage user={user}/>
                             </Route>
 
                         {/* Shop employee-only routes */}
@@ -164,7 +165,7 @@ function App() {
                             path="/employee/register"
                             role={userRole}
                             condition={loggedIn && userRole === 'shop_employee'}
-                            component={<InsertClient/>}
+                            component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>}
                         />
 
                         {/* Employee product browsing route */}

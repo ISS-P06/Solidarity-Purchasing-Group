@@ -9,7 +9,7 @@ import Notification, {addMessage} from '../Message';
 import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
-    const {loggedIn,doLogin} = props;
+    const {loggedIn,setLoggedIn, user, setUser} = props;
     /* if loggedIn is true, the shop employee insert the information for a client. Otherwise it's the client that registers himself*/
 
     const [passwordType, setPasswordType] = useState('password');
@@ -17,10 +17,10 @@ const InsertClient = function (props) {
 
     const handleSubmit = (values) => {
         //console.log(values);
-        let user = {};
+        let userAdd = {};
         const typeUser = values.typeUser;
         if (typeUser === "client") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
@@ -32,7 +32,7 @@ const InsertClient = function (props) {
                 password : values.password
             }
         } else if (typeUser === "farmer") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
@@ -44,7 +44,7 @@ const InsertClient = function (props) {
                 password : values.password
             }
         } else if (typeUser === "shop_employee") {
-            user = {
+            userAdd = {
                 typeUser: typeUser,
                 name: values.name,
                 surname: values.surname,
@@ -55,7 +55,7 @@ const InsertClient = function (props) {
             }
         }
         if(loggedIn){
-            insertClient(values)
+            insertClient(userAdd)
                 .then(() => {
                     history.push('/client');
                     addMessage({title:"",message: 'Registration is completed with success', type: 'success'});
@@ -66,13 +66,15 @@ const InsertClient = function (props) {
                     console.log(err);
                 });
         }else{
-            switch (values.typeUser){
+            switch (userAdd.typeUser){
                 case 'client':
-                    insertClient(values)
+                    insertClient(userAdd)
                         .then(() => {
                             history.push('/client'); /*TODO redirect in the correct home page*/
-                            addMessage({title:"",message: 'Registration is completed with success',type: 'success'});
 
+                            addMessage({title:"",message: 'Registration is completed with success',type: 'success'});
+                            setLoggedIn(true);
+                            setUser(userAdd);
                         })
                         .catch((err) => {
                             addMessage({title:"Error",message: err.message, type:'danger'});
@@ -86,9 +88,13 @@ const InsertClient = function (props) {
                             addMessage({title:"", message:'Registration is completed with success',type: 'success'});
                             if(user.typeUser==="shop_employee"){
                                 history.push('/shop_employee');
+                                setLoggedIn(true);
+                                setUser(userAdd);
                             }
                             else if(user.typeUser==="farmer"){
                                 history.push('/farmer');
+                                setLoggedIn(true);
+                                setUser(userAdd);
                             }
                         })
                         .catch(err=>{
@@ -146,6 +152,7 @@ const InsertClient = function (props) {
     });
     return (
         <Container>
+            {console.log(user)}
             <Row className="justify-content-center">
                 <Col sm={10} lg={8}>
                     <h3 className="mt-3">{loggedIn ? "Register new client" : "Register"}</h3>
