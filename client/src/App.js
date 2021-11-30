@@ -210,6 +210,14 @@ function App() {
               component={<ProductCards userRole={userRole} userId={userId} />}
             />
 
+            {/* Employee orders route */}
+            <RedirectRoute
+              path="/employee/orders"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<OrderList userRole={userRole} userId={userId} />}
+            />
+
             {/* Employee order creation route */}
             <RedirectRoute
               path="/employee/orders/new"
