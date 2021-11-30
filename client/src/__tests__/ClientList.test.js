@@ -2,7 +2,12 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import axios from 'axios';
 
-import { Client } from '../components/client/ClientsList';
+import ClientsList, { Client } from '../components/client/ClientsList';
+
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
 
 jest.mock('axios');
 
@@ -20,7 +25,7 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
     expect(screen.getByText('Top up wallet')).toBeInTheDocument();
@@ -39,7 +44,7 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
     const addOrderButton = screen.getByText('Add order');
@@ -59,7 +64,7 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
 
@@ -86,7 +91,7 @@ describe('ClientList test', () => {
           mail: 'mario@rossi',
           phone: '3333333333',
         }}
-        setMessage={jest.fn()}
+        virtualTime={new Date()}
       />
     );
 
@@ -116,6 +121,6 @@ describe('ClientList test', () => {
 
     axios.get.mockImplementationOnce(() => Promise.resolve(customers));
 
-    // render(<ClientsList setMessage={{ msg: " ", type: "danger" }} />);
+    render(<ClientsList />);
   });
 });

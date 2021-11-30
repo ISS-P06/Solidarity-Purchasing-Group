@@ -1,7 +1,6 @@
 import request from 'supertest';
 import app from '../app';
-import { test_removeUser } from '../user-dao';
-
+import { addProductToBasket, removeProductFromBasket, getBasketByClientId } from '../dao';
 import { copyFileSync, unlinkSync } from 'fs';
 
 /** During test the database can be modified, so we need to backup its state */
@@ -28,6 +27,37 @@ describe('Test the get products api', () => {
       .get('/api/products')
       .then((response) => {
         expect(response.statusCode).toBe(200);
+      });
+  });
+});
+
+describe('Test the get client orders api', () => {
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/clients/4/orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/clients//orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
+      });
+  });
+  test('It should respond 200 to the GET method', () => {
+    return request(app)
+      .get('/api/clients/4/orders/2')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+  test('It should respond 404 to the GET method', () => {
+    return request(app)
+      .get('/api/clients//orders/2')
+      .then((response) => {
+        expect(response.statusCode).toBe(404);
       });
   });
 });
@@ -118,39 +148,169 @@ describe('Test the login APIs', () => {
   test('It should respond to the DELETE method', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
+});
+// --- --- --- //
 
-  test('(test) Create new user: it should respond to the POST method', () => {
-    const user = { username: 'teiera', password: 'teiera123', role: 'shop_employee' };
-    return request(app).post('/test/addUser').send(user).expect(200);
+describe('Test the orders path', () => {
+  test('It should response GET api/orders', () => {
+    return request(app)
+      .get('/api/orders')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
   });
 
-  describe('Test the orders path', () => {
-    test('It should response GET api/orders', () => {
-      return request(app)
-        .get('/api/orders')
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
+  test('It should response GET api/orders/1', () => {
+    return request(app)
+      .get('/api/orders/1')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
 
-    test('It should response GET api/orders/1', () => {
-      return request(app)
-        .get('/api/orders/1')
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
+describe('Test the client path', () => {
+  test('It should response GET api/client/4/basket', () => {
+    return request(app)
+      .get('/api/client/4/basket')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
 
-    test('It should response POST api/orders/2/deliver', () => {
-      return request(app)
-        .post('/api/orders/2/deliver')
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        });
-    });
+describe('Test add or delete a product into/from the basket', () => {
+  test('Add a product; It should response 200', () => {
+    const data = { productId: 4, reservedQuantity: 0.1 };
+    return request(app)
+      .post('/api/client/4/basket/add')
+      .send(data)
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
   });
 
-  afterAll(async () => {
-    await test_removeUser('teiera');
+  test('Remove a product; It should response 200', () => {
+    const data = { productId: 2 };
+    return request(app)
+      .delete('/api/client/4/basket/remove')
+      .send(data)
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
+
+describe('Test failure add or delete a product into/from the basket', () => {
+  test('Add a product; It should response 422 because validation fails', () => {
+    const data = { productId: '', reservedQuantity: 0.1 };
+    return request(app)
+      .post('/api/client/4/basket/add')
+      .send(data)
+      .then((response) => {
+        expect(response.statusCode).toBe(422);
+      });
+  });
+
+  test('Remove a product; It should response 422 because validation fails', () => {
+    const data = { productId: '' };
+    return request(app)
+      .delete('/api/client/4/basket/remove')
+      .send(data)
+      .then((response) => {
+        expect(response.statusCode).toBe(422);
+      });
+  });
+});
+
+describe('test client insertion', () => {
+  test('test post method to insert new client', () => {
+    const client = {
+      name: 'Mario',
+      surname: 'Rossi',
+      balance: 5,
+      mail: 'mario@rossi.com',
+      typeUser: 'client',
+      phone: '123456789',
+      username: 'MarioRossi',
+      password: 'MarioRossi',
+      address: 'Milano, via Roma',
+    };
+
+    return request(app).post('/api/insert_client').send(client).expect(200);
+  });
+
+  test('test post method failure to insert new client due to wrong parameters', () => {
+    const clientF = {};
+    return request(app)
+      .post('/api/insert_client')
+      .send(clientF)
+      .then((response) => {
+        expect(response.statusCode).toBe(422);
+      });
+  });
+});
+
+describe('test user insertion', () => {
+  test('testing post method to insert a shop employee in the backend', () => {
+    const shop_employee = {
+      typeUser: 'shop_employee',
+      name: 'saly',
+      surname: 'ashraf',
+      phone: '123456789',
+      mail: 'saly@ashraf.com',
+      username: 'salyAshraf',
+      password: 'salyAshraf',
+    };
+    return request(app).post('/api/register_user').send(shop_employee).expect(200);
+  });
+
+  test('test failure of post method due to missing parameters', () => {
+    return request(app)
+      .post('/api/register_user')
+      .send({
+        typeUser: 'shop_employee',
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(422);
+      });
+  });
+
+  test('test farmer insertion into backend with post method', () => {
+    const farmer = {
+      typeUser: 'farmer',
+      name: 'Muhammad',
+      surname: 'Ibrahim',
+      mail: 'mohammad@ibrahim.us',
+      phone: '123456789',
+      address: 'Milano',
+      farmName: 'paradise vegetables',
+      username: 'muhammadibrahim',
+      password: 'muhammadibrahim',
+    };
+    return request(app).post('/api/register_user').send(farmer).expect(200);
+  });
+
+  test('test failure of post method due to missing parameters with farmer insertion', () => {
+    return request(app)
+      .post('/api/register_user')
+      .send({
+        typeUser: 'farmer',
+      })
+      .then((response) => {
+        expect(response.statusCode).toBe(422);
+      });
+  });
+});
+
+describe('test place a order', () => {
+  test('Submit an order; It should response 200', () => {
+    const userId = 2;
+    return request(app).post(`/api/client/${userId}/basket/buy`).send().expect(200);
+  });
+
+  test('Submit an order; It should response 422', () => {
+    const userId = 'ciao';
+    return request(app).post(`/api/client/${userId}/basket/buy`).send().expect(422);
   });
 });

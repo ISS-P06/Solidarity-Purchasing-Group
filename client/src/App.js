@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { Col, Container, Row, Button } from 'react-bootstrap';
-import { FaBars } from 'react-icons/fa';
 
 import {
-  AlertBox,
-  AppNavbar,
   ClientsList,
   InsertClient,
   LoginForm,
   OrderList,
   OrderReview,
   ProductCards,
-  ShopEmployeeActionsList,
+  Basket,
+  ClientHomePage,
 } from './components';
 
-import { api_getUserInfo, api_login, api_logout } from './Api';
+import HomePage from './containers/HomePage';
+import { Layout } from './containers';
+import { getUserRoute, RedirectRoute } from './utils/route.js';
+import { addMessage } from './components/Message';
+import { api_getUserInfo, api_login, api_logout, api_getTime } from './Api';
+import FarmerHomePage from './components/farmer/FarmerHomePage';
+import { checkOrderInterval } from './utils/date';
 
 function App() {
   // Session-related states
@@ -27,44 +30,16 @@ function App() {
 
     other values will be considered in subsequent sprints
     when necessary
-  */
+    */
   const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState();
+  const [user, setUser] = useState();
+  // This state is used to update (and monitor) the time on front-end
+  // Some functionalities can be used only at a certain time
+  const [dirtyVT, setDirtyVT] = useState(true);
 
-  /* for giving feedback to the user*/
-  const [message, setMessage] = useState('');
-  const [alert, setAlert] = useState(false);
-
-  const [toggled, setToggled] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-
-  const handleCollapsedChange = (checked) => {
-    setCollapsed(checked);
-  };
-
-  const handleToggleSidebar = (value) => {
-    setToggled(value);
-  };
-
-  useEffect(() => {
-    if (message !== '') {
-      setAlert(true);
-    }
-  }, [message]);
-
-  // useEffect for getting user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const info = await api_getUserInfo();
-        setLoggedIn(true);
-        setUserRole(info.role);
-      } catch (err) {
-        setUserRole('');
-        console.error(err);
-      }
-    };
-    checkAuth();
-  }, [loggedIn]);
+  // State used to store the system's virtual time
+  const [virtualTime, setVirtualTime] = useState({});
 
   // async function for logging in
   const doLogin = async (credentials) => {
@@ -77,19 +52,31 @@ function App() {
     }
   };
 
-  // async function for logging out
-  const doLogout = async () => {
-    await api_logout();
-    setLoggedIn(false);
-  };
+  // useEffect used to get the system's virtual time
+  useEffect(() => {
+    const getVT = async () => {
+      try {
+        const data = await api_getTime();
+        setVirtualTime(new Date(data.currentTime));
+        setDirtyVT(false);
+      } catch (err) {
+        setVirtualTime(new Date().toISOString());
+        setDirtyVT(false);
+        console.error(err);
+      }
+    };
+    getVT();
+  }, [dirtyVT]);
 
   // useEffect for getting user info
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const info = await api_getUserInfo();
-        setLoggedIn(true);
+        setUser(info);
+        setUserId(info.id);
         setUserRole(info.role);
+        setLoggedIn(true);
       } catch (err) {
         setUserRole('');
         console.error(err);
@@ -98,145 +85,158 @@ function App() {
     checkAuth();
   }, [loggedIn]);
 
-  return (
-    <Container className="App text-dark p-0 m-0 min-vh-100" fluid="true">
-      <Router>
-        <AppNavbar loggedIn={loggedIn} doLogout={doLogout} userRole={userRole} />
-
-        <AlertBox alert={alert} setAlert={setAlert} message={message} />
-
-        <Row className="m-auto">
-          {loggedIn && userRole == 'shop_employee' ? (
-            <Col xs={1} md={4} lg={2} className="p-0">
-              {/* This button shows up when the sidebar is hidden */}
-              <Button
-                className="btn-toggle m-2"
-                onClick={() => handleToggleSidebar(true)}
-                className={toggled ? 'd-none' : 'btn-toggle'}>
-                <FaBars />
-              </Button>
-
-              {/* Aside */}
-              <ShopEmployeeActionsList
-                toggled={toggled}
-                collapsed={collapsed}
-                handleToggleSidebar={handleToggleSidebar}
-                setMessage={setMessage}
-              />
-            </Col>
-          ) : (
-            <div />
-          )}
-
-          {/*<Col xs={11} md={8} lg={10}>*/}
-          <Col>
-            <Switch>
-              {/* Login route */}
-              <Route path="/login">
-                {loggedIn ? <RedirectUser userRole={userRole} /> : <LoginForm doLogin={doLogin} />}
-              </Route>
-              {/* Shop employee-only routes */}
-
-              {/* Employee: client info page route */}
-              <Route
-                path="/employee/clients/:id"
-                render={({ match }) => {
-                  if (loggedIn) {
-                    return <div id={match.params.id} />;
-                  } else {
-                    return <RedirectUser userRole={userRole} />;
-                  }
-                }}
-              />
-              {/* Employee client list route */}
-              <Route path="/employee/clients">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <ClientsList setMessage={setMessage} />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee client registration route */}
-              <Route path="/employee/register">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <InsertClient />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee product browsing route */}
-              <Route path="/employee/products">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <ProductCards />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee: order info page route */}
-              <Route path="/employee/orders/:id">
-                {loggedIn ? <OrderReview /> : <RedirectUser userRole={userRole} />}
-              </Route>
-
-              {/* Employee order list route */}
-              <Route path="/employee/orders">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <OrderList />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee order creation route */}
-              <Route path="/employee/orders/new">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Employee home page route */}
-              <Route path="/employee">
-                {loggedIn && userRole == 'shop_employee' ? (
-                  <div />
-                ) : (
-                  <RedirectUser userRole={userRole} />
-                )}
-              </Route>
-
-              {/* Home page route */}
-              <Route path="/">
-                {/* Replace div with homepage component */}
-                <div />
-              </Route>
-
-              <Route>
-                <Redirect to="/" />
-              </Route>
-            </Switch>
-          </Col>
-        </Row>
-      </Router>
-    </Container>
-  );
-}
-
-function RedirectUser(props) {
-  const userRole = props.userRole;
-
-  const renderSwitch = (role) => {
-    switch (role) {
-      case 'shop_employee':
-        return <Redirect to="/employee" />;
-      default:
-        return <Redirect to="/" />;
-    }
+  // async function for logging out
+  const doLogout = async () => {
+    api_logout();
+    addMessage({ title: 'Logout', message: 'You are now logged out' });
+    setLoggedIn(false);
+  };
+  const LayoutProps = {
+    loggedIn,
+    doLogout,
+    userRole,
+    dirtyVT,
+    setDirtyVT,
+    virtualTime,
   };
 
-  return renderSwitch(userRole);
+  return (
+    <div className="app-container">
+      <Router>
+        <Switch>
+          <Layout {...LayoutProps}>
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+
+            <Route exact path="/register">
+              <InsertClient
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                user={user}
+                setUser={setUser}
+              />
+            </Route>
+
+            {/* Default routes */}
+            <RedirectRoute
+              path="/login"
+              exact={true}
+              role={userRole}
+              condition={!loggedIn}
+              component={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/client"
+              exact={true}
+              role={userRole}
+              condition={loggedIn}
+              component={<ClientHomePage user={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/farmer"
+              exact={true}
+              role={userRole}
+              condition={loggedIn}
+              component={<FarmerHomePage user={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            {/* Client-only routes */}
+
+            <RedirectRoute
+              path="/client/orders"
+              role={userRole}
+              condition={loggedIn}
+              component={<OrderList userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/client/products"
+              role={userRole}
+              condition={loggedIn}
+              component={<Basket userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            {/* Shop employee-only routes */}
+            {/* Employee: client info page route */}
+            <Route
+              path="/employee"
+              render={({ match }) =>
+                loggedIn ? (
+                  <div id={match.params.id} />
+                ) : (
+                  <Redirect to={getUserRoute(userRole) || '/'} />
+                )
+              }
+            />
+
+            <Route
+              path="/employee/clients/:id"
+              render={({ match }) =>
+                loggedIn ? (
+                  <div id={match.params.id} />
+                ) : (
+                  <Redirect to={getUserRoute(userRole) || '/'} />
+                )
+              }
+            />
+            {/* Employee client list route */}
+            <RedirectRoute
+              path="/employee/clients"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<ClientsList virtualTime={virtualTime} />}
+            />
+
+            {/* Employee client registration route */}
+            <RedirectRoute
+              path="/employee/register"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}
+            />
+
+            {/* Employee product browsing route */}
+            <RedirectRoute
+              path="/employee/products"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<ProductCards userRole={userRole} userId={userId} />}
+            />
+
+            {/* Employee order creation route */}
+            <RedirectRoute
+              path="/employee/orders/new"
+              role={userRole}
+              condition={
+                loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)
+              }
+              component={<div />}
+            />
+
+            {/* Employee home page route */}
+            <RedirectRoute
+              path="/employee"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<Redirect to="/employee/clients" />}
+            />
+
+            {/* Default redirect the user on his default route */}
+            <Route>
+              <Redirect to={getUserRoute(userRole)} />
+            </Route>
+          </Layout>
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 
 export default App;

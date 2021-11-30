@@ -4,7 +4,7 @@ import VirtualClock from '../components/VirtualClock';
 
 describe('Virtual Time Clock', () => {
   test('test opening virtual clock modal', () => {
-    render(<VirtualClock />);
+    render(<VirtualClock virtualTime={new Date()}/>);
 
     //Click on "Virtual clock" button to open the modal
     fireEvent(
@@ -24,7 +24,7 @@ describe('Virtual Time Clock', () => {
   });
 
   test('test changing virtual clock time and day', () => {
-    render(<VirtualClock />);
+    render(<VirtualClock virtualTime={new Date()}/>);
 
     //Click on "Virtual clock" button to open the modal
     fireEvent(

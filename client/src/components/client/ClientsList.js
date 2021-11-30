@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 
-import { Button, Row, Col, Spinner, ListGroup, Card, Modal } from 'react-bootstrap/';
+import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstrap/';
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
+import { addMessage } from '../Message';
+import { checkOrderInterval } from '../../utils/date.js';
 
 function ClientsList(props) {
-  const { setMessage } = props;
+  const virtualTime = props.virtualTime;
 
   const [clientsList, setClientsList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,7 @@ function ClientsList(props) {
           setDirty(false);
         })
         .catch(() => {
-          setMessage({ msg: 'There are no clients', type: 'danger' });
+          addMessage({ message: 'There are no clients', type: 'danger' });
         });
     }
   }, [dirty]);
@@ -29,7 +31,7 @@ function ClientsList(props) {
   return loading ? (
     <Spinner animation="border" variant="primary" />
   ) : (
-    <Row>
+    <Container>
       <h3 className="mt-3">Clients List</h3>
       {clientsList.length === 0 ? (
         <h1 className="text-center">There are no clients</h1>
@@ -39,19 +41,19 @@ function ClientsList(props) {
             <div as="ul" variant="flush">
               {clientsList.map((c) => (
                 <div as="li" className="mt-1 mb-4" key={c.id} lg={3}>
-                  <Client client={c} setMessage={setMessage} reloadList={() => setDirty(true)} />
+                  <Client client={c} virtualTime={virtualTime} reloadList={() => setDirty(true)} />
                 </div>
               ))}
             </div>
           </Col>
         </Row>
       )}
-    </Row>
+    </Container>
   );
 }
 
 export function Client(props) {
-  const { client, setMessage, reloadList } = props;
+  const { client, setMessage, reloadList, virtualTime } = props;
 
   const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
   const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false);
@@ -79,17 +81,29 @@ export function Client(props) {
             </Button>
           </Col>
           <Col>
-            <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
-              Add order
-            </Button>
+            {checkOrderInterval(virtualTime) ? (
+              <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
+                Add order
+              </Button>
+            ) : (
+              <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)} disabled>
+                Add order
+              </Button>
+            )}
           </Col>
         </Row>
+        {checkOrderInterval(virtualTime) ? (
+          <></>
+        ) : (
+          <Row className="p-1 d-flex justify-content-center">
+            Sorry, but orders are accepted only from Sat. 9am until Sun. 11pm.
+          </Row>
+        )}
       </Card.Body>
       <ClientOrderForm
         show={clientOrderFormShow}
         onHide={() => setClientOrderFormShow(false)}
         client={client}
-        setMessage={setMessage}
         openConfirmationModal={() => setConfirmationModalShow(true)}
       />
       <ClientTopUpForm
@@ -97,7 +111,6 @@ export function Client(props) {
         handleClose={() => setClientTopUpFormShow(false)}
         client={client}
         topUpClient={handleTopUp}
-        setMessage={setMessage}
       />
       <ConfirmationModal
         show={confirmationModalShow}

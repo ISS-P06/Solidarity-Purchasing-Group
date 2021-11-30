@@ -27,6 +27,16 @@ class VTC {
   }
 
   /**
+   * Return current virtual time.
+   *
+   * @return {dayjs.Dayjs} Current virtual time with format `YYYY-MM-DD HH:MM`.
+   */
+
+  formatTime() {
+    return this.#currentTime.format('YYYY-MM-DD HH:MM');
+  }
+
+  /**
    * Return current day of week, based con current virtual time
    *
    * @return {string} Day of the week.

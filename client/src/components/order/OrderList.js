@@ -1,38 +1,45 @@
 import OrderItem from './OrderItem';
-import './OrderList.css';
 import { useEffect, useState } from 'react';
-import api_getOrders from '../../Api';
-import { Row, Col } from 'react-bootstrap/';
+import { api_getOrders, api_getClientOrders } from '../../Api';
+import { Container, Row, Col } from 'react-bootstrap/';
 
-function OrderList() {
+function OrderList(props) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    api_getOrders()
-      .then((orders) => {
-        setOrders(orders);
-      })
-      .catch((e) => console.log(e));
+    if (props.userRole === 'shop_employee') {
+      api_getOrders()
+        .then((orders) => {
+          setOrders(orders);
+        })
+        .catch((e) => console.log(e));
+    } else if (props.userRole === 'client') {
+      api_getClientOrders(props.userId)
+        .then((orders) => {
+          setOrders(orders);
+        })
+        .catch((e) => console.log(e));
+    }
   }, [setOrders]);
 
   const orderList = orders.map((order) => (
-    <div key={order.orderId.toString()} className="OrderItem">
-      <OrderItem key={order.orderId.toString()} order={order} />
+    <div key={order.orderId.toString()} className="pb-3">
+      <OrderItem key={order.orderId.toString()} order={order} userRole={props.userRole} userId={props.userId} />
     </div>
   ));
 
   return (
     <div>
-      <div className="Title">
+      <div className="pt-4 pb-3">
         <h3>Orders</h3>
       </div>
-      <div className="OrderList">
+      <Container className="OrderList">
         <Row className="justify-content-md-center">
-          <Col lg={8} className="pl-5">
-            {orderList}
+          <Col lg={8} className="pl-5 pb-4">
+            {orders.length === 0 ? <h5>No orders found </h5> : orderList}
           </Col>
         </Row>
-      </div>
+      </Container>
     </div>
   );
 }
