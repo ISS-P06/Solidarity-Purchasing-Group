@@ -50,7 +50,7 @@ When images are built, you can run them with:
 
 ```
 docker run -d -p 3001:3001 --name spg06-server gabelluardo/solidarity-purchasing-group:release1-server
-docker run -d -p 3000:80 --name spg06-client:server --link spg06-server gabelluardo/solidarity-purchasing-group:release1-client
+docker run -d -p 3000:80 --name spg06-client --link spg06-server:server gabelluardo/solidarity-purchasing-group:release1-client
 ```
 
 **The app can be reached on http://localhost:3000 **
