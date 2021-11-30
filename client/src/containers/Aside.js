@@ -1,22 +1,16 @@
 import { Link } from 'react-router-dom';
-import {
-  ProSidebar,
-  Menu,
-  MenuItem,
-  SidebarHeader,
-  SidebarContent,
-} from 'react-pro-sidebar';
-import { BsFillPersonPlusFill, BsList , BsFillCartPlusFill} from 'react-icons/bs';
+import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
+import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill } from 'react-icons/bs';
 import { GiFruitBowl } from 'react-icons/gi';
 import { VirtualClock } from '../components';
-import {FaRegListAlt} from 'react-icons/fa';
+import { FaRegListAlt } from 'react-icons/fa';
 
 // todo add collaspse change
 
 function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole, setDirtyVT, dirtyVT, virtualTime }) {
   const roleMenu = {
     shop_employee: <EmployeeMenu />,
-      client:<ClientMenu/>
+    client: <ClientMenu />,
   };
 
   return !userRole ? null : (

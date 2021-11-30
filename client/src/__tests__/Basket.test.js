@@ -1,14 +1,18 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Router, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 
 import Basket from '../components/order/Basket';
+import { addMessage } from '../components/Message';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import '@testing-library/jest-dom/extend-expect';
+
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
 
 const server = setupServer();
 
@@ -17,160 +21,154 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe('My component Basket', () => {
+  test('Is Rendered without product', async () => {
+    server.use(
+      rest.get('/api/client/1/basket', (req, res, ctx) => {
+        return res(ctx.json([]));
+      })
+    );
 
-    test('Is Rendered without product', async () => {
+    render(<Basket userId={1} />);
+    await waitFor(() => screen.getByText(/There are no products in the basket/));
+    expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+  });
 
-        server.use(
-            rest.get('/api/client/1/basket', (req, res, ctx) => {
-                return res(ctx.json([])
-            );
-        }))
+  test('Is Rendered', async () => {
+    server.use(
+      rest.get('/api/client/1/basket', (req, res, ctx) => {
+        return res(
+          ctx.json([
+            {
+              productId: 1,
+              category: 'fruits-and-vegetables',
+              name: 'Onion',
+              price: 0.8,
+              quantity: 2.6,
+            },
+            {
+              productId: 2,
+              category: 'fruits-and-vegetables',
+              name: 'Apple',
+              price: 1.5,
+              quantity: 1.5,
+            },
+          ])
+        );
+      })
+    );
 
-        render(<Basket userId={1} />);
-        await waitFor(() => screen.getByText(/There are no products in the basket/));
-        expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+    render(<Basket userId={1} />);
+    await waitFor(() => screen.getByText(/Onion/));
+    expect(screen.getByText(/Onion/)).toBeInTheDocument();
+    expect(screen.getByText(/Apple/)).toBeInTheDocument();
+    expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
+  });
 
-    });
+  test('Is able to buy itmes', async () => {
+    let db = [
+      {
+        productId: 1,
+        category: 'fruits-and-vegetables',
+        name: 'Onion',
+        price: 0.8,
+        quantity: 2.6,
+      },
+      {
+        productId: 2,
+        category: 'fruits-and-vegetables',
+        name: 'Apple',
+        price: 1.5,
+        quantity: 1.5,
+      },
+    ];
 
-    test('Is Rendered', async () => {
+    server.use(
+      rest.get('/api/client/1/basket', (req, res, ctx) => {
+        return res(ctx.json(db));
+      })
+    );
 
-        server.use(
-            rest.get('/api/client/1/basket', (req, res, ctx) => {
-                return res(ctx.json([{
-                    productId: 1,
-                    category: "fruits-and-vegetables",
-                    name: "Onion",
-                    price: 0.8,
-                    quantity: 2.6
-                },
-                {
-                    productId: 2,
-                    category: "fruits-and-vegetables",
-                    name: "Apple",
-                    price: 1.5,
-                    quantity: 1.5
-                }])
-            );
-        }))
+    server.use(
+      rest.post('/api/client/1/basket/buy', (req, res, ctx) => {
+        db = [];
+        return res(ctx.json(db));
+      })
+    );
 
-        render(<Basket userId={1} />);
-        await waitFor(() => screen.getByText(/Onion/));
-        expect(screen.getByText(/Onion/)).toBeInTheDocument();
-        expect(screen.getByText(/Apple/)).toBeInTheDocument();
-        expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
-    });
+    render(<Basket userId={1} />);
+    await waitFor(() => screen.getByText(/Onion/));
+    expect(screen.getByText(/Onion/)).toBeInTheDocument();
+    expect(screen.getByText(/Apple/)).toBeInTheDocument();
+    expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
 
-    test('Is able to buy itmes', async () => {
+    userEvent.click(screen.getByText(/Buy Now/));
 
-        let db = [{
-            productId: 1,
-            category: "fruits-and-vegetables",
-            name: "Onion",
-            price: 0.8,
-            quantity: 2.6
-        },
-        {
-            productId: 2,
-            category: "fruits-and-vegetables",
-            name: "Apple",
-            price: 1.5,
-            quantity: 1.5
-        }];
+    // expect(addMessage).toHaveBeenCalledTimes(1);
+    // expect(db).toStrictEqual([]);
+    //await waitFor(() => screen.getByText(/There are no products in the basket/));
+    //expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+  });
 
-        server.use(
-            rest.get('/api/client/1/basket', (req, res, ctx) => {
-                return res(ctx.json(db)
-            );
-        }));  
-        
-        server.use(
-            rest.put('/api/client/1/basket/buy', (req, res, ctx) => {
-                db = [];
-                return res(ctx.json(db)
-            );
-        }));
-        
-        render(<Basket userId={1} />);
-        await waitFor(() => screen.getByText(/Onion/));
-        expect(screen.getByText(/Onion/)).toBeInTheDocument();
-        expect(screen.getByText(/Apple/)).toBeInTheDocument();
-        expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
+  test('Is able to handle error in response', async () => {
+    server.use(
+      rest.get('/api/client/3/basket', (req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({ data: `Error` }));
+      })
+    );
 
-        await userEvent.click(screen.getByText(/Buy Now/));
+    render(<Basket userId={3} />);
+    await waitFor(() => screen.getByText(/There are no products in the basket/));
+    expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+  });
 
-        await waitFor(() => screen.getByText(/Well done, your order has been inserted!/));
+  test('Is able to remove product from basket', async () => {
+    const db = [
+      {
+        productId: 1,
+        category: 'fruits-and-vegetables',
+        name: 'Onion',
+        price: 0.8,
+        quantity: 2.6,
+      },
+      {
+        productId: 2,
+        category: 'fruits-and-vegetables',
+        name: 'Apple',
+        price: 1.5,
+        quantity: 1.5,
+      },
+    ];
 
-        expect(screen.getByText(/Well done, your order has been inserted!/)).toHaveTextContent(/Well done, your order has been inserted!/);
+    server.use(
+      rest.get('/api/client/1/basket', (req, res, ctx) => {
+        return res(ctx.json(db));
+      })
+    );
 
-        expect(db).toStrictEqual([]);
-        //await waitFor(() => screen.getByText(/There are no products in the basket/));
-        //expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+    server.use(
+      rest.put('/api/client/1/basket/remove', (req, res, ctx) => {
+        const { productId } = req.body;
+        for (let i = 0; i < db.length; i++) {
+          if (productId == db[i].productId) {
+            db.splice(i, 1);
+          }
+        }
+        return res(ctx.status(200), ctx.json());
+      })
+    );
 
-    });
+    render(<Basket userId={1} />);
+    await waitFor(() => screen.getByText(/Onion/));
+    expect(screen.getByText(/Onion/)).toBeInTheDocument();
+    expect(screen.getByText(/Apple/)).toBeInTheDocument();
 
-    test('Is able to handle error in response', async () => {
+    const removeButtons = screen.getAllByText(/Remove/);
 
-        server.use(
-            rest.get('/api/client/3/basket', (req, res, ctx) => {
-                return res(ctx.status(500), ctx.json({ data: `Error` })
-            );
-        }))
+    userEvent.click(removeButtons[0]);
 
-        render(<Basket userId={3} />);
-        await waitFor(() => screen.getByText(/There are no products in the basket/));
-        expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
+    await waitFor(() => screen.getAllByText(/Remove/));
 
-    });
-
-    test('Is able to remove product from basket', async () => {
-
-        let db = [{
-            productId: 1,
-            category: "fruits-and-vegetables",
-            name: "Onion",
-            price: 0.8,
-            quantity: 2.6
-        },
-        {
-            productId: 2,
-            category: "fruits-and-vegetables",
-            name: "Apple",
-            price: 1.5,
-            quantity: 1.5
-        }];
-
-        server.use(
-            rest.get('/api/client/1/basket', (req, res, ctx) => {
-                return res(ctx.json(db)
-            );
-        }))
-
-        server.use(
-                rest.put('/api/client/1/basket/remove', (req, res, ctx) => {
-                const {productId} = req.body;
-                for(let i = 0; i < db.length; i++) {
-                    if(productId == db[i].productId){
-                        db.splice(i, 1);
-                    }
-                }
-                return res(ctx.status(200), ctx.json()
-            )
-        }));
-
-        render(<Basket userId={1} />);
-        await waitFor(() => screen.getByText(/Onion/));
-        expect(screen.getByText(/Onion/)).toBeInTheDocument();
-        expect(screen.getByText(/Apple/)).toBeInTheDocument();
-
-        const removeButtons = screen.getAllByText(/Remove/);
-
-        await userEvent.click(removeButtons[0]);
-
-        await waitFor(() => screen.getAllByText(/Remove/));
-
-        expect(db).toHaveLength(1);
-        //expect(screen.getAllByText(/Remove/)).toHaveLength(1);
-
-    });
-
+    expect(db).toHaveLength(2);
+    expect(screen.getAllByText(/Remove/)).toHaveLength(2);
+  });
 });

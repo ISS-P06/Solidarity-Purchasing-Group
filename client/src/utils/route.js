@@ -5,6 +5,8 @@ import { Route, Redirect } from 'react-router-dom';
  */
 const rolesPathRedirect = {
   shop_employee: '/employee',
+  client: '/client',
+  farmer: '/farmer',
 };
 
 /**
@@ -20,8 +22,19 @@ export function getUserRoute(role) {
  * Wrapper of `Route` component that automatically redirect
  * the user based on its role
  */
-export function RedirectRoute({ component, path, role, redirect, condition = true }) {
-  const defaultRedirect = redirect || <Redirect to={getUserRoute(role)} />;
+export function RedirectRoute({
+  component,
+  path,
+  role,
+  redirect,
+  exact = false,
+  condition = true,
+}) {
+  const redirectRoute = getUserRoute(role);
 
-  return <Route path={path}>{condition ? component : defaultRedirect}</Route>;
+  return (
+    <Route exact={exact} path={path}>
+      {condition ? component : redirect || <Redirect to={redirectRoute} />}
+    </Route>
+  );
 }

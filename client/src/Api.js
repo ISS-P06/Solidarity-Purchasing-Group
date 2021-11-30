@@ -274,7 +274,7 @@ export const api_getBasket = async (userId) => {
 
 export const api_buyNow = async (userId) => {
   try {
-    const res = await axios.put('/api/client/' + userId + '/basket/buy', {});
+    const res = await axios.post('/api/client/' + userId + '/basket/buy', {});
     if (res.data) {
       return res.data;
     } else {
@@ -289,9 +289,10 @@ export const api_buyNow = async (userId) => {
   }
 };
 
-export const api_removePruductFromBasket = async (userId, productId) => {
+export const api_removeProductFromBasket = async (userId, productId) => {
   try {
-    const res = await axios.put('/api/client/' + userId + '/basket/remove', {productId});
+    console.log(productId);
+    const res = await axios.delete('/api/client/' + userId + '/basket/remove', { data: {productId} });
     if (res.data) {
       return res.data;
     } else {
@@ -308,7 +309,7 @@ export const api_removePruductFromBasket = async (userId, productId) => {
 
 export const api_addProductToBasket = async (userId, productId, reservedQuantity) => {
   try {
-    const res = await axios.post('/api/client/' + userId + '/basket/add', {productId, reservedQuantity});
+    const res = await axios.post('/api/client/' + userId + '/basket/add', {productId,reservedQuantity});
     if (res.data) {
       return res.data;
     } else {

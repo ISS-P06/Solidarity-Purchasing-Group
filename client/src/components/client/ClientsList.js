@@ -4,11 +4,10 @@ import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstr
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
-import {addMessage} from "../Message";
+import { addMessage } from '../Message';
 import { checkOrderInterval } from '../../utils/date.js';
 
 function ClientsList(props) {
-  const { setMessage } = props;
   const virtualTime = props.virtualTime;
 
   const [clientsList, setClientsList] = useState([]);
@@ -42,7 +41,7 @@ function ClientsList(props) {
             <div as="ul" variant="flush">
               {clientsList.map((c) => (
                 <div as="li" className="mt-1 mb-4" key={c.id} lg={3}>
-                  <Client client={c} setMessage={setMessage} virtualTime={virtualTime} reloadList={() => setDirty(true)} />
+                  <Client client={c} virtualTime={virtualTime} reloadList={() => setDirty(true)} />
                 </div>
               ))}
             </div>
@@ -63,7 +62,7 @@ export function Client(props) {
   const handleTopUp = (params) => {
     api_addTopUpClient(params)
       .then(() => reloadList())
-      .catch(() => { });
+      .catch(() => {});
   };
 
   return (
@@ -85,23 +84,21 @@ export function Client(props) {
             {checkOrderInterval(virtualTime) ? (
               <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)}>
                 Add order
-              </Button>) :
-              (
-                <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)} disabled>
-                  Add order
-                </Button>
-              )
-            }
+              </Button>
+            ) : (
+              <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)} disabled>
+                Add order
+              </Button>
+            )}
           </Col>
         </Row>
-        {
-            checkOrderInterval(virtualTime) ? (<></>) :
-              (
-                <Row className="p-1 d-flex justify-content-center">
-                  Sorry, but orders are accepted only from Sat. 9am until Sun. 11pm.
-                </Row>
-              )
-          }
+        {checkOrderInterval(virtualTime) ? (
+          <></>
+        ) : (
+          <Row className="p-1 d-flex justify-content-center">
+            Sorry, but orders are accepted only from Sat. 9am until Sun. 11pm.
+          </Row>
+        )}
       </Card.Body>
       <ClientOrderForm
         show={clientOrderFormShow}
