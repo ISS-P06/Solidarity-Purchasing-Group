@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.prod
     image: gabelluardo/solidarity-purchasing-group:release1-client
     restart: always
-    # prodaction mode is on port 80
+    # production mode is on port 80
     ports:
       - 80:80
     depends_on:

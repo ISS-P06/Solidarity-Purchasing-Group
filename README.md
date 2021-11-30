@@ -59,8 +59,8 @@ docker run -d -p 3000:80 --name spg06-client:server --link spg06-server gabellua
 
 Note:
 
-- `spg06-client` depends on the `spg06-server` one, so this must be run first
-- in case of **name conflicts**, rename or remove the containers with `docker rm <name>` and run again the commands above
+- the images `spg06-client` depends on the `spg06-server` one, so this must be run first
+- in case of **name conflicts**, remove the containers with `docker rm <name>` and run again the commands above
 
 ## Frontend documentation
 
