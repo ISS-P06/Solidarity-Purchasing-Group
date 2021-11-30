@@ -26,6 +26,42 @@ docker-compose -f docker-compose.prod.yml stop && docker-compose -f docker-compo
 
 the `-f` flag is for custom docker file path
 
+### Deploy on Docker Hub
+
+Be sure that the `.env` file is in `/server` directory
+
+```sh
+docker login
+docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml push
+```
+
+Where `tagname` is the name of the release
+
+### Pull from Docker Hub
+
+This repo has two images, one for the user interface and one for the server logic. Both images can be
+pulled with:
+
+```
+docker pull gabelluardo/solidarity-purchasing-group:release1-client
+docker pull gabelluardo/solidarity-purchasing-group:release1-server
+```
+
+When images are built, you can run them with:
+
+```
+docker run -d -p 3001:3001 --name spg06-server gabelluardo/solidarity-purchasing-group:release1-server
+docker run -d -p 3000:80 --name spg06-client:server --link spg06-server gabelluardo/solidarity-purchasing-group:release1-client
+```
+
+**The app can be reached on http://localhost:3000 **
+
+Note:
+
+- `spg06-client` depends on the `spg06-server` one, so this must be run first
+- in case of **name conflicts**, rename or remove the containers with `docker rm <name>` and run again the commands above
+
 ## Frontend documentation
 
 ## React Client Application Routes
@@ -59,63 +95,63 @@ Note:
 
 Contains generic information for a registered user.
 
-| Field name | Type    | Constraints          | Notes                                      |
-| ---------- | ------- | -------------------- | ------------------------------------------ |
-| id         | INTEGER | **PK**               | Auto-increment                             |
-| username   | TEXT    | NOT NULL, **UNIQUE** | Every username must be unique              |
-| password   | TEXT    | NOT NULL             |                                            |
+| Field name | Type    | Constraints          | Notes                                                |
+| ---------- | ------- | -------------------- | ---------------------------------------------------- |
+| id         | INTEGER | **PK**               | Auto-increment                                       |
+| username   | TEXT    | NOT NULL, **UNIQUE** | Every username must be unique                        |
+| password   | TEXT    | NOT NULL             |                                                      |
 | role       | TEXT    | NOT NULL             | Possible values: `shop_employee`, `client`, `farmer` |
-| name       | TEXT    | NOT NULL             |                                            |
-| surname    | TEXT    | NOT NULL             |                                            |
-| email      | TEXT    | NOT NULL, **UNIQUE** | Every e-mail address must be unique        |
-| phone      | TEXT    | NOT NULL             |                                            |
+| name       | TEXT    | NOT NULL             |                                                      |
+| surname    | TEXT    | NOT NULL             |                                                      |
+| email      | TEXT    | NOT NULL, **UNIQUE** | Every e-mail address must be unique                  |
+| phone      | TEXT    | NOT NULL             |                                                      |
 
 ### Client
 
 Contains specific information about a registered client.
 
-| Field name | Type    | Constraints            | Notes                                                        |
-| ---------- | ------- | ---------------------- | ------------------------------------------------------------ |
-| ref_user   | INTEGER | **PK**, *FK*, NOT NULL | References `User("id")`; refers to the client's own credentials |
-| address    | TEXT    | NOT NULL               |                                                              |
-| balance    | REAL    | NOT NULL               | Client's current wallet balance                              |
+| Field name | Type    | Constraints            | Notes                                                           |
+| ---------- | ------- | ---------------------- | --------------------------------------------------------------- |
+| ref_user   | INTEGER | **PK**, _FK_, NOT NULL | References `User("id")`; refers to the client's own credentials |
+| address    | TEXT    | NOT NULL               |                                                                 |
+| balance    | REAL    | NOT NULL               | Client's current wallet balance                                 |
 
 ### Farmer
 
 Contains specific information about a registered farmer.
 
-| Field name | Type    | Constraints            | Notes                                                        |
-| ---------- | ------- | ---------------------- | ------------------------------------------------------------ |
-| ref_user   | INTEGER | **PK**, *FK*, NOT NULL | References `User("id")`; refers to the client's own credentials |
-| address    | TEXT    | NOT NULL               |                                                              |
-| farm_name  | TEXT    | NOT NULL               | The name of the farmer's own farm                            |
+| Field name | Type    | Constraints            | Notes                                                           |
+| ---------- | ------- | ---------------------- | --------------------------------------------------------------- |
+| ref_user   | INTEGER | **PK**, _FK_, NOT NULL | References `User("id")`; refers to the client's own credentials |
+| address    | TEXT    | NOT NULL               |                                                                 |
+| farm_name  | TEXT    | NOT NULL               | The name of the farmer's own farm                               |
 
 ### Prod_Descriptor
 
-Contains a description of a specific product. 
+Contains a description of a specific product.
 
 Note that products of the same type (e.g. apples) are treated as two separate products if they're sold by different farmers (e.g. farmer 1's apples are treated as an entirely different product from farmer 2's apples, and thus have two separate tuples in the `prod_descriptor` table).
 
-| Field name  | Type    | Constraints    | Notes                                                        |
-| ----------- | ------- | -------------- | ------------------------------------------------------------ |
-| id          | INTEGER | **PK**         | Auto-increment                                               |
-| name        | TEXT    | NOT NULL       |                                                              |
-| description | TEXT    | NOT NULL       |                                                              |
+| Field name  | Type    | Constraints    | Notes                                                                                                                |
+| ----------- | ------- | -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| id          | INTEGER | **PK**         | Auto-increment                                                                                                       |
+| name        | TEXT    | NOT NULL       |                                                                                                                      |
+| description | TEXT    | NOT NULL       |                                                                                                                      |
 | category    | TEXT    | NOT NULL       | Possible values:`fruits and vegetables`, `dairy product`, `food_items`, `meats_cold_cuts`, `pasta_and_rice`, `bread` |
-| unit        | TEXT    | NOT NULL       | Measurement unit of the quantity. Possible values: `kg`, `lt` (kilograms and liters, respectively) |
-| ref_farmer  | INTEGER | *FK*, NOT NULL | References `Farmer("ref_user")`; refers to the farmer who created the product descriptor. |
+| unit        | TEXT    | NOT NULL       | Measurement unit of the quantity. Possible values: `kg`, `lt` (kilograms and liters, respectively)                   |
+| ref_farmer  | INTEGER | _FK_, NOT NULL | References `Farmer("ref_user")`; refers to the farmer who created the product descriptor.                            |
 
 ### Product
 
 Contains information about a specific supply of a product.
 
-| Field name          | Type    | Constraints    | Notes                                                        |
-| ------------------- | ------- | -------------- | ------------------------------------------------------------ |
-| ref_prod_descriptor | INTEGER | *FK*, NOT NULL | References `prod_descriptor("id")`; references the descriptor that describes the supply |
-| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg) |
-| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                |
-| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added; format must be `YYYY-MM-DD HH:MM` |
-| id                  | INTEGER | **PK**         | Auto-increment                                               |
+| Field name          | Type    | Constraints    | Notes                                                                                   |
+| ------------------- | ------- | -------------- | --------------------------------------------------------------------------------------- |
+| ref_prod_descriptor | INTEGER | _FK_, NOT NULL | References `prod_descriptor("id")`; references the descriptor that describes the supply |
+| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg)                 |
+| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                                           |
+| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added; format must be `YYYY-MM-DD HH:MM`    |
+| id                  | INTEGER | **PK**         | Auto-increment                                                                          |
 
 ### Request
 
@@ -127,24 +163,24 @@ The `status` field describes the request's current status:
 - `confirmed`: products have been confirmed and the order is ready to be delivered;
 - `delivered`: products have successfully been delivered to the client;
 - `pending_canc`: products have been confirmed, but the client's current balance is insufficient;
-- `canceled` (*currently unused*): the order has been canceled due to insufficient funds or other reasons.
+- `canceled` (_currently unused_): the order has been canceled due to insufficient funds or other reasons.
 
-| Field name | Type    | Constraints    | Notes                                                        |
-| ---------- | ------- | -------------- | ------------------------------------------------------------ |
-| id         | INTEGER | **PK**         | Auto-increment                                               |
-| ref_client | INTEGER | *FK*, NOT NULL | References `Client("ref_user")`; refers to the client who made the request |
+| Field name | Type    | Constraints    | Notes                                                                            |
+| ---------- | ------- | -------------- | -------------------------------------------------------------------------------- |
+| id         | INTEGER | **PK**         | Auto-increment                                                                   |
+| ref_client | INTEGER | _FK_, NOT NULL | References `Client("ref_user")`; refers to the client who made the request       |
 | status     | TEXT    | NOT NULL       | Possible values: `pending`, `confirmed`, `delivered`, `pending_canc`, `canceled` |
-| date       | TEXT    | NOT NULL       | Format must be `YYYY-MM-DD HH:MM`                            |
+| date       | TEXT    | NOT NULL       | Format must be `YYYY-MM-DD HH:MM`                                                |
 
 ### Product_Request
 
 Contains information about a request for a specific product within an order (e.g. in order n.3, the client requested 0.5kg of apples).
 
-| Field name  | Type    | Constraints  | Notes                                                        |
-| ----------- | ------- | ------------ | ------------------------------------------------------------ |
-| ref_request | INTEGER | **PK**, *FK* | References `Request("id")`; references the request in which the product was requested |
-| ref_product | INTEGER | **PK**, *FK* | References `Product("id")`; references the product requested |
-| quantity    | REAL    | NOT NULL     | Quantity of the product requested by the client              |
+| Field name  | Type    | Constraints  | Notes                                                                                 |
+| ----------- | ------- | ------------ | ------------------------------------------------------------------------------------- |
+| ref_request | INTEGER | **PK**, _FK_ | References `Request("id")`; references the request in which the product was requested |
+| ref_product | INTEGER | **PK**, _FK_ | References `Product("id")`; references the product requested                          |
+| quantity    | REAL    | NOT NULL     | Quantity of the product requested by the client                                       |
 
 ### Basket
 
@@ -152,11 +188,11 @@ Contains information about a product present in a client's basket; the table fun
 
 Note that adding products to a basket means modifying the value of `quantity` in the `Product` table, since the products are marked as reserved.
 
-| Field name  | Type    | Constraints  | Notes                                                        |
-| ----------- | ------- | ------------ | ------------------------------------------------------------ |
-| ref_client  | INTEGER | **PK**, *FK* | References `Client("ref_user")`; references the client who "owns" the basket |
-| ref_product | INTEGER | **PK**, *FK* | References `Product("id")`; references the product added to the basket |
-| quantity    | REAL    | NOT NULL     | Quantity of the product requested and reserved by the client |
+| Field name  | Type    | Constraints  | Notes                                                                        |
+| ----------- | ------- | ------------ | ---------------------------------------------------------------------------- |
+| ref_client  | INTEGER | **PK**, _FK_ | References `Client("ref_user")`; references the client who "owns" the basket |
+| ref_product | INTEGER | **PK**, _FK_ | References `Product("id")`; references the product added to the basket       |
+| quantity    | REAL    | NOT NULL     | Quantity of the product requested and reserved by the client                 |
 
 ## Registered users
 
@@ -169,4 +205,3 @@ Below is a list of all users registered in the database for testing purposes:
 | nonnaPapera   | humperdink            | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
 | iosonoironman | tonystark             | Client        | Tony      | Stark         | tony.stark@starkinc.us     |
 | mario         | itsamemario           | Client        | Mario     | Mario         | mariomario@mail.msh        |
-
