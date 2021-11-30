@@ -9,7 +9,7 @@ import Notification, {addMessage} from '../Message';
 import {insertClient , insertUser} from '../../Api';
 
 const InsertClient = function (props) {
-    const {loggedIn,setLoggedIn, user, setUser} = props;
+    const {loggedIn,setLoggedIn, user, setUser, setUserRole, doLogin} = props;
     /* if loggedIn is true, the shop employee insert the information for a client. Otherwise it's the client that registers himself*/
 
     const [passwordType, setPasswordType] = useState('password');
@@ -21,7 +21,7 @@ const InsertClient = function (props) {
         const typeUser = values.typeUser;
         if (typeUser === "client") {
             userAdd = {
-                typeUser: typeUser,
+                typeUser: 'client',
                 name: values.name,
                 surname: values.surname,
                 phone: values.phone,
@@ -70,11 +70,13 @@ const InsertClient = function (props) {
                 case 'client':
                     insertClient(userAdd)
                         .then(() => {
-                            history.push('/client'); /*TODO redirect in the correct home page*/
-
                             addMessage({title:"",message: 'Registration is completed with success',type: 'success'});
-                            setLoggedIn(true);
+                            
                             setUser(userAdd);
+                            setUserRole('client');
+                            //setLoggedIn(true);
+                            doLogin({ username: userAdd.username, password: userAdd.password, });
+                            history.push('/client'); /*TODO redirect in the correct home page*/
                         })
                         .catch((err) => {
                             addMessage({title:"Error",message: err.message, type:'danger'});
@@ -87,14 +89,16 @@ const InsertClient = function (props) {
                         .then(() => {
                             addMessage({title:"", message:'Registration is completed with success',type: 'success'});
                             if(userAdd.typeUser==="shop_employee"){
-                                history.push('/shop_employee');
-                                setLoggedIn(true);
                                 setUser(userAdd);
+                                setUserRole('shop_employee');
+                                setLoggedIn(true);
+                                history.push('/shop_employee');
                             }
                             else if(userAdd.typeUser==="farmer"){
-                                history.push('/farmer');
-                                setLoggedIn(true);
                                 setUser(userAdd);
+                                setUserRole('farmer');
+                                setLoggedIn(true);
+                                history.push('/farmer');
                             }
                         })
                         .catch(err=>{
@@ -308,7 +312,7 @@ const InsertClient = function (props) {
                                         value={formik.values.typeUser}
                                         onChange={formik.handleChange}
                                         aria-label="Type of User">
-                                        <option value="client"> Client</option>
+                                        <option selected value="client"> Client</option>
                                         <option value="shop_employee"> Shop Employee</option>
                                         <option value="farmer"> Farmer</option>
                                     </Form.Select>

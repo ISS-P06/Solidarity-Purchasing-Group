@@ -79,7 +79,7 @@ function App() {
         setLoggedIn(true);
       } catch (err) {
         setUserRole('');
-        console.error(err);
+        console.error(err.message);
       }
     };
     checkAuth();
@@ -99,15 +99,14 @@ function App() {
     setDirtyVT,
     virtualTime,
   };
+  console.log(LayoutProps);
 
   return (
     <div className="app-container">
       <Router>
         <Switch>
           <Layout {...LayoutProps}>
-            <Route exact path="/">
-              <HomePage />
-            </Route>
+            
 
             <Route exact path="/register">
               <InsertClient
@@ -115,6 +114,8 @@ function App() {
                 setLoggedIn={setLoggedIn}
                 user={user}
                 setUser={setUser}
+                setUserRole={setUserRole}
+                doLogin={doLogin}
               />
             </Route>
 
@@ -126,6 +127,7 @@ function App() {
               condition={!loggedIn}
               component={<LoginForm doLogin={doLogin} />}
             />
+
 
             <RedirectRoute
               path="/client"
@@ -144,6 +146,11 @@ function App() {
               component={<FarmerHomePage user={user} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
+
+            
+            <Route exact path="/">
+                <HomePage />
+            </Route>
 
             {/* Client-only routes */}
 
@@ -199,7 +206,7 @@ function App() {
               path="/employee/register"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}
+              component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} doLogin={doLogin}/>}
             />
 
             {/* Employee product browsing route */}
@@ -240,6 +247,7 @@ function App() {
             <Route>
               <Redirect to={getUserRoute(userRole)} />
             </Route>
+
           </Layout>
         </Switch>
       </Router>

@@ -8,9 +8,9 @@ function FarmerHomePage(props) {
   return (
     <div>
       <h1 className="mt-3 mb-3" style={{ color: '#27511D' }}>
-        Welcome on Solidarity Purchase Group, {user.name} {user.surname}!
+        Welcome on Solidarity Purchase Group {user && user.name} {user && user.surname} !
       </h1>
-      <h3 className="mt-3 mb-3">We are happy to share your farm {user.farm_name} with us</h3>
+      <h3 className="mt-3 mb-3">We are happy to share your farm {user && user.farm_name} with us</h3>
     </div>
   );
 }
