@@ -36,8 +36,6 @@ docker-compose -f docker-compose.prod.yml build
 docker-compose -f docker-compose.prod.yml push
 ```
 
-Where `tagname` is the name of the release
-
 ### Pull from Docker Hub
 
 This repo has two images, one for the user interface and one for the server logic. Both images can be
