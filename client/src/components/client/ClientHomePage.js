@@ -15,10 +15,9 @@ function ClientHomePage(props) {
   return (
     <Container>
       <h1 className="mt-3 mb-3" style={{ color: '#27511D' }}>
-        Welcome on Solidarity Purchase Group, {user.name} !
+        Welcome on Solidarity Purchase Group, {user.name} {user.surname} !
       </h1>
-      {/*Todo update with the name of the user*/}
-      <h4 className="mt-3 mb-3">Your current balance is 10€ </h4>
+      <h4 className="mt-3 mb-3">Your current balance is {user.balance} </h4>
       {/*Todo update with the real balance*/}
       <h3 className="pt-5">What would you like to do?</h3>
       <h4 className="pb-5"> Choose one of the options below by clicking on the images! </h4>
@@ -29,12 +28,7 @@ function ClientHomePage(props) {
               <Col className="polaroid justify-content-center p-0">
                 <Button
                   style={{ background: '#fff' }}
-                  onClick={() => {
-                    history.push('/basket');
-                    {
-                      /*Todo update with the correct path*/
-                    }
-                  }}>
+                  onClick={() => history.push('/client/products')}>
                   <Image src={img} style={{ width: '100%', paddingTop: '20px' }}></Image>
                   <Row class="containerImage">
                     <h3>Add products to my basket</h3>

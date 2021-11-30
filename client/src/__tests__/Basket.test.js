@@ -1,10 +1,9 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Router, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
 
 import Basket from '../components/order/Basket';
+import { addMessage } from '../components/Message';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -15,6 +14,11 @@ const server = setupServer();
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
 
 describe('My component Basket', () => {
   test('Is Rendered without product', async () => {
@@ -97,14 +101,9 @@ describe('My component Basket', () => {
     expect(screen.getByText(/Apple/)).toBeInTheDocument();
     expect(screen.getByText(/Buy Now/)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByText(/Buy Now/));
+    userEvent.click(screen.getByText(/Buy Now/));
 
-    await waitFor(() => screen.getByText(/Well done, your order has been inserted!/));
-
-    expect(screen.getByText(/Well done, your order has been inserted!/)).toHaveTextContent(
-      /Well done, your order has been inserted!/
-    );
-
+    expect(addMessage).toHaveBeenCalledTimes(1);
     expect(db).toStrictEqual([]);
     //await waitFor(() => screen.getByText(/There are no products in the basket/));
     //expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();

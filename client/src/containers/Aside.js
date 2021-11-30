@@ -7,7 +7,7 @@ import { FaRegListAlt } from 'react-icons/fa';
 
 // todo add collaspse change
 
-function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole }) {
+function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole, setDirtyVT, dirtyVT, virtualTime }) {
   const roleMenu = {
     shop_employee: <EmployeeMenu />,
     client: <ClientMenu />,
@@ -42,7 +42,7 @@ function Aside({ collapsed, toggled, handleToggle, handleCollapse, userRole }) {
       <SidebarContent className="pro-sidebar">
         {roleMenu[userRole]}
         {/* todo aggiustare posizione virtual clock */}
-        <VirtualClock />
+        <VirtualClock virtualTime={virtualTime} setDirtyVT={setDirtyVT} dirtyVT={dirtyVT}/>
       </SidebarContent>
     </ProSidebar>
   );
@@ -76,20 +76,20 @@ function EmployeeMenu() {
 }
 
 function ClientMenu() {
-  return (
-    <Menu iconShape="circle">
-      <MenuItem icon={<BsFillCartPlusFill />}>
-        <Link className="text-light" to="/basket">
-          My Basket
-        </Link>
-      </MenuItem>
-      <MenuItem icon={<FaRegListAlt />}>
-        <Link className="text-light" to="/client/orders">
-          Browse order history list
-        </Link>
-      </MenuItem>
-    </Menu>
-  );
+    return (
+        <Menu iconShape="circle">
+            <MenuItem icon={<BsFillCartPlusFill />}>
+                <Link className="text-light" to="/client/products">
+                    Add products to basket
+                </Link>
+            </MenuItem>
+            <MenuItem icon={<FaRegListAlt />}>
+                <Link className="text-light" to="/client/orders">
+                   Browse order history list
+                </Link>
+            </MenuItem>
+        </Menu>
+    );
 }
 
 export default Aside;

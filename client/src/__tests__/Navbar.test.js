@@ -21,7 +21,7 @@ describe('Test navbar appearance', () => {
 
     render(
       <MemoryRouter history={history}>
-        <AppNavbar loggedIn={false} doLogout={doLogoutFn} userRole={''} />
+        <AppNavbar loggedIn={false} doLogout={doLogoutFn} userRole={''} virtualTime={new Date()}/>
       </MemoryRouter>
     );
 
@@ -43,7 +43,7 @@ describe('Test navbar appearance', () => {
 
     render(
       <MemoryRouter history={history}>
-        <AppNavbar loggedIn={true} doLogout={doLogoutFn} userRole={'shop_employee'} />
+        <AppNavbar loggedIn={true} doLogout={doLogoutFn} userRole={'shop_employee'} virtualTime={new Date()}/>
       </MemoryRouter>
     );
 

@@ -2,6 +2,7 @@
 
 import db from './db.js';
 import dayjs from 'dayjs';
+import bcrypt from 'bcrypt'
 
 //UPDATED
 export function listProducts() {
@@ -37,6 +38,7 @@ export function listClients() {
                      WHERE u.id = c.ref_user `;
     db.all(sql, [], (err, rows) => {
       if (err) {
+
         reject(err);
         return;
       }
@@ -77,7 +79,7 @@ export function insertOrder(orderClient) {
     const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(
       sql,
-      [orderClient.clientID, 'confirmed', dayjs().format('YYYY-MM-DD HH:MM')],
+      [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
       function (err) {
         var OrderID = this.lastID;
         orderClient.order.map((product, index) => {
@@ -94,7 +96,6 @@ export function insertOrder(orderClient) {
                 return;
               }
               if (orderClient.order.length === index + 1) {
-                // console.log(OrderID);
                 resolve(OrderID);
               }
             });
@@ -124,23 +125,86 @@ export function insertClient(
     let userID;
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
-      stmt.run([username, password, role, name, surname, email, phone], function (err) {
-        if (err) {
-          reject(err);
-        }
-        userID = this.lastID;
-        db.serialize(() => {
-          let stmt_1 = db.prepare(clientQuery);
-          stmt_1.run([address, balance, userID], (err) => {
-            if (err) {
-              reject(err);
-            }
+      bcrypt.hash(password, 10, function(err, hash) {
+
+        // Store hash in your password DB.
+        stmt.run([username, hash, role, name, surname, email, phone], function (err) {
+          if (err) {
+            reject(err);
+          }
+          userID = this.lastID;
+          db.serialize(() => {
+            let stmt_1 = db.prepare(clientQuery);
+            stmt_1.run([address, balance, userID], (err) => {
+              if (err) {
+                reject(err);
+              }
+            });
           });
+          resolve(this.lastID);
         });
-        resolve(this.lastID);
       });
+
     });
   });
+}
+
+export function registerUser(user){
+
+  return new Promise((resolve , reject)=>{
+    let userID;
+    const farmerQuery = 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)'
+    const userQuery =  'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+
+    if(user.typeUser === 'shop_employee'){
+      db.serialize(()=>{
+        let stmt = db.prepare(userQuery);
+        bcrypt.hash(user.password , 10 , function (err , hash){
+          if(err){
+            reject(err);
+          }
+
+          stmt.run([user.username , hash , user.typeUser , user.name, user.surname, user.mail, user.phone] , function (err){
+            if(err){
+              reject(err);
+            }
+
+            resolve(this.lastID);
+          })
+        })
+      })
+    }else if(user.typeUser === 'farmer'){
+      db.serialize(()=>{
+        let stmt = db.prepare(userQuery);
+        bcrypt.hash(user.password , 10 , function (err , hash){
+          if(err){
+
+            reject(err);
+          }
+
+          stmt.run([user.username , hash , user.typeUser , user.name, user.surname, user.mail, user.phone] , function (err){
+            if(err){
+
+              reject(err);
+            }
+
+            userID = this.lastID;
+            db.serialize(()=>{
+              let stmt_1 = db.prepare(farmerQuery);
+              stmt_1.run([userID , user.address , user.farmName] , function (err){
+                if (err)
+                  reject(err);
+              })
+            })
+
+            resolve(this.lastID);
+          })
+        })
+      })
+    }
+  })
+
+
 }
 
 //UPDATED

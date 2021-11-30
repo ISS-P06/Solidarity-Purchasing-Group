@@ -16,8 +16,9 @@ import HomePage from './containers/HomePage';
 import { Layout } from './containers';
 import { getUserRoute, RedirectRoute } from './utils/route.js';
 import { addMessage } from './components/Message';
-import { api_getUserInfo, api_login, api_logout } from './Api';
+import { api_getUserInfo, api_login, api_logout, api_getTime } from './Api';
 import FarmerHomePage from './components/farmer/FarmerHomePage';
+import { checkOrderInterval } from './utils/date';
 
 function App() {
   // Session-related states
@@ -33,6 +34,12 @@ function App() {
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState();
   const [user, setUser] = useState();
+  // This state is used to update (and monitor) the time on front-end
+  // Some functionalities can be used only at a certain time
+  const [dirtyVT, setDirtyVT] = useState(true);
+
+  // State used to store the system's virtual time
+  const [virtualTime, setVirtualTime] = useState({});
 
   // async function for logging in
   const doLogin = async (credentials) => {
@@ -44,6 +51,22 @@ function App() {
       return { done: false, msg: err.message };
     }
   };
+
+  // useEffect used to get the system's virtual time
+  useEffect(() => {
+    const getVT = async () => {
+      try {
+        const data = await api_getTime();
+        setVirtualTime(new Date(data.currentTime));
+        setDirtyVT(false);
+      } catch (err) {
+        setVirtualTime(new Date().toISOString());
+        setDirtyVT(false);
+        console.error(err);
+      }
+    };
+    getVT();
+  }, [dirtyVT]);
 
   // useEffect for getting user info
   useEffect(() => {
@@ -68,11 +91,13 @@ function App() {
     addMessage({ title: 'Logout', message: 'You are now logged out' });
     setLoggedIn(false);
   };
-
   const LayoutProps = {
     loggedIn,
     doLogout,
     userRole,
+    dirtyVT,
+    setDirtyVT,
+    virtualTime,
   };
 
   return (
@@ -83,12 +108,52 @@ function App() {
             <Route exact path="/">
               <HomePage />
             </Route>
-
+            <Route exact path="/register">
+              <InsertClient
+                loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                user={user}
+                setUser={setUser}
+              />
+            </Route>
             <RedirectRoute
               path="/login"
               role={userRole}
               condition={!loggedIn}
               component={<LoginForm doLogin={doLogin} />}
+            />
+
+            {/* Client-only routes */}
+            <RedirectRoute
+              path="/client/basket"
+              role={userRole}
+              condition={loggedIn}
+              component={<Basket userId={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/client/orders"
+              role={userRole}
+              condition={loggedIn}
+              component={<OrderList userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/client/basket"
+              role={userRole}
+              condition={loggedIn}
+              component={<Basket userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            <RedirectRoute
+              path="/client/products"
+              role={userRole}
+              condition={loggedIn}
+              component={<ProductCards userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
             />
 
             <RedirectRoute
@@ -99,17 +164,22 @@ function App() {
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
-            <RedirectRoute
-              path="/farmer"
-              role={userRole}
-              condition={loggedIn}
-              component={<FarmerHomePage user={user} />}
-              redirect={<LoginForm doLogin={doLogin} />}
-            />
+            <Route path="/farmer">
+              <FarmerHomePage user={user} />
+            </Route>
 
             {/* Shop employee-only routes */}
-
             {/* Employee: client info page route */}
+            <Route
+              path="/employee"
+              render={({ match }) =>
+                loggedIn ? (
+                  <div id={match.params.id} />
+                ) : (
+                  <Redirect to={getUserRoute(userRole) || '/'} />
+                )
+              }
+            />
             <Route
               path="/employee/clients/:id"
               render={({ match }) =>
@@ -120,13 +190,12 @@ function App() {
                 )
               }
             />
-
             {/* Employee client list route */}
             <RedirectRoute
               path="/employee/clients"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<ClientsList />}
+              component={<ClientsList virtualTime={virtualTime} />}
             />
 
             {/* Employee client registration route */}
@@ -134,7 +203,7 @@ function App() {
               path="/employee/register"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<InsertClient />}
+              component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}
             />
 
             {/* Employee product browsing route */}
@@ -145,27 +214,13 @@ function App() {
               component={<ProductCards userRole={userRole} userId={userId} />}
             />
 
-            {/* Employee: order info page route */}
-            <RedirectRoute
-              path="/employee/orders/:id"
-              role={userRole}
-              condition={loggedIn && userRole === 'shop_employee'}
-              component={<OrderReview userRole={userRole} />}
-            />
-
-            {/* Employee order list route */}
-            <RedirectRoute
-              path="/employee/orders"
-              role={userRole}
-              condition={loggedIn && userRole === 'shop_employee'}
-              component={<OrderList userRole={userRole} userId={userId} />}
-            />
-
             {/* Employee order creation route */}
             <RedirectRoute
               path="/employee/orders/new"
               role={userRole}
-              condition={loggedIn && userRole === 'shop_employee'}
+              condition={
+                loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)
+              }
               component={<div />}
             />
 
@@ -174,28 +229,7 @@ function App() {
               path="/employee"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<div />}
-            />
-
-            {/* Client-only routes */}
-
-            {/*
-              Routes to test client orders component
-              TO DO: remove or improve these routes
-              Thank you, Marco
-              */}
-            <Route path="/client/orders/:id">
-              <OrderReview userRole="client" userId="4" />
-            </Route>
-            <Route path="/client/orders">
-              <OrderList userRole="client" userId="4" />
-            </Route>
-
-            <RedirectRoute
-              path="/basket"
-              role={userRole}
-              condition={loggedIn && userRole === 'client'}
-              component={<Basket userRole={userRole} userId={userId} />}
+              component={<Redirect to="/employee/clients" />}
             />
 
             {/* Default redirect the user on his default route */}
