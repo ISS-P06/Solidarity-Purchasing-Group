@@ -10,17 +10,17 @@ export default function Basket(props) {
   const [isEmpty, setIsEmpty] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
 
-  const handleBuyNow = async (userId) => {
-    await api_buyNow(userId)
+  const handleBuyNow = (userId) => {
+    api_buyNow(userId)
       .then(() => {
-        addMessage({ title: 'order', message: 'Your order has been inserted!' });
-        setIsUpdated(false);
+        addMessage({ title: 'Order', message: 'Your order has been inserted!' });
+        setIsUpdated(true);
       })
       .catch((e) => console.log(e));
   };
 
-  const handleRemoveProduct = async (productId) => {
-    await api_removeProductFromBasket(props.userId, productId)
+  const handleRemoveProduct = (productId) => {
+    api_removeProductFromBasket(props.userId, productId)
       .then(() => {
         setIsUpdated(true);
       })
@@ -29,7 +29,7 @@ export default function Basket(props) {
       });
   };
 
-  const handleAddProduct = async (productId) => {
+  const handleAddProduct = () => {
     setIsUpdated(true);
   };
 

@@ -130,7 +130,6 @@ const ProductCard = (props) => {
             setErrorMessage('You cannot add more than the available quantity');
             return;
         }
-        console.log(props.product)
 
         props.onBasketAdd(reservedQuantity, props.product.id);
         setShow(false);

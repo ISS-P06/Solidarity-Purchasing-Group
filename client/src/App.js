@@ -108,6 +108,7 @@ function App() {
             <Route exact path="/">
               <HomePage />
             </Route>
+
             <Route exact path="/register">
               <InsertClient
                 loggedIn={loggedIn}
@@ -116,21 +117,35 @@ function App() {
                 setUser={setUser}
               />
             </Route>
+
+            {/* Default routes */}
             <RedirectRoute
               path="/login"
+              exact={true}
               role={userRole}
               condition={!loggedIn}
               component={<LoginForm doLogin={doLogin} />}
             />
 
-            {/* Client-only routes */}
             <RedirectRoute
-              path="/client/basket"
+              path="/client"
+              exact={true}
               role={userRole}
               condition={loggedIn}
-              component={<Basket userId={user} />}
+              component={<ClientHomePage user={user} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
+
+            <RedirectRoute
+              path="/farmer"
+              exact={true}
+              role={userRole}
+              condition={loggedIn}
+              component={<FarmerHomePage user={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
+
+            {/* Client-only routes */}
 
             <RedirectRoute
               path="/client/orders"
@@ -141,32 +156,12 @@ function App() {
             />
 
             <RedirectRoute
-              path="/client/basket"
+              path="/client/products"
               role={userRole}
               condition={loggedIn}
               component={<Basket userRole={userRole} userId={userId} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
-
-            <RedirectRoute
-              path="/client/products"
-              role={userRole}
-              condition={loggedIn}
-              component={<ProductCards userRole={userRole} userId={userId} />}
-              redirect={<LoginForm doLogin={doLogin} />}
-            />
-
-            <RedirectRoute
-              path="/client"
-              role={userRole}
-              condition={loggedIn}
-              component={<ClientHomePage user={user} />}
-              redirect={<LoginForm doLogin={doLogin} />}
-            />
-
-            <Route path="/farmer">
-              <FarmerHomePage user={user} />
-            </Route>
 
             {/* Shop employee-only routes */}
             {/* Employee: client info page route */}
@@ -180,6 +175,7 @@ function App() {
                 )
               }
             />
+
             <Route
               path="/employee/clients/:id"
               render={({ match }) =>

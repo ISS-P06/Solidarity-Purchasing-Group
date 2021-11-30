@@ -22,10 +22,19 @@ export function getUserRoute(role) {
  * Wrapper of `Route` component that automatically redirect
  * the user based on its role
  */
-export function RedirectRoute({ component, path, role, redirect, condition = true }) {
+export function RedirectRoute({
+  component,
+  path,
+  role,
+  redirect,
+  exact = false,
+  condition = true,
+}) {
   const redirectRoute = getUserRoute(role);
 
   return (
-    <Route path={path}>{condition ? component : redirect || <Redirect to={redirectRoute} />}</Route>
+    <Route exact={exact} path={path}>
+      {condition ? component : redirect || <Redirect to={redirectRoute} />}
+    </Route>
   );
 }

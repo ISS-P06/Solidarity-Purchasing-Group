@@ -20,14 +20,13 @@ import {
   removeProductFromBasket,
   insertOrderFromBasket,
   getBalanceByClientId,
-  removeOrderedProducts,
-    registerUser,
+  registerUser,
 } from './dao.js';
 
 import VTC from './vtc.js';
 import SYS from './system';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById} from './user-dao.js';
+import { getUser, getUserById } from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -40,17 +39,17 @@ const sys = new SYS();
     set up "username and password" strategy
 */
 passport.use(
-    new LocalStrategy(function (username, password, done) {
-        getUser(username, password)
-            .then((user) => {
-                if (!user) return done(null, false, {message: 'Incorrect email and/or password.'});
+  new LocalStrategy(function (username, password, done) {
+    getUser(username, password)
+      .then((user) => {
+        if (!user) return done(null, false, { message: 'Incorrect email and/or password.' });
 
-                return done(null, user);
-            })
-            .catch((err) => {
-                return done(null, false, {message: err.msg});
-            });
-    })
+        return done(null, user);
+      })
+      .catch((err) => {
+        return done(null, false, { message: err.msg });
+      });
+  })
 );
 
 // serialize and de-serialize the user (user object <-> session)
@@ -252,57 +251,58 @@ app.post('/api/orders/:id/deliver', (req, res) => {
 
 // ADD NEW CLIENT
 app.post(
-    '/api/insert_client',
-    check('name').isString(),
-    check('surname').isString(),
-    check('balance').isInt(),
-    check('mail').isEmail(),
-    check('typeUser').isString(),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({error: errors.array()});
-        }
-        const client = req.body;
-        insertClient(
-            client.name,
-            client.surname,
-            client.phone,
-            client.address,
-            client.mail,
-            client.balance,
-            client.username,
-            client.password,
-            client.typeUser
-        )
-            .then((result) => {
-                res.end();
-            })
-            .catch((err) => res.status(500).json(err));
+  '/api/insert_client',
+  check('name').isString(),
+  check('surname').isString(),
+  check('balance').isInt(),
+  check('mail').isEmail(),
+  check('typeUser').isString(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ error: errors.array() });
     }
+    const client = req.body;
+    insertClient(
+      client.name,
+      client.surname,
+      client.phone,
+      client.address,
+      client.mail,
+      client.balance,
+      client.username,
+      client.password,
+      client.typeUser
+    )
+      .then((result) => {
+        res.end();
+      })
+      .catch((err) => res.status(500).json(err));
+  }
 );
 
-app.post('/api/register_user',
-    check('name').isString(),
-    check('surname').isString(),
-    check('mail').isEmail(),
-    check('typeUser').isString(),
-    (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({error: errors.array()});
-        }
-
-        const user = req.body;
-        registerUser(user)
-            .then(() => {
-                res.end()
-            })
-            .catch((err) => {
-                res.status(500).json(err)
-            });
+app.post(
+  '/api/register_user',
+  check('name').isString(),
+  check('surname').isString(),
+  check('mail').isEmail(),
+  check('typeUser').isString(),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ error: errors.array() });
     }
-)
+
+    const user = req.body;
+    registerUser(user)
+      .then(() => {
+        res.end();
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  }
+);
 
 // --- Login/Logout routes --- //
 // Login
@@ -396,11 +396,9 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
     await insertOrderFromBasket(userId, basket, balance, dateTime);
 
     // clear basket
-    basket.forEach(async (p) => {
-      await removeProductFromBasket(userId, p.id);
-    });
+    basket.forEach((p) => removeProductFromBasket(userId, p.productId));
 
-    res.status(200).end();
+    res.status(200).json({});
   } catch (e) {
     res.status(500).json(e);
   }
