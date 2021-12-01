@@ -14,15 +14,24 @@ function Layout(props) {
   const [toggled, setToggled] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
-  const handleCollapse = (checked) => {
-    setCollapsed(checked);
+  const handleCollapse = (value) => {
+    setCollapsed(value);
   };
 
   const handleToggle = (value) => {
     setToggled(value);
   };
 
-  const AsideProps = { toggled, collapsed, userRole, handleCollapse, dirtyVT, setDirtyVT, virtualTime };
+  const AsideProps = {
+    toggled,
+    collapsed,
+    userRole,
+    handleToggle,
+    handleCollapse,
+    dirtyVT,
+    setDirtyVT,
+    virtualTime,
+  };
 
   return (
     <Container className="d-flex text-dark min-vh-100" fluid="true">

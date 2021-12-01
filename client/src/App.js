@@ -91,6 +91,7 @@ function App() {
     addMessage({ title: 'Logout', message: 'You are now logged out' });
     setLoggedIn(false);
   };
+
   const LayoutProps = {
     loggedIn,
     doLogout,
@@ -99,15 +100,12 @@ function App() {
     setDirtyVT,
     virtualTime,
   };
-  console.log(LayoutProps);
 
   return (
     <div className="app-container">
       <Router>
         <Switch>
           <Layout {...LayoutProps}>
-            
-
             <Route exact path="/register">
               <InsertClient
                 loggedIn={loggedIn}
@@ -128,7 +126,6 @@ function App() {
               component={<LoginForm doLogin={doLogin} />}
             />
 
-
             <RedirectRoute
               path="/client"
               exact={true}
@@ -147,9 +144,8 @@ function App() {
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
-            
             <Route exact path="/">
-                <HomePage />
+              <HomePage />
             </Route>
 
             {/* Client-only routes */}
@@ -206,7 +202,9 @@ function App() {
               path="/employee/register"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} doLogin={doLogin}/>}
+              component={
+                <InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} doLogin={doLogin} />
+              }
             />
 
             {/* Employee product browsing route */}
@@ -247,7 +245,6 @@ function App() {
             <Route>
               <Redirect to={getUserRoute(userRole)} />
             </Route>
-
           </Layout>
         </Switch>
       </Router>
