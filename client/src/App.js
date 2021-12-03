@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 
 import {
   ClientsList,
-  InsertClient,
   LoginForm,
   OrderList,
-  OrderReview,
+  InsertUser,
   ProductCards,
   Basket,
   ClientHomePage,
@@ -107,12 +106,8 @@ function App() {
         <Switch>
           <Layout {...LayoutProps}>
             <Route exact path="/register">
-              <InsertClient
+              <InsertUser
                 loggedIn={loggedIn}
-                setLoggedIn={setLoggedIn}
-                user={user}
-                setUser={setUser}
-                setUserRole={setUserRole}
                 doLogin={doLogin}
               />
             </Route>
@@ -203,7 +198,7 @@ function App() {
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
               component={
-                <InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} doLogin={doLogin} />
+                <InsertUser loggedIn={loggedIn}  doLogin={doLogin} />
               }
             />
 

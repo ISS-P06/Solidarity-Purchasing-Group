@@ -1,327 +1,325 @@
 const axios = require('axios');
 
 export const api_getProducts = async () => {
-  try {
-    const res = await axios.get('/api/products');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/products');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting all the products');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting all the products');
-    }
-  }
 };
 
 export const api_getOrders = async () => {
-  try {
-    const res = await axios.get('/api/orders');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/orders');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting all the orders');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting all the orders');
-    }
-  }
 };
 
 export default api_getOrders;
 
 export const api_getClientOrders = async (clientId) => {
-  try {
-    const res = await axios.get('/api/clients/'+clientId+'/orders');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/clients/' + clientId + '/orders');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting all the client orders');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting all the client orders');
-    }
-  }
 };
 
 export const api_getOrderReview = async (orderId) => {
-  try {
-    const res = await axios.get('/api/orders/' + orderId);
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/orders/' + orderId);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting the order review');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting the order review');
-    }
-  }
 };
 
 export const api_getClientOrderReview = async (clientId, orderId) => {
-  try {
-    const res = await axios.get('/api/clients/' + clientId + '/orders/' + orderId);
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/clients/' + clientId + '/orders/' + orderId);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting the order review');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting the order review');
-    }
-  }
 };
 
 export const api_doDelivery = async (orderId) => {
-  try {
-    const res = await axios.post('/api/orders/' + orderId + '/deliver', {
-      orderId: orderId,
-    });
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.post('/api/orders/' + orderId + '/deliver', {
+            orderId: orderId,
+        });
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 422 || err.response.status === 503) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in delivering the order');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 422 || err.response.status === 503) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in delivering the order');
-    }
-  }
 };
 
 export const api_getClientsList = async () => {
-  try {
-    const res = await axios.get('/api/clients');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/clients');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting the clients');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting the clients');
-    }
-  }
 };
 
 export const api_addOrder = async (orderClient) => {
-  try {
-    const res = await axios.post('/api/orders', orderClient);
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.post('/api/orders', orderClient);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else if (err.response.status === 422) {
+            throw new Error('Sorry, there was an error in the data');
+        } else {
+            throw new Error('Sorry, there was an error in adding the order');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else if (err.response.status === 422) {
-      throw new Error('Sorry, there was an error in the data');
-    } else {
-      throw new Error('Sorry, there was an error in adding the order');
-    }
-  }
 };
 
-export const api_addTopUpClient = async ({ id, amount }) => {
-  try {
-    await axios.put('/api/clients/topup', { amount, id });
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else if (err.response.status === 422) {
-      throw new Error('Sorry, there was an error in the data');
-    } else {
-      throw new Error('Sorry, there was an error in adding the order');
+export const api_addTopUpClient = async ({id, amount}) => {
+    try {
+        await axios.put('/api/clients/topup', {amount, id});
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else if (err.response.status === 422) {
+            throw new Error('Sorry, there was an error in the data');
+        } else {
+            throw new Error('Sorry, there was an error in adding the order');
+        }
     }
-  }
 };
 
-export async function insertClient(client) {
-  let res;
-  try {
-    res = await axios.post('/api/insert_client', client);
-  } catch (err) {
-    console.log(err);
-    throw new Error(res.data.message);
-    //throw err;
-  }
-}
 
-export async function insertUser(user){
-  let res;
-  try{
-    res = await axios.post('/api/register_user' , user)
-  }catch(err){
-    console.log(err);
-    throw err;
-  }
+export async function insertUser(user) {
+    console.log("register_user")
+    let res;
+    try {
+        res = await axios.post('/api/register_user', user);
+        console.log(res.status);
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else if (err.response.status === 422) {
+            throw new Error('Sorry, there was an error in the data');
+        } else {
+            throw new Error('Sorry, there was an error in adding the order');
+        }
+        throw err;
+    }
 }
 
 export const api_getTime = async () => {
-  try {
-    const res = await axios.get('/api/time');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/time');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    }
-  }
 };
 
 export const api_setTime = async (dateTime) => {
-  try {
-    const res = await axios.put('/api/time', { time: dateTime });
-    return res;
-  } catch (error) {
-    throw new Error(error.message);
-  }
+    try {
+        const res = await axios.put('/api/time', {time: dateTime});
+        return res;
+    } catch (error) {
+        throw new Error(error.message);
+    }
 };
 
 // --- Login/Logout APIs
 // Login API
 export const api_login = async (credentials) => {
-  try {
-    let res = await axios.post('/api/sessions', {
-      username: credentials.username,
-      password: credentials.password,
-    });
-    if (res.data.username) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        let res = await axios.post('/api/sessions', {
+            username: credentials.username,
+            password: credentials.password,
+        });
+        if (res.data.username) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 401) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in logging in');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 401) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in logging in');
-    }
-  }
 };
 
 // Logout API
 export const api_logout = () => {
-  axios
-    .delete('/api/sessions/current')
-    .then((res) => {
-      // ...
-    })
-    .catch((res) => {
-      // ...
-    });
+    axios
+        .delete('/api/sessions/current')
+        .then((res) => {
+            // ...
+        })
+        .catch((res) => {
+            // ...
+        });
 };
 
 // Get user info API
 export const api_getUserInfo = async () => {
-  try {
-    const res = await axios.get('/api/sessions/current');
-    if (res.data.id) {
-      return res.data;
-    } else {
-      throw res.data.message;
+    try {
+        const res = await axios.get('/api/sessions/current');
+        if (res.data.id) {
+            return res.data;
+        } else {
+            throw res.data.message;
+        }
+    } catch (err) {
+        if (err.response.data.message) {
+            throw new Error(err.response.data.message);
+        } else if (err.response.data.error) {
+            throw new Error(err.response.data.error);
+        } else {
+            throw new Error('Sorry, there was an error in logging in');
+        }
     }
-  } catch (err) {
-    if (err.response.data.message) {
-      throw new Error(err.response.data.message);
-    } else if (err.response.data.error) {
-      throw new Error(err.response.data.error);
-    } else {
-      throw new Error('Sorry, there was an error in logging in');
-    }
-  }
 };
 
 export const api_getBasket = async (userId) => {
-  try {
-    const res = await axios.get('/api/client/' + userId + '/basket');
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.get('/api/client/' + userId + '/basket');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in getting the basket');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in getting the basket');
-    }
-  }
 };
 
 export const api_buyNow = async (userId) => {
-  try {
-    const res = await axios.post('/api/client/' + userId + '/basket/buy', {});
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.post('/api/client/' + userId + '/basket/buy', {});
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in buying');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in buying');
-    }
-  }
 };
 
 export const api_removeProductFromBasket = async (userId, productId) => {
-  try {
-    console.log(productId);
-    const res = await axios.delete('/api/client/' + userId + '/basket/remove', { data: {productId} });
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        console.log(productId);
+        const res = await axios.delete('/api/client/' + userId + '/basket/remove', {data: {productId}});
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in removing a product from basket');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in removing a product from basket');
-    }
-  }
 };
 
 export const api_addProductToBasket = async (userId, productId, reservedQuantity) => {
-  try {
-    const res = await axios.post('/api/client/' + userId + '/basket/add', {productId,reservedQuantity});
-    if (res.data) {
-      return res.data;
-    } else {
-      throw new Error(res.data.message);
+    try {
+        const res = await axios.post('/api/client/' + userId + '/basket/add', {productId, reservedQuantity});
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        if (err.response.status === 500) {
+            throw new Error(err.response.data);
+        } else {
+            throw new Error('Sorry, there was an error in adding to the basket');
+        }
     }
-  } catch (err) {
-    if (err.response.status === 500) {
-      throw new Error(err.response.data);
-    } else {
-      throw new Error('Sorry, there was an error in adding to the basket');
-    }
-  }
 };
 
 

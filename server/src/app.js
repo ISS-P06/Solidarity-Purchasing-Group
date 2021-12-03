@@ -11,7 +11,6 @@ import {
   listProducts,
   insertOrder,
   updateClientBalance,
-  insertClient,
   getOrders,
   getOrderById,
   setOrderDelivered,
@@ -20,13 +19,12 @@ import {
   removeProductFromBasket,
   insertOrderFromBasket,
   getBalanceByClientId,
-  registerUser,
 } from './dao.js';
 
 import VTC from './vtc.js';
 import SYS from './system';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById } from './user-dao.js';
+import { getUser, getUserById ,registerUser} from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -249,37 +247,6 @@ app.post('/api/orders/:id/deliver', (req, res) => {
     .catch(() => res.status(500).end());
 });
 
-// ADD NEW CLIENT
-app.post(
-  '/api/insert_client',
-  check('name').isString(),
-  check('surname').isString(),
-  check('balance').isInt(),
-  check('mail').isEmail(),
-  check('typeUser').isString(),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ error: errors.array() });
-    }
-    const client = req.body;
-    insertClient(
-      client.name,
-      client.surname,
-      client.phone,
-      client.address,
-      client.mail,
-      client.balance,
-      client.username,
-      client.password,
-      client.typeUser
-    )
-      .then((result) => {
-        res.end();
-      })
-      .catch((err) => res.status(500).json(err));
-  }
-);
 
 app.post(
   '/api/register_user',
@@ -288,6 +255,7 @@ app.post(
   check('mail').isEmail(),
   check('typeUser').isString(),
   (req, res) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ error: errors.array() });
@@ -299,6 +267,7 @@ app.post(
         res.end();
       })
       .catch((err) => {
+          console.log(err);
         res.status(500).json(err);
       });
   }
