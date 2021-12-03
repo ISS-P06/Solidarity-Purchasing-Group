@@ -1,6 +1,6 @@
 import {Navbar as BNavbar, Dropdown} from 'react-bootstrap';
 import {BsBasket2, BsPersonCircle} from 'react-icons/bs';
-import {BiLogIn, BiLogOut} from 'react-icons/bi';
+import {BiUser, BiLogIn, BiLogOut} from 'react-icons/bi';
 import {AiOutlineUserAdd} from 'react-icons/ai';
 import {Link} from 'react-router-dom';
 
@@ -47,10 +47,17 @@ function SettingsDropdown(props) {
                     </>
 
                 ) : (
-                    <Dropdown.Item onClick={doLogout}>
-                        <BiLogOut size={25}/>
-                        Logout
-                    </Dropdown.Item>
+                    <>
+                        <Dropdown.Item as={Link} to={props.userRole==="client" ? "/client": props.userRole==="farmer"?"/farmer": "/employee/clients"}>
+                            <BiUser size={25}/>
+                            Personal area
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={doLogout}>
+                            <BiLogOut size={25}/>
+                            Logout
+                        </Dropdown.Item>
+                    </>
+
                 )}
             </Dropdown.Menu>
         </Dropdown>
