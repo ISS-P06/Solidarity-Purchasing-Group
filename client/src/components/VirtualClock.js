@@ -29,8 +29,8 @@ function VirtualClock(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const ISODate = humanToISO(date, time / 3600);
+    console.log(virtualTime);
+    const ISODate = humanToISO(date, time);
     await api_setTime(ISODate).catch(() => {});
 
     setDirtyVT(true);
@@ -88,12 +88,12 @@ function VirtualClock(props) {
                   <Col />
                   <Col>
                     <TimePicker
-                      value={time}
+                      value={time * 3600}
                       start="00:00"
                       end="23:30"
                       format={24}
                       step={60}
-                      onChange={(t) => setTime(t)}
+                      onChange={(t) => setTime(t/3600)}
                     />
                   </Col>
                   <Col />
