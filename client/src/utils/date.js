@@ -32,7 +32,10 @@ export function humanToISO(date, time) {
 
 /**
  * Check if the virtual time is in the interval: Sat, 9am - Sun, 11pm.
- * If so, orders can be made by clients
+ * If so, orders can be made by clients.
+ * 
+ * @param {Date} virtualTime
+ * @return {boolean} true if the client can order, false otherwise 
  */
 export function checkOrderInterval(virtualTime) {
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6

@@ -6,6 +6,21 @@ import TimePicker from 'react-bootstrap-time-picker';
 import { api_setTime } from '../Api';
 import { humanToISO, ISOtoHuman } from '../utils';
 
+/**
+ * VirtualClock component has the goal to change the virtual time of the system.
+ * The virtual clock is composed by 2 attributes/states:
+ *  - date: represents the current virtual date.
+ *  - time: represents the current virtual time.
+ * Once updated the virtual clock, the new date and the new time are updated also in the backend using the api_setTime(dateTime) where the param dateTime is an ISODate string.
+ * To get from the backend the current virtual time and date the api_getTime is used.
+ * 
+ * @param {any} props 
+ *  - props.setDirtyVT: used to update the dirtyVT.
+ *  - props.dirtyVT: when changed the virtual clock will be re-rendered to show the updated virtual time and date 
+ *  - props.virtualTime: virtualTime is a state in app.js that stores the same value of the virtualClock defined here; since VirtualClock.js is a component under the navbar we need a state on app.js that keep track of the virtual clock and, if necessary, pass it to other components.
+ * 
+ */
+
 function VirtualClock(props) {
   const setDirtyVT = props.setDirtyVT;
   const virtualTime = props.virtualTime;
@@ -20,6 +35,9 @@ function VirtualClock(props) {
   const handleClose = () => setShowModalVT(false);
   const handleShow = () => setShowModalVT(true);
 
+  /**
+   * This function add 1 days to the date state. It's needed beceause in Date object the date start from 0.
+   */
   const handleDate = async () => {
     const newDate = new Date();
     newDate.setDate(date.getDate() + 1);
@@ -27,9 +45,13 @@ function VirtualClock(props) {
     setDate(newDate);
   };
 
+  /**
+   * Function to submit the new virtual clock.
+   * It converts the date (that is in a human-readable format) to an ISODate, submits the new date using the api_setTime and changes the dirtyVT state.
+   * @param {*} event 
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(virtualTime);
     const ISODate = humanToISO(date, time);
     await api_setTime(ISODate).catch(() => {});
 
@@ -38,6 +60,9 @@ function VirtualClock(props) {
     handleClose();
   };
 
+  /**
+   * Once changed we need to re-render the virtual clock in a human-readable format.
+   */
   useEffect(() => {
     if (!dirtyVT) {
       const humanTime = ISOtoHuman(virtualTime.toISOString());

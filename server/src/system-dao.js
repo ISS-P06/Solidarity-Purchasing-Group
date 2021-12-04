@@ -3,11 +3,17 @@
 import db from './db.js';
 import dayjs from 'dayjs';
 
-/*
-    Checks client balance before confirm their order.
-    If balance < Tot. amount of the order the system will send a notification; also, the request state becomes 'pending_canc'.
-    If balance >= Tot. amount of the order the request state becomes 'confirmed'.
-*/
+/**
+ * Checks client balance before confirm their order and update the Request table.
+ * If balance < Tot. amount of the order the system will send a notification; also, the request state becomes 'pending_canc'.
+ * If balance >= Tot. amount of the order the request state becomes 'confirmed'.
+ * 
+ * 
+ * @returns {Promise} 
+ *  - The promise is resolved if all the queries run well, otherwise is rejected.
+ */
+    
+
 export function checksClientBalance() {
     return new Promise((resolve, reject) => {
         const sql = `
