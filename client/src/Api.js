@@ -222,10 +222,13 @@ export const api_logout = () => {
     axios
         .delete('/api/sessions/current')
         .then((res) => {
-            // ...
+            if (res.data) {
+                return res.data;
+            } else {
+                throw new Error(res.data.message);
+            }
         })
-        .catch((res) => {
-            // ...
+        .catch((res) => { throw new Error("Sorry, there is a problem with the logout. Try later..");
         });
 };
 
