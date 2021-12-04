@@ -14,12 +14,8 @@ function ClientTopUpForm(props) {
     event.stopPropagation();
 
     if (form.checkValidity()) {
-      topUpClient({ id: client.id, amount });
+      topUpClient({ id: client.id, amount })
 
-      addMessage({
-        message: `Updated balance for ${client.name} ${client.surname}`,
-        type: 'success',
-      });
 
       handleClose();
       setAmount(5);

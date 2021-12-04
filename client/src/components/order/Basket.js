@@ -16,7 +16,7 @@ export default function Basket(props) {
         addMessage({ title: 'Order', message: 'Your order has been inserted!' });
         setIsUpdated(true);
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>   addMessage({title: "Error", message: e.message, type: 'danger'}));
   };
 
   const handleRemoveProduct = (productId) => {
@@ -25,7 +25,7 @@ export default function Basket(props) {
         setIsUpdated(true);
       })
       .catch((e) => {
-        console.log(e);
+          addMessage({title: "Error", message: e.message, type: 'danger'});
       });
   };
 
@@ -53,7 +53,7 @@ export default function Basket(props) {
         setIsUpdated(false);
       })
       .catch((e) => {
-        console.log(e);
+          addMessage({title: "Error", message: e.message, type: 'danger'});
       });
   }, [isUpdated, setIsUpdated]);
 

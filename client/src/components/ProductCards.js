@@ -9,7 +9,8 @@ import {
     Modal,
     Image,
     Form,
-    Alert
+    Alert,
+    Spinner
 } from 'react-bootstrap';
 
 import {useState, useEffect} from 'react';
@@ -21,13 +22,15 @@ const ProductCards = (props) => {
     // product: { id, name, description, category, quantity, price, unit }
     const [productList, setProductList] = useState([]);
     const [error, setError] = useState('');
+    const [loading,setLoading]=useState(false);
 
     useEffect(() => {
         api_getProducts()
             .then((products) => {
                 setProductList(products);
+                setLoading(false);
             })
-            .catch(() => setError('Error in getting all the products'));
+            .catch((e) => addMessage({ message: e.message, type: 'danger' }));
     }, []);
 
     // pagination code
@@ -59,46 +62,51 @@ const ProductCards = (props) => {
             props.handleAddProduct();
             addMessage({message:'Product correctly added to the basket', type: "info"});
 
-        }).catch((e) => console.log(e));
+        }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
 
     }
 
     return (
-        <Container style={{textAlign: 'left'}}>
-            <Row className="mt-4">
-                <Col style={{display: 'flex', justifyContent: 'center'}}>
-                    <h3>Browse products</h3>
-                </Col>
-            </Row>
-            <Row className="mt-4">
-                {error && (
+        loading ? (
+                <Spinner animation="border" variant="primary"/>
+            ) : (
+            <Container style={{textAlign: 'left'}}>
+                <Row className="mt-4">
                     <Col style={{display: 'flex', justifyContent: 'center'}}>
-                        <h4>{error}</h4>
+                        <h3>Browse products</h3>
                     </Col>
-                )}
-                {currentProducts.map((p) => {
-                    return <ProductCard key={p.id} product={p} userRole={props.userRole}
-                                        onBasketAdd={handleAddProductToBasket}/>;
-                })}
-            </Row>
-            <Row className="mt-3 mb-3">
-                <Col style={{display: 'flex', justifyContent: 'center'}}>
-                    {productList.length !== 0 &&
-                    <Pagination size="md">
-                        {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)}/>}
-                        {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)}/>}
-                        {pageNumbers.map((i) => (
-                            <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
-                                {i}
-                            </Pagination.Item>
-                        ))}
-                        {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
-                        {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)}/>}
-                    </Pagination>
-                    }
-                </Col>
-            </Row>
-        </Container>
+                </Row>
+                <Row className="mt-4">
+                    {error && (
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
+                            <h4>{error}</h4>
+                        </Col>
+                    )}
+                    {currentProducts.map((p) => {
+                        return <ProductCard key={p.id} product={p} userRole={props.userRole}
+                                            onBasketAdd={handleAddProductToBasket}/>;
+                    })}
+                </Row>
+                <Row className="mt-3 mb-3">
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
+                        {productList.length !== 0 &&
+                        <Pagination size="md">
+                            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)}/>}
+                            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)}/>}
+                            {pageNumbers.map((i) => (
+                                <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+                                    {i}
+                                </Pagination.Item>
+                            ))}
+                            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
+                            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)}/>}
+                        </Pagination>
+                        }
+                    </Col>
+                </Row>
+            </Container>
+            )
+
     );
 };
 

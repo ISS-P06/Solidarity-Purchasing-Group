@@ -54,13 +54,13 @@ function ClientsList(props) {
 export function Client(props) {
   const { client, reloadList, virtualTime } = props;
 
-  const [clientOrderFormShow, setClientOrderFormShow] = useState(false); /* used for open clientOrderForm modal*/
-  const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false); /* used for open clientTopUpForm modal*/
-  const [confirmationModalShow, setConfirmationModalShow] = useState(false); /* used for open confirmartion modal*/
+  const [clientOrderFormShow, setClientOrderFormShow] = useState(false); /* used for opening clientOrderForm modal*/
+  const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false); /* used for opening clientTopUpForm modal*/
+  const [confirmationModalShow, setConfirmationModalShow] = useState(false); /* used for opening confirmartion modal*/
 
   const handleTopUp = (params) => {
     api_addTopUpClient(params)
-      .then(() => reloadList())
+      .then(() => {reloadList()})
       .catch(() => {});
   };
 

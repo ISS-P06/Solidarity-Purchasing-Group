@@ -78,7 +78,7 @@ function App() {
         setLoggedIn(true);
       } catch (err) {
         setUserRole('');
-        console.error(err.message);
+        addMessage({title: "Error", message: err.message, type: 'danger'});
       }
     };
     checkAuth();
