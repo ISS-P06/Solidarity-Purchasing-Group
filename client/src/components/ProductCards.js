@@ -38,12 +38,34 @@ const ProductCards = (props) => {
         window.scrollTo(0, 0);
     }, [currentPage]);
 
-    const indexOfLastProduct = currentPage * productsPerPage;
+    const [searchedProduct, setSearchedProduct] = useState([]);
+
+    const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = productList.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = searchedProduct.length > 0 ? 
+        searchedProduct.slice(indexOfFirstProduct, indexOfLastProduct) :
+        productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
 
-    let endPage = Math.ceil(productList.length / productsPerPage);
+    const handleOnSearchProduct = (searchText) => {
+        let products = [];
+        var searchExpr = new RegExp(searchText);
+        console.log(searchText);
+        productList.forEach((product) => {
+
+            if(searchExpr.test(product.name))
+                products.push(product);
+
+        });
+
+        setSearchedProduct(products);
+        setCurrentPage(1);
+
+    }
+
+    let endPage = searchedProduct.length > 0 ? 
+        Math.ceil(searchedProduct.length / productsPerPage):
+        Math.ceil(productList.length / productsPerPage)
     let startPage = currentPage - 2;
     if (startPage < 1)
         startPage = 1;
@@ -51,7 +73,8 @@ const ProductCards = (props) => {
         startPage = endPage - 4;
 
     for (let i = startPage; i <= startPage + 4; i++) {
-        pageNumbers.push(i);
+        if(i > 0)
+            pageNumbers.push(i);
     }
 
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
@@ -68,6 +91,16 @@ const ProductCards = (props) => {
             <Row className="mt-4">
                 <Col style={{display: 'flex', justifyContent: 'center'}}>
                     <h3>Browse products</h3>
+                </Col>
+            </Row>
+            <Row className="mt-4">
+                <Col style={{display: 'flex', justifyContent: 'center'}}>
+                    <Form>
+                        <Form.Control 
+                            type="text" 
+                            placeholder="Search Product" 
+                            onChange={(e) => handleOnSearchProduct(e.target.value)}/>
+                    </Form>
                 </Col>
             </Row>
             <Row className="mt-4">
