@@ -12,19 +12,19 @@ function RoutesFarmer(props) {
     return (
         <>
             {/* --- Farmer-only routes --- */}
-            {/* Farmer product (descriptor) list route */}
+            {/* Farmer product (descriptor) creation route */}
             <RedirectRoute
-              path="/farmer/products"
+              path="/farmer/products/new"
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
               component={<div/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
-
-            {/* Farmer product (descriptor) creation route */}
+            
+            {/* Farmer product (descriptor) list route */}
             <RedirectRoute
-              path="/farmer/products/new"
+              path="/farmer/products"
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
