@@ -39,17 +39,19 @@ const ProductCards = (props) => {
     }, [currentPage]);
 
     const [searchedProduct, setSearchedProduct] = useState([]);
+    const [searchText, setSearchText] = useState('');
 
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = searchedProduct.length > 0 ? 
+    const currentProducts = searchText.length > 0 ? 
         searchedProduct.slice(indexOfFirstProduct, indexOfLastProduct) :
         productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
 
     const handleOnSearchProduct = (searchText) => {
         let products = [];
-        var searchExpr = new RegExp(searchText);
+        setSearchText(searchText);
+        var searchExpr = new RegExp('^' + searchText, 'i');
         console.log(searchText);
         productList.forEach((product) => {
 
@@ -57,13 +59,16 @@ const ProductCards = (props) => {
                 products.push(product);
 
         });
-
+        if(products.length == 0 && searchText.length > 0) {
+            setError("Sorry there are no product with " + searchText);
+        }else{
+            setError('');
+        }
         setSearchedProduct(products);
         setCurrentPage(1);
-
     }
 
-    let endPage = searchedProduct.length > 0 ? 
+    let endPage = searchText.length > 0 ? 
         Math.ceil(searchedProduct.length / productsPerPage):
         Math.ceil(productList.length / productsPerPage)
     let startPage = currentPage - 2;
