@@ -2,9 +2,11 @@
 
 import db from './db.js';
 import dayjs from 'dayjs';
-import bcrypt from 'bcrypt';
 
-//UPDATED
+/**
+ * Get the list of products
+ * @returns products: [{id,name,description,category,name,price,quantity,unit}]
+ */
 export function listProducts() {
     return new Promise((resolve, reject) => {
         const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
@@ -30,7 +32,10 @@ export function listProducts() {
     });
 }
 
-//UPDATED
+/**
+ * Get the list of client
+ * @returns list of clients
+ */
 export function listClients() {
     return new Promise((resolve, reject) => {
         const sql = `    SELECT u.id, u.name, u.surname, u.email, u.phone, c.address, c.balance
@@ -62,7 +67,6 @@ export function listClients() {
  * @param {int} amount  Amount of money to add on client's balance.
  */
 
-//UPDATED
 export function updateClientBalance(id, amount) {
     return new Promise((resolve, reject) => {
         const sql = `UPDATE Client SET balance = balance + ? WHERE ref_user = ?`;
@@ -72,7 +76,11 @@ export function updateClientBalance(id, amount) {
     });
 }
 
-//UPDATED
+/**
+ * add an order
+ * @param orderClient
+ * @returns id of the order
+ */
 export function insertOrder(orderClient) {
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;

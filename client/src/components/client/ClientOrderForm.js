@@ -6,12 +6,12 @@ import { addMessage } from '../Message';
 
 function ClientOrderForm(props) {
   const { show, onHide, client, openConfirmationModal } = props;
-  const [productsList, setProductsList] = useState([]);
-  const [categoriesList, setCategoriesList] = useState([]);
+  const [productsList, setProductsList] = useState([]); /* list of products of available */
+  const [categoriesList, setCategoriesList] = useState([]); /* list of the categories */
 
-  const [productsClient, setProductsClient] = useState([]); // list of the products ordered by the client
+  const [productsClient, setProductsClient] = useState([]); /* list of the products ordered by the client */
   const [temporaryKey, setTemporaryKey] = useState(0);
-  const [partialPrice, setPartialPrice] = useState(0);
+  const [partialPrice, setPartialPrice] = useState(0);    /* partial total for the order */
   const [insertProduct, setInsertProduct] = useState(true); //is true when the shop employee is adding a new product
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function ClientOrderForm(props) {
         setCategoriesList(distinctCategoriesList);
       })
       .catch((e) => addMessage({ message: e.message, type: 'danger' }));
-  }, [onHide]);
+  }, [show]);
 
   const handleClose = () => {
     onHide();
@@ -49,16 +49,16 @@ function ClientOrderForm(props) {
       }));
       const orderClient = { clientID: client.id, order: order };
 
-      /*Message*/
       api_addOrder(orderClient)
         .then((id) =>
           addMessage({ message: 'Order ' + id + ' emitted with success ', type: 'success' })
         )
         .catch((err) => {
-          addMessage({ title: 'Error', message: err.message, type: 'danger' });
+
         });
 
       /*RESET*/
+      setProductsList([]);
       setProductsClient([]);
       setPartialPrice(0);
       setInsertProduct(true);
@@ -153,7 +153,7 @@ export function ProductForm(props) {
     categoriesList,
     product,
   } = props;
-  const [validated, setValidated] = useState(false);
+  const [validated, setValidated] = useState(false); /* used for the validation of the form */
 
   const [currentCategory, setCurrentCategory] = useState(
     product ? product.category : categoriesList[0]
@@ -163,7 +163,7 @@ export function ProductForm(props) {
   const [productID, setProductID] = useState(); /* current product id */
   const [quantityOrdered, setQuantityOrdered] = useState(); /* current quantity of the product  */
   const [maxQuantity, setMaxQuantity] = useState(); /* quantity available of the product  */
-  const [currentPrice, setCurrentPrice] = useState();
+  const [currentPrice, setCurrentPrice] = useState(); /* currentPrice= quantit * price of the product  */
 
   useEffect(() => {
     const itemsList = productsList

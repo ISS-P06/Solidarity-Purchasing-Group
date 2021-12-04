@@ -135,14 +135,22 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   }
 });
 
-// GET /api/products
+/**
+ * GET /api/products
+ * get the list of products
+ * @returns product: [{id,name,description,category,name,price,quantity,unit}]
+ */
 app.get('/api/products', (req, res) => {
   listProducts()
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
 });
 
-// GET /api/clients
+/**
+ * GET /api/clients
+ * get the list of clients
+ * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
+ */
 app.get('/api/clients', (req, res) => {
   listClients()
     .then((clients) => res.json(clients))
@@ -179,6 +187,10 @@ app.put(
   }
 );
 
+/**
+ * POST /api/orders
+ * Add a order of a client {clientID: client.id, order: order}
+ */
 app.post(
   '/api/orders',
   check('clientID').isInt(),
@@ -247,6 +259,12 @@ app.post('/api/orders/:id/deliver', (req, res) => {
     .catch(() => res.status(500).end());
 });
 
+/** User API **/
+
+/**
+ * POST /api/register_user
+ * Registration of a user
+ */
 
 app.post(
   '/api/register_user',
@@ -273,8 +291,7 @@ app.post(
   }
 );
 
-// --- Login/Logout routes --- //
-// Login
+/** Login */
 app.post('/api/sessions', function (req, res, next) {
   passport.authenticate(
     'local',
@@ -301,13 +318,13 @@ app.post('/api/sessions', function (req, res, next) {
   )(req, res, next);
 });
 
-// --- Logout
+/** Logout */
 app.delete('/api/sessions/current', (req, res) => {
   req.logout();
   res.end();
 });
 
-// --- Check whether the user is logged in or not
+/**  Check whether the user is logged in or not */
 app.get('/api/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);

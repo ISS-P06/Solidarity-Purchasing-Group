@@ -98,6 +98,12 @@ export function getUserById(id) {
     })
     });
   }
+
+/**
+ * Register the user
+ * @param user
+ * @returns id of the user added
+ */
 export function registerUser(user) {
   return new Promise((resolve, reject) => {
     let userID;
@@ -129,7 +135,6 @@ export function registerUser(user) {
                   let stmt_1 = db.prepare(farmerQuery);
                   stmt_1.run([userID, user.address, user.farmName], function (err) {
                     if (err) {
-                      console.log(err)
                       reject(err);
                     }
 

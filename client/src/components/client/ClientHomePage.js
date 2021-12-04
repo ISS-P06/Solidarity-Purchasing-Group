@@ -1,9 +1,6 @@
 import { Button, Col, Image, Row, Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-{
-  /*Pixabay License*/
-}
 
 function ClientHomePage(props) {
   const { user } = props;
@@ -11,8 +8,10 @@ function ClientHomePage(props) {
 
   const img = '/img/client/vegetables-g380a038fb_640.jpg';
   const orderImg = '/img/client/space-4967335_1280.png';
+    {/*Pixabay License*/}
 
-  return (
+
+    return (
     <Container>
       <h1 className="mt-3 mb-3" style={{ color: '#27511D' }}>
         Welcome on Solidarity Purchase Group, {user && user.name} {user && user.surname}!

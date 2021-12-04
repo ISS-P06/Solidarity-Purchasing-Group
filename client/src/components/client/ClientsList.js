@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-
 import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstrap/';
 import { api_getClientsList, api_addTopUpClient } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
@@ -10,7 +9,7 @@ import { checkOrderInterval } from '../../utils/date.js';
 function ClientsList(props) {
   const virtualTime = props.virtualTime;
 
-  const [clientsList, setClientsList] = useState([]);
+  const [clientsList, setClientsList] = useState([]); /* clientsList stores the list of clients*/
   const [loading, setLoading] = useState(true);
   const [dirty, setDirty] = useState(true);
 
@@ -22,8 +21,8 @@ function ClientsList(props) {
           setLoading(false);
           setDirty(false);
         })
-        .catch(() => {
-          addMessage({ message: 'There are no clients', type: 'danger' });
+        .catch((error) => {
+          addMessage({ message: error.message, type: 'danger' });
         });
     }
   }, [dirty]);
@@ -53,11 +52,11 @@ function ClientsList(props) {
 }
 
 export function Client(props) {
-  const { client, setMessage, reloadList, virtualTime } = props;
+  const { client, reloadList, virtualTime } = props;
 
-  const [clientOrderFormShow, setClientOrderFormShow] = useState(false);
-  const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false);
-  const [confirmationModalShow, setConfirmationModalShow] = useState(false);
+  const [clientOrderFormShow, setClientOrderFormShow] = useState(false); /* used for open clientOrderForm modal*/
+  const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false); /* used for open clientTopUpForm modal*/
+  const [confirmationModalShow, setConfirmationModalShow] = useState(false); /* used for open confirmartion modal*/
 
   const handleTopUp = (params) => {
     api_addTopUpClient(params)
@@ -86,7 +85,7 @@ export function Client(props) {
                 Add order
               </Button>
             ) : (
-              <Button className="btn mr-2" onClick={() => setClientOrderFormShow(true)} disabled>
+              <Button className="btn mr-2 " onClick={() => setClientOrderFormShow(true)} disabled>
                 Add order
               </Button>
             )}

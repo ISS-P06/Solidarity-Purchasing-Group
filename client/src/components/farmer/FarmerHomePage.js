@@ -1,7 +1,3 @@
-{
-  /*Pixabay License*/
-}
-
 function FarmerHomePage(props) {
   const { user } = props;
 
