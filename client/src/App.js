@@ -39,9 +39,10 @@ function App() {
   // async function for logging in
   const doLogin = async (credentials) => {
     try {
-      await api_login(credentials);
+      const res = await api_login(credentials);
+      setUserRole(res.role);
       setLoggedIn(true);
-      return { done: true, msg: 'ok' };
+      return { done: true, msg: 'ok', role: res.role };
     } catch (err) {
       return { done: false, msg: err.message };
     }

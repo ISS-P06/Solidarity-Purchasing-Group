@@ -7,6 +7,7 @@ import { BiUserCircle } from 'react-icons/bi';
 // --- Renders a modal with "username" and "password" fields to log in
 function LoginForm(props) {
   const doLogin = props.doLogin;
+
   const [errorMessage, setErrorMessage] = useState('');
 
   // function used for submitting user data
@@ -21,8 +22,11 @@ function LoginForm(props) {
       };
 
       const res = await doLogin(user);
-      if (res.done) return;
-      else setErrorMessage(res.msg);
+      if (res.done && res.role) {
+        return;
+      }
+      else 
+        setErrorMessage(res.msg);
     }
   };
 
