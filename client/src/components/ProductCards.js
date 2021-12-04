@@ -21,8 +21,7 @@ const ProductCards = (props) => {
     // product code
     // product: { id, name, description, category, quantity, price, unit }
     const [productList, setProductList] = useState([]);
-    const [error, setError] = useState('');
-    const [loading,setLoading]=useState(false);
+    const [loading,setLoading]=useState(true);
 
     useEffect(() => {
         api_getProducts()
@@ -30,7 +29,10 @@ const ProductCards = (props) => {
                 setProductList(products);
                 setLoading(false);
             })
-            .catch((e) => addMessage({ message: e.message, type: 'danger' }));
+            .catch((e) => {
+                addMessage({ message: e.message, type: 'danger' })
+                setLoading(false);
+            });
     }, []);
 
     // pagination code
@@ -68,7 +70,7 @@ const ProductCards = (props) => {
 
     return (
         loading ? (
-                <Spinner animation="border" variant="primary"/>
+                <Spinner animation="border" variant="success" className={"mt-3"}/>
             ) : (
             <Container style={{textAlign: 'left'}}>
                 <Row className="mt-4">
@@ -77,9 +79,9 @@ const ProductCards = (props) => {
                     </Col>
                 </Row>
                 <Row className="mt-4">
-                    {error && (
+                    {productList.length===0&& (
                         <Col style={{display: 'flex', justifyContent: 'center'}}>
-                            <h4>{error}</h4>
+                            <h5>No products found</h5>
                         </Col>
                     )}
                     {currentProducts.map((p) => {

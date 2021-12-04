@@ -9,6 +9,7 @@ export default function Basket(props) {
   const [basket, setBasket] = useState([]);
   const [isEmpty, setIsEmpty] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [loading,setLoading]=useState(true);
 
   const handleBuyNow = (userId) => {
     api_buyNow(userId)
@@ -51,9 +52,10 @@ export default function Basket(props) {
           setIsEmpty(true);
         }
         setIsUpdated(false);
+        setLoading(false);
       })
       .catch((e) => {
-          addMessage({title: "Error", message: e.message, type: 'danger'});
+          setLoading(false);
       });
   }, [isUpdated, setIsUpdated]);
 
@@ -66,6 +68,7 @@ export default function Basket(props) {
         computeTotal={computeTotal}
         handleRemoveProduct={handleRemoveProduct}
         handleBuyNow={handleBuyNow}
+        loading={loading}
       />
       <ProductCards
         userRole={props.userRole}
@@ -77,7 +80,7 @@ export default function Basket(props) {
 }
 
 const BasketProductList = (props) => {
-  const { isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId } = props;
+  const { isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId , loading} = props;
 
   return (
     <div class="main">

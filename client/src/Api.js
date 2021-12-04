@@ -23,7 +23,6 @@ export const api_getProducts = async () => {
     try {
         const res = await axios.get('/api/products');
         if (res.data) {
-            console.log(res.data)
             return res.data;
         } else {
             throw new Error(res.data.message);
@@ -110,7 +109,6 @@ export const api_getClientsList = async () => {
     try {
         const res = await axios.get('/api/clients');
         if (res.data) {
-            console.log(res.data);
             return res.data;
         } else {
             throw new Error(res.data.message);
@@ -141,7 +139,6 @@ export const api_addOrder = async (orderClient) => {
 export const api_addTopUpClient = async ({id, amount}) => {
     try {
         const res = await axios.put('/api/clients/topup', {amount, id});
-        console.log(res);
         if (res.status !== 200) {
             throw new Error(res.status);
         }

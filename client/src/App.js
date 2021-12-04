@@ -78,7 +78,6 @@ function App() {
         setLoggedIn(true);
       } catch (err) {
         setUserRole('');
-        addMessage({title: "Error", message: err.message, type: 'danger'});
       }
     };
     checkAuth();
@@ -86,9 +85,14 @@ function App() {
 
   // async function for logging out
   const doLogout = async () => {
-    api_logout();
-    addMessage({ title: 'Logout', message: 'You are now logged out' });
-    setLoggedIn(false);
+    api_logout().then(()=>{
+      addMessage({ title: 'Logout', message: 'You are now logged out' });
+      setLoggedIn(false);
+    }).catch((e)=>{
+      addMessage({ title: 'Error', message: e.message });
+    });
+
+
   };
 
   const LayoutProps = {

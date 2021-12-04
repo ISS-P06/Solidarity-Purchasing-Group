@@ -40,7 +40,7 @@ function OrderList(props) {
 
     return (
         loading ? (
-            <Spinner animation="border" variant="primary"/>
+            <Spinner animation="border" variant="success"/>
         ) : (
             <div>
                 <div className="pt-4 pb-3">
