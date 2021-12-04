@@ -52,19 +52,10 @@ function RoutesEmployee(props) {
               }
             />
 
-            {/* Employee order creation route */}
-            <RedirectRoute
-              path="/employee/orders/new"
-              role={userRole}
-              condition={
-                loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)
-              }
-              component={<div />}
-            />
-
             {/* Employee order list route */}
             <RedirectRoute
               path="/employee/orders"
+              exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
               component={<OrderList userRole={userRole} userId={userId} />}

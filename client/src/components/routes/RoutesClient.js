@@ -30,6 +30,7 @@ function RoutesClient(props) {
             {/* Client order list route */}
             <RedirectRoute
               path="/client/orders"
+              exact={true}
               role={userRole}
               condition={loggedIn}
               component={<OrderList userRole={userRole} userId={userId} />}

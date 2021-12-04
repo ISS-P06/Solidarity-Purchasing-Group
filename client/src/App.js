@@ -21,7 +21,8 @@ function App() {
   /*
     userRole: current user's role; possible values:
     - shop_employee
-    - (empty string/none, i.e. not logged in)
+    - client
+    - farmer
 
     other values will be considered in subsequent sprints
     when necessary
@@ -103,21 +104,24 @@ function App() {
     doLogin,
     userRole,
     userId,
-    virtualTime
+    virtualTime,
+    user
   };
 
   const RoutesClientProps = {
     loggedIn,
     doLogin,
     userRole,
-    userId
+    userId,
+    user
   };
 
   const RoutesFarmerProps = {
     loggedIn,
     doLogin,
     userRole,
-    userId
+    userId,
+    user
   };
 
   return (
