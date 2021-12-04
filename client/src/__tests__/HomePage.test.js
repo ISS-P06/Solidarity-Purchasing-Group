@@ -4,7 +4,7 @@ import HomePage from '../containers/HomePage';
 describe('Test the client homepage component', () => {
     test('Test whether the client homepage component renders properly', () => {
         render(<HomePage/>);
-        const title = screen.getByText('Welcome on Solidarity Purchase Group!');
+        const title = screen.getByText('Welcome to Solidarity Purchasing Group!');
         expect(title).toBeInTheDocument();
         const feautures = screen.getByText('Check out our new features!');
         expect(feautures).toBeInTheDocument();
