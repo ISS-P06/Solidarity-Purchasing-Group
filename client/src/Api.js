@@ -1,19 +1,35 @@
 const axios = require('axios');
 
+/**
+ * function for managing error
+ * @param status of the response
+ * @param message of error
+ */
+function manageError(status, message=""){
+    if (status === 500) {
+        throw new Error("Sorry, there is a problem with the server. Try later..");
+    } else if (status === 422) {
+        throw new Error('Sorry, there was an error in the data');
+    } else {
+        throw new Error(message);
+    }
+}
+
+/**
+ *  GET products
+ *  @return products: [{id,name,description,category,name,price,quantity,unit}]
+ */
 export const api_getProducts = async () => {
     try {
         const res = await axios.get('/api/products');
         if (res.data) {
+            console.log(res.data)
             return res.data;
         } else {
             throw new Error(res.data.message);
         }
     } catch (err) {
-        if (err.response.status === 500) {
-            throw new Error(err.response.data);
-        } else {
-            throw new Error('Sorry, there was an error in getting all the products');
-        }
+        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
     }
 };
 
@@ -34,7 +50,6 @@ export const api_getOrders = async () => {
     }
 };
 
-export default api_getOrders;
 
 export const api_getClientOrders = async (clientId) => {
     try {
@@ -106,23 +121,30 @@ export const api_doDelivery = async (orderId) => {
     }
 };
 
+/**
+ * GET the list of clients
+ * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
+ */
+
 export const api_getClientsList = async () => {
     try {
         const res = await axios.get('/api/clients');
         if (res.data) {
+            console.log(res.data);
             return res.data;
         } else {
             throw new Error(res.data.message);
         }
     } catch (err) {
-        if (err.response.status === 500) {
-            throw new Error(err.response.data);
-        } else {
-            throw new Error('Sorry, there was an error in getting the clients');
-        }
+        manageError(err.response.status, 'Sorry, there was an error in getting the clients');
     }
 };
 
+/**
+ * Add an order of a client
+ * @param orderClient: {clientID: client.id, order: order}
+ * @returns res.data: id of the order added
+ */
 export const api_addOrder = async (orderClient) => {
     try {
         const res = await axios.post('/api/orders', orderClient);
@@ -132,13 +154,7 @@ export const api_addOrder = async (orderClient) => {
             throw new Error(res.data.message);
         }
     } catch (err) {
-        if (err.response.status === 500) {
-            throw new Error(err.response.data);
-        } else if (err.response.status === 422) {
-            throw new Error('Sorry, there was an error in the data');
-        } else {
-            throw new Error('Sorry, there was an error in adding the order');
-        }
+        manageError(err.response.status, "Sorry, there was an error in adding the order" );
     }
 };
 
@@ -147,7 +163,7 @@ export const api_addTopUpClient = async ({id, amount}) => {
         await axios.put('/api/clients/topup', {amount, id});
     } catch (err) {
         if (err.response.status === 500) {
-            throw new Error(err.response.data);
+            throw new Error("Sorry, there is a problem with the server. Try later ");
         } else if (err.response.status === 422) {
             throw new Error('Sorry, there was an error in the data');
         } else {
@@ -157,23 +173,7 @@ export const api_addTopUpClient = async ({id, amount}) => {
 };
 
 
-export async function insertUser(user) {
-    console.log("register_user")
-    let res;
-    try {
-        res = await axios.post('/api/register_user', user);
-        console.log(res.status);
-    } catch (err) {
-        if (err.response.status === 500) {
-            throw new Error(err.response.data);
-        } else if (err.response.status === 422) {
-            throw new Error('Sorry, there was an error in the data');
-        } else {
-            throw new Error('Sorry, there was an error in adding the order');
-        }
-        throw err;
-    }
-}
+/** Time API */
 
 export const api_getTime = async () => {
     try {
@@ -199,8 +199,27 @@ export const api_setTime = async (dateTime) => {
     }
 };
 
-// --- Login/Logout APIs
-// Login API
+/** User API */
+
+/**
+ * Registration of the user
+ * @param user
+ * */
+export async function insertUser(user) {
+    let res;
+    try {
+        res = await axios.post('/api/register_user', user);
+    } catch (err) {
+        manageError(err.response.status,'Sorry, there was an error in registering the user' )
+    }
+}
+
+
+/** Login
+ * @param credentials: {username,password}
+ * @return res.data: information about the user
+ */
+
 export const api_login = async (credentials) => {
     try {
         let res = await axios.post('/api/sessions', {
@@ -221,7 +240,9 @@ export const api_login = async (credentials) => {
     }
 };
 
-// Logout API
+/**
+ * Logout
+ */
 export const api_logout = () => {
     axios
         .delete('/api/sessions/current')
@@ -233,7 +254,9 @@ export const api_logout = () => {
         });
 };
 
-// Get user info API
+/**
+ * Get user info
+ */
 export const api_getUserInfo = async () => {
     try {
         const res = await axios.get('/api/sessions/current');
@@ -248,11 +271,12 @@ export const api_getUserInfo = async () => {
         } else if (err.response.data.error) {
             throw new Error(err.response.data.error);
         } else {
-            throw new Error('Sorry, there was an error in logging in');
+            throw new Error('Sorry, there was an error in getting user data');
         }
     }
 };
 
+/** Basket API */
 export const api_getBasket = async (userId) => {
     try {
         const res = await axios.get('/api/client/' + userId + '/basket');
@@ -263,7 +287,7 @@ export const api_getBasket = async (userId) => {
         }
     } catch (err) {
         if (err.response.status === 500) {
-            throw new Error(err.response.data);
+            throw new Error("Sorry, there is a problem with the server. Try later ");
         } else {
             throw new Error('Sorry, there was an error in getting the basket');
         }
@@ -280,7 +304,7 @@ export const api_buyNow = async (userId) => {
         }
     } catch (err) {
         if (err.response.status === 500) {
-            throw new Error(err.response.data);
+            throw new Error("Sorry, there is a problem with the server. Try later ");
         } else {
             throw new Error('Sorry, there was an error in buying');
         }
@@ -289,7 +313,6 @@ export const api_buyNow = async (userId) => {
 
 export const api_removeProductFromBasket = async (userId, productId) => {
     try {
-        console.log(productId);
         const res = await axios.delete('/api/client/' + userId + '/basket/remove', {data: {productId}});
         if (res.data) {
             return res.data;
@@ -298,7 +321,7 @@ export const api_removeProductFromBasket = async (userId, productId) => {
         }
     } catch (err) {
         if (err.response.status === 500) {
-            throw new Error(err.response.data);
+            throw new Error("Sorry, there is a problem with the server. Try later ");
         } else {
             throw new Error('Sorry, there was an error in removing a product from basket');
         }
@@ -315,7 +338,7 @@ export const api_addProductToBasket = async (userId, productId, reservedQuantity
         }
     } catch (err) {
         if (err.response.status === 500) {
-            throw new Error(err.response.data);
+            throw new Error("Sorry, there is a problem with the server. Try later ");
         } else {
             throw new Error('Sorry, there was an error in adding to the basket');
         }
