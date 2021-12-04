@@ -272,9 +272,9 @@ test("test ProductCards component throws an error if the searched product is not
 
 
   const searchBar =  screen.getByPlaceholderText('Search Product');
-  userEvent.type(searchBar, 'H');
+  userEvent.type(searchBar, 'Hamburger');
   
-  expect(screen.getByText('Sorry there are no product with H')).toBeInTheDocument();
+  expect(screen.getByText('Sorry there are no products with name Hamburger')).toBeInTheDocument();
 
 });
 

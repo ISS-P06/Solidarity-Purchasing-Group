@@ -48,26 +48,36 @@ const ProductCards = (props) => {
         productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
 
-    const handleOnSearchProduct = (searchText) => {
+    /**
+     * The function handleOnSerachProduct take an argument that is the name of the product that you want to looking for,
+     * it creates a regular expression to find if the serach text matches the name of each product.
+     * If yes the product is added to the list of the product that we want to show.
+     * If there are no product with name specified as parameter is set an error that informs you.
+     * 
+     * @param {string} text
+     * - text is the product name string you want to looking for.
+     */
+    const handleOnSearchProduct = (text) => {
         let products = [];
-        setSearchText(searchText);
-        var searchExpr = new RegExp('^' + searchText, 'i');
-        console.log(searchText);
+        setSearchText(text);
+        var searchExpr = new RegExp('^' + text, 'i');
+        
         productList.forEach((product) => {
 
             if(searchExpr.test(product.name))
                 products.push(product);
 
         });
-        if(products.length == 0 && searchText.length > 0) {
-            setError("Sorry there are no product with " + searchText);
+
+        if(products.length == 0 && text.length > 0) {
+            setError("Sorry there are no products with name " + text);
         }else{
             setError('');
         }
         setSearchedProduct(products);
         setCurrentPage(1);
     }
-
+    
     let endPage = searchText.length > 0 ? 
         Math.ceil(searchedProduct.length / productsPerPage):
         Math.ceil(productList.length / productsPerPage)
