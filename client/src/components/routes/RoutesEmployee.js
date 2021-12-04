@@ -5,6 +5,9 @@ import { Redirect, Route } from 'react-router-dom';
 import { getUserRoute } from '../../utils';
 import { ClientsList, InsertClient, ProductCards, OrderList } from '..';
 
+/**
+ *  This component contains all employee-only routes.
+ */
 function RoutesEmployee(props) {
     const {loggedIn, userRole, virtualTime, setLoggedIn, doLogin, userId} = props;
 

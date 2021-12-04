@@ -6,8 +6,11 @@ import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { getUserRoute } from '../../utils';
 
+/**
+ *  This component contains all client-only routes.
+ */
 function RoutesClient(props) {
-    const {loggedIn, userRole, doLogin, userId, user } = props;
+    const {loggedIn, userRole, doLogin, userId, user} = props;
 
     return (
         <>

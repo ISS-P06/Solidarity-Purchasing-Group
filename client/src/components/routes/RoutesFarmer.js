@@ -3,6 +3,9 @@ import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { LoginForm } from '../'; 
 
+/**
+ *  This component contains all farmer-only routes.
+ */
 function RoutesFarmer(props) {
     const {loggedIn, userRole, doLogin, userId, user} = props;
 
