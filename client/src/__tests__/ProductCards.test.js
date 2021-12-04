@@ -184,3 +184,98 @@ test("test ProductCards component throws an error if added quantity more than th
 
 });
 
+test("test ProductCards component is able to search a product", async () => {
+
+  server.use(
+    rest.get('/api/products', (req, res, ctx) => {
+      return res(
+        ctx.json([
+          {
+            id: 1,
+            name: 'Baguette',
+            description: 'Delicious',
+            category: 'bread',
+            quantity: 1,
+            price: 1,
+            unit: 'Kg',
+          },
+          {
+            id: 2,
+            name: 'Onion',
+            description: 'Delicious',
+            category: 'fruits-and-vegetables',
+            quantity: 1,
+            price: 1,
+            unit: 'Kg',
+          },
+        ])
+      );
+    })
+  );
+  
+  // test code
+  window.scrollTo = jest.fn();
+  render(<ProductCards userRole="client" userId="1"/>);
+  
+  await waitFor(() => screen.getByText('Baguette'));
+  expect(screen.getByText('Baguette')).toBeInTheDocument();
+
+  await waitFor(() => screen.getByText('Onion'));
+  expect(screen.getByText('Onion')).toBeInTheDocument();
+
+
+  const searchBar =  screen.getByPlaceholderText('Search Product');
+  userEvent.type(searchBar, 'B');
+  
+  expect(screen.getByText('Baguette')).toBeInTheDocument();
+
+});
+
+test("test ProductCards component throws an error if the searched product is not in the list", async () => {
+
+  server.use(
+    rest.get('/api/products', (req, res, ctx) => {
+      return res(
+        ctx.json([
+          {
+            id: 1,
+            name: 'Baguette',
+            description: 'Delicious',
+            category: 'bread',
+            quantity: 1,
+            price: 1,
+            unit: 'Kg',
+          },
+          {
+            id: 2,
+            name: 'Onion',
+            description: 'Delicious',
+            category: 'fruits-and-vegetables',
+            quantity: 1,
+            price: 1,
+            unit: 'Kg',
+          },
+        ])
+      );
+    })
+  );
+  
+  // test code
+  window.scrollTo = jest.fn();
+  render(<ProductCards userRole="client" userId="1"/>);
+  
+  await waitFor(() => screen.getByText('Baguette'));
+  expect(screen.getByText('Baguette')).toBeInTheDocument();
+
+  await waitFor(() => screen.getByText('Onion'));
+  expect(screen.getByText('Onion')).toBeInTheDocument();
+
+
+  const searchBar =  screen.getByPlaceholderText('Search Product');
+  userEvent.type(searchBar, 'Hamburger');
+  
+  expect(screen.getByText('Sorry there are no products with name Hamburger')).toBeInTheDocument();
+
+});
+
+
