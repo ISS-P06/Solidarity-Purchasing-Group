@@ -3,14 +3,11 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 
 import {
   InsertClient,
-  LoginForm
-} from './components';
-
-import {
+  LoginForm,
   RoutesEmployee,
   RoutesClient,
   RoutesFarmer
-} from './components/routes';
+} from './components';
 
 import HomePage from './containers/HomePage';
 import { Layout } from './containers';
@@ -96,7 +93,7 @@ function App() {
     userRole,
     dirtyVT,
     setDirtyVT,
-    virtualTime,
+    virtualTime
   };
 
   const RoutesEmployeeProps = {
@@ -105,7 +102,7 @@ function App() {
     doLogin,
     userRole,
     userId,
-    virtualTime,
+    virtualTime
   };
 
   const RoutesClientProps = {
@@ -158,7 +155,7 @@ function App() {
               exact={true}
               role={userRole}
               condition={!loggedIn}
-              component={<LoginForm doLogin={doLogin} />}
+              component={<LoginForm doLogin={doLogin}/>}
             />
 
             {/* Homepage route */}

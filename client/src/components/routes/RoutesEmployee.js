@@ -1,7 +1,9 @@
 import { RedirectRoute } from '../../utils/route';
 import { checkOrderInterval } from '../../utils/date';
 import { OrderReview } from '..';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
+import { getUserRoute } from '../../utils';
+import { ClientsList, InsertClient, ProductCards, OrderList } from '..';
 
 function RoutesEmployee(props) {
     const {loggedIn, userRole, virtualTime, setLoggedIn, doLogin, userId} = props;
@@ -9,19 +11,6 @@ function RoutesEmployee(props) {
     return (
         <>
             {/* Shop employee-only routes */}
-            
-            {/* Employee client info route */}
-            <Route
-              path="/employee/clients/:id"
-              render={({ match }) =>
-                loggedIn && userRole === 'shop_employee' ? (
-                  <div id={match.params.id} />
-                ) : (
-                  <Redirect to={getUserRoute(userRole) || '/'} />
-                )
-              }
-            />
-
             {/* Employee client list route */}
             <RedirectRoute
               path="/employee/clients"

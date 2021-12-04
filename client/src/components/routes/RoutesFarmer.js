@@ -1,9 +1,10 @@
 import { RedirectRoute } from '../../utils/route';
-import { FarmerHomePage } from '../farmer';
 import { Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { LoginForm } from '../'; 
 
 function RoutesFarmer(props) {
-    const {loggedIn, userRole, doLogin, userId} = props;
+    const {loggedIn, userRole, doLogin, userId, user} = props;
 
     return (
         <>
@@ -44,7 +45,7 @@ function RoutesFarmer(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
-              component={<FarmerHomePage user={user} />}
+              component={<div user={user} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
         </>

@@ -3,9 +3,11 @@ import { OrderReview, OrderList, Basket } from '../order';
 import { LoginForm } from '..';
 import { ClientHomePage } from '../client';
 import { Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { getUserRoute } from '../../utils';
 
 function RoutesClient(props) {
-    const {loggedIn, userRole, doLogin, userId} = props;
+    const {loggedIn, userRole, doLogin, userId, user } = props;
 
     return (
         <>
