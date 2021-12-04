@@ -228,7 +228,7 @@ function App() {
               path="/employee/orders/new"
               role={userRole}
               condition={
-                loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)
+                loggedIn && userRole === 'shop_employee'
               }
               component={<div />}
             />

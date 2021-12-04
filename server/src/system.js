@@ -29,7 +29,7 @@ class SYS {
         let time = new Date(currTime);
 
         if (time.getDay() == 1
-         && time.getHours() == 10) {
+         && time.getHours() == 9) {
             this.event_updateOrders();
         }
     }
