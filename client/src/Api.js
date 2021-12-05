@@ -218,18 +218,13 @@ export const api_login = async (credentials) => {
 /**
  * Logout
  */
-export const api_logout = () => {
-    axios
-        .delete('/api/sessions/current')
-        .then((res) => {
-            if (res.data) {
-                return res.data;
-            } else {
-                throw new Error(res.data.message);
-            }
-        })
-        .catch((res) => { throw new Error("Sorry, there is a problem with the logout. Try later..");
-        });
+export const api_logout = async () => {
+    try{
+        let res = await axios.delete('/api/sessions/current')
+    }
+    catch(err){
+        throw new Error("Sorry, there is a problem with the logout. Try later..");
+    }
 };
 
 /**
