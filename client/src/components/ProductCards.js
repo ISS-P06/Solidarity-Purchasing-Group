@@ -15,13 +15,13 @@ import {
 
 import {useState, useEffect} from 'react';
 import {api_getProducts, api_addProductToBasket} from '../Api';
-import { addMessage } from './Message';
+import {addMessage} from './Message';
 
 const ProductCards = (props) => {
     // product code
     // product: { id, name, description, category, quantity, price, unit }
     const [productList, setProductList] = useState([]);
-    const [loading,setLoading]=useState(true);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         api_getProducts()
@@ -30,7 +30,7 @@ const ProductCards = (props) => {
                 setLoading(false);
             })
             .catch((e) => {
-                addMessage({ message: e.message, type: 'danger' })
+                addMessage({message: e.message, type: 'danger'})
                 setLoading(false);
             });
     }, []);
@@ -38,7 +38,7 @@ const ProductCards = (props) => {
     // pagination code
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
-
+    const [error, setError]=useState("")
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [currentPage]);
@@ -48,7 +48,7 @@ const ProductCards = (props) => {
 
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = searchText.length > 0 ? 
+    const currentProducts = searchText.length > 0 ?
         searchedProduct.slice(indexOfFirstProduct, indexOfLastProduct) :
         productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
@@ -58,7 +58,7 @@ const ProductCards = (props) => {
      * it creates a regular expression to find if the serach text matches the name of each product.
      * If yes the product is added to the list of the product that we want to show.
      * If there are no product with name specified as parameter is set an error that informs you.
-     * 
+     *
      * @param {string} text
      * - text is the product name string you want to looking for.
      */
@@ -66,25 +66,25 @@ const ProductCards = (props) => {
         let products = [];
         setSearchText(text);
         var searchExpr = new RegExp('^' + text, 'i');
-        
+
         productList.forEach((product) => {
 
-            if(searchExpr.test(product.name))
+            if (searchExpr.test(product.name))
                 products.push(product);
 
         });
 
-        if(products.length == 0 && text.length > 0) {
+        if (products.length === 0 && text.length > 0) {
             setError("Sorry there are no products with name " + text);
-        }else{
+        } else {
             setError('');
         }
         setSearchedProduct(products);
         setCurrentPage(1);
     }
-    
-    let endPage = searchText.length > 0 ? 
-        Math.ceil(searchedProduct.length / productsPerPage):
+
+    let endPage = searchText.length > 0 ?
+        Math.ceil(searchedProduct.length / productsPerPage) :
         Math.ceil(productList.length / productsPerPage)
     let startPage = currentPage - 2;
     if (startPage < 1)
@@ -93,47 +93,49 @@ const ProductCards = (props) => {
         startPage = endPage - 4;
 
     for (let i = startPage; i <= startPage + 4; i++) {
-        if(i > 0)
+        if (i > 0)
             pageNumbers.push(i);
     }
 
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
             props.handleAddProduct();
-            addMessage({message:'Product correctly added to the basket', type: "info"});
+            addMessage({message: 'Product correctly added to the basket', type: "info"});
 
-        }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
+        }).catch((e) => addMessage({message: e.message, type: 'danger'}));
 
     }
 
     return (
 
         loading ? (
-                <Spinner animation="border" variant="success" className={"mt-3"}/>
-            ) : (
+            <Spinner animation="border" variant="success" className={"mt-3"}/>
+        ) : (
             <Container style={{textAlign: 'left'}}>
                 <Row className="mt-4">
-                  <Col style={{display: 'flex', justifyContent: 'center'}}>
-                      <h3>Browse products</h3>
-                  </Col>
-            </Row>
-            <Row className="mt-4">
-                <Col style={{display: 'flex', justifyContent: 'center'}}>
-                    <Form>
-                        <Form.Control 
-                            type="text" 
-                            placeholder="Search Product" 
-                            onChange={(e) => handleOnSearchProduct(e.target.value)}/>
-                    </Form>
-                </Col>
-            </Row>
-            <Row className="mt-4">
-                {error && (
-        
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
+                        <h3>Browse products</h3>
+                    </Col>
+                </Row>
                 <Row className="mt-4">
-                    {productList.length===0&& (
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
+                        <Form>
+                            <Form.Control
+                                type="text"
+                                placeholder="Search Product"
+                                onChange={(e) => handleOnSearchProduct(e.target.value)}/>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className="mt-4">
+                    {productList.length === 0 && (
                         <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>No products found</h5>
+                        </Col>
+                    )}
+                    {error  && (
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
+                            <h5>{error}</h5>
                         </Col>
                     )}
                     {currentProducts.map((p) => {
@@ -141,7 +143,7 @@ const ProductCards = (props) => {
                                             onBasketAdd={handleAddProductToBasket}/>;
                     })}
                 </Row>
-                <Row className="mt-3 mb-3">
+                {!error && (<Row className="mt-3 mb-3">
                     <Col style={{display: 'flex', justifyContent: 'center'}}>
                         {productList.length !== 0 &&
                         <Pagination size="md">
@@ -152,14 +154,15 @@ const ProductCards = (props) => {
                                     {i}
                                 </Pagination.Item>
                             ))}
-                            {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
+                            {currentPage !== endPage &&
+                            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
                             {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)}/>}
                         </Pagination>
                         }
                     </Col>
-                </Row>
+                </Row>)}
             </Container>
-            )
+        )
 
     );
 };
