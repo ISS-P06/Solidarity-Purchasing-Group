@@ -84,6 +84,7 @@ function App() {
     }, [loggedIn]);
 
   // async function for logging out
+
     const doLogout = async () => {
         try{
             await api_logout();
@@ -96,160 +97,161 @@ function App() {
 
     };
 
-    const LayoutProps = {
-        loggedIn,
-        doLogout,
-        userRole,
-        dirtyVT,
-        setDirtyVT,
-        virtualTime,
-    };
+  const LayoutProps = {
+    loggedIn,
+    doLogout,
+    userRole,
+    dirtyVT,
+    setDirtyVT,
+    virtualTime,
+  };
 
-    return (
-        <div className="app-container">
-            <Router>
-                <Switch>
-                    <Layout {...LayoutProps}>
-                        <Route exact path="/register">
-                            <InsertUser
-                                loggedIn={loggedIn}
-                                doLogin={doLogin}
-                            />
-                        </Route>
-
-                        {/* Default routes */}
-                        <RedirectRoute
-                            path="/login"
-                            exact={true}
-                            role={userRole}
-                            condition={!loggedIn}
-                            component={<LoginForm doLogin={doLogin}/>}
+  return (
+    <div className="app-container">
+      <Router>
+        <Switch>
+          <Layout {...LayoutProps}>
+    
+           <Route exact path="/register">
+                        <InsertUser
+                            loggedIn={loggedIn}
+                            doLogin={doLogin}
                         />
+                    </Route>
 
-                        <RedirectRoute
-                            path="/client"
-                            exact={true}
-                            role={userRole}
-                            condition={loggedIn}
-                            component={<ClientHomePage user={user}/>}
-                            redirect={<LoginForm doLogin={doLogin}/>}
-                        />
+            {/* Default routes */}
+            <RedirectRoute
+              path="/login"
+              exact={true}
+              role={userRole}
+              condition={!loggedIn}
+              component={<LoginForm doLogin={doLogin} />}
+            />
 
-                        <RedirectRoute
-                            path="/farmer"
-                            exact={true}
-                            role={userRole}
-                            condition={loggedIn}
-                            component={<FarmerHomePage user={user}/>}
-                            redirect={<LoginForm doLogin={doLogin}/>}
-                        />
+            <RedirectRoute
+              path="/client"
+              exact={true}
+              role={userRole}
+              condition={loggedIn}
+              component={<ClientHomePage user={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
 
-                        <Route exact path="/">
-                            <HomePage/>
-                        </Route>
+            <RedirectRoute
+              path="/farmer"
+              exact={true}
+              role={userRole}
+              condition={loggedIn}
+              component={<FarmerHomePage user={user} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
 
-                        {/* Client-only routes */}
+            <Route exact path="/">
+              <HomePage />
+            </Route>
 
-                        <RedirectRoute
-                            path="/client/orders"
-                            role={userRole}
-                            condition={loggedIn}
-                            component={<OrderList userRole={userRole} userId={userId}/>}
-                            redirect={<LoginForm doLogin={doLogin}/>}
-                        />
+            {/* Client-only routes */}
 
-                        <RedirectRoute
-                            path="/client/products"
-                            role={userRole}
-                            condition={loggedIn}
-                            component={<Basket userRole={userRole} userId={userId}/>}
-                            redirect={<LoginForm doLogin={doLogin}/>}
-                        />
+            <RedirectRoute
+              path="/client/orders"
+              role={userRole}
+              condition={loggedIn}
+              component={<OrderList userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
 
-                        {/* Shop employee-only routes */}
-                        {/* Employee: client info page route */}
-                        <Route
-                            path="/employee"
-                            render={({match}) =>
-                                loggedIn ? (
-                                    <div id={match.params.id}/>
-                                ) : (
-                                    <Redirect to={getUserRoute(userRole) || '/'}/>
-                                )
-                            }
-                        />
+            <RedirectRoute
+              path="/client/products"
+              role={userRole}
+              condition={loggedIn}
+              component={<Basket userRole={userRole} userId={userId} />}
+              redirect={<LoginForm doLogin={doLogin} />}
+            />
 
-                        <Route
-                            path="/employee/clients/:id"
-                            render={({match}) =>
-                                loggedIn ? (
-                                    <div id={match.params.id}/>
-                                ) : (
-                                    <Redirect to={getUserRoute(userRole) || '/'}/>
-                                )
-                            }
-                        />
-                        {/* Employee client list route */}
-                        <RedirectRoute
-                            path="/employee/clients"
-                            role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
-                            component={<ClientsList virtualTime={virtualTime}/>}
-                        />
+            {/* Shop employee-only routes */}
+            {/* Employee: client info page route */}
+            <Route
+              path="/employee"
+              render={({ match }) =>
+                loggedIn ? (
+                  <div id={match.params.id} />
+                ) : (
+                  <Redirect to={getUserRoute(userRole) || '/'} />
+                )
+              }
+            />
 
-                        {/* Employee client registration route */}
-                        <RedirectRoute
-                            path="/employee/register"
-                            role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
-                            component={
-                                <InsertUser loggedIn={loggedIn} doLogin={doLogin}/>
-                            }
-                        />
+            <Route
+              path="/employee/clients/:id"
+              render={({ match }) =>
+                loggedIn ? (
+                  <div id={match.params.id} />
+                ) : (
+                  <Redirect to={getUserRoute(userRole) || '/'} />
+                )
+              }
+            />
+            {/* Employee client list route */}
+            <RedirectRoute
+              path="/employee/clients"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<ClientsList virtualTime={virtualTime} />}
+            />
 
-                        {/* Employee product browsing route */}
-                        <RedirectRoute
-                            path="/employee/products"
-                            role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
-                            component={<ProductCards userRole={userRole} userId={userId}/>}
-                        />
+            {/* Employee client registration route */}
+            <RedirectRoute
+                path="/employee/register"
+                role={userRole}
+                condition={loggedIn && userRole === 'shop_employee'}
+                component={
+                    <InsertUser loggedIn={loggedIn} doLogin={doLogin}/>
+                }
+            />
 
-                        {/* Employee orders route */}
-                        <RedirectRoute
-                            path="/employee/orders"
-                            role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
-                            component={<OrderList userRole={userRole} userId={userId}/>}
-                        />
+            {/* Employee product browsing route */}
+            <RedirectRoute
+              path="/employee/products"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<ProductCards userRole={userRole} userId={userId} />}
+            />
 
-                        {/* Employee order creation route */}
-                        <RedirectRoute
-                            path="/employee/orders/new"
-                            role={userRole}
-                            condition={
-                                loggedIn && userRole === 'shop_employee' && checkOrderInterval(virtualTime)
-                            }
-                            component={<div/>}
-                        />
+            {/* Employee orders route */}
+            <RedirectRoute
+              path="/employee/orders"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<OrderList userRole={userRole} userId={userId} />}
+            />
 
-                        {/* Employee home page route */}
-                        <RedirectRoute
-                            path="/employee"
-                            role={userRole}
-                            condition={loggedIn && userRole === 'shop_employee'}
-                            component={<Redirect to="/employee/clients"/>}
-                        />
+            {/* Employee order creation route */}
+            <RedirectRoute
+              path="/employee/orders/new"
+              role={userRole}
+              condition={
+                loggedIn && userRole === 'shop_employee'
+              }
+              component={<div />}
+            />
 
-                        {/* Default redirect the user on his default route */}
-                        <Route>
-                            <Redirect to={getUserRoute(userRole)}/>
-                        </Route>
-                    </Layout>
-                </Switch>
-            </Router>
-        </div>
-    );
+            {/* Employee home page route */}
+            <RedirectRoute
+              path="/employee"
+              role={userRole}
+              condition={loggedIn && userRole === 'shop_employee'}
+              component={<Redirect to="/employee/clients" />}
+            />
+
+            {/* Default redirect the user on his default route */}
+            <Route>
+              <Redirect to={getUserRoute(userRole)} />
+            </Route>
+          </Layout>
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 
 export default App;

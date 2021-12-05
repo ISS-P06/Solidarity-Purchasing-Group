@@ -43,12 +43,49 @@ const ProductCards = (props) => {
         window.scrollTo(0, 0);
     }, [currentPage]);
 
-    const indexOfLastProduct = currentPage * productsPerPage;
+    const [searchedProduct, setSearchedProduct] = useState([]);
+    const [searchText, setSearchText] = useState('');
+
+    const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = productList.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = searchText.length > 0 ? 
+        searchedProduct.slice(indexOfFirstProduct, indexOfLastProduct) :
+        productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
 
-    let endPage = Math.ceil(productList.length / productsPerPage);
+    /**
+     * The function handleOnSerachProduct take an argument that is the name of the product that you want to looking for,
+     * it creates a regular expression to find if the serach text matches the name of each product.
+     * If yes the product is added to the list of the product that we want to show.
+     * If there are no product with name specified as parameter is set an error that informs you.
+     * 
+     * @param {string} text
+     * - text is the product name string you want to looking for.
+     */
+    const handleOnSearchProduct = (text) => {
+        let products = [];
+        setSearchText(text);
+        var searchExpr = new RegExp('^' + text, 'i');
+        
+        productList.forEach((product) => {
+
+            if(searchExpr.test(product.name))
+                products.push(product);
+
+        });
+
+        if(products.length == 0 && text.length > 0) {
+            setError("Sorry there are no products with name " + text);
+        }else{
+            setError('');
+        }
+        setSearchedProduct(products);
+        setCurrentPage(1);
+    }
+    
+    let endPage = searchText.length > 0 ? 
+        Math.ceil(searchedProduct.length / productsPerPage):
+        Math.ceil(productList.length / productsPerPage)
     let startPage = currentPage - 2;
     if (startPage < 1)
         startPage = 1;
@@ -56,7 +93,8 @@ const ProductCards = (props) => {
         startPage = endPage - 4;
 
     for (let i = startPage; i <= startPage + 4; i++) {
-        pageNumbers.push(i);
+        if(i > 0)
+            pageNumbers.push(i);
     }
 
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
@@ -69,15 +107,29 @@ const ProductCards = (props) => {
     }
 
     return (
+
         loading ? (
                 <Spinner animation="border" variant="success" className={"mt-3"}/>
             ) : (
             <Container style={{textAlign: 'left'}}>
                 <Row className="mt-4">
-                    <Col style={{display: 'flex', justifyContent: 'center'}}>
-                        <h3>Browse products</h3>
-                    </Col>
-                </Row>
+                  <Col style={{display: 'flex', justifyContent: 'center'}}>
+                      <h3>Browse products</h3>
+                  </Col>
+            </Row>
+            <Row className="mt-4">
+                <Col style={{display: 'flex', justifyContent: 'center'}}>
+                    <Form>
+                        <Form.Control 
+                            type="text" 
+                            placeholder="Search Product" 
+                            onChange={(e) => handleOnSearchProduct(e.target.value)}/>
+                    </Form>
+                </Col>
+            </Row>
+            <Row className="mt-4">
+                {error && (
+        
                 <Row className="mt-4">
                     {productList.length===0&& (
                         <Col style={{display: 'flex', justifyContent: 'center'}}>
