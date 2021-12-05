@@ -6,27 +6,42 @@ import { BiUserCircle } from 'react-icons/bi';
 
 // --- Renders a modal with "username" and "password" fields to log in
 function LoginForm(props) {
+  // doLogin function, passed as a prop from App.js
+  // this function calls the login api and logs the user in
+  // if the request is successful
   const doLogin = props.doLogin;
+
+  // State used to render error messages
   const [errorMessage, setErrorMessage] = useState('');
 
   // function used for submitting user data
   const submitData = async function (values) {
+    // We use validator to make sure the fields are not empty
+    // and that the password has an acceptable length
     const validUsername = !validator.isEmpty(values.username);
     const validPassword = !validator.isEmpty(values.password) && values.password.length >= 8;
 
+    // If both username and password are ok, submit data
     if (validUsername && validPassword) {
       const user = {
         username: values.username,
         password: values.password,
       };
 
+      // Se doLogin function above for details
       const res = await doLogin(user);
-      if (res.done) return;
-      else setErrorMessage(res.msg);
+      if (res.done && res.role) {
+        return;
+      }
+      else 
+        // sets an error message in case the request goes wrong
+        setErrorMessage(res.msg);
     }
   };
 
   return (
+    <>
+    {/* Formik is used to handle the form itself, validation and data submission */}
     <Formik
       onSubmit={(values) => submitData(values)}
       initialValues={{
@@ -103,6 +118,7 @@ function LoginForm(props) {
         </Container>
       )}
     </Formik>
+    </>
   );
 }
 
