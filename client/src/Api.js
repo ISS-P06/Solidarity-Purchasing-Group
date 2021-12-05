@@ -177,6 +177,13 @@ export async function insertUser(user){
   }
 }
 
+/**
+ * Api used to get the current virtual time and date from backend.
+ * 
+ * @returns {any} res.data
+ *  - res.data.currentTime: dayjs.Dayjs object to represents the current virtual time and date.
+ *  - res.data.day: string object to represents the current day of the week associated to the currentTime.
+ */
 export const api_getTime = async () => {
   try {
     const res = await axios.get('/api/time');
@@ -192,6 +199,14 @@ export const api_getTime = async () => {
   }
 };
 
+/**
+ * Api used to send the current virtual time and date to the backend.
+ * 
+ * @param {string} dateTime
+ *  - dateTime is an ISODate string.
+ * @returns {any} res
+ *  - res contains the returned status of the put request made by axios.
+ */
 export const api_setTime = async (dateTime) => {
   try {
     const res = await axios.put('/api/time', { time: dateTime });
