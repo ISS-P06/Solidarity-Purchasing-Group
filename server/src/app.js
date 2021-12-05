@@ -390,6 +390,24 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
   }
 });
 
+app.delete(
+    '/api/client/:userId/basket/remove',
+    [check('userId').isInt(), check('productId').isInt()],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        const { userId } = req.params;
+        const { productId } = req.body;
+
+        removeProductFromBasket(userId, productId)
+            .then((productId) => res.json(productId))
+            .catch(() => res.status(500).end());
+    }
+);
+
 app.post(
   '/api/client/:userId/basket/add',
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
@@ -408,23 +426,6 @@ app.post(
   }
 );
 
-app.delete(
-  '/api/client/:userId/basket/remove',
-  [check('userId').isInt(), check('productId').isInt()],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
-    const { userId } = req.params;
-    const { productId } = req.body;
-
-    removeProductFromBasket(userId, productId)
-      .then((productId) => res.json(productId))
-      .catch(() => res.status(500).end());
-  }
-);
 
 // GET /api/clients/:clientId/basket
 app.get('/api/client/:clientId/basket', (req, res) => {

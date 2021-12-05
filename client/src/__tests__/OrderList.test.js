@@ -37,7 +37,7 @@ describe('My component OrderList', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('No orders found')).toBeInTheDocument();
+
     await waitFor(() => screen.getByText('Date: 2021-11-16 12:12'));
     expect(screen.getByText('Email: massimo.poli@p.it')).toBeInTheDocument();
     expect(screen.getByText('Date: 2021-11-16 12:12')).toBeInTheDocument();
@@ -67,7 +67,6 @@ describe('My component OrderList', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('No orders found')).toBeInTheDocument();
     await waitFor(() => screen.getByText('Date: 2021-11-16 12:12'));
     expect(screen.getByText('Email: massimo.poli@p.it')).toBeInTheDocument();
     expect(screen.getByText('Date: 2021-11-16 12:12')).toBeInTheDocument();

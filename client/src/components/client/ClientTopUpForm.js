@@ -18,6 +18,10 @@ function ClientTopUpForm(props) {
             api_addTopUpClient({id: client.id, amount})
                 .then(() => {
                     reloadList()
+                    addMessage({
+                        message: `Updated balance for ${client.name} ${client.surname}`,
+                        type: 'success',
+                    });
                 })
                 .catch((error) => {
                     addMessage({message: error.message, type: 'danger'});
