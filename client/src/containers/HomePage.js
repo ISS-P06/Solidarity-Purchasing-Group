@@ -14,8 +14,10 @@ function HomePage() {
         <Container>
             <Row className="justify-content-center">
                 <Col xs={0} md={10}>
-                    <h1 style={{color: "#27511D"}}>Welcome on Solidarity Purchase Group!</h1>
-                    <Carousel className="mt-3 d-none d-md-block">
+
+
+                    <h1 style={{color:"#27511D"}}>Welcome to Solidarity Purchasing Group!</h1>
+                    <Carousel className="mt-3 d-none d-md-block" >
                         <Carousel.Item>
                             <Image src={image1} className="img" alt="A non profit organization"
                                    style={{width: "60%", paddingTop: "20px"}}/>

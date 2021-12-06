@@ -64,21 +64,28 @@ Note:
 
 ## React Client Application Routes
 
+### Default routes
 - Route `/`: site homepage.
 - Route `/login`: contains a form with `username` and `password` fields with which a user can log in to the site.
+- Route `/register`: contains a form that allows an unregistered user to sign up.
+### Employee-only routes
 - Route `/employee`: employee homepage, from which the user can access all routes reserved to employees only.
 - Route `/employee/clients`: employee-side page containing a list of all registered clients.
-- Route `/employee/clients/:id`: employee-side page displaying information about a specific client; `id`: client id.
 - Route `/employee/orders`: employee-side page containing a list of all orders.
 - Route `/employee/orders/:id`: employee-side page containing information about a specific order; `id`: order id.
 - Route `/employee/products`: employee-side page containing a list of all available products.
 - Route `/employee/register`: employee-side page containing a form for user registration.
+### Client-only routes
 - Route `/client`: client homepage, from which the user can access all routes reserved to clients only.
 - Route `/client/basket`: client-side page containing information about the client's own basket.
 - Route `/client/orders`: client-side page containing information about the client's own orders.
 - Route `/client/orders/:id`: client-side page containing information about one of the client's orders.
 - Route `/client/products`: client-side page containing a list of all available products.
+### Farmer-only routes
 - Route `/farmer`: farmer homepage.
+- Route `/farmer/supply`: farmer page containing a form to add a new supply for the upcoming week.
+- Route `/farmer/products`: farmer page containing the list of products (= product descriptors) they added.
+- Route `/farmer/products/new`: farmer page containing a form for adding a new product descriptor.
 
 # Database documentation
 

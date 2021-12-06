@@ -1,5 +1,7 @@
 "use strict";
 import nodemailer from "nodemailer";
+// This import is used to get the gmail account credentials from
+// the .env file
 require('dotenv').config();
 
 // Get sender email
@@ -15,7 +17,17 @@ const transporter = nodemailer.createTransport({
     }
   });
 
+/**
+ * Sends an email to a given user to remind them that their balance is
+ * insufficient for a given order.
+ * 
+ * @param {string} userMail: the user's email 
+ * @param {integer} orderID: the unique ID of the order for which
+ *      they do not have enough balance
+ * @returns Promise
+ */
 export function mail_sendBalanceReminder(userMail, orderID) {
+    // Set up email options
     let mailOptions = {
         from: senderMail,
         to: userMail,
@@ -29,6 +41,12 @@ export function mail_sendBalanceReminder(userMail, orderID) {
             '---\nThis is an automated email, please do not respond.'
     };
 
+    /*
+        Note: this IF statement is used only to run tests.
+        In order to avoid sending emails every time a test is ran,
+        an orderID of 0 or less is passed to the function so that it returns
+        a resolved promise every time instead of using nodemailer.
+    */
     if (orderID <= 0) {
         return new Promise((resolve, reject) => {
             resolve("email sent");
