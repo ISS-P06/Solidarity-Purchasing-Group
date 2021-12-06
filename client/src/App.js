@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 
 import {
-  InsertClient,
-  LoginForm,
-  RoutesEmployee,
-  RoutesClient,
-  RoutesFarmer
+    LoginForm,
+    InsertUser,
+    RoutesEmployee,
+    RoutesClient,
+    RoutesFarmer
 } from './components';
 
 import HomePage from './containers/HomePage';
-import { Layout } from './containers';
-import { getUserRoute, RedirectRoute } from './utils/route.js';
-import { addMessage } from './components/Message';
-import { api_getUserInfo, api_login, api_logout, api_getTime } from './Api';
+import {Layout} from './containers';
+import {getUserRoute, RedirectRoute} from './utils/route.js';
+import {addMessage} from './components/Message';
+import {api_getUserInfo, api_login, api_logout, api_getTime} from './Api';
+
+
 
 function App() {
   // Session-related states
@@ -49,45 +51,52 @@ function App() {
     }
   };
 
-  // useEffect used to get the system's virtual time
-  useEffect(() => {
-    const getVT = async () => {
-      try {
-        const data = await api_getTime();
-        setVirtualTime(new Date(data.currentTime));
-        setDirtyVT(false);
-      } catch (err) {
-        setVirtualTime(new Date().toISOString());
-        setDirtyVT(false);
-        console.error(err);
-      }
-    };
-    getVT();
-  }, [dirtyVT]);
 
-  // useEffect for getting user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const info = await api_getUserInfo();
-        setUser(info);
-        setUserId(info.id);
-        setUserRole(info.role);
-        setLoggedIn(true);
-      } catch (err) {
-        setUserRole('');
-        console.error(err.message);
-      }
-    };
-    checkAuth();
-  }, [loggedIn]);
+    // useEffect used to get the system's virtual time
+    useEffect(() => {
+        const getVT = async () => {
+            try {
+                const data = await api_getTime();
+                setVirtualTime(new Date(data.currentTime));
+                setDirtyVT(false);
+            } catch (err) {
+                setVirtualTime(new Date().toISOString());
+                setDirtyVT(false);
+                console.error(err);
+            }
+        };
+        getVT();
+    }, [dirtyVT]);
+
+    // useEffect for getting user info
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const info = await api_getUserInfo();
+                setUser(info);
+                setUserId(info.id);
+                setUserRole(info.role);
+                setLoggedIn(true);
+            } catch (err) {
+                setUserRole('');
+            }
+        };
+        checkAuth();
+    }, [loggedIn]);
 
   // async function for logging out
-  const doLogout = async () => {
-    api_logout();
-    addMessage({ title: 'Logout', message: 'You are now logged out' });
-    setLoggedIn(false);
-  };
+
+    const doLogout = async () => {
+        try{
+            await api_logout();
+            addMessage({ title: 'Logout', message: 'You are now logged out' });
+            setLoggedIn(false);
+        }
+        catch(err){
+            addMessage({ title: 'Logout', message: err.message, type:"danger" });
+        }
+
+    };
 
   const LayoutProps = {
     loggedIn,
@@ -129,6 +138,7 @@ function App() {
       <Router>
         <Switch>
           <Layout {...LayoutProps}>
+
             {/* --- Employee-only routes --- */}
             <RoutesEmployee
               {... RoutesEmployeeProps}/>
@@ -144,15 +154,12 @@ function App() {
             {/* --- Default routes --- */}
             {/* User registration route */}
             <Route exact path="/register">
-              <InsertClient
-                loggedIn={loggedIn}
-                setLoggedIn={setLoggedIn}
-                user={user}
-                setUser={setUser}
-                setUserRole={setUserRole}
-                doLogin={doLogin}
+              <InsertUser
+                  loggedIn={loggedIn}
+                  doLogin={doLogin}
               />
             </Route>
+
 
             {/* Login route */}
             <RedirectRoute

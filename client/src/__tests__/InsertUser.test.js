@@ -3,7 +3,7 @@ import {render, screen, fireEvent, act, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
-import { InsertClient } from '../components';
+import  InsertUser  from '../components/client/InsertUser';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { createMemoryHistory } from 'history';
@@ -20,10 +20,10 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe('testing InsertClient component', () => {
-  // mock client
+describe('testing InsertUser component', () => {
+  // mock user
 
-  test('testing insertion of new client', () => {
+  test('testing insertion of new user', () => {
     const history = createMemoryHistory();
 
     // mock push function
@@ -31,7 +31,7 @@ describe('testing InsertClient component', () => {
 
     render(
       <Router history={history}>
-        <InsertClient />
+        <InsertUser />
       </Router>
     );
 
@@ -80,9 +80,9 @@ describe('testing InsertClient component', () => {
 
     let db = [];
     server.use(
-      rest.post('/api/insert_client', (req, res, ctx) => {
-        const client = req.body;
-        db.push(client)
+      rest.post('/api/register_user', (req, res, ctx) => {
+        const user = req.body;
+        db.push(user)
         return res(ctx.status(200));
       })
     );
@@ -94,7 +94,7 @@ describe('testing InsertClient component', () => {
 
     render(
         <Router history={history}>
-          <InsertClient />
+          <InsertUser />
         </Router>
     );
 

@@ -11,7 +11,6 @@ import {
   listProducts,
   insertOrder,
   updateClientBalance,
-  insertClient,
   getOrders,
   getOrderById,
   setOrderDelivered,
@@ -20,13 +19,12 @@ import {
   removeProductFromBasket,
   insertOrderFromBasket,
   getBalanceByClientId,
-  registerUser,
 } from './dao.js';
 
 import VTC from './vtc.js';
 import SYS from './system';
 // --- Imports for passport and login/logout --- //
-import { getUser, getUserById } from './user-dao.js';
+import { getUser, getUserById ,registerUser} from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -137,14 +135,22 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
   }
 });
 
-// GET /api/products
+/**
+ * GET /api/products
+ * get the list of products
+ * @returns product: [{id,name,description,category,name,price,quantity,unit}]
+ */
 app.get('/api/products', (req, res) => {
   listProducts()
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
 });
 
-// GET /api/clients
+/**
+ * GET /api/clients
+ * get the list of clients
+ * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
+ */
 app.get('/api/clients', (req, res) => {
   listClients()
     .then((clients) => res.json(clients))
@@ -181,6 +187,10 @@ app.put(
   }
 );
 
+/**
+ * POST /api/orders
+ * Add a order of a client {clientID: client.id, order: order}
+ */
 app.post(
   '/api/orders',
   check('clientID').isInt(),
@@ -249,37 +259,12 @@ app.post('/api/orders/:id/deliver', (req, res) => {
     .catch(() => res.status(500).end());
 });
 
-// ADD NEW CLIENT
-app.post(
-  '/api/insert_client',
-  check('name').isString(),
-  check('surname').isString(),
-  check('balance').isInt(),
-  check('mail').isEmail(),
-  check('typeUser').isString(),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ error: errors.array() });
-    }
-    const client = req.body;
-    insertClient(
-      client.name,
-      client.surname,
-      client.phone,
-      client.address,
-      client.mail,
-      client.balance,
-      client.username,
-      client.password,
-      client.typeUser
-    )
-      .then((result) => {
-        res.end();
-      })
-      .catch((err) => res.status(500).json(err));
-  }
-);
+/** User API **/
+
+/**
+ * POST /api/register_user
+ * Registration of a user
+ */
 
 app.post(
   '/api/register_user',
@@ -288,6 +273,7 @@ app.post(
   check('mail').isEmail(),
   check('typeUser').isString(),
   (req, res) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ error: errors.array() });
@@ -299,13 +285,13 @@ app.post(
         res.end();
       })
       .catch((err) => {
+          console.log(err);
         res.status(500).json(err);
       });
   }
 );
 
-// --- Login/Logout routes --- //
-// Login
+/** Login */
 app.post('/api/sessions', function (req, res, next) {
   passport.authenticate(
     'local',
@@ -332,13 +318,13 @@ app.post('/api/sessions', function (req, res, next) {
   )(req, res, next);
 });
 
-// --- Logout
+/** Logout */
 app.delete('/api/sessions/current', (req, res) => {
   req.logout();
   res.end();
 });
 
-// --- Check whether the user is logged in or not
+/**  Check whether the user is logged in or not */
 app.get('/api/sessions/current', (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
@@ -404,6 +390,24 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
   }
 });
 
+app.delete(
+    '/api/client/:userId/basket/remove',
+    [check('userId').isInt(), check('productId').isInt()],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        const { userId } = req.params;
+        const { productId } = req.body;
+
+        removeProductFromBasket(userId, productId)
+            .then((productId) => res.json(productId))
+            .catch(() => res.status(500).end());
+    }
+);
+
 app.post(
   '/api/client/:userId/basket/add',
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
@@ -422,23 +426,6 @@ app.post(
   }
 );
 
-app.delete(
-  '/api/client/:userId/basket/remove',
-  [check('userId').isInt(), check('productId').isInt()],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
-    const { userId } = req.params;
-    const { productId } = req.body;
-
-    removeProductFromBasket(userId, productId)
-      .then((productId) => res.json(productId))
-      .catch(() => res.status(500).end());
-  }
-);
 
 // GET /api/clients/:clientId/basket
 app.get('/api/client/:clientId/basket', (req, res) => {

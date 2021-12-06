@@ -4,6 +4,11 @@ import ProductCards from '../components/ProductCards';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+
+jest.mock('../components/Message', () => ({
+  addMessage: jest.fn(),
+}));
 
 const server = setupServer();
 
@@ -47,8 +52,8 @@ test("test ProductCards component wrong rendering'", async () => {
   // test code
   window.scrollTo = jest.fn();
   render(<ProductCards />);
-  await waitFor(() => screen.getByText('Error in getting all the products'));
-  expect(screen.getByText('Error in getting all the products')).toBeInTheDocument();
+  await waitFor(() => screen.getByText('No products found'));
+
 });
 
 test("test ProductCards component adds a product to the basket'", async () => {

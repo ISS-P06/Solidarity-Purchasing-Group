@@ -41,7 +41,7 @@ export function getUser(username, password) {
 // --- Get user info by providing the user id
 export function getUserById(id) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM User WHERE id=?;';
+    const sql = 'SELECT * FROM User WHERE id=?';
     db.get(sql, [id], (err, row) => {
       if (err) {
         reject(err);
@@ -98,3 +98,64 @@ export function getUserById(id) {
     })
     });
   }
+
+/**
+ * Register the user
+ * @param user
+ * @returns id of the user added
+ */
+export function registerUser(user) {
+  return new Promise((resolve, reject) => {
+    let userID;
+
+    const userQuery =
+        'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+
+    db.serialize(() => {
+      let stmt = db.prepare(userQuery);
+      bcrypt.hash(user.password, 10, function (err, hash) {
+        if (err) {
+          reject(err);
+        }
+
+        stmt.run(
+            [user.username, hash, user.typeUser, user.name, user.surname, user.mail, user.phone],
+            function (err) {
+              if (err) {
+                console.log(err);
+                reject(err);
+              }
+              console.log( this.lastID)
+              const userID = this.lastID;
+              if (user.typeUser === 'shop_employee') {
+                resolve(this.lastID);
+              } else if (user.typeUser === 'farmer') {
+                const farmerQuery = 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)';
+                db.serialize(() => {
+                  let stmt_1 = db.prepare(farmerQuery);
+                  stmt_1.run([userID, user.address, user.farmName], function (err) {
+                    if (err) {
+                      reject(err);
+                    }
+
+                  });
+                });
+                resolve(userID);
+              } else if (user.typeUser === 'client') {
+                const clientQuery = 'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+                db.serialize(() => {
+                  let stmt_1 = db.prepare(clientQuery);
+                  stmt_1.run([user.address, user.balance, userID], (err) => {
+                    if (err) {
+                      reject(err);
+                    }
+                  });
+                });
+                console.log(userID)
+                resolve(userID);
+              }
+            });
+      });
+    })
+  })
+}

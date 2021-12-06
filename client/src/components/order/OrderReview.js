@@ -1,7 +1,7 @@
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { BoxArrowInUp } from 'react-bootstrap-icons';
 import OrderTable from './OrderTable';
-
+import { addMessage } from '../Message';
 import { useEffect, useState } from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
 
@@ -29,14 +29,14 @@ function OrderReview(props) {
             setOrderReview(order);
             setIsUpdated(true);
           })
-          .catch((e) => console.log(e));
+          .catch((e) =>   addMessage({title: "Error", message: e.message, type: 'danger'}));
       } else if (props.userRole === 'client') {
         api_getClientOrderReview(props.userId, match.params.id)
           .then((order) => {
             setOrderReview(order);
             setIsUpdated(true);
           })
-          .catch((e) => console.log(e));
+          .catch((e) =>  addMessage({title: "Error", message: e.message, type: 'danger'}));
       }
     }
   }, [match]);

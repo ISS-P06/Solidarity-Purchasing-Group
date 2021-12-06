@@ -3,7 +3,7 @@ import { checkOrderInterval } from '../../utils/date';
 import { OrderReview } from '..';
 import { Redirect, Route } from 'react-router-dom';
 import { getUserRoute } from '../../utils';
-import { ClientsList, InsertClient, ProductCards, OrderList } from '..';
+import { ClientsList, InsertUser, ProductCards, OrderList,  } from '..';
 
 /**
  *  This component contains all employee-only routes.
@@ -28,7 +28,10 @@ function RoutesEmployee(props) {
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
               component={
-                <InsertClient loggedIn={loggedIn} setLoggedIn={setLoggedIn} doLogin={doLogin} />
+                  <InsertUser
+                      loggedIn={loggedIn}
+                      doLogin={doLogin}
+                  />
               }
             />
 

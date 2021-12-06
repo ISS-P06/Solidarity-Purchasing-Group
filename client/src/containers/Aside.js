@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
 import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill } from 'react-icons/bs';
-import { GiFruitBowl } from 'react-icons/gi';
+import { GiFruitBowl,GiFruitTree } from 'react-icons/gi';
 import { VirtualClock } from '../components';
 import { FaRegListAlt } from 'react-icons/fa';
 
@@ -20,6 +20,7 @@ function Aside({
   const roleMenu = {
     shop_employee: <EmployeeMenu />,
     client: <ClientMenu />,
+    farmer: <FarmerMenu/>
   };
 
   return !userRole ? null : (
@@ -99,6 +100,19 @@ function ClientMenu() {
       </MenuItem>
     </Menu>
   );
+}
+
+function FarmerMenu() {
+    return (
+        <Menu iconShape="circle">
+            <MenuItem icon={<GiFruitTree />}>
+                <Link className="text-light" to="/client/reportProduct">
+                    {/* Todo add correct link*/}
+                    Report expected products
+                </Link>
+            </MenuItem>
+        </Menu>
+    );
 }
 
 export default Aside;
