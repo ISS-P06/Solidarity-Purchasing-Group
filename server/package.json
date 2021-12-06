@@ -36,7 +36,8 @@
   "scripts": {
     "dev": "nodemon -r esm server.js",
     "start": "node -r esm server.js",
-    "test": "jest --runInBand --passWithNoTests",
+    "test": "jest --silent --runInBand --passWithNoTests",
+    "test:watch": "jest --silent --watchAll --runInBand --passWithNoTests",
     "test:cov": "jest --coverage --testResultsProcessor=jest-sonar-reporter",
     "format": "prettier --write \"**/*.js\" \"**/__tests__/**/*.js\""
   }
