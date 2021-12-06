@@ -2,14 +2,11 @@ import {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 
 import {
-
-    ClientsList,
     LoginForm,
-    OrderList,
     InsertUser,
-    ProductCards,
-    Basket,
-    ClientHomePage,
+    RoutesEmployee,
+    RoutesClient,
+    RoutesFarmer
 } from './components';
 
 import HomePage from './containers/HomePage';
@@ -17,10 +14,7 @@ import {Layout} from './containers';
 import {getUserRoute, RedirectRoute} from './utils/route.js';
 import {addMessage} from './components/Message';
 import {api_getUserInfo, api_login, api_logout, api_getTime} from './Api';
-import FarmerHomePage from './components/farmer/FarmerHomePage';
-import {checkOrderInterval} from './utils/date';
 
-function App() {
 
 
 function App() {
