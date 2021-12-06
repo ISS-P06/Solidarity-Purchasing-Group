@@ -62,8 +62,6 @@ function OrderList(props) {
                 </div>
 
                 <Container className="OrderList">
-
-
                     <Row className="justify-content-md-center">
                         <Col lg={8} className="pl-5 pb-4">
                             {props.userRole === 'shop_employee' && (
@@ -72,7 +70,7 @@ function OrderList(props) {
                                         <FloatingLabel controlId="TypeOrders" label="Visualize orders by">
                                             <Form.Select aria-label="Visualize order by" default={typeOrders} onChange={(e) => setTypeOrders(e.target.value)}>
                                                 <option value="all">All orders</option>
-                                                <option value="pending_canc">Pending_canc orders </option>
+                                                <option value="pending_canc">Pending cancellation orders </option>
                                                 <option value="pending">Pending orders </option>
                                                 <option value="confirmed">Confirmed orders</option>
                                                 <option value="delivered">Delivered orders</option>
