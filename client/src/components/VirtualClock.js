@@ -13,12 +13,12 @@ import { humanToISO, ISOtoHuman } from '../utils';
  *  - time: represents the current virtual time.
  * Once updated the virtual clock, the new date and the new time are updated also in the backend using the api_setTime(dateTime) where the param dateTime is an ISODate string.
  * To get from the backend the current virtual time and date the api_getTime is used.
- * 
- * @param {any} props 
+ *
+ * @param {any} props
  *  - props.setDirtyVT: used to update the dirtyVT.
- *  - props.dirtyVT: when changed the virtual clock will be re-rendered to show the updated virtual time and date 
+ *  - props.dirtyVT: when changed the virtual clock will be re-rendered to show the updated virtual time and date
  *  - props.virtualTime: virtualTime is a state in app.js that stores the same value of the virtualClock defined here; since VirtualClock.js is a component under the navbar we need a state on app.js that keep track of the virtual clock and, if necessary, pass it to other components.
- * 
+ *
  */
 
 function VirtualClock(props) {
@@ -48,7 +48,7 @@ function VirtualClock(props) {
   /**
    * Function to submit the new virtual clock.
    * It converts the date (that is in a human-readable format) to an ISODate, submits the new date using the api_setTime and changes the dirtyVT state.
-   * @param {*} event 
+   * @param {*} event
    */
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -68,10 +68,15 @@ function VirtualClock(props) {
       const humanTime = ISOtoHuman(virtualTime.toISOString());
 
       setDate(humanTime.date);
-      setTime(humanTime.time); 
-    }       
+      setTime(humanTime.time);
+    }
   }, [dirtyVT]);
 
+  /**
+   * Converts `Date` format into a user friendly one
+   *
+   * @returns {string} human readable date and hour
+   */
   const renderDate = () => {
     const day = weekdays[date.getDay()];
     const fullDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
@@ -118,7 +123,7 @@ function VirtualClock(props) {
                       end="23:30"
                       format={24}
                       step={60}
-                      onChange={(t) => setTime(t/3600)}
+                      onChange={(t) => setTime(t / 3600)}
                     />
                   </Col>
                   <Col />
