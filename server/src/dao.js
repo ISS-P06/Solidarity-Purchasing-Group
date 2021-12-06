@@ -5,14 +5,15 @@ import dayjs from 'dayjs';
 
 /**
  * Get the list of products
- * @returns products: [{id,name,description,category,name,price,quantity,unit}]
+ * @returns products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
 export function listProducts() {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit
+        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit, pd.ref_farmer, f.farm_name
                      FROM Product p,
-                          Prod_descriptor pd
-                     WHERE pd.id = p.ref_prod_descriptor`;
+                          Prod_descriptor pd,
+                          Farmer f
+                     WHERE pd.id = p.ref_prod_descriptor AND pd.ref_farmer = f.ref_user`;
         db.all(sql, [], (err, rows) => {
             if (err) {
                 reject(err);
@@ -26,6 +27,8 @@ export function listProducts() {
                 quantity: p.quantity,
                 price: p.price,
                 unit: p.unit,
+                ref_farmer: p.ref_farmer,
+                farm_name: p.farm_name
             }));
             resolve(products);
         });
@@ -114,11 +117,6 @@ export function insertOrder(orderClient) {
 }
 
 
-
-
-
-
-//UPDATED
 // clientId can be specified or not
 // if specified the query selects only orders of a specific client
 export function getOrders(clientId = -1) {
@@ -147,7 +145,11 @@ export function getOrders(clientId = -1) {
     });
 }
 
-//UPDATED
+/**
+ * 
+ * @param orderId 
+ * @returns id of the order with it = orderId 
+ */
 export function getOrder(orderId) {
     return new Promise((resolve, reject) => {
         const sql = `SELECT r.id
@@ -163,7 +165,7 @@ export function getOrder(orderId) {
     });
 }
 
-//UPDATED
+
 // clientId can be specified or not
 // if specified the query selects only the order of a specific client
 export function getOrderById(orderId, clientId = -1) {
@@ -227,7 +229,6 @@ export function getOrderById(orderId, clientId = -1) {
     });
 }
 
-//UPDATED
 export function setOrderDelivered(orderId) {
     return new Promise((resolve, reject) => {
         const sql = `UPDATE Request

@@ -17,7 +17,7 @@ function manageError(status, message = "") {
 
 /**
  *  GET products
- *  @return products: [{id,name,description,category,name,price,quantity,unit}]
+ *  @return products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
 export const api_getProducts = async () => {
     try {

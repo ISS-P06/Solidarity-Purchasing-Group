@@ -138,7 +138,7 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
 /**
  * GET /api/products
  * get the list of products
- * @returns product: [{id,name,description,category,name,price,quantity,unit}]
+ * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
 app.get('/api/products', (req, res) => {
   listProducts()

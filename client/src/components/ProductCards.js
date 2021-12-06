@@ -19,7 +19,7 @@ import {addMessage} from './Message';
 
 const ProductCards = (props) => {
     // product code
-    // product: { id, name, description, category, quantity, price, unit }
+    // product: { id, name, description, category, quantity, price, unit, ref_farmer, farm_name }
     const [productList, setProductList] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -209,7 +209,7 @@ const ProductCard = (props) => {
                     <ListGroup.Item>
                         <Card.Body className="p-0">
                             <Card.Title>{product.name}</Card.Title>
-                            <Card.Text>{product.description}</Card.Text>
+                            <Card.Text>{product.farm_name}</Card.Text>
                         </Card.Body>
                     </ListGroup.Item>
                     <ListGroup.Item>
