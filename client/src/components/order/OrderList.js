@@ -30,7 +30,7 @@ function OrderList(props) {
                     setLoading(false);
                 });
         }
-    }, [setOrders]);
+    }, [setOrders, props.virtualTime]);
 
     const orderList = orders.map((order) => (
         <div key={order.orderId.toString()} className="pb-3">

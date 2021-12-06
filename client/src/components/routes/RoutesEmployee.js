@@ -61,7 +61,7 @@ function RoutesEmployee(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<OrderList userRole={userRole} userId={userId} />}
+              component={<OrderList userRole={userRole} userId={userId} virtualTime={virtualTime} />}
             />
 
             {/* Employee home page route (redirects to client list, see above) */}
