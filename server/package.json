@@ -31,7 +31,8 @@
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
     "superagent": "^6.1.0",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "supertest-session": "^4.1.0"
   },
   "scripts": {
     "dev": "nodemon -r esm server.js",

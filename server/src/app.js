@@ -140,10 +140,10 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
  * get the list of products
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
-app.get('/api/products', (req, res) => {
+app.get('/api/products', isLoggedIn, (req, res) => {
   listProducts()
     .then((products) => res.json(products))
-    .catch(() => res.status(500).end());
+    .catch(() => res.status(500).end())
 });
 
 /**
@@ -151,7 +151,7 @@ app.get('/api/products', (req, res) => {
  * get the list of clients
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
-app.get('/api/clients', (req, res) => {
+app.get('/api/clients', isLoggedIn, (req, res) => {
   listClients()
     .then((clients) => res.json(clients))
     .catch(() => res.status(500).end());
@@ -166,7 +166,7 @@ app.get('/api/clients', (req, res) => {
  * @param {int} amount  Amount of money to add on client's balance.
  */
 app.put(
-  '/api/clients/topup',
+  '/api/clients/topup', isLoggedIn,
   check('id').isInt(),
   check('amount').isInt({ min: 5 }),
   async (req, res) => {
@@ -218,21 +218,21 @@ app.post(
 );
 
 // GET /api/orders
-app.get('/api/orders', (req, res) => {
+app.get('/api/orders', isLoggedIn, (req, res) => {
   getOrders()
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders
-app.get('/api/clients/:clientId/orders', (req, res) => {
+app.get('/api/clients/:clientId/orders', isLoggedIn, (req, res) => {
   getOrders(req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders/:orderId
-app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
   getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
@@ -240,7 +240,7 @@ app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
 
 // GET /api/orders/:id
 // Route used to get the order review
-app.get('/api/orders/:id', (req, res) => {
+app.get('/api/orders/:id', isLoggedIn, (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {
       res.json(order);
@@ -251,7 +251,7 @@ app.get('/api/orders/:id', (req, res) => {
 });
 
 // POST /api/orders/:id/deliver
-app.post('/api/orders/:id/deliver', (req, res) => {
+app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
   setOrderDelivered(req.params.id)
     .then((orderId) => {
       res.json(orderId);
