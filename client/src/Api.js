@@ -136,6 +136,16 @@ export const api_addOrder = async (orderClient) => {
     }
 };
 
+/**
+ * Top up client wallet.
+ * 
+ * This api is avaiable only for a user logged as `employee`.
+ * 
+ * @param {{id: number, amount: number}} args 
+ * @param id - Id of the user we want to top up
+ * @param amount - Top up amount
+ * @returns {Promise<*>} Response object of the api call
+ */
 export const api_addTopUpClient = async ({id, amount}) => {
     try {
         const res = await axios.put('/api/clients/topup', {amount, id});
@@ -177,13 +187,12 @@ export const api_getTime = async () => {
  * 
  * @param {string} dateTime
  *  - dateTime is an ISODate string.
- * @returns {any} res
- *  - res contains the returned status of the put request made by axios.
+ * @returns {any} 
+ *  - the returned status of the put request made by axios.
  */
 export const api_setTime = async (dateTime) => {
     try {
-        const res = await axios.put('/api/time', {time: dateTime});
-        return res;
+        return await axios.put('/api/time', {time: dateTime});;
     } catch (error) {
         throw new Error(error.message);
     }
@@ -196,9 +205,8 @@ export const api_setTime = async (dateTime) => {
  * @param user
  * */
 export async function insertUser(user) {
-    let res;
     try {
-        res = await axios.post('/api/register_user', user);
+        return await axios.post('/api/register_user', user);
     } catch (err) {
         manageError(err.response.status, 'Sorry, there was an error in registering the user')
     }
@@ -212,7 +220,7 @@ export async function insertUser(user) {
 
 export const api_login = async (credentials) => {
     try {
-        let res = await axios.post('/api/sessions', {
+        const res = await axios.post('/api/sessions', {
             username: credentials.username,
             password: credentials.password,
         });
@@ -235,7 +243,7 @@ export const api_login = async (credentials) => {
  */
 export const api_logout = async () => {
     try{
-        let res = await axios.delete('/api/sessions/current')
+        return await axios.delete('/api/sessions/current')
     }
     catch(err){
         throw new Error("Sorry, there is a problem with the logout. Try later..");

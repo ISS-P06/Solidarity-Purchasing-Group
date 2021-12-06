@@ -34,8 +34,8 @@ describe('Test login form', () => {
       fireEvent.click(screen.getByText('Login'));
     });
     // Check for error messages
-    expect(screen.getByText('Insert a username'));
-    expect(screen.getByText('Insert a valid password'));
+    expect(screen.getByText('Insert a username')).toBeInTheDocument();
+    expect(screen.getByText('Insert a valid password')).toBeInTheDocument();
 
     // insert a password shorter than 8 characters
     act(() => {
@@ -44,7 +44,7 @@ describe('Test login form', () => {
       });
     });
     // Check for error message
-    expect(screen.getByText('Password must be at least 8 characters long'));
+    expect(screen.getByText('Password must be at least 8 characters long')).toBeInTheDocument();
 
     // Fill out fields
     act(() => {

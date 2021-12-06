@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Alert } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { api_getBasket, api_buyNow, api_removeProductFromBasket } from '../../Api';
 import ProductCards from '../ProductCards';
 import ProductList from './ProductList';

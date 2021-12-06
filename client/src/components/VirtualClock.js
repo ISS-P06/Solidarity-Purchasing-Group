@@ -5,6 +5,7 @@ import TimePicker from 'react-bootstrap-time-picker';
 
 import { api_setTime } from '../Api';
 import { humanToISO, ISOtoHuman } from '../utils';
+import { addMessage } from './Message';
 
 /**
  * VirtualClock component has the goal to change the virtual time of the system.
@@ -53,7 +54,7 @@ function VirtualClock(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const ISODate = humanToISO(date, time);
-    await api_setTime(ISODate).catch(() => {});
+    await api_setTime(ISODate).catch((e) => addMessage({title:"Error", message: e.message, type: 'danger' }));
 
     setDirtyVT(true);
 
