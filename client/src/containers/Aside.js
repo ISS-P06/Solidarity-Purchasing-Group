@@ -106,8 +106,7 @@ function FarmerMenu() {
     return (
         <Menu iconShape="circle">
             <MenuItem icon={<GiFruitTree />}>
-                <Link className="text-light" to="/client/reportProduct">
-                    {/* Todo add correct link*/}
+                <Link className="text-light" to="/farmer/supply">
                     Report expected products
                 </Link>
             </MenuItem>
