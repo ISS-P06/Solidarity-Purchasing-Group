@@ -10,6 +10,7 @@ import {
   listClients,
   listProducts,
     listFarmerProducts,
+    listSuppliedFarmerProducts,
   insertOrder,
   updateClientBalance,
   getOrders,
@@ -20,6 +21,7 @@ import {
   removeProductFromBasket,
   insertOrderFromBasket,
   getBalanceByClientId,
+    addExpectedAvailableProduct
 } from './dao.js';
 
 import VTC from './vtc.js';
@@ -286,7 +288,6 @@ app.post(
         res.end();
       })
       .catch((err) => {
-          console.log(err);
         res.status(500).json(err);
       });
   }
@@ -439,6 +440,20 @@ app.get('/api/client/:clientId/basket', (req, res) => {
 /**
  * GET
  *
+ * Get all the products supplied the next week linked to a farmer with {userId}
+ */
+app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()],  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+    listSuppliedFarmerProducts(req.params.farmerId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+});
+/**
+ * GET
+ *
  * Get all the products linked to a farmer with {userId}
  */
 app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()],  (req, res) => {
@@ -451,6 +466,21 @@ app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()],  (req, re
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
+/**
+ * POST
+ *
+ * Add expected available product amounts for the next week
+ */
+app.post('/api/farmer/products/available', [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()],  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+    addExpectedAvailableProduct(req.body)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+});
+
 
 /*** End APIs ***/
 

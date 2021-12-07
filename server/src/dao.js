@@ -75,7 +75,6 @@ export function listFarmerProducts(farmerId) {
                      WHERE pd.ref_farmer=? AND pd.ref_farmer = f.ref_user`;
         db.all(sql, [farmerId], (err, rows) => {
             if (err) {
-                console.log(err)
                 reject(err);
                 return;
             }
@@ -84,6 +83,34 @@ export function listFarmerProducts(farmerId) {
                 name: p.name,
                 description: p.description,
                 unit: p.unit,
+            }));
+            resolve(products);
+        });
+    });
+}
+/**
+ * Get the list of products supplied the next week linked to a farmer
+ * @returns products: [{id,name,price,quantity,unit}]
+ */
+/* TODO add virtual clock*/
+export function listSuppliedFarmerProducts(farmerId) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT p.id, pd.name, pd.category, p.quantity, p.price, pd.unit
+                     FROM Product p,
+                          Prod_descriptor pd
+                     WHERE pd.id = p.ref_prod_descriptor AND pd.ref_farmer=?`;
+        db.all(sql, [farmerId], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            const products = rows.map((p) => ({
+                id: p.id,
+                name: p.name,
+                category: p.category,
+                quantity: p.quantity,
+                unit: p.unit,
+                price:p.price
             }));
             resolve(products);
         });
@@ -301,7 +328,6 @@ export function addProductToBasket(clientId, productId, quantity) {
         const sql = `INSERT INTO Basket(ref_client, ref_product,quantity) VALUES (?, ?,?)`;
         db.run(sql, [clientId, productId, quantity], (err, rows) => {
             if (err) {
-                console.log(err);
                 reject(err);
                 return;
             }
@@ -310,12 +336,28 @@ export function addProductToBasket(clientId, productId, quantity) {
     });
 }
 
+/**
+ *  INSERT product quantity available for the next week
+ *  @return products: [{productID, quantity, price}]
+ */
+export function addExpectedAvailableProduct(availableProduct){
+    return new Promise((resolve, reject) => {
+        const sql = `INSERT INTO Product(ref_prod_descriptor,quantity, price, date ) VALUES (?, ?,?,?)`;
+        db.run(sql, [availableProduct.productID, availableProduct.quantity, availableProduct.price, dayjs().format('YYYY-MM-DD HH:MM')], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve("this.lastID");
+        });
+    });
+}
 export function removeProductFromBasket(clientId, productId) {
     return new Promise((resolve, reject) => {
         const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
         db.run(sql, [clientId, productId], (err, rows) => {
             if (err) {
-                console.log(err);
                 reject(err);
                 return;
             }
@@ -323,6 +365,7 @@ export function removeProductFromBasket(clientId, productId) {
         });
     });
 }
+
 
 export function getBalanceByClientId(clientId) {
     return new Promise((resolve, reject) => {
