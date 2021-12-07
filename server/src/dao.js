@@ -64,7 +64,7 @@ export function listClients() {
 }
 /**
  * Get the list of products linked to a farmer
- * @returns products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
+ * @returns products: [{id,name,description,unit}]
  */
 export function listFarmerProducts(farmerId) {
     return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ export function listFarmerProducts(farmerId) {
 }
 /**
  * Get the list of products supplied the next week linked to a farmer
- * @returns products: [{id,name,price,quantity,unit}]
+ * @returns products: [{id,name,category, price,quantity,unit}]
  */
 /* TODO add virtual clock*/
 export function listSuppliedFarmerProducts(farmerId) {

@@ -440,7 +440,7 @@ app.get('/api/client/:clientId/basket', (req, res) => {
 /**
  * GET
  *
- * Get all the products supplied the next week linked to a farmer with {userId}
+ * Get all the products supplied the next week linked by a farmer with {userId}
  */
 app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()],  (req, res) => {
     const errors = validationResult(req);

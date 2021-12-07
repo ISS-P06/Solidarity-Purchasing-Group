@@ -34,7 +34,7 @@ export const api_getProducts = async () => {
 
 /**
  *  GET products
- *  @return products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
+ *  @return products: [{id,name,description,unit}]
  */
 export const api_getFarmerProducts = async (farmerId) => {
     try {
