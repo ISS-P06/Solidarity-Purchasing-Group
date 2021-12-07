@@ -9,6 +9,7 @@ import LocalStrategy from 'passport-local';
 import {
   listClients,
   listProducts,
+    listFarmerProducts,
   insertOrder,
   updateClientBalance,
   getOrders,
@@ -432,6 +433,23 @@ app.get('/api/client/:clientId/basket', (req, res) => {
   getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
+});
+
+/*** Farmer APIs **/
+/**
+ * GET
+ *
+ * Get all the products linked to a farmer with {userId}
+ */
+app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()],  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    listFarmerProducts(req.params.farmerId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
 });
 
 /*** End APIs ***/

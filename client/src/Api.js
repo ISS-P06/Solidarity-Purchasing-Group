@@ -32,6 +32,25 @@ export const api_getProducts = async () => {
     }
 };
 
+/**
+ *  GET products
+ *  @return products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
+ */
+export const api_getFarmerProducts = async (farmerId) => {
+    try {
+        console.log(farmerId);
+        const res = await axios.get('/api/farmer/'+ farmerId+ '/products');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        console.log(err)
+        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
+    }
+};
+
 export const api_getOrders = async () => {
     try {
         const res = await axios.get('/api/orders');

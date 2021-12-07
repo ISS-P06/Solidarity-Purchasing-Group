@@ -62,6 +62,33 @@ export function listClients() {
         });
     });
 }
+/**
+ * Get the list of products linked to a farmer
+ * @returns products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
+ */
+export function listFarmerProducts(farmerId) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT pd.id, pd.name, pd.description, pd.unit
+                     FROM 
+                          Prod_descriptor pd,
+                          Farmer f
+                     WHERE pd.ref_farmer=? AND pd.ref_farmer = f.ref_user`;
+        db.all(sql, [farmerId], (err, rows) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+                return;
+            }
+            const products = rows.map((p) => ({
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                unit: p.unit,
+            }));
+            resolve(products);
+        });
+    });
+}
 
 /**
  * Update current balance of a client
