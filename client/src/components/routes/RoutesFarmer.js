@@ -1,7 +1,7 @@
 import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
+import ReportAvailabilityProductsPage from "../farmer/ReportAvailabilityProductsPage"
 import { FarmerHomePage, FarmerProducts, FarmerProductForm } from '../farmer';
-
 /**
  *  This component contains all farmer-only routes.
  */
@@ -37,7 +37,7 @@ function RoutesFarmer(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
-              component={<div/>}
+              component={<ReportAvailabilityProductsPage user={user}/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
