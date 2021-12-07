@@ -110,6 +110,11 @@ function FarmerMenu() {
                     Report expected products
                 </Link>
             </MenuItem>
+            <MenuItem icon={<GiFruitBowl />}>
+                <Link className="text-light" to="/farmer/products">
+                    Browse products on sale
+                </Link>
+            </MenuItem>
         </Menu>
     );
 }
