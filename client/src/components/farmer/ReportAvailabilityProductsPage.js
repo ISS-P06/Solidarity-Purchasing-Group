@@ -1,14 +1,16 @@
-import {Modal, Button, Form, Col, FloatingLabel, Row, Container, Table} from 'react-bootstrap';
+import {Modal, Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner} from 'react-bootstrap';
 
 import {useState, useEffect} from 'react';
 import {api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts} from '../../Api';
 import {addMessage} from '../Message';
 
-function SupplyForm(props) {
+function ReportAvailabilityProductsPage(props) {
     const {user} = props;
     const [productsList, setProductsList] = useState([]); /* list of farmer's products */
     const [suppliedProducts, setSuppliedProducts] = useState([]); /* list of products supplied the next week */
     const [dirty,setDirty]=useState(false) /* used to reaload the list  of products supplied the next week */
+    const [loading,setLoading]=useState(true); /* used for visualize the spinner
+    */
     useEffect(() => {
         api_getFarmerProducts(user.id)
             .then((products) => {
@@ -23,6 +25,7 @@ function SupplyForm(props) {
             .then((products) => {
                 setSuppliedProducts(products.slice(-10));
                 setDirty(false)
+                setLoading(false);
             })
             .catch((e) => addMessage({message: e.message, type: 'danger'}));
     }, [dirty]);
@@ -32,7 +35,8 @@ function SupplyForm(props) {
             <Row className="justify-content-center">
                 <Col lg={8} className="pl-5">
                     <h3 className={"mb-3"}>Your expected available product amounts for the next week</h3>
-                    <SuppliedProducts  suppliedProducts={suppliedProducts}></SuppliedProducts>
+                    {loading ? <Spinner animation="border" variant="success" /> :
+                    <SuppliedProducts  suppliedProducts={suppliedProducts}></SuppliedProducts> }
                     <h3 className={"mb-3 mt-5"}>Add product amounts for the next week</h3>
                     <SuppliedProductForm productsList={productsList} setDirty={setDirty} />
                 </Col>
@@ -114,7 +118,7 @@ export function SuppliedProductForm(props) {
                             aria-label="Name of the product"
                             onChange={(e) => setProductID(e.target.value)} required>
                             <option></option>
-                            {productsList.map((p, k) => (
+                            {productsList && productsList.map((p, k) => (
                                 <option key={p.id} value={p.id}>
                                     {p.name}
                                 </option>
@@ -173,7 +177,7 @@ export function SuppliedProductForm(props) {
 
             <Row className={"justify-content-center"}>
                 <Col xs={6} lg={9}>
-                    <Button type="submit" variant="primary" className="mt-3 mb-3"> Add product available </Button>
+                    <Button type="submit" variant="primary" className="mt-3 mb-3"> Add product available amounts </Button>
                 </Col>
             </Row>
         </Form>
@@ -182,4 +186,4 @@ export function SuppliedProductForm(props) {
 
 
 
-export default SupplyForm;
+export default ReportAvailabilityProductsPage;
