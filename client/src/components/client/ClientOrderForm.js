@@ -50,11 +50,11 @@ function ClientOrderForm(props) {
       const orderClient = { clientID: client.id, order: order };
 
       api_addOrder(orderClient)
-        .then((id) =>
-          addMessage({ message: 'Order ' + id + ' emitted with success ', type: 'success' })
-        )
+        .then((id) => {
+          addMessage({message: 'Order ' + id + ' emitted with success ', type: 'success'})
+        })
         .catch((err) => {
-
+          addMessage({ message: err.message, type: 'danger' })
         });
 
       /*RESET*/
