@@ -37,10 +37,10 @@ const FarmerProductForm = (props) => {
                 <div className="pt-2 pb-4">
                     <h3>Add new product</h3>
                 </div>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form aria-labelledby="newProduct" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group className="mb-4">
-                        <FloatingLabel label="Name">
-                            <Form.Control required value={name} onChange={(ev) => setName(ev.target.value)} />
+                        <FloatingLabel controlId="newProduct" label="Name">
+                            <Form.Control required value={name} onChange={(ev) => setName(ev.target.value)} required />
                             <Form.Control.Feedback type="invalid">
                                 Please provide a name
                             </Form.Control.Feedback>
@@ -48,7 +48,7 @@ const FarmerProductForm = (props) => {
 
                     </Form.Group>
                     <Form.Group className="mb-4">
-                        <FloatingLabel label="Description">
+                        <FloatingLabel controlId="newProduct" label="Description">
                             <Form.Control as="textarea" style={{ height: '120px' }}
                                 value={description} onChange={(ev) => setDescription(ev.target.value)} required />
                             <Form.Control.Feedback type="invalid">
@@ -60,7 +60,7 @@ const FarmerProductForm = (props) => {
                         <Row>
                             <Col sm={{ span: 5 }}>
                                 <Form.Group>
-                                    <FloatingLabel label="Category">
+                                    <FloatingLabel controlId="newProduct" label="Category">
                                         <Form.Select value={category} onChange={(ev) => setCategory(ev.target.value)} >
                                             <option value="Bread">Bread</option>
                                             <option value="Dairy Products">Dairy products</option>
@@ -74,7 +74,7 @@ const FarmerProductForm = (props) => {
                             </Col>
                             <Col sm={{ offset: 2, span: 5 }}>
                                 <Form.Group className="mb-4">
-                                    <FloatingLabel label="Unit">
+                                    <FloatingLabel controlId="newProduct" label="Unit">
                                         <Form.Select value={unit} onChange={(ev) => setUnit(ev.target.value)} >
                                             <option value="kg">Kg</option>
                                             <option value="lt">Litre</option>
