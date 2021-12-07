@@ -353,6 +353,25 @@ export function addExpectedAvailableProduct(availableProduct){
         });
     });
 }
+
+/**
+ *  DELETE product {productID} quantity available for the next week
+ * @param productID
+ */
+export function removeExpectedAvailableProduct(product){
+    console.log(product)
+    return new Promise((resolve, reject) => {
+        const sql = `DELETE FROM Product WHERE id=? `;
+        db.run(sql, [product.productID], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            resolve(product.productID);
+        });
+    });
+}
 export function removeProductFromBasket(clientId, productId) {
     return new Promise((resolve, reject) => {
         const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;

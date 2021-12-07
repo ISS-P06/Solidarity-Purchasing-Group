@@ -1,7 +1,6 @@
 import {Modal, Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner} from 'react-bootstrap';
-
 import {useState, useEffect} from 'react';
-import {api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts} from '../../Api';
+import {api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts, api_removeAvailableProductQuantity} from '../../Api';
 import {addMessage} from '../Message';
 
 function ReportAvailabilityProductsPage(props) {
@@ -23,7 +22,7 @@ function ReportAvailabilityProductsPage(props) {
     useEffect(() => {
         api_getSupplyFarmerProducts(props.user.id)
             .then((products) => {
-                setSuppliedProducts(products.slice(-10));
+                setSuppliedProducts(products.slice(-10)); /*To update */
                 setDirty(false)
                 setLoading(false);
             })
@@ -36,7 +35,7 @@ function ReportAvailabilityProductsPage(props) {
                 <Col lg={8} className="pl-5">
                     <h3 className={"mb-3"}>Your expected available product amounts for the next week</h3>
                     {loading ? <Spinner animation="border" variant="success" /> :
-                    <SuppliedProducts  suppliedProducts={suppliedProducts}></SuppliedProducts> }
+                    <SuppliedProducts  suppliedProducts={suppliedProducts} setDirty={setDirty} ></SuppliedProducts> }
                     <h3 className={"mb-3 mt-5"}>Add product amounts for the next week</h3>
                     <SuppliedProductForm productsList={productsList} setDirty={setDirty} />
                 </Col>
@@ -46,7 +45,17 @@ function ReportAvailabilityProductsPage(props) {
 }
 
 export function SuppliedProducts(props){
-    const {suppliedProducts}=props;
+    const {suppliedProducts, setDirty}=props;
+
+    const removeAvailableProductQuantity=(productID)=>{
+        api_removeAvailableProductQuantity(productID)
+            .then(()=>{
+                setDirty(true);
+                addMessage({message: 'Report available product remove with success ', type: 'success'});
+            }).catch((err)=> {
+            addMessage({ message: err.message, type: 'danger' });
+        });
+    }
     return(
         <Table striped bordered hover responsive size="sm">
             <thead>
@@ -54,6 +63,7 @@ export function SuppliedProducts(props){
                 <th>Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -63,6 +73,7 @@ export function SuppliedProducts(props){
                     <td>{suppliedProducts[index].name}</td>
                     <td>{suppliedProducts[index].quantity} {suppliedProducts[index].unit}</td>
                     <td>{suppliedProducts[index].price} € /{suppliedProducts[index].unit}</td>
+                    <td><Button className="btn-danger" onClick={()=>removeAvailableProductQuantity(Number(suppliedProducts[index].id))}>Remove</Button></td>
                 </tr>
 
             )}

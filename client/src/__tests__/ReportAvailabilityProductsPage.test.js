@@ -100,7 +100,7 @@ test('test supplied product form correct rendering', async () => {
 test('test supplied products component correct rendering', async () => {
 
     // test code
-    render(<SuppliedProducts suppliedProducts={[jest.fn()]}/>);
+    render(<SuppliedProducts suppliedProducts={[jest.fn()]} setDirty={jest.fn()} />);
     const productName = screen.getByText(/Name/);
     expect(productName).toBeInTheDocument();
 
@@ -110,5 +110,6 @@ test('test supplied products component correct rendering', async () => {
     const productPrice = screen.getByText(/Price/);
     expect(productPrice).toBeInTheDocument();
 
+    await userEvent.click(screen.getByText(/Remove/));
 
 });

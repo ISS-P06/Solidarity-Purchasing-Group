@@ -98,6 +98,36 @@ describe('Test the post for adding expected available product amounts for the ne
     });
 });
 
+describe('Test the delete for remove expected available product amounts for the next week', () => {
+    test('It should respond 200 to the POST method', () => {
+        const data = {productID: 4};
+        return request(app)
+            .delete('/api/farmer/products/available')
+            .send(data)
+            .then((response) => {
+                expect(response.statusCode).toBe(200);
+            });
+    });
+
+    test('It should respond 404 to the DELETE method', () => {
+        const data = {productID: 4};
+        return request(app)
+            .delete('/api/farmers/product/available')
+            .send(data)
+            .then((response) => {
+                expect(response.statusCode).toBe(404);
+            });
+    });
+    test('It should respond 422 to the DELETE method', () => {
+        const data = {productID: "prod"};
+        return request(app)
+            .delete('/api/farmer/products/available')
+            .send(data)
+            .then((response) => {
+                expect(response.statusCode).toBe(422);
+            });
+    });
+});
 describe('Test the get client orders api', () => {
     test('It should respond 200 to the GET method', () => {
         return request(app)
