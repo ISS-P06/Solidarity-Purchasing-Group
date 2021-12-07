@@ -1,6 +1,4 @@
 import { RedirectRoute } from '../../utils/route';
-import { Redirect } from 'react-router-dom';
-import { Route } from 'react-router-dom';
 import { LoginForm} from '../';
 import { FarmerHomePage, FarmerProducts, FarmerProductForm } from '../farmer';
 
@@ -19,7 +17,7 @@ function RoutesFarmer(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
-              component={<FarmerProductForm />}
+              component={<FarmerProductForm userId={userId} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
             
