@@ -60,12 +60,13 @@ function App() {
                 setVirtualTime(new Date(data.currentTime));
                 setDirtyVT(false);
             } catch (err) {
-                setVirtualTime(new Date().toISOString());
+                setVirtualTime(new Date());
                 setDirtyVT(false);
                 console.error(err);
             }
         };
         getVT();
+        console.log(virtualTime);
     }, [dirtyVT]);
 
     // useEffect for getting user info
@@ -122,7 +123,8 @@ function App() {
     doLogin,
     userRole,
     userId,
-    user
+    user,
+    virtualTime
   };
 
   const RoutesFarmerProps = {
@@ -161,7 +163,9 @@ function App() {
             </Route>
 
 
-            {/* Login route */}
+            {/* Login route */
+              console.log(virtualTime)
+            }
             <RedirectRoute
               path="/login"
               exact={true}

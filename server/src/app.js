@@ -145,7 +145,14 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
 app.get('/api/products', (req, res) => {
-    listProducts()
+    let currTime = new Date(vtc.time());
+    let wednesday = currTime;
+
+    while(wednesday.getDay() != 3) {
+        wednesday.setDate(wednesday.getDate() - 1);
+    }
+
+    listProducts(wednesday)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });

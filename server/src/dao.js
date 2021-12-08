@@ -7,14 +7,19 @@ import dayjs from 'dayjs';
  * Get the list of products
  * @returns products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
-export function listProducts() {
+export function listProducts(day) {
     return new Promise((resolve, reject) => {
+        let date = dayjs(day).format('YYYY-MM-DD');
+        date = date + " 00:00";
+
         const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit, pd.ref_farmer, f.farm_name
                      FROM Product p,
                           Prod_descriptor pd,
                           Farmer f
-                     WHERE pd.id = p.ref_prod_descriptor AND pd.ref_farmer = f.ref_user`;
-        db.all(sql, [], (err, rows) => {
+                     WHERE pd.id = p.ref_prod_descriptor 
+                        AND pd.ref_farmer = f.ref_user
+                        AND p.date >= DATE(?)`;
+        db.all(sql, [date], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
@@ -356,7 +361,7 @@ export function addProductToBasket(clientId, productId, quantity) {
 export function addExpectedAvailableProduct(availableProduct){
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO Product(ref_prod_descriptor,quantity, price, date ) VALUES (?, ?,?,?)`;
-        db.run(sql, [availableProduct.productID, availableProduct.quantity, availableProduct.price, dayjs().format('YYYY-MM-DD HH:MM')], (err, rows) => {
+        db.run(sql, [availableProduct.productID, availableProduct.quantity, availableProduct.price, dayjs().format('YYYY-MM-DD HH:mm')], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
