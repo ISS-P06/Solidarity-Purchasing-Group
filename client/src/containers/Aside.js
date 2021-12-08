@@ -123,16 +123,20 @@ function ClientMenu() {
 }
 
 function FarmerMenu() {
-  return (
-    <Menu iconShape="circle">
-      <MenuItem icon={<GiFruitTree />}>
-        <Link className="text-light" to="/client/reportProduct">
-          {/* Todo add correct link*/}
-          Report expected products
-        </Link>
-      </MenuItem>
-    </Menu>
-  );
+    return (
+        <Menu iconShape="circle">
+            <MenuItem icon={<GiFruitTree />}>
+                <Link className="text-light" to="/farmer/supply">
+                    Report expected products
+                </Link>
+            </MenuItem>
+            <MenuItem icon={<GiFruitBowl />}>
+                <Link className="text-light" to="/farmer/products">
+                    Browse products on sale
+                </Link>
+            </MenuItem>
+        </Menu>
+    );
 }
 
 export default Aside;

@@ -32,6 +32,75 @@ export const api_getProducts = async () => {
     }
 };
 
+/**
+ *  GET products
+ *  @return products: [{id,name,description,unit}]
+ */
+export const api_getFarmerProducts = async (farmerId) => {
+    try {
+        const res = await axios.get('/api/farmer/'+ farmerId+ '/products');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
+    }
+};
+
+/**
+ *  GET supplied products by a farmer for the next week
+ *  @return products: [{id,name,price,quantity,unit}]
+ */
+export const api_getSupplyFarmerProducts = async (farmerId) => {
+    try {
+        const res = await axios.get('/api/farmer/'+ farmerId+ '/products/supplied');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
+    }
+};
+
+/**
+ *  POST product quantity available the next week
+ *  @param supplyProduct: [{productID, quantity, price}]
+ */
+export const api_addAvailableProductQuantity = async (supplyProduct) => {
+    try {
+        const res = await axios.post('/api/farmer/products/available', supplyProduct);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in adding product quantity available the next week')
+    }
+};
+
+/**
+ *  DELETE product with {productID}quantity available the next week
+ *  @param productID: id of the supplied product quantity to remove
+ */
+export const api_removeAvailableProductQuantity = async (productID) => {
+    try {
+        const res = await axios.delete('/api/farmer/products/available', {data: {productID}});
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in removing product quantity available the next week')
+    }
+};
+
+
 export const api_getOrders = async () => {
     try {
         const res = await axios.get('/api/orders');
