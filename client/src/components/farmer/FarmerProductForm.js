@@ -30,8 +30,6 @@ const FarmerProductForm = (props) => {
                 }).catch((err)=>{
                 addMessage({message: 'There has been an error with adding new description', type: 'danger'});
             })
-            // TODO: call api to add product in the db
-
 
             setValidated(true);
         }

@@ -2,17 +2,21 @@
 
 import express from 'express';
 import morgan from 'morgan';
-import { check, validationResult } from 'express-validator';
+import {check, validationResult} from 'express-validator';
 import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
 
 // --- DAO import: --- //
-import { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO } from './dao';
+import {userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO} from './dao';
 
 // --- Import and initialize utility classes: --- //
 import VTC from './vtc';
 import SYS from './system';
+import {insertProductDescription} from "./dao/product-dao";
+import {getOrderById, getOrders, setOrderDelivered} from "./dao/order-dao";
+import {getBasketByClientId} from "./dao/basket-dao";
+
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -128,9 +132,9 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
 app.get('/api/products', isLoggedIn, (req, res) => {
-  listProducts()
-    .then((products) => res.json(products))
-    .catch(() => res.status(500).end())
+    listProducts()
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end())
 
 });
 
@@ -140,9 +144,9 @@ app.get('/api/products', isLoggedIn, (req, res) => {
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
 app.get('/api/clients', isLoggedIn, (req, res) => {
-  listClients()
-    .then((clients) => res.json(clients))
-    .catch(() => res.status(500).end());
+    listClients()
+        .then((clients) => res.json(clients))
+        .catch(() => res.status(500).end());
 });
 
 /**
@@ -154,19 +158,19 @@ app.get('/api/clients', isLoggedIn, (req, res) => {
  * @param {int} amount  Amount of money to add on client's balance.
  */
 app.put(
-  '/api/clients/topup', isLoggedIn,
-  check('id').isInt(),
-  check('amount').isInt({ min: 5 }),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ error: errors.array() });
-    }
+    '/api/clients/topup', isLoggedIn,
+    check('id').isInt(),
+    check('amount').isInt({min: 5}),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({error: errors.array()});
+        }
 
         const {id, amount} = req.body;
 
         try {
-            clientDAO.updateClientBalance(id, amount);
+            await clientDAO.updateClientBalance(id, amount);
 
             res.status(200).end();
         } catch (error) {
@@ -180,7 +184,7 @@ app.put(
  * Add a order of a client {clientID: client.id, order: order}
  */
 app.post(
-    '/api/orders',
+    '/api/orders', isLoggedIn,
     check('clientID').isInt(),
     check('order').custom((value, {req}) => {
         for (const product of value) {
@@ -207,44 +211,44 @@ app.post(
 
 // GET /api/orders
 app.get('/api/orders', isLoggedIn, (req, res) => {
-  getOrders()
-    .then((orders) => res.json(orders))
-    .catch(() => res.status(500).end());
+    getOrders()
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders
 app.get('/api/clients/:clientId/orders', isLoggedIn, (req, res) => {
-  getOrders(req.params.clientId)
-    .then((orders) => res.json(orders))
-    .catch(() => res.status(500).end());
+    getOrders(req.params.clientId)
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders/:orderId
 app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
-  getOrderById(req.params.orderId, req.params.clientId)
-    .then((orders) => res.json(orders))
-    .catch(() => res.status(500).end());
+    getOrderById(req.params.orderId, req.params.clientId)
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
 });
 
 // GET /api/orders/:id
 // Route used to get the order review
 app.get('/api/orders/:id', isLoggedIn, (req, res) => {
-  getOrderById(req.params.id)
-    .then((order) => {
-      res.json(order);
-    })
-    .catch(() => {
-      res.status(500).end();
-    });
+    getOrderById(req.params.id)
+        .then((order) => {
+            res.json(order);
+        })
+        .catch(() => {
+            res.status(500).end();
+        });
 });
 
 // POST /api/orders/:id/deliver
 app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
-  setOrderDelivered(req.params.id)
-    .then((orderId) => {
-      res.json(orderId);
-    })
-    .catch(() => res.status(500).end());
+    setOrderDelivered(req.params.id)
+        .then((orderId) => {
+            res.json(orderId);
+        })
+        .catch(() => res.status(500).end());
 });
 
 /** User API **/
@@ -279,7 +283,7 @@ app.post(
 );
 
 // --- Login/Logout APIs --- //
-/** 
+/**
  * POST /api/sessions
  * Used to log a user in.
  * Returns user info when successful
@@ -310,7 +314,7 @@ app.post('/api/sessions', function (req, res, next) {
     )(req, res, next);
 });
 
-/** 
+/**
  * DELETE /api/sessions/current
  * Used to log a user out.
  */
@@ -319,7 +323,7 @@ app.delete('/api/sessions/current', (req, res) => {
     res.end();
 });
 
-/** 
+/**
  * GET /api/sessions/current
  * Used to get information about the user that's currently logged in.
  * Returns user info when successful.
@@ -363,41 +367,41 @@ app.post(
  * POST
  *
  * Insert client's order on database, with the items on its basket.
- * 
+ *
  * @param {number} userId - User id on database
  */
 app.post('/api/client/:userId/basket/buy',
-    isLoggedIn ,
+    isLoggedIn,
     [check('userId').isInt()], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({errors: errors.array()});
+        }
 
 
-    const {userId} = req.params;
-    const dateTime = vtc.formatTime();
+        const {userId} = req.params;
+        const dateTime = vtc.formatTime();
 
-  // NOTE: If one of these promise fails, it will immediatly raise
-  // an exception and the next ones won't be executed.
-  try {
-    const basket = await basketDAO.getBasketByClientId(userId);
-    const balance = await clientDAO.getBalanceByClientId(userId);
+        // NOTE: If one of these promise fails, it will immediatly raise
+        // an exception and the next ones won't be executed.
+        try {
+            const basket = await basketDAO.getBasketByClientId(userId);
+            const balance = await clientDAO.getBalanceByClientId(userId);
 
-        // insert order
-        await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
+            // insert order
+            await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
 
-        // clear basket
-        basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
+            // clear basket
+            basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
 
-        res.status(200).json({});
-    } catch (e) {
-        res.status(500).json(e);
-    }
-});
+            res.status(200).json({});
+        } catch (e) {
+            res.status(500).json(e);
+        }
+    });
 
 app.delete(
-    '/api/client/:userId/basket/remove',isLoggedIn,
+    '/api/client/:userId/basket/remove', isLoggedIn,
     [check('userId').isInt(), check('productId').isInt()],
     (req, res) => {
         const errors = validationResult(req);
@@ -415,13 +419,13 @@ app.delete(
 );
 
 app.post(
-  '/api/client/:userId/basket/add',isLoggedIn,
-  [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
+    '/api/client/:userId/basket/add', isLoggedIn,
+    [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({errors: errors.array()});
+        }
 
         const {userId} = req.params;
         const {productId, reservedQuantity} = req.body;
@@ -435,9 +439,9 @@ app.post(
 
 // GET /api/clients/:clientId/basket
 app.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
-  getBasketByClientId(req.params.clientId)
-    .then((products) => res.json(products))
-    .catch(() => res.status(500).end());
+    getBasketByClientId(req.params.clientId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
 
 });
 /**
@@ -445,7 +449,7 @@ app.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
  *
  * Get all the products linked to a farmer with {userId}
  */
-app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res) => {
+app.get('/api/farmer/:farmerId/products', isLoggedIn, [check('farmerId').isInt()], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
@@ -460,7 +464,7 @@ app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res
  *
  * Add expected available product amounts for the next week
  */
-app.post('/api/farmer/products/available', [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()], (req, res) => {
+app.post('/api/farmer/products/available', isLoggedIn, [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
@@ -489,10 +493,24 @@ app.delete('/api/farmer/products/available', [check('productID').isInt()], (req,
  * post
  * INSERT a new product description
  */
-app.post('/api/insert_product_description', isLoggedIn,(req ,res)=>{
-    const description = req.body;
-    insertProductDescription(description).then(()=>{res.end()}).catch(()=>res.status(500).end())
-})
+app.post('/api/insert_product_description', isLoggedIn, [
+        check('name').isInt(),
+        check('description').isString(),
+        check('category').isString(),
+        check('unit').isString(),
+        check('ref_farmer').isInt()
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({errors: errors.array()});
+        }
+
+        const description = req.body;
+        insertProductDescription(description).then(() => {
+            res.end()
+        }).catch(() => res.status(500).end())
+    })
 
 /*** End APIs ***/
 

@@ -48,8 +48,21 @@ describe('Test the get products api', () => {
 });
 
 describe("Test the get farmer's products api", () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
   test('It should respond 200 to the GET method', () => {
-    return request(app)
+    return authenticatedSession
       .get('/api/farmer/3/products')
       .then((response) => {
         expect(response.statusCode).toBe(200);
@@ -66,9 +79,22 @@ describe("Test the get farmer's products api", () => {
 });
 
 describe('Test the get all the products supplied the next week linked by a farmer with {userId}', () => {
-  test('It should respond 200 to the GET method', () => {
-    return request(app)
-      .get('/api/farmer/3/products/supplied')
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
+    test('It should respond 200 to the GET method', () => {
+    return authenticatedSession
+      .get('/api/farmer/3/products')
       .then((response) => {
         expect(response.statusCode).toBe(200);
       });
@@ -115,9 +141,22 @@ describe('Test the post for adding expected available product amounts for the ne
 });
 
 describe('Test the delete for remove expected available product amounts for the next week', () => {
-  test('It should respond 200 to the POST method', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
+    test('It should respond 200 to the POST method', () => {
     const data = { productID: 4 };
-    return request(app)
+    return authenticatedSession
       .delete('/api/farmer/products/available')
       .send(data)
       .then((response) => {
@@ -127,7 +166,7 @@ describe('Test the delete for remove expected available product amounts for the 
 
   test('It should respond 404 to the DELETE method', () => {
     const data = { productID: 4 };
-    return request(app)
+    return authenticatedSession
       .delete('/api/farmers/product/available')
       .send(data)
       .then((response) => {
@@ -136,7 +175,7 @@ describe('Test the delete for remove expected available product amounts for the 
   });
   test('It should respond 422 to the DELETE method', () => {
     const data = { productID: 'prod' };
-    return request(app)
+    return authenticatedSession
       .delete('/api/farmer/products/available')
       .send(data)
       .then((response) => {
@@ -281,8 +320,21 @@ describe('Test the get customers api', () => {
 });
 
 describe('Test POST order ', function () {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
     test('responds with json', function (done) {
-        request(app)
+        authenticatedSession
             .post('/api/orders')
             .send({clientID: 1, order: [{id: 55, quantity: 10.0}]})
             .set('Accept', 'application/json')
@@ -547,3 +599,42 @@ describe('test place a order', () => {
         return authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(422);
     });
 });
+
+
+describe('test adding new product description' ,()=>{
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
+    test('test add successfully product description', ()=>{
+        const productDescription ={
+            name:'apple',
+            description : 'new kind',
+            category : 'fruit',
+            unit: 'kg',
+            ref_farmer : 3
+        }
+        authenticatedSession
+            .post('/api/insert_product_description')
+            .send(productDescription)
+            .expect(200);
+    })
+
+    test('test add product description expect failure', ()=>{
+        const productDescription ={}
+        authenticatedSession
+            .post('/api/insert_product-description')
+            .send(productDescription)
+            .expect(422);
+    })
+
+})
