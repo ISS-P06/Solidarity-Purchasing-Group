@@ -7,6 +7,9 @@ import {copyFileSync, unlinkSync} from 'fs';
 const dbPath = 'database.db';
 const backupPath = 'database.db.backup';
 
+var session = require('supertest-session');
+var testSession = session(app);
+
 // Save database current state
 beforeAll(() => {
     copyFileSync(dbPath, backupPath);
@@ -21,8 +24,22 @@ afterAll(() => {
 /** TEST SUITES */
 
 describe('Test the get products api', () => {
+
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+              });
+        });
+
     test('It should respond to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/products')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -128,34 +145,52 @@ describe('Test the delete for remove expected available product amounts for the 
     });
 });
 describe('Test the get client orders api', () => {
+
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+              });
+        });
+
     test('It should respond 200 to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/clients/4/orders')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
             });
     });
+
     test('It should respond 404 to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/clients//orders')
             .then((response) => {
                 expect(response.statusCode).toBe(404);
             });
     });
+
     test('It should respond 200 to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/clients/4/orders/2')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
             });
     });
+
     test('It should respond 404 to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/clients//orders/2')
             .then((response) => {
                 expect(response.statusCode).toBe(404);
             });
     });
+
 });
 
 describe('Test the get virtual time clock', () => {
@@ -175,34 +210,70 @@ describe('Test the get virtual time clock', () => {
 });
 
 describe('Test the clients topup api', () => {
+
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+              });
+        });
+
     test('It should respond to the GET method', () => {
-        return request(app).get('/api/clients').expect(200);
+        authenticatedSession.get('/api/clients').then((response) => {
+            expect(response.statusCode).toBe(200);
+        });
     });
 
     test('It should respond to the PUT method', () => {
         const id = 1;
         const amount = 100;
 
-        return request(app).put('/api/clients/topup').send({amount, id}).expect(200);
+        authenticatedSession.put('/api/clients/topup').send({amount, id}).then((response) => {
+            expect(response.statusCode).toBe(200);
+        });
     });
 
     test('it should fail to the PUT methoh (low amount)', () => {
         const id = 1;
         const amount = 3;
 
-        return request(app).put('/api/clients/topup').send({amount, id}).expect(422);
+        authenticatedSession.put('/api/clients/topup').send({amount, id}).then((response) => {
+            expect(response.statusCode).toBe(422);
+        });
     });
 
     test('it should fail to the PUT methoh (missing parameter)', () => {
         const amount = 50;
 
-        return request(app).put('/api/clients/topup').send({amount}).expect(422);
+        authenticatedSession.put('/api/clients/topup').send({amount}).then((response) => {
+            expect(response.statusCode).toBe(422);
+        });
     });
 });
 
 describe('Test the get customers api', () => {
+
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+              });
+        });
+
     test('It should respond to the GET method', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/clients')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -210,7 +281,7 @@ describe('Test the get customers api', () => {
     });
 });
 
-describe('TEST POST order ', function () {
+describe('Test POST order ', function () {
     test('responds with json', function (done) {
         request(app)
             .post('/api/orders')
@@ -248,8 +319,22 @@ describe('Test the login APIs', () => {
 // --- --- --- //
 
 describe('Test the orders path', () => {
+
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+              });
+        });
+
     test('It should response GET api/orders', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/orders')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -257,7 +342,7 @@ describe('Test the orders path', () => {
     });
 
     test('It should response GET api/orders/1', () => {
-        return request(app)
+        authenticatedSession
             .get('/api/orders/1')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
