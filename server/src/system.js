@@ -1,7 +1,7 @@
 'use strict';
 
 import {mail_sendBalanceReminder} from './mailer';
-import {checksClientBalance, emptyBaskets} from './system-dao';
+import {checksClientBalance, emptyBaskets} from './dao/system-dao';
 
 class SYS {
     /*

@@ -6,40 +6,28 @@ import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
 
-import {
-    listClients,
-    listProducts,
-    listFarmerProducts,
-    listSuppliedFarmerProducts,
-    insertOrder,
-    updateClientBalance,
-    getOrders,
-    getOrderById,
-    setOrderDelivered,
-    getBasketByClientId,
-    addProductToBasket,
-    removeProductFromBasket,
-    insertOrderFromBasket,
-    getBalanceByClientId,
-    addExpectedAvailableProduct,
-    removeExpectedAvailableProduct
-} from './dao.js';
+// --- DAO imports: --- //
+import {getUser, getUserById, registerUser} from './dao/user-dao';
+import {listProducts, addExpectedAvailableProduct, removeExpectedAvailableProduct} from './dao/product-dao';
+import {listFarmerProducts, listSuppliedFarmerProducts} from './dao/farmer-dao';
+import {listClients, updateClientBalance, getBalanceByClientId} from './dao/client-dao';
+import {addProductToBasket, removeProductFromBasket, insertOrderFromBasket, getBasketByClientId} from './dao/basket-dao';
+import {insertOrder, getOrders, getOrderById, setOrderDelivered} from './dao/order-dao';
+// --- --- --- //
 
-import VTC from './vtc.js';
+// --- Import and initialize utility classes: --- //
+import VTC from './vtc';
 import SYS from './system';
-// --- Imports for passport and login/logout --- //
-import {getUser, getUserById, registerUser} from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
 
 /* System class */
 const sys = new SYS();
+// --- --- --- //
 
 // --- Set up Passport --- //
-/*
-    set up "username and password" strategy
-*/
+// set up "username and password" strategy
 passport.use(
     new LocalStrategy(function (username, password, done) {
         getUser(username, password)
@@ -79,13 +67,13 @@ const isLoggedIn = (req, res, next) => {
 };
 // --- --- --- //
 
-/* express setup */
-const app = new express();
-
 const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
     // Format express-validate errors as strings
     return `${location}[${param}]: ${msg}`;
 };
+
+/* express setup */
+const app = new express();
 
 app.use(express.json());
 app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
@@ -301,7 +289,12 @@ app.post(
     }
 );
 
-/** Login */
+// --- Login/Logout APIs --- //
+/** 
+ * POST /api/sessions
+ * Used to log a user in.
+ * Returns user info when successful
+ */
 app.post('/api/sessions', function (req, res, next) {
     passport.authenticate(
         'local',
@@ -328,13 +321,20 @@ app.post('/api/sessions', function (req, res, next) {
     )(req, res, next);
 });
 
-/** Logout */
+/** 
+ * DELETE /api/sessions/current
+ * Used to log a user out.
+ */
 app.delete('/api/sessions/current', (req, res) => {
     req.logout();
     res.end();
 });
 
-/**  Check whether the user is logged in or not */
+/** 
+ * GET /api/sessions/current
+ * Used to get information about the user that's currently logged in.
+ * Returns user info when successful.
+ */
 app.get('/api/sessions/current', (req, res) => {
     if (req.isAuthenticated()) {
         res.status(200).json(req.user);

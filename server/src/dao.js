@@ -4,43 +4,6 @@ import db from './db.js';
 import dayjs from 'dayjs';
 
 /**
- * Get the list of products
- * @returns products: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
- */
-export function listProducts(day) {
-    return new Promise((resolve, reject) => {
-        let date = dayjs(day).format('YYYY-MM-DD');
-        date = date + " 00:00";
-
-        const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit, pd.ref_farmer, f.farm_name
-                     FROM Product p,
-                          Prod_descriptor pd,
-                          Farmer f
-                     WHERE pd.id = p.ref_prod_descriptor 
-                        AND pd.ref_farmer = f.ref_user
-                        AND p.date >= DATE(?)`;
-        db.all(sql, [date], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            const products = rows.map((p) => ({
-                id: p.id,
-                name: p.name,
-                description: p.description,
-                category: p.category,
-                quantity: p.quantity,
-                price: p.price,
-                unit: p.unit,
-                ref_farmer: p.ref_farmer,
-                farm_name: p.farm_name
-            }));
-            resolve(products);
-        });
-    });
-}
-
-/**
  * Get the list of client
  * @returns list of clients
  */
@@ -64,62 +27,6 @@ export function listClients() {
                 balance: c.balance,
             }));
             resolve(clients);
-        });
-    });
-}
-
-/**
- * Get the list of products linked to a farmer
- * @returns products: [{id,name,description,unit}]
- */
-export function listFarmerProducts(farmerId) {
-    return new Promise((resolve, reject) => {
-        const sql = `SELECT pd.id, pd.name, pd.description, pd.unit
-                     FROM 
-                          Prod_descriptor pd,
-                          Farmer f
-                     WHERE pd.ref_farmer=? AND pd.ref_farmer = f.ref_user`;
-        db.all(sql, [farmerId], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            const products = rows.map((p) => ({
-                id: p.id,
-                name: p.name,
-                description: p.description,
-                unit: p.unit,
-            }));
-            resolve(products);
-        });
-    });
-}
-
-/**
- * Get the list of products supplied the next week linked to a farmer
- * @returns products: [{id,name,category, price,quantity,unit}]
- */
-/* TODO add virtual clock*/
-export function listSuppliedFarmerProducts(farmerId) {
-    return new Promise((resolve, reject) => {
-        const sql = `SELECT p.id, pd.name, pd.category, p.quantity, p.price, pd.unit
-                     FROM Product p,
-                          Prod_descriptor pd
-                     WHERE pd.id = p.ref_prod_descriptor AND pd.ref_farmer=?`;
-        db.all(sql, [farmerId], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            const products = rows.map((p) => ({
-                id: p.id,
-                name: p.name,
-                category: p.category,
-                quantity: p.quantity,
-                unit: p.unit,
-                price:p.price
-            }));
-            resolve(products);
         });
     });
 }
@@ -176,7 +83,6 @@ export function insertOrder(orderClient) {
         );
     });
 }
-
 
 // clientId can be specified or not
 // if specified the query selects only orders of a specific client
@@ -356,43 +262,6 @@ export function addProductToBasket(clientId, productId, quantity) {
     });
 }
 
-/**
- *  INSERT product quantity available for the next week
- *  @return products: [{productID, quantity, price}]
- */
-export function addExpectedAvailableProduct(availableProduct){
-    return new Promise((resolve, reject) => {
-        const sql = `INSERT INTO Product(ref_prod_descriptor,quantity, price, date ) VALUES (?, ?,?,?)`;
-        db.run(sql, [availableProduct.productID, availableProduct.quantity, availableProduct.price, dayjs().format('YYYY-MM-DD HH:mm')], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve("this.lastID");
-        });
-    });
-}
-
-/**
- *  DELETE product {productID} quantity available for the next week
- * @param productID
- */
-export function removeExpectedAvailableProduct(product){
-    console.log(product)
-    return new Promise((resolve, reject) => {
-        const sql = `DELETE FROM Product WHERE id=? `;
-        db.run(sql, [product.productID], (err, rows) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-
-            resolve(product.productID);
-        });
-    });
-}
- 
 /**
  * Remove a product from the user's basket. 
  * 
