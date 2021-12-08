@@ -67,6 +67,7 @@ export function listClients() {
         });
     });
 }
+
 /**
  * Get the list of products linked to a farmer
  * @returns products: [{id,name,description,unit}]
@@ -93,6 +94,7 @@ export function listFarmerProducts(farmerId) {
         });
     });
 }
+
 /**
  * Get the list of products supplied the next week linked to a farmer
  * @returns products: [{id,name,category, price,quantity,unit}]
