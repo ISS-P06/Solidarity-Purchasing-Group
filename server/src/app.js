@@ -127,24 +127,11 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
  * get the list of products
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
-<<<<<<< HEAD
 app.get('/api/products', isLoggedIn, (req, res) => {
   listProducts()
     .then((products) => res.json(products))
     .catch(() => res.status(500).end())
-=======
-app.get('/api/products', (req, res) => {
-    let currTime = new Date(vtc.time());
-    let wednesday = currTime;
 
-    while(wednesday.getDay() != 3) {
-        wednesday.setDate(wednesday.getDate() - 1);
-    }
-
-    productDAO.listProducts(wednesday)
-        .then((products) => res.json(products))
-        .catch(() => res.status(500).end());
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /**
@@ -152,17 +139,10 @@ app.get('/api/products', (req, res) => {
  * get the list of clients
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
-<<<<<<< HEAD
 app.get('/api/clients', isLoggedIn, (req, res) => {
   listClients()
     .then((clients) => res.json(clients))
     .catch(() => res.status(500).end());
-=======
-app.get('/api/clients', (req, res) => {
-    clientDAO.listClients()
-        .then((clients) => res.json(clients))
-        .catch(() => res.status(500).end());
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /**
@@ -174,7 +154,6 @@ app.get('/api/clients', (req, res) => {
  * @param {int} amount  Amount of money to add on client's balance.
  */
 app.put(
-<<<<<<< HEAD
   '/api/clients/topup', isLoggedIn,
   check('id').isInt(),
   check('amount').isInt({ min: 5 }),
@@ -183,16 +162,6 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ error: errors.array() });
     }
-=======
-    '/api/clients/topup',
-    check('id').isInt(),
-    check('amount').isInt({min: 5}),
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({error: errors.array()});
-        }
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 
         const {id, amount} = req.body;
 
@@ -237,7 +206,6 @@ app.post(
 );
 
 // GET /api/orders
-<<<<<<< HEAD
 app.get('/api/orders', isLoggedIn, (req, res) => {
   getOrders()
     .then((orders) => res.json(orders))
@@ -256,31 +224,10 @@ app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
   getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
-=======
-app.get('/api/orders', (req, res) => {
-    orderDAO.getOrders()
-        .then((orders) => res.json(orders))
-        .catch(() => res.status(500).end());
-});
-
-// GET /api/clients/:clientId/orders
-app.get('/api/clients/:clientId/orders', (req, res) => {
-    orderDAO.getOrders(req.params.clientId)
-        .then((orders) => res.json(orders))
-        .catch(() => res.status(500).end());
-});
-
-// GET /api/clients/:clientId/orders/:orderId
-app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
-    orderDAO.getOrderById(req.params.orderId, req.params.clientId)
-        .then((orders) => res.json(orders))
-        .catch(() => res.status(500).end());
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 // GET /api/orders/:id
 // Route used to get the order review
-<<<<<<< HEAD
 app.get('/api/orders/:id', isLoggedIn, (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {
@@ -298,25 +245,6 @@ app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
       res.json(orderId);
     })
     .catch(() => res.status(500).end());
-=======
-app.get('/api/orders/:id', (req, res) => {
-    orderDAO.getOrderById(req.params.id)
-        .then((order) => {
-            res.json(order);
-        })
-        .catch(() => {
-            res.status(500).end();
-        });
-});
-
-// POST /api/orders/:id/deliver
-app.post('/api/orders/:id/deliver', (req, res) => {
-    orderDAO.setOrderDelivered(req.params.id)
-        .then((orderId) => {
-            res.json(orderId);
-        })
-        .catch(() => res.status(500).end());
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /** User API **/
@@ -438,7 +366,6 @@ app.post(
  * 
  * @param {number} userId - User id on database
  */
-<<<<<<< HEAD
 app.post('/api/client/:userId/basket/buy',
     isLoggedIn ,
     [check('userId').isInt()], async (req, res) => {
@@ -446,13 +373,7 @@ app.post('/api/client/:userId/basket/buy',
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-=======
-app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
-    }
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
+
 
     const {userId} = req.params;
     const dateTime = vtc.formatTime();
@@ -494,7 +415,6 @@ app.delete(
 );
 
 app.post(
-<<<<<<< HEAD
   '/api/client/:userId/basket/add',isLoggedIn,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
@@ -502,15 +422,6 @@ app.post(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-=======
-    '/api/client/:userId/basket/add',
-    [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
-    (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({errors: errors.array()});
-        }
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 
         const {userId} = req.params;
         const {productId, reservedQuantity} = req.body;
@@ -523,33 +434,11 @@ app.post(
 
 
 // GET /api/clients/:clientId/basket
-<<<<<<< HEAD
 app.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
   getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
-=======
-app.get('/api/client/:clientId/basket', (req, res) => {
-    basketDAO.getBasketByClientId(req.params.clientId)
-        .then((products) => res.json(products))
-        .catch(() => res.status(500).end());
-});
 
-/*** Farmer APIs **/
-/**
- * GET
- *
- * Get all the products supplied the next week linked by a farmer with {userId}
- */
-app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()], (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
-    }
-    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId)
-        .then((products) => res.json(products))
-        .catch(() => res.status(500).end());
->>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 /**
  * GET
