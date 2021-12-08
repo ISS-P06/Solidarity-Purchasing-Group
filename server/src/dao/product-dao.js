@@ -94,3 +94,29 @@ export function removeExpectedAvailableProduct(product) {
     });
   });
 }
+
+/**
+ * method to insert a new product description through a farmer
+ * @param description: is an object with {name ,descrption ,category ,unit , ref_farmer}
+ * @returns Promise <null>
+ */
+export function insertProductDescription(description) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      'INSERT INTO Prod_descriptor(name , description, category, unit ,ref_farmer) VALUES(?,?,?,?,?) ';
+    db.run(
+      sql,
+      [
+        description.name,
+        description.description,
+        description.category,
+        description.unit,
+        description.ref_farmer,
+      ],
+      function (err) {
+        if (err) reject(err);
+        else resolve(this.lastID);
+      }
+    );
+  });
+}

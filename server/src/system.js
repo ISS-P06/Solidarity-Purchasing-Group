@@ -4,14 +4,14 @@ import {mail_sendBalanceReminder} from './mailer';
 import {checksClientBalance, emptyBaskets} from './dao/system-dao';
 
 class SYS {
-    /*
+    /**
      * System
      * 
      * Used to check for time-based events and execute 
      * related operations.
      */
 
-    /*
+    /**
      * Check for time-based events every time the
      * virtual clock is updated.
      */

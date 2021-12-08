@@ -1,6 +1,8 @@
-import { Button, Container, Row, Col, Form, FloatingLabel } from 'react-bootstrap/';
+import { Button, Container, Row, Col, Form, FloatingLabel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import {api_insertProductDescription} from '../../Api'
+import {addMessage} from "../Message";
 
 
 const FarmerProductForm = (props) => {
@@ -22,9 +24,14 @@ const FarmerProductForm = (props) => {
             setValidated(true);
         } else {
             const newProduct = { name: name, description: description, category: category, unit: unit, ref_farmer: userId };
+            api_insertProductDescription(newProduct)
+                .then(()=>{
+                    addMessage({message: 'New product description added successfully', type: 'success'});
+                }).catch((err)=>{
+                addMessage({message: 'There has been an error with adding new description', type: 'danger'});
+            })
+            // TODO: call api to add product in the db
 
-            /* TO DO: call api to add product in the db */
-            //console.log(newProduct);
 
             setValidated(true);
         }
@@ -40,7 +47,7 @@ const FarmerProductForm = (props) => {
                 <Form aria-labelledby="newProduct" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group className="mb-4">
                         <FloatingLabel controlId="newProduct" label="Name">
-                            <Form.Control required value={name} onChange={(ev) => setName(ev.target.value)} required />
+                            <Form.Control required value={name} onChange={(ev) => setName(ev.target.value)} />
                             <Form.Control.Feedback type="invalid">
                                 Please provide a name
                             </Form.Control.Feedback>

@@ -38,7 +38,7 @@ export const api_getProducts = async () => {
  */
 export const api_getFarmerProducts = async (farmerId) => {
     try {
-        const res = await axios.get('/api/farmer/'+ farmerId+ '/products');
+        const res = await axios.get('/api/farmer/' + farmerId + '/products');
         if (res.data) {
             return res.data;
         } else {
@@ -55,7 +55,7 @@ export const api_getFarmerProducts = async (farmerId) => {
  */
 export const api_getSupplyFarmerProducts = async (farmerId) => {
     try {
-        const res = await axios.get('/api/farmer/'+ farmerId+ '/products/supplied');
+        const res = await axios.get('/api/farmer/' + farmerId + '/products/supplied');
         if (res.data) {
             return res.data;
         } else {
@@ -207,10 +207,10 @@ export const api_addOrder = async (orderClient) => {
 
 /**
  * Top up client wallet.
- * 
+ *
  * This api is avaiable only for a user logged as `employee`.
- * 
- * @param {{id: number, amount: number}} args 
+ *
+ * @param {{id: number, amount: number}} args
  * @param id - Id of the user we want to top up
  * @param amount - Top up amount
  * @returns {Promise<*>} Response object of the api call
@@ -231,7 +231,7 @@ export const api_addTopUpClient = async ({id, amount}) => {
 
 /**
  * Api used to get the current virtual time and date from backend.
- * 
+ *
  * @returns {any} res.data
  *  - res.data.currentTime: dayjs.Dayjs object to represents the current virtual time and date.
  *  - res.data.day: string object to represents the current day of the week associated to the currentTime.
@@ -253,10 +253,10 @@ export const api_getTime = async () => {
 
 /**
  * Api used to send the current virtual time and date to the backend.
- * 
+ *
  * @param {string} dateTime
  *  - dateTime is an ISODate string.
- * @returns {any} 
+ * @returns {any}
  *  - the returned status of the put request made by axios.
  */
 export const api_setTime = async (dateTime) => {
@@ -311,10 +311,9 @@ export const api_login = async (credentials) => {
  * Logout
  */
 export const api_logout = async () => {
-    try{
+    try {
         return await axios.delete('/api/sessions/current')
-    }
-    catch(err){
+    } catch (err) {
         throw new Error("Sorry, there is a problem with the logout. Try later..");
     }
 };
@@ -401,4 +400,17 @@ export const api_addProductToBasket = async (userId, productId, reservedQuantity
     }
 };
 
-
+/**
+ * insert new product description from the farmer side
+ * @param description: object that carries product name , product description, category, unit and farmer reference in db
+ * @returns {Promise<*>}
+ */
+export async function api_insertProductDescription(description) {
+    try {
+        const res = await axios.post('/api/insert_product_description', description);
+        if (res.data)
+            return res.data;
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error with description insertion');
+    }
+}
