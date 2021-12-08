@@ -1,7 +1,7 @@
 'use strict';
 import express from 'express';
 import morgan from 'morgan';
-import {body, check, validationResult} from 'express-validator';
+import { check, validationResult } from 'express-validator';
 import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
@@ -366,7 +366,9 @@ app.post(
 /**
  * POST
  *
- * Insert client's order, with the items on his basket
+ * Insert client's order on database, with the items on its basket.
+ * 
+ * @param {number} userId - User id on database
  */
 app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req, res) => {
     const errors = validationResult(req);
@@ -377,9 +379,11 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
     const {userId} = req.params;
     const dateTime = vtc.formatTime();
 
-    try {
-        const basket = await getBasketByClientId(userId);
-        const balance = await getBalanceByClientId(userId);
+  // NOTE: If one of these promise fails, it will immediatly raise
+  // an exception and the next ones won't be executed.
+  try {
+    const basket = await getBasketByClientId(userId);
+    const balance = await getBalanceByClientId(userId);
 
         // insert order
         await insertOrderFromBasket(userId, basket, balance, dateTime);

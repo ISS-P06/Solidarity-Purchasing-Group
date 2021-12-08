@@ -23,8 +23,8 @@ the `-d` flag is for [detached mode](https://stackoverflow.com/questions/3402968
 You can run tests in interactive mode with commands:
 
 ```sh
-docker-compose run client-tests
-docker-compose run server-tests
+docker-compose run --rm client-tests
+docker-compose run --rm server-tests
 ```
 
 For running both tests and the app (suitable for a fast check, not for the real development):
