@@ -5,11 +5,14 @@ import { checkOrderInterval } from '../../utils/date';
 const ProductCard = (props) => {
     const { product, userRole, onBasketAdd, virtualTime } = props;
 
+    const [show, setShow] = useState(false);
+    const [reservedQuantity, setReservedQuantity] = useState(0);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    // get image path
     const regex = /[ _]/g;
     let imgName = product.category.replace(regex, '-').toLowerCase() + '-16x11.png';
     let imgPath = '/img/products/' + imgName;
-
-    const [show, setShow] = useState(false);
 
     const handleClose = () => {
         setShow(false);
@@ -17,9 +20,6 @@ const ProductCard = (props) => {
     };
     const handleShow = () => setShow(true);
 
-    const [reservedQuantity, setReservedQuantity] = useState(0);
-    const [errorMessage, setErrorMessage] = useState('');
-    
     /**
      * This function handles what happen if we add a product in the basket,
      *  performing some checks on the quantity, at the end recall a fuction that add the product on the basket
@@ -62,23 +62,13 @@ const ProductCard = (props) => {
                 </ListGroup>
                 {userRole == "client" ?
                     <Card.Footer>
-                        {checkOrderInterval(virtualTime) ? (
-                            <Button
-                                variant="primary"
-                                className="float-end text-light pt-0 pb-1"
-                                style={{ fontSize: 20 }}
-                                onClick={handleShow}>
-                                +
-                            </Button>) : (
-                            <Button
-                                variant="primary"
-                                className="float-end text-light pt-0 pb-1"
-                                style={{ fontSize: 20 }}
-                                onClick={handleShow} disabled>
-                                +
-                            </Button>
-                        )
-                        }
+                        <Button
+                            variant="primary"
+                            className="float-end text-light pt-0 pb-1"
+                            style={{ fontSize: 20 }}
+                            onClick={handleShow} disabled={!checkOrderInterval(virtualTime)}>
+                            +
+                        </Button>
                         <Modal show={show} onHide={handleClose} centered>
                             <Modal.Header closeButton>
                                 <Modal.Title>Please insert the quantity</Modal.Title>
@@ -110,14 +100,14 @@ const ProductCard = (props) => {
                                     </Col>
                                     <Col>
                                         <Button variant="primary"
-                                        onClick={handleAddProductToBasket}
-                                        disabled={!checkOrderInterval(virtualTime)}>
+                                            onClick={handleAddProductToBasket}
+                                            disabled={!checkOrderInterval(virtualTime)}>
                                             Add product to Basket
                                         </Button>
                                     </Col>
                                 </Row>
                             </Modal.Footer>
-                            { errorMessage && <Alert variant="danger">{errorMessage}</Alert> }
+                            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                         </Modal>
                     </Card.Footer> : <></>}
             </Card>

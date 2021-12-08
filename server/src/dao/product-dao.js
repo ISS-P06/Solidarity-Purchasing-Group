@@ -101,7 +101,7 @@ export function removeExpectedAvailableProduct(product) {
 export function insertProductDescription(description) {
   return new Promise((resolve, reject) => {
     const sql =
-      'INSERT INTO Prod_descriptor(name , description, category, unit ,ref_farmer) VALUES(?,?,?,?,?)';
+      'INSERT INTO Prod_descriptor(name, description, category, unit, ref_farmer) VALUES(?,?,?,?,?)';
     db.run(
       sql,
       [

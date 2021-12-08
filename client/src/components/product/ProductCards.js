@@ -5,7 +5,6 @@ import { addMessage } from '../Message';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
 
-
 const ProductCards = (props) => {
     const { userRole, userId, virtualTime } = props;
 
@@ -18,33 +17,34 @@ const ProductCards = (props) => {
     const [productList, setProductList] = useState([]);
 
     useEffect(() => {
-        if (userRole === "farmer"){
+        if (userRole === "farmer") {
             api_getFarmerProducts(userId)
-            .then((products) => {
-                setProductList(products);
-                setLoading(false);
-            })
-            .catch((e) => {
-                addMessage({message: e.message, type: 'danger'});
-                setLoading(false);
-            });
+                .then((products) => {
+                    setProductList(products);
+                    setLoading(false);
+                })
+                .catch((e) => {
+                    addMessage({ message: e.message, type: 'danger' });
+                    setLoading(false);
+                });
         } else {
             api_getProducts()
-            .then((products) => {
-                setProductList(products);
-                setLoading(false);
-            })
-            .catch((e) => {
-                addMessage({ message: e.message, type: 'danger' });
-                setLoading(false);
-            });
+                .then((products) => {
+                    setProductList(products);
+                    setLoading(false);
+                })
+                .catch((e) => {
+                    addMessage({ message: e.message, type: 'danger' });
+                    setLoading(false);
+                });
         }
     }, [virtualTime]);
 
-    // pagination
+    // pagination start
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
 
+    // go up after changing page
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [currentPage]);
@@ -68,6 +68,7 @@ const ProductCards = (props) => {
         if (i > 0)
             pageNumbers.push(i);
     }
+    // pagination end
 
     /**
      * The function handleOnSerachProduct take an argument that is the name of the product that you want to looking for,
@@ -96,7 +97,7 @@ const ProductCards = (props) => {
         setSearchedProduct(products);
         setCurrentPage(1);
     }
-    
+
     /**
      * This function calls the api of reference to add product on the basket
      * @param {*} reservedQuantity 
@@ -106,10 +107,10 @@ const ProductCards = (props) => {
      */
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
-        .then(() => {
-            props.handleAddProduct();
-            addMessage({ message: 'Product correctly added to the basket', type: "info" });
-        }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
+            .then(() => {
+                props.handleAddProduct();
+                addMessage({ message: 'Product correctly added to the basket', type: "info" });
+            }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
     }
 
     return (
@@ -165,8 +166,7 @@ const ProductCards = (props) => {
                                         {i}
                                     </Pagination.Item>
                                 ))}
-                                {currentPage !== endPage &&
-                                    <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+                                {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
                                 {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
                             </Pagination>
                         }
