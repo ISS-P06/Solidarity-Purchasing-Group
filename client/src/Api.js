@@ -32,75 +32,6 @@ export const api_getProducts = async () => {
     }
 };
 
-/**
- *  GET products
- *  @return products: [{id,name,description,unit}]
- */
-export const api_getFarmerProducts = async (farmerId) => {
-    try {
-        const res = await axios.get('/api/farmer/' + farmerId + '/products');
-        if (res.data) {
-            return res.data;
-        } else {
-            throw new Error(res.data.message);
-        }
-    } catch (err) {
-        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
-    }
-};
-
-/**
- *  GET supplied products by a farmer for the next week
- *  @return products: [{id,name,price,quantity,unit}]
- */
-export const api_getSupplyFarmerProducts = async (farmerId) => {
-    try {
-        const res = await axios.get('/api/farmer/' + farmerId + '/products/supplied');
-        if (res.data) {
-            return res.data;
-        } else {
-            throw new Error(res.data.message);
-        }
-    } catch (err) {
-        manageError(err.response.status, 'Sorry, there was an error in getting all the products')
-    }
-};
-
-/**
- *  POST product quantity available the next week
- *  @param supplyProduct: [{productID, quantity, price}]
- */
-export const api_addAvailableProductQuantity = async (supplyProduct) => {
-    try {
-        const res = await axios.post('/api/farmer/products/available', supplyProduct);
-        if (res.data) {
-            return res.data;
-        } else {
-            throw new Error(res.data.message);
-        }
-    } catch (err) {
-        manageError(err.response.status, 'Sorry, there was an error in adding product quantity available the next week')
-    }
-};
-
-/**
- *  DELETE product with {productID}quantity available the next week
- *  @param productID: id of the supplied product quantity to remove
- */
-export const api_removeAvailableProductQuantity = async (productID) => {
-    try {
-        const res = await axios.delete('/api/farmer/products/available', {data: {productID}});
-        if (res.data) {
-            return res.data;
-        } else {
-            throw new Error(res.data.message);
-        }
-    } catch (err) {
-        manageError(err.response.status, 'Sorry, there was an error in removing product quantity available the next week')
-    }
-};
-
-
 export const api_getOrders = async () => {
     try {
         const res = await axios.get('/api/orders');
@@ -205,16 +136,6 @@ export const api_addOrder = async (orderClient) => {
     }
 };
 
-/**
- * Top up client wallet.
- *
- * This api is avaiable only for a user logged as `employee`.
- *
- * @param {{id: number, amount: number}} args
- * @param id - Id of the user we want to top up
- * @param amount - Top up amount
- * @returns {Promise<*>} Response object of the api call
- */
 export const api_addTopUpClient = async ({id, amount}) => {
     try {
         const res = await axios.put('/api/clients/topup', {amount, id});
@@ -231,7 +152,7 @@ export const api_addTopUpClient = async ({id, amount}) => {
 
 /**
  * Api used to get the current virtual time and date from backend.
- *
+ * 
  * @returns {any} res.data
  *  - res.data.currentTime: dayjs.Dayjs object to represents the current virtual time and date.
  *  - res.data.day: string object to represents the current day of the week associated to the currentTime.
@@ -253,15 +174,16 @@ export const api_getTime = async () => {
 
 /**
  * Api used to send the current virtual time and date to the backend.
- *
+ * 
  * @param {string} dateTime
  *  - dateTime is an ISODate string.
- * @returns {any}
- *  - the returned status of the put request made by axios.
+ * @returns {any} res
+ *  - res contains the returned status of the put request made by axios.
  */
 export const api_setTime = async (dateTime) => {
     try {
-        return await axios.put('/api/time', {time: dateTime});
+        const res = await axios.put('/api/time', {time: dateTime});
+        return res;
     } catch (error) {
         throw new Error(error.message);
     }
@@ -274,8 +196,9 @@ export const api_setTime = async (dateTime) => {
  * @param user
  * */
 export async function insertUser(user) {
+    let res;
     try {
-        return await axios.post('/api/register_user', user);
+        res = await axios.post('/api/register_user', user);
     } catch (err) {
         manageError(err.response.status, 'Sorry, there was an error in registering the user')
     }
@@ -289,7 +212,7 @@ export async function insertUser(user) {
 
 export const api_login = async (credentials) => {
     try {
-        const res = await axios.post('/api/sessions', {
+        let res = await axios.post('/api/sessions', {
             username: credentials.username,
             password: credentials.password,
         });
@@ -311,9 +234,10 @@ export const api_login = async (credentials) => {
  * Logout
  */
 export const api_logout = async () => {
-    try {
-        return await axios.delete('/api/sessions/current')
-    } catch (err) {
+    try{
+        let res = await axios.delete('/api/sessions/current')
+    }
+    catch(err){
         throw new Error("Sorry, there is a problem with the logout. Try later..");
     }
 };
@@ -400,17 +324,4 @@ export const api_addProductToBasket = async (userId, productId, reservedQuantity
     }
 };
 
-/**
- * insert new product description from the farmer side
- * @param description: object that carries product name , product description, category, unit and farmer reference in db
- * @returns {Promise<*>}
- */
-export async function api_insertProductDescription(description) {
-    try {
-        const res = await axios.post('/api/insert_product_description', description);
-        if (res.data)
-            return res.data;
-    } catch (err) {
-        manageError(err.response.status, 'Sorry, there was an error with description insertion');
-    }
-}
+

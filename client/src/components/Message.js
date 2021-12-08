@@ -2,14 +2,6 @@ import { useEffect } from 'react';
 import ReactNotification, { store } from 'react-notifications-component';
 import { Alert as BAlert } from 'react-bootstrap';
 
-/**
- * Top level function for toast notifications
- *
- * @param {object} args
- * @param {string} args.title - Tile of the notification [default='']
- * @param {string} args.message - Body of the notification [default='']
- * @param {string} args.type - Color of the notification [default='success']
- */
 export function addMessage({ title, message, type }) {
   store.addNotification({
     title: title || '',

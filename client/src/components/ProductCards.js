@@ -13,10 +13,9 @@ import {
     Spinner
 } from 'react-bootstrap';
 
-import { useState, useEffect } from 'react';
-import { api_getProducts, api_addProductToBasket } from '../Api';
-import { addMessage } from './Message';
-import { checkOrderInterval } from '../utils/date'
+import {useState, useEffect} from 'react';
+import {api_getProducts, api_addProductToBasket} from '../Api';
+import {addMessage} from './Message';
 
 const ProductCards = (props) => {
     // product code
@@ -31,15 +30,15 @@ const ProductCards = (props) => {
                 setLoading(false);
             })
             .catch((e) => {
-                addMessage({ message: e.message, type: 'danger' })
+                addMessage({message: e.message, type: 'danger'})
                 setLoading(false);
             });
-    }, [props.virtualTime]);
+    }, []);
 
     // pagination code
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
-    const [error, setError] = useState("")
+    const [error, setError]=useState("")
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [currentPage]);
@@ -101,64 +100,64 @@ const ProductCards = (props) => {
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
             props.handleAddProduct();
-            addMessage({ message: 'Product correctly added to the basket', type: "info" });
+            addMessage({message: 'Product correctly added to the basket', type: "info"});
 
-        }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
+        }).catch((e) => addMessage({message: e.message, type: 'danger'}));
 
     }
 
     return (
 
         loading ? (
-            <Spinner animation="border" variant="success" className={"mt-3"} />
+            <Spinner animation="border" variant="success" className={"mt-3"}/>
         ) : (
-            <Container style={{ textAlign: 'left' }}>
+            <Container style={{textAlign: 'left'}}>
                 <Row className="mt-4">
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
                         <h3>Browse products</h3>
                     </Col>
                 </Row>
                 <Row className="mt-4">
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
                         <Form>
                             <Form.Control
                                 type="text"
                                 placeholder="Search Product"
-                                onChange={(e) => handleOnSearchProduct(e.target.value)} />
+                                onChange={(e) => handleOnSearchProduct(e.target.value)}/>
                         </Form>
                     </Col>
                 </Row>
                 <Row className="mt-4">
                     {productList.length === 0 && (
-                        <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>No products found</h5>
                         </Col>
                     )}
-                    {error && (
-                        <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    {error  && (
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>{error}</h5>
                         </Col>
                     )}
                     {currentProducts.map((p) => {
                         return <ProductCard key={p.id} product={p} userRole={props.userRole}
-                            onBasketAdd={handleAddProductToBasket} virtualTime={props.virtualTime}/>;
+                                            onBasketAdd={handleAddProductToBasket}/>;
                     })}
                 </Row>
                 {!error && (<Row className="mt-3 mb-3">
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
                         {productList.length !== 0 &&
-                            <Pagination size="md">
-                                {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
-                                {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
-                                {pageNumbers.map((i) => (
-                                    <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
-                                        {i}
-                                    </Pagination.Item>
-                                ))}
-                                {currentPage !== endPage &&
-                                    <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
-                                {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
-                            </Pagination>
+                        <Pagination size="md">
+                            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)}/>}
+                            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)}/>}
+                            {pageNumbers.map((i) => (
+                                <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+                                    {i}
+                                </Pagination.Item>
+                            ))}
+                            {currentPage !== endPage &&
+                            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
+                            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)}/>}
+                        </Pagination>
                         }
                     </Col>
                 </Row>)}
@@ -169,7 +168,7 @@ const ProductCards = (props) => {
 };
 
 const ProductCard = (props) => {
-    const { product } = props;
+    const {product} = props;
     const regex = /[ _]/g;
     let imgName = product.category.replace(regex, '-').toLowerCase() + '-16x11.png';
     let imgPath = '/img/products/' + imgName;
@@ -203,9 +202,9 @@ const ProductCard = (props) => {
     }
 
     return (
-        <Col sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 3 }} className="mb-3">
+        <Col sm={{span: 6}} md={{span: 6}} lg={{span: 3}} className="mb-3">
             <Card bg="light" text="black" className="shadow">
-                <Card.Img variant="top" src={imgPath} />
+                <Card.Img variant="top" src={imgPath}/>
                 <ListGroup variant="flush">
                     <ListGroup.Item>
                         <Card.Body className="p-0">
@@ -222,23 +221,13 @@ const ProductCard = (props) => {
                 </ListGroup>
                 {props.userRole == "client" ?
                     <Card.Footer>
-                        { checkOrderInterval(props.virtualTime) ? (
                         <Button
                             variant="primary"
                             className="float-end text-light pt-0 pb-1"
-                            style={{ fontSize: 20 }}
+                            style={{fontSize: 20}}
                             onClick={handleShow}>
                             +
-                        </Button>) : (
-                            <Button
-                            variant="primary"
-                            className="float-end text-light pt-0 pb-1"
-                            style={{ fontSize: 20 }}
-                            onClick={handleShow} disabled>
-                            +
                         </Button>
-                        )
-                        }
                         <Modal show={show} onHide={handleClose} centered>
                             <Modal.Header closeButton>
                                 <Modal.Title>Please insert the quantity</Modal.Title>
@@ -246,7 +235,7 @@ const ProductCard = (props) => {
                             <Modal.Body>
                                 <Row>
                                     <Col>
-                                        <Image src={imgPath} fluid rounded />
+                                        <Image src={imgPath} fluid rounded/>
                                     </Col>
                                     <Col xs={2}>
                                         {product.name}
@@ -265,19 +254,13 @@ const ProductCard = (props) => {
                             </Modal.Body>
                             <Modal.Footer>
                                 <Row>
-                                    <Col style={{ left: '10%' }}>
+                                    <Col style={{left: '10%'}}>
                                         <h5> Total € {(reservedQuantity * product.price).toFixed(2)}</h5>
                                     </Col>
                                     <Col>
-                                        {
-                                            checkOrderInterval(props.virtualTime) ? (
-                                                <Button variant="primary" onClick={handleAddProductToBasket}>
-                                                    Add product to Basket
-                                                </Button>) : (
-                                                <Button variant="primary" onClick={handleAddProductToBasket} disabled>
-                                                    Add product to Basket
-                                                </Button>)
-                                        }
+                                        <Button variant="primary" onClick={handleAddProductToBasket}>
+                                            Add product to Basket
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Modal.Footer>

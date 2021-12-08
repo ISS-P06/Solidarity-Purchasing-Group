@@ -1,6 +1,9 @@
+import { RedirectRoute } from '../../utils/route';
+import { checkOrderInterval } from '../../utils/date';
+import { OrderReview } from '..';
 import { Redirect, Route } from 'react-router-dom';
-import { OrderReview,ClientsList, InsertUser, ProductCards, OrderList, } from '..';
-import { getUserRoute, RedirectRoute} from '../../utils';
+import { getUserRoute } from '../../utils';
+import { ClientsList, InsertUser, ProductCards, OrderList,  } from '..';
 
 /**
  *  This component contains all employee-only routes.
@@ -37,7 +40,7 @@ function RoutesEmployee(props) {
               path="/employee/products"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<ProductCards userRole={userRole} userId={userId} virtualTime={virtualTime}/>}
+              component={<ProductCards userRole={userRole} userId={userId} />}
             />
 
             {/* Employee order detail route */}

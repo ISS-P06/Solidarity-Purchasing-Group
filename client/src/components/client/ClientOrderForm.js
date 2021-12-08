@@ -53,7 +53,9 @@ function ClientOrderForm(props) {
         .then((id) =>
           addMessage({ message: 'Order ' + id + ' emitted with success ', type: 'success' })
         )
-        .catch((e) => addMessage({title: "Error", message: e.message, type: "danger"}));
+        .catch((err) => {
+
+        });
 
       /*RESET*/
       setProductsList([]);

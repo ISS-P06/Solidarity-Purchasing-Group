@@ -1,8 +1,9 @@
 import {Carousel, Image, Row, Col, Container} from 'react-bootstrap';
 import {BsFillPersonPlusFill, BsBox} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
+import {GiWallet} from 'react-icons/gi';
 import {RiShoppingBasketFill} from 'react-icons/ri';
-import {GiFruitBowl,GiWallet, GiFruitTree} from 'react-icons/gi';
+import {GiFruitBowl, GiFruitTree} from 'react-icons/gi';
 
 function HomePage() {
     const image1 = '/img/homepage/Agriculture.jpg';

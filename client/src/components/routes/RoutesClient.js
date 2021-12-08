@@ -2,14 +2,15 @@ import { RedirectRoute } from '../../utils/route';
 import { OrderReview, OrderList, Basket } from '../order';
 import { LoginForm } from '..';
 import { ClientHomePage } from '../client';
-import { Redirect, Route} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { getUserRoute } from '../../utils';
 
 /**
  *  This component contains all client-only routes.
  */
 function RoutesClient(props) {
-    const {loggedIn, userRole, doLogin, userId, user, virtualTime} = props;
+    const {loggedIn, userRole, doLogin, userId, user} = props;
 
     return (
         <>
@@ -41,7 +42,7 @@ function RoutesClient(props) {
               path="/client/products"
               role={userRole}
               condition={loggedIn}
-              component={<Basket userRole={userRole} userId={userId} virtualTime={virtualTime} />}
+              component={<Basket userRole={userRole} userId={userId} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 

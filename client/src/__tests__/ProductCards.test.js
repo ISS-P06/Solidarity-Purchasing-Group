@@ -12,11 +12,6 @@ jest.mock('../components/Message', () => ({
 
 const server = setupServer();
 
-// Wednesday; date outside interval to make orders
-const date_out = new Date("December 8, 2021 00:00:00");
-// Sunday; date inside intervale to make orders
-const date_in = new Date("December 5, 2021 17:00:00");
-
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
@@ -42,7 +37,7 @@ test('test ProductCards component correct rendering', async () => {
   );
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards virtualTime={date_in}/>);
+  render(<ProductCards />);
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();
 });
@@ -56,7 +51,7 @@ test("test ProductCards component wrong rendering'", async () => {
   );
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards virtualTime={date_in}/>);
+  render(<ProductCards />);
   await waitFor(() => screen.getByText('No products found'));
 
 });
@@ -96,7 +91,7 @@ test("test ProductCards component adds a product to the basket'", async () => {
 
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards userRole="client" userId="1" virtualTime={date_in}/>);
+  render(<ProductCards userRole="client" userId="1"/>);
   
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();
@@ -136,7 +131,7 @@ test("test ProductCards component throws an error if added quantity less than 0.
   
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards userRole="client" userId="1" virtualTime={date_in}/>);
+  render(<ProductCards userRole="client" userId="1"/>);
   
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();
@@ -176,7 +171,7 @@ test("test ProductCards component throws an error if added quantity more than th
   
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards userRole="client" userId="1" virtualTime={date_in}/>);
+  render(<ProductCards userRole="client" userId="1"/>);
   
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();
@@ -225,7 +220,7 @@ test("test ProductCards component is able to search a product", async () => {
   
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards userRole="client" userId="1" virtualTime={date_in}/>);
+  render(<ProductCards userRole="client" userId="1"/>);
   
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();
@@ -272,7 +267,7 @@ test("test ProductCards component throws an error if the searched product is not
   
   // test code
   window.scrollTo = jest.fn();
-  render(<ProductCards userRole="client" userId="1" virtualTime={date_in}/>);
+  render(<ProductCards userRole="client" userId="1"/>);
   
   await waitFor(() => screen.getByText('Baguette'));
   expect(screen.getByText('Baguette')).toBeInTheDocument();

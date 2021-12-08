@@ -20,32 +20,15 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-// Wednesday; date outside interval to make orders
-const date_out = new Date("December 8, 2021 00:00:00");
-// Sunday; date inside intervale to make orders
-const date_in = new Date("December 5, 2021 17:00:00");
-
 describe('My component Basket', () => {
-  test('Is Rendered without product - date outside interval', async () => {
+  test('Is Rendered without product', async () => {
     server.use(
       rest.get('/api/client/1/basket', (req, res, ctx) => {
         return res(ctx.json([]));
       })
     );
 
-    render(<Basket userId={1} virtualTime={date_out}/>);
-    await waitFor(() => screen.getByText(/Sorry/));
-    expect(screen.getByText(/Sorry/)).toBeInTheDocument();
-  });
-
-  test('Is Rendered without product - date inside interval', async () => {
-    server.use(
-      rest.get('/api/client/1/basket', (req, res, ctx) => {
-        return res(ctx.json([]));
-      })
-    );
-
-    render(<Basket userId={1} virtualTime={date_in}/>);
+    render(<Basket userId={1} />);
     await waitFor(() => screen.getByText(/There are no products in the basket/));
     expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
   });
@@ -74,7 +57,7 @@ describe('My component Basket', () => {
       })
     );
 
-    render(<Basket userId={1} virtualTime={date_in}/>);
+    render(<Basket userId={1} />);
     await waitFor(() => screen.getByText(/Onion/));
     expect(screen.getByText(/Onion/)).toBeInTheDocument();
     expect(screen.getByText(/Apple/)).toBeInTheDocument();
@@ -112,7 +95,7 @@ describe('My component Basket', () => {
       })
     );
 
-    render(<Basket userId={1} virtualTime={date_in}/>);
+    render(<Basket userId={1} />);
     await waitFor(() => screen.getByText(/Onion/));
     expect(screen.getByText(/Onion/)).toBeInTheDocument();
     expect(screen.getByText(/Apple/)).toBeInTheDocument();
@@ -133,7 +116,7 @@ describe('My component Basket', () => {
       })
     );
 
-    render(<Basket userId={3} virtualTime={date_in}/>);
+    render(<Basket userId={3} />);
     await waitFor(() => screen.getByText(/There are no products in the basket/));
     expect(screen.getByText(/There are no products in the basket/)).toBeInTheDocument();
   });
@@ -174,7 +157,7 @@ describe('My component Basket', () => {
       })
     );
 
-    render(<Basket userId={1} virtualTime={date_in}/>);
+    render(<Basket userId={1} />);
     await waitFor(() => screen.getByText(/Onion/));
     expect(screen.getByText(/Onion/)).toBeInTheDocument();
     expect(screen.getByText(/Apple/)).toBeInTheDocument();
