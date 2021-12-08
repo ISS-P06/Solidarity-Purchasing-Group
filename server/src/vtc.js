@@ -3,7 +3,7 @@
 import dayjs from 'dayjs';
 
 class VTC {
-  #currentTime = null;
+  static #currentTime = null;
   #weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   /**
@@ -14,7 +14,7 @@ class VTC {
    * @param {any} [time=dayjs()]
    */
   constructor(time = dayjs().add(1, 'hour')) {
-    this.#currentTime = dayjs(time);
+    VTC.#currentTime = dayjs(time);
   }
 
   /**
@@ -23,7 +23,7 @@ class VTC {
    * @return {dayjs.Dayjs} Current virtual time as ISO8601 string.
    */
   time() {
-    return this.#currentTime.toISOString();
+    return VTC.#currentTime.toISOString();
   }
 
   /**
@@ -33,7 +33,7 @@ class VTC {
    */
 
   formatTime() {
-    return this.#currentTime.format('YYYY-MM-DD HH:MM');
+    return VTC.#currentTime.format('YYYY-MM-DD HH:MM');
   }
 
   /**
@@ -42,7 +42,7 @@ class VTC {
    * @return {string} Day of the week.
    */
   day() {
-    const id = this.#currentTime.day();
+    const id = VTC.#currentTime.day();
     return this.#weekdays[id];
   }
 
@@ -53,8 +53,8 @@ class VTC {
    * @return {dayjs.Dayjs} Current virtual time.
    */
   set(time) {
-    this.#currentTime = dayjs(time).add(1, 'hour');
-    return this.#currentTime;
+    VTC.#currentTime = dayjs(time).add(1, 'hour');
+    return VTC.#currentTime;
   }
 }
 

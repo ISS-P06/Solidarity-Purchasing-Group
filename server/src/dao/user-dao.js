@@ -1,8 +1,7 @@
 'use strict';
 
-import db from './db.js';
+import db from '../db.js';
 import bcrypt from 'bcrypt';
-const saltRounds = 10;
 
 // --- Get user info by providing username and password
 export function getUser(username, password) {
@@ -47,7 +46,7 @@ export function getUserById(id) {
         reject(err);
         return;
       }
-      const role=row.role;
+      const role = row.role;
       if (row == undefined) {
         resolve(false);
       } else {
@@ -60,11 +59,10 @@ export function getUserById(id) {
           email: row.email,
           phone: row.phone,
         };
-        if (role === "farmer") {
+        if (role === 'farmer') {
           const sql = 'SELECT * FROM farmer WHERE ref_user=?;';
           db.get(sql, [id], (err, row) => {
             if (err) {
-
               reject(err);
               return;
             }
@@ -75,8 +73,8 @@ export function getUserById(id) {
               user.farm_name = row.farm_name;
               resolve(user);
             }
-          })
-        } else if (role === "client") {
+          });
+        } else if (role === 'client') {
           const sql = 'SELECT * FROM client WHERE ref_user=?;';
           db.get(sql, [id], (err, row) => {
             if (err) {
@@ -90,14 +88,14 @@ export function getUserById(id) {
               user.balance = row.balance;
               resolve(user);
             }
-          })
-        } else if (role === "shop_employee") {
+          });
+        } else if (role === 'shop_employee') {
           resolve(user);
         }
       }
-    })
     });
-  }
+  });
+}
 
 /**
  * Register the user
@@ -109,7 +107,7 @@ export function registerUser(user) {
     let userID;
 
     const userQuery =
-        'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
+      'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
 
     db.serialize(() => {
       let stmt = db.prepare(userQuery);
@@ -119,43 +117,45 @@ export function registerUser(user) {
         }
 
         stmt.run(
-            [user.username, hash, user.typeUser, user.name, user.surname, user.mail, user.phone],
-            function (err) {
-              if (err) {
-                console.log(err);
-                reject(err);
-              }
-              console.log( this.lastID)
-              const userID = this.lastID;
-              if (user.typeUser === 'shop_employee') {
-                resolve(this.lastID);
-              } else if (user.typeUser === 'farmer') {
-                const farmerQuery = 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)';
-                db.serialize(() => {
-                  let stmt_1 = db.prepare(farmerQuery);
-                  stmt_1.run([userID, user.address, user.farmName], function (err) {
-                    if (err) {
-                      reject(err);
-                    }
-
-                  });
+          [user.username, hash, user.typeUser, user.name, user.surname, user.mail, user.phone],
+          function (err) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            console.log(this.lastID);
+            const userID = this.lastID;
+            if (user.typeUser === 'shop_employee') {
+              resolve(this.lastID);
+            } else if (user.typeUser === 'farmer') {
+              const farmerQuery =
+                'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)';
+              db.serialize(() => {
+                let stmt_1 = db.prepare(farmerQuery);
+                stmt_1.run([userID, user.address, user.farmName], function (err) {
+                  if (err) {
+                    reject(err);
+                  }
                 });
-                resolve(userID);
-              } else if (user.typeUser === 'client') {
-                const clientQuery = 'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
-                db.serialize(() => {
-                  let stmt_1 = db.prepare(clientQuery);
-                  stmt_1.run([user.address, user.balance, userID], (err) => {
-                    if (err) {
-                      reject(err);
-                    }
-                  });
+              });
+              resolve(userID);
+            } else if (user.typeUser === 'client') {
+              const clientQuery =
+                'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+              db.serialize(() => {
+                let stmt_1 = db.prepare(clientQuery);
+                stmt_1.run([user.address, user.balance, userID], (err) => {
+                  if (err) {
+                    reject(err);
+                  }
                 });
-                console.log(userID)
-                resolve(userID);
-              }
-            });
+              });
+              console.log(userID);
+              resolve(userID);
+            }
+          }
+        );
       });
-    })
-  })
+    });
+  });
 }
