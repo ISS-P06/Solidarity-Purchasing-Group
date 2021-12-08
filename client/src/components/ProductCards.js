@@ -97,6 +97,14 @@ const ProductCards = (props) => {
             pageNumbers.push(i);
     }
 
+    /**
+     * This function calls the api of reference to add product on the basket
+     * @param {*} reservedQuantity 
+     *  - The quantity to add in the basket
+     * @param {*} productId 
+     *  - The id of the product we wnat to add
+     */
+
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(props.userId, productId, reservedQuantity).then(() => {
             props.handleAddProduct();
@@ -184,6 +192,11 @@ const ProductCard = (props) => {
     const [reservedQuantity, setReservedQuantity] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
 
+    /**
+     * This function handles what happen if we add a product in the basket,
+     *  performing some checks on the quantity, at the end recall a fuction that add the product on the basket
+     * 
+     */
     const handleAddProductToBasket = async () => {
 
         if (reservedQuantity < 0.1) {

@@ -4,6 +4,16 @@ import {api_getOrders, api_getClientOrders} from '../../Api';
 import {Container, Row, Col, Spinner} from 'react-bootstrap/';
 import {addMessage} from '../Message';
 
+/**
+ * This component shows the list of order relative:
+ *  - an user if we log as user
+ *  - all orders if we log as shop_employee
+ * 
+ * @param {*} props: {userRole, userId}
+ *  - userRole
+ *  - userId
+ * @returns 
+ */
 function OrderList(props) {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);

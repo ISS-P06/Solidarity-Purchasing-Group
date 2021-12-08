@@ -324,4 +324,17 @@ export const api_addProductToBasket = async (userId, productId, reservedQuantity
     }
 };
 
-
+/**
+ * insert new product description from the farmer side
+ * @param description: object that carries product name , product description, category, unit and farmer reference in db
+ * @returns {Promise<*>}
+ */
+export async function api_insertProductDescription(description) {
+    try {
+        const res = await axios.post('/api/insert_product_description', description);
+        if (res.data)
+            return res.data;
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error with description insertion');
+    }
+}

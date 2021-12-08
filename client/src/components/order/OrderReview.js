@@ -7,6 +7,12 @@ import { useRouteMatch, Link } from 'react-router-dom';
 
 import { api_getOrderReview, api_getClientOrderReview, api_doDelivery } from '../../Api';
 
+/**
+ * This functional component shows the data relative to each order
+ * @param {*} props {userRole}
+ *  - User role
+ */
+
 function OrderReview(props) {
   const [orderReview, setOrderReview] = useState(0, '', [], '');
   const [isUpdated, setIsUpdated] = useState(false);
@@ -41,6 +47,12 @@ function OrderReview(props) {
     }
   }, [match]);
 
+
+/**
+ * doDelivery() handles what happens if we push the button Deliver
+ * It calls the reference api to deliver the order
+ *   
+ */
   const doDelivery = async () => {
     try {
       await api_doDelivery(match.params.id);

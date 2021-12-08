@@ -5,12 +5,27 @@ import ProductCards from '../ProductCards';
 import ProductList from './ProductList';
 import { addMessage } from '../Message';
 
+
+/**
+ * This functional components shows the list of items that a given client wants to buy
+ * 
+ * @param {*} props: {userID, virtualTime}
+ * It has two properties userId and virtualTime, 
+ * the first properties is used to identify which clinet the basket belongs, 
+ * the seconf one virtualTime is used to check if the basket is available for that time
+ *   
+ */
 export default function Basket(props) {
   const [basket, setBasket] = useState([]);
   const [isEmpty, setIsEmpty] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
   const [loading,setLoading]=useState(true);
 
+  /**
+   * This function handles the buy now action
+   * @param {int} userId 
+   *  - id of the client
+   */
   const handleBuyNow = (userId) => {
     api_buyNow(userId)
       .then(() => {
@@ -20,6 +35,11 @@ export default function Basket(props) {
       .catch((e) =>   addMessage({title: "Error", message: e.message, type: 'danger'}));
   };
 
+  /**
+   * This function handles what happen if we click on the remove button, it removes a product specified as parameter from the basket
+   * @param {int} productId 
+   *  - id of the product you want to remove
+   */
   const handleRemoveProduct = (productId) => {
     api_removeProductFromBasket(props.userId, productId)
       .then(() => {
@@ -34,6 +54,12 @@ export default function Basket(props) {
     setIsUpdated(true);
   };
 
+  /**
+   * This function computes the total as product quantity times the unit price 
+   * @param {*} products 
+   *  - the list of the products
+   * @returns the total amount of the product
+   */
   function computeTotal(products) {
     let total = 0.0;
     products.forEach((product) => {
