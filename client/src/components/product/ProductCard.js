@@ -1,6 +1,6 @@
 import { Row, Col, Card, ListGroup, Button, Modal, Image, Form, Alert } from 'react-bootstrap';
 import { useState } from 'react';
-import { checkOrderInterval } from '../utils/date';
+import { checkOrderInterval } from '../../utils/date';
 
 const ProductCard = (props) => {
     const { product, userRole, onBasketAdd, virtualTime } = props;

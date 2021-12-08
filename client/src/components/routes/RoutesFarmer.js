@@ -2,7 +2,7 @@ import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
 import ReportAvailabilityProductsPage from "../farmer/ReportAvailabilityProductsPage"
 import { FarmerHomePage, FarmerProductForm } from '../farmer';
-import ProductCards from '../ProductCards';
+import ProductCards from '../product/ProductCards';
 
 /**
  *  This component contains all farmer-only routes.
