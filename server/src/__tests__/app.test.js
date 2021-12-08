@@ -1,6 +1,5 @@
 import request from 'supertest';
 import app from '../app';
-import {addProductToBasket, removeProductFromBasket, getBasketByClientId} from '../dao';
 import {copyFileSync, unlinkSync} from 'fs';
 
 /** During test the database can be modified, so we need to backup its state */

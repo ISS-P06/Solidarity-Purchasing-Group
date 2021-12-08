@@ -244,6 +244,12 @@ export function setOrderDelivered(orderId) {
     });
 }
 
+/**
+ * Retrive all the products from the user's basket. 
+ * 
+ * @param {number} clientId - User id on the database.
+ * @returns {Promise<Array>} An array with all the products on the user's basket.
+ */
 export function getBasketByClientId(clientId) {
     return new Promise((resolve, reject) => {
         const sql = `SELECT p.id, pd.name, pd.category, b.quantity, p.price, pd.unit
@@ -269,6 +275,13 @@ export function getBasketByClientId(clientId) {
     });
 }
 
+/**
+ * Insert a product to the user's basket. 
+ * 
+ * @param {number} clientId - User id on the database.
+ * @param {number} productId - Product id on the database.
+ * @returns {Promise<number>} The id of the product added.
+ */
 export function addProductToBasket(clientId, productId, quantity) {
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO Basket(ref_client, ref_product,quantity) VALUES (?, ?,?)`;
@@ -283,6 +296,13 @@ export function addProductToBasket(clientId, productId, quantity) {
     });
 }
 
+/**
+ * Remove a product from the user's basket. 
+ * 
+ * @param {number} clientId - User id on the database.
+ * @param {number} productId - Product id on the database.
+ * @returns {Promise<number>} The id of the product removed.
+ */
 export function removeProductFromBasket(clientId, productId) {
     return new Promise((resolve, reject) => {
         const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
@@ -297,6 +317,12 @@ export function removeProductFromBasket(clientId, productId) {
     });
 }
 
+/**
+ * Retrive the current balance of the user. 
+ * 
+ * @param {number} clientId - User id on the database.
+ * @returns {Promise<number>} User's balance.
+ */
 export function getBalanceByClientId(clientId) {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT balance FROM Client WHERE ref_user = ?';
@@ -305,6 +331,14 @@ export function getBalanceByClientId(clientId) {
     });
 }
 
+/**
+ * Make an order with the product corrently on basket. 
+ * 
+ * @param {number} clientId - User id on the database.
+ * @param {object} basket - User's basket.
+ * @param {number} balance - Current balance on user's wallet.
+ * @returns {Promise<null>} 
+ */
 export function insertOrderFromBasket(clientId, basket, balance, date) {
     return new Promise((resolve, reject) => {
         const totalAmount = basket
