@@ -255,8 +255,21 @@ describe('Test the orders path', () => {
 });
 
 describe('Test the client path', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
     test('It should response GET api/client/4/basket', () => {
-        return request(app)
+        return authenticatedSession
             .get('/api/client/4/basket')
             .then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -265,9 +278,22 @@ describe('Test the client path', () => {
 });
 
 describe('Test add or delete a product into/from the basket', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
     test('Remove a product; It should response 200', () => {
         const data = {productId: 4};
-        return request(app)
+        return authenticatedSession
             .delete('/api/client/4/basket/remove')
             .send(data)
             .then((response) => {
@@ -276,7 +302,7 @@ describe('Test add or delete a product into/from the basket', () => {
     });
     test('Add a product; It should response 200', () => {
         const data = {productId: 4, reservedQuantity: 0.1};
-        return request(app)
+        return authenticatedSession
             .post('/api/client/4/basket/add')
             .send(data)
             .then((response) => {
@@ -288,9 +314,22 @@ describe('Test add or delete a product into/from the basket', () => {
 });
 
 describe('Test failure add or delete a product into/from the basket', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
     test('Add a product; It should response 422 because validation fails', () => {
         const data = {productId: '', reservedQuantity: 0.1};
-        return request(app)
+        return authenticatedSession
             .post('/api/client/4/basket/add')
             .send(data)
             .then((response) => {
@@ -300,7 +339,7 @@ describe('Test failure add or delete a product into/from the basket', () => {
 
     test('Remove a product; It should response 422 because validation fails', () => {
         const data = {productId: ''};
-        return request(app)
+        return authenticatedSession
             .delete('/api/client/4/basket/remove')
             .send(data)
             .then((response) => {
@@ -390,13 +429,26 @@ describe('test user insertion', () => {
 });
 
 describe('test place a order', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
     test('Submit an order; It should response 200', () => {
         const userId = 2;
-        return request(app).post(`/api/client/${userId}/basket/buy`).send().expect(200);
+        return authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(200);
     });
 
     test('Submit an order; It should response 422', () => {
         const userId = 'ciao';
-        return request(app).post(`/api/client/${userId}/basket/buy`).send().expect(422);
+        return authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(422);
     });
 });

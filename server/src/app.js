@@ -365,7 +365,9 @@ app.post(
  *
  * Insert client's order, with the items on his basket
  */
-app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req, res) => {
+app.post('/api/client/:userId/basket/buy',
+    isLoggedIn ,
+    [check('userId').isInt()], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -391,7 +393,7 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
 });
 
 app.delete(
-    '/api/client/:userId/basket/remove',
+    '/api/client/:userId/basket/remove',isLoggedIn,
     [check('userId').isInt(), check('productId').isInt()],
     (req, res) => {
         const errors = validationResult(req);
@@ -409,7 +411,7 @@ app.delete(
 );
 
 app.post(
-  '/api/client/:userId/basket/add',
+  '/api/client/:userId/basket/add',isLoggedIn,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);
@@ -428,7 +430,7 @@ app.post(
 
 
 // GET /api/clients/:clientId/basket
-app.get('/api/client/:clientId/basket', (req, res) => {
+app.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
   getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
