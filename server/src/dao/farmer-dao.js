@@ -10,11 +10,10 @@ import db from '../db';
  */
 export function listFarmerProducts(farmerId) {
   return new Promise((resolve, reject) => {
-    const sql = `SELECT pd.id, pd.name, pd.description, pd.unit
-                     FROM Prod_descriptor pd,
-                          Farmer f
-                     WHERE pd.ref_farmer=? 
-                        AND pd.ref_farmer = f.ref_user`;
+    const sql = `SELECT pd.id, pd.name, pd.description, pd.category, pd.unit
+                FROM Prod_descriptor pd, Farmer f
+                WHERE pd.ref_farmer=? 
+                AND pd.ref_farmer = f.ref_user`;
     db.all(sql, [farmerId], (err, rows) => {
       if (err) {
         reject(err);
@@ -24,6 +23,7 @@ export function listFarmerProducts(farmerId) {
         id: p.id,
         name: p.name,
         description: p.description,
+        category: p.category,
         unit: p.unit,
       }));
       resolve(products);

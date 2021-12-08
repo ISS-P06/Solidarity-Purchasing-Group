@@ -1,12 +1,14 @@
 import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
 import ReportAvailabilityProductsPage from "../farmer/ReportAvailabilityProductsPage"
-import { FarmerHomePage, FarmerProducts, FarmerProductForm } from '../farmer';
+import { FarmerHomePage, FarmerProductForm } from '../farmer';
+import ProductCards from '../ProductCards';
+
 /**
  *  This component contains all farmer-only routes.
  */
 function RoutesFarmer(props) {
-    const {loggedIn, userRole, doLogin, userId, user} = props;
+    const {loggedIn, userRole, doLogin, userId, user, virtualTime} = props;
 
     return (
         <>
@@ -27,7 +29,7 @@ function RoutesFarmer(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
-              component={<FarmerProducts />}
+              component={<ProductCards userRole={userRole} userId={userId} virtualTime={virtualTime} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
