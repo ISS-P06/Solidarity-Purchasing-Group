@@ -1,4 +1,5 @@
 'use strict';
+'use strict';
 import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
@@ -22,7 +23,8 @@ import {
     insertOrderFromBasket,
     getBalanceByClientId,
     addExpectedAvailableProduct,
-    removeExpectedAvailableProduct
+    removeExpectedAvailableProduct,
+    insertProductDescription
 } from './dao.js';
 
 import VTC from './vtc.js';
@@ -507,6 +509,15 @@ app.delete('/api/farmer/products/available', [check('productID').isInt()], (req,
         .then((productID) => res.json(productID))
         .catch(() => res.status(500).end());
 });
+
+/**
+ * post
+ * INSERT a new product description
+ */
+app.post('/api/insert_product_description', isLoggedIn,(req ,res)=>{
+    const description = req.body;
+    insertProductDescription(description).then(()=>{res.end()}).catch(()=>res.status(500).end())
+})
 
 /*** End APIs ***/
 
