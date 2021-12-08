@@ -261,7 +261,7 @@ export const api_getTime = async () => {
  */
 export const api_setTime = async (dateTime) => {
     try {
-        return await axios.put('/api/time', {time: dateTime});;
+        return await axios.put('/api/time', {time: dateTime});
     } catch (error) {
         throw new Error(error.message);
     }
