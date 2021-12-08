@@ -40,7 +40,7 @@ function RoutesEmployee(props) {
               path="/employee/products"
               role={userRole}
               condition={loggedIn && userRole === 'shop_employee'}
-              component={<ProductCards userRole={userRole} userId={userId} />}
+              component={<ProductCards userRole={userRole} userId={userId} virtualTime={virtualTime}/>}
             />
 
             {/* Employee order detail route */}

@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
  *  - The promise is resolved if all the queries run well, otherwise is rejected.
  */
     
-
 export function checksClientBalance() {
     return new Promise((resolve, reject) => {
         const sql = `
@@ -81,6 +80,25 @@ export function checksClientBalance() {
                     resolve(users_requests_under_balance);
                 });
             });
+        });
+    });
+}
+
+/**
+ * Deletes all tuples from the "Basket" table from the DB.
+ * 
+ * @returns {Promise}
+ *  - Returns a resolved promise if the operation is successful, a rejected one otherwise
+ */
+export function emptyBaskets() {
+    return new Promise((resolve, reject) => {
+        // Delete all tuples from the table
+        const sql = 'DELETE FROM Basket;';
+
+        db.run(sql, [], (err) => {
+            if (err) reject(err);
+
+            resolve("ok");
         });
     });
 }
