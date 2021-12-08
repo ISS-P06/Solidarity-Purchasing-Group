@@ -1,12 +1,29 @@
 import { Link } from 'react-router-dom';
 import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
 import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill } from 'react-icons/bs';
-import { GiFruitBowl,GiFruitTree } from 'react-icons/gi';
+import { GiFruitBowl, GiFruitTree } from 'react-icons/gi';
 import { VirtualClock } from '../components';
 import { FaRegListAlt } from 'react-icons/fa';
 
 // todo add collaspse change
 
+/**
+ * Sidebar component.
+ *
+ * Contains list of different routes (`Menu`) for each user role,
+ * useful for easy navigation throw the app.
+ *
+ *
+ * @param {object}  props  - Component props.
+ * @param {boolean} props.collapsed - If true the sidebar is in a tiny version.
+ * @param {boolean} props.toggled - If true the sidebar is hidden and a button appears.
+ * @param {funciton} props.handleToggle - Handle the action on toggle button.
+ * @param {function} props.handleCollapse - Handle the action on collapse button.
+ * @param {string} props.userRole - Role of the user, defined on login.
+ * @param {function} props.setDirtyVT - Handle the `VirtualClock` change.
+ * @param {boolean} props.dirtyVT - `VirtualClock parameter for reload.
+ * @param {Date} props.virtualTime - Current time.
+ */
 function Aside({
   collapsed,
   toggled,
@@ -17,10 +34,13 @@ function Aside({
   dirtyVT,
   virtualTime,
 }) {
+  /**
+   * Dictionary for selection of the the menu, based on its role
+   */
   const roleMenu = {
     shop_employee: <EmployeeMenu />,
     client: <ClientMenu />,
-    farmer: <FarmerMenu/>
+    farmer: <FarmerMenu />,
   };
 
   return !userRole ? null : (
@@ -106,9 +126,13 @@ function FarmerMenu() {
     return (
         <Menu iconShape="circle">
             <MenuItem icon={<GiFruitTree />}>
-                <Link className="text-light" to="/client/reportProduct">
-                    {/* Todo add correct link*/}
+                <Link className="text-light" to="/farmer/supply">
                     Report expected products
+                </Link>
+            </MenuItem>
+            <MenuItem icon={<GiFruitBowl />}>
+                <Link className="text-light" to="/farmer/products">
+                    Browse products on sale
                 </Link>
             </MenuItem>
         </Menu>

@@ -16,7 +16,22 @@ or only
 docker-compose up
 ```
 
-the `-d` flag is for [detached mode](https://stackoverflow.com/questions/34029680/docker-detached-mode)
+the `-d` flag is for [detached mode](https://stackoverflow.com/questions/34029680/docker-detached-mode).
+
+#### Tests
+
+You can run tests in interactive mode with commands:
+
+```sh
+docker-compose run --rm client-tests
+docker-compose run --rm server-tests
+```
+
+For running both tests and the app (suitable for a fast check, not for the real development):
+
+```sh
+docker-compose --profile test up
+```
 
 ### Production
 
@@ -38,8 +53,7 @@ docker-compose -f docker-compose.prod.yml push
 
 ### Pull from Docker Hub
 
-This repo has two images, one for the user interface and one for the server logic. Both images can be
-pulled with:
+This repo has two images, one for the user interface and one for the server logic. Both images can be pulled with:
 
 ```
 docker pull gabelluardo/solidarity-purchasing-group:release1-client
@@ -53,7 +67,7 @@ docker run -d -p 3001:3001 --name spg06-server gabelluardo/solidarity-purchasing
 docker run -d -p 3000:80 --name spg06-client --link spg06-server:server gabelluardo/solidarity-purchasing-group:release1-client
 ```
 
-**The app can be reached on http://localhost:3000 **
+**The app can be reached on http://localhost:3000**
 
 Note:
 
@@ -65,23 +79,30 @@ Note:
 ## React Client Application Routes
 
 ### Default routes
+
 - Route `/`: site homepage.
 - Route `/login`: contains a form with `username` and `password` fields with which a user can log in to the site.
 - Route `/register`: contains a form that allows an unregistered user to sign up.
+
 ### Employee-only routes
+
 - Route `/employee`: employee homepage, from which the user can access all routes reserved to employees only.
 - Route `/employee/clients`: employee-side page containing a list of all registered clients.
 - Route `/employee/orders`: employee-side page containing a list of all orders.
 - Route `/employee/orders/:id`: employee-side page containing information about a specific order; `id`: order id.
 - Route `/employee/products`: employee-side page containing a list of all available products.
 - Route `/employee/register`: employee-side page containing a form for user registration.
+
 ### Client-only routes
+
 - Route `/client`: client homepage, from which the user can access all routes reserved to clients only.
 - Route `/client/basket`: client-side page containing information about the client's own basket.
 - Route `/client/orders`: client-side page containing information about the client's own orders.
 - Route `/client/orders/:id`: client-side page containing information about one of the client's orders.
 - Route `/client/products`: client-side page containing a list of all available products.
+
 ### Farmer-only routes
+
 - Route `/farmer`: farmer homepage.
 - Route `/farmer/supply`: farmer page containing a form to add a new supply for the upcoming week.
 - Route `/farmer/products`: farmer page containing the list of products (= product descriptors) they added.

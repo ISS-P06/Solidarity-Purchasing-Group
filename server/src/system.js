@@ -1,36 +1,46 @@
 'use strict';
 
-import dayjs from 'dayjs';
-import VTC from './vtc';
 import {mail_sendBalanceReminder} from './mailer';
-
-import {checksClientBalance} from './system-dao';
-
-const vtc = new VTC();
+import {checksClientBalance, emptyBaskets} from './dao/system-dao';
 
 class SYS {
-    /*
+    /**
      * System
      * 
      * Used to check for time-based events and execute 
      * related operations.
-     * 
      */
 
-    /*
+    /**
      * Check for time-based events every time the
      * virtual clock is updated.
      */
     checkTimedEvents(currTime) {
+        let time = new Date(currTime);
+        let day = time.getDay();
+        let hours = time.getHours();
+
         /**
          * Check if the current day and time is
          * Monday, 9am
          */
-        let time = new Date(currTime);
-
-        if (time.getDay() == 1
-         && time.getHours() == 9) {
+        if (day == 1
+         && hours == 9) {
             this.event_updateOrders();
+        }
+
+        /**
+         * Check whether the current day and time is within
+         * the time interval in which clients can make orders
+         * (i.e. from Sat. 9am to Sun. 11pm).
+         * 
+         * If the current time is outside this interval, all client
+         * baskets are emptied.
+         */
+        if ((day == 6 && hours < 9) 
+         || (day == 0 && hours >= 23)
+         || (day != 0 && day != 6)) {
+            this.event_emptyBaskets();
         }
     }
 
@@ -48,6 +58,20 @@ class SYS {
             })
             .catch((err) => {
                 console.log("Error: could not update order status: " + err);
+            });
+    }
+
+    /**
+     * Deletes all tuples from the "Basket" table in the DB.
+     * This operation is executed whenever the current time is
+     * outside the time interval in which clients are allowed to
+     * make orders.
+     */
+     event_emptyBaskets() {
+        emptyBaskets()
+            .then(() => {})
+            .catch((err) => {
+                console.log("Error: there was an error in emptying baskets: " + err);
             });
     }
 

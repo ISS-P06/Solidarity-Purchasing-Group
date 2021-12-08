@@ -1,5 +1,10 @@
 import { Table, Row } from 'react-bootstrap';
 
+/**
+ * This functional component shows items inside an order
+ * @param {*} props {products}
+ *  - product is a custom object containing all the useful iformation to descibe a product
+ */
 function OrderTable(props) {
 
   const productList =
@@ -15,12 +20,18 @@ function OrderTable(props) {
         );
       })
       : 0;
-
+  
+  /**
+   * This function computes the total as product quantity times the unit price 
+   * @param {*} products 
+   *  - the list of the products
+   * @returns the total amount of the product
+   */
   function computeTotal(products) {
     let total = 0.0;
-    for (let i = 0; i < products.length; i++) {
-      total += products[i].price * products[i].quantity;
-    }
+    products.forEach((product) => {
+      total += product.quantity * product.price;
+    });
     return total;
   }
 

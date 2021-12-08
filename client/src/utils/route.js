@@ -1,18 +1,19 @@
 import { Route, Redirect } from 'react-router-dom';
 
 /**
- * Dictionary of default path of the roles
+ * Dictionary of default path of the roles.
  */
 const rolesPathRedirect = {
-  shop_employee: '/employee',
+  shop_employee: '/employee/clients',
   client: '/client',
   farmer: '/farmer',
 };
 
 /**
- * Get home route of the user
+ * Get home route of the user.
+ *
  * @param {string} role
- * @returns {string}
+ * @returns {string} Default route of the user.
  */
 export function getUserRoute(role) {
   return rolesPathRedirect[role] || '';

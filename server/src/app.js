@@ -1,99 +1,86 @@
 'use strict';
+
 import express from 'express';
 import morgan from 'morgan';
-import { body, check, validationResult } from 'express-validator';
+import { check, validationResult } from 'express-validator';
 import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
 
-import {
-  listClients,
-  listProducts,
-  insertOrder,
-  updateClientBalance,
-  getOrders,
-  getOrderById,
-  setOrderDelivered,
-  getBasketByClientId,
-  addProductToBasket,
-  removeProductFromBasket,
-  insertOrderFromBasket,
-  getBalanceByClientId,
-} from './dao.js';
+// --- DAO import: --- //
+import { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO } from './dao';
 
-import VTC from './vtc.js';
+// --- Import and initialize utility classes: --- //
+import VTC from './vtc';
 import SYS from './system';
-// --- Imports for passport and login/logout --- //
-import { getUser, getUserById ,registerUser} from './user-dao.js';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
 
 /* System class */
 const sys = new SYS();
+// --- --- --- //
 
 // --- Set up Passport --- //
-/*
-    set up "username and password" strategy
-*/
+// set up "username and password" strategy
 passport.use(
-  new LocalStrategy(function (username, password, done) {
-    getUser(username, password)
-      .then((user) => {
-        if (!user) return done(null, false, { message: 'Incorrect email and/or password.' });
+    new LocalStrategy(function (username, password, done) {
+        userDAO.getUser(username, password)
+            .then((user) => {
+                if (!user) return done(null, false, {message: 'Incorrect email and/or password.'});
 
-        return done(null, user);
-      })
-      .catch((err) => {
-        return done(null, false, { message: err.msg });
-      });
-  })
+                return done(null, user);
+            })
+            .catch((err) => {
+                return done(null, false, {message: err.msg});
+            });
+    })
 );
 
 // serialize and de-serialize the user (user object <-> session)
 // we serialize the user id and we store it in the session: the session is very small in this way
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+    done(null, user.id);
 });
 
 // starting from the data in the session, we extract the current (logged-in) user
 passport.deserializeUser((id, done) => {
-  getUserById(id)
-    .then((user) => {
-      done(null, user); // this will be available in req.user
-    })
-    .catch((err) => {
-      done(err, null);
-    });
+    userDAO.getUserById(id)
+        .then((user) => {
+            done(null, user); // this will be available in req.user
+        })
+        .catch((err) => {
+            done(err, null);
+        });
 });
 
 // custom middleware: check if a given request is coming from an authenticated user
 const isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) return next();
+    if (req.isAuthenticated()) return next();
 
-  return res.status(401).json({ message: 'not authenticated' });
+    return res.status(401).json({message: 'not authenticated'});
 };
 // --- --- --- //
+
+const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
+    // Format express-validate errors as strings
+    return `${location}[${param}]: ${msg}`;
+};
 
 /* express setup */
 const app = new express();
 
-const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
-  // Format express-validate errors as strings
-  return `${location}[${param}]: ${msg}`;
-};
-
 app.use(express.json());
-app.use(morgan('dev', { skip: () => process.env.NODE_ENV === 'test' }));
+app.use(morgan('dev', {skip: () => process.env.NODE_ENV === 'test'}));
 
 // set up the session
 app.use(
-  session({
-    // by default, Passport uses a MemoryStore to keep track of the sessions
-    secret: 'sinfonia di sogliole siamesi',
-    resave: false,
-    saveUninitialized: false,
-  })
+    session({
+        // by default, Passport uses a MemoryStore to keep track of the sessions
+        secret: 'sinfonia di sogliole siamesi',
+        resave: false,
+        saveUninitialized: false,
+    })
 );
 
 // then, init passport
@@ -108,7 +95,7 @@ app.use(passport.session());
  * Used to pass current virtual time clock to the frontend.
  */
 app.get('/api/time', (_, res) => {
-  res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
+    res.status(200).json({currentTime: vtc.time(), day: vtc.day()});
 });
 
 /**
@@ -119,20 +106,20 @@ app.get('/api/time', (_, res) => {
  * @param {string} time
  */
 app.put('/api/time', [check('time').isISO8601()], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
 
-  const time = req.body.time;
+    const time = req.body.time;
 
-  try {
-    let newTime = vtc.set(time);
-    sys.checkTimedEvents(newTime);
-    res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
+    try {
+        let newTime = vtc.set(time);
+        sys.checkTimedEvents(newTime);
+        res.status(200).json({currentTime: vtc.time(), day: vtc.day()});
+    } catch (error) {
+        res.status(500).json({error});
+    }
 });
 
 /**
@@ -140,10 +127,24 @@ app.put('/api/time', [check('time').isISO8601()], (req, res) => {
  * get the list of products
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
+<<<<<<< HEAD
 app.get('/api/products', isLoggedIn, (req, res) => {
   listProducts()
     .then((products) => res.json(products))
     .catch(() => res.status(500).end())
+=======
+app.get('/api/products', (req, res) => {
+    let currTime = new Date(vtc.time());
+    let wednesday = currTime;
+
+    while(wednesday.getDay() != 3) {
+        wednesday.setDate(wednesday.getDate() - 1);
+    }
+
+    productDAO.listProducts(wednesday)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /**
@@ -151,10 +152,17 @@ app.get('/api/products', isLoggedIn, (req, res) => {
  * get the list of clients
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
+<<<<<<< HEAD
 app.get('/api/clients', isLoggedIn, (req, res) => {
   listClients()
     .then((clients) => res.json(clients))
     .catch(() => res.status(500).end());
+=======
+app.get('/api/clients', (req, res) => {
+    clientDAO.listClients()
+        .then((clients) => res.json(clients))
+        .catch(() => res.status(500).end());
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /**
@@ -166,6 +174,7 @@ app.get('/api/clients', isLoggedIn, (req, res) => {
  * @param {int} amount  Amount of money to add on client's balance.
  */
 app.put(
+<<<<<<< HEAD
   '/api/clients/topup', isLoggedIn,
   check('id').isInt(),
   check('amount').isInt({ min: 5 }),
@@ -174,17 +183,27 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ error: errors.array() });
     }
+=======
+    '/api/clients/topup',
+    check('id').isInt(),
+    check('amount').isInt({min: 5}),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({error: errors.array()});
+        }
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 
-    const { id, amount } = req.body;
+        const {id, amount} = req.body;
 
-    try {
-      updateClientBalance(id, amount);
+        try {
+            clientDAO.updateClientBalance(id, amount);
 
-      res.status(200).end();
-    } catch (error) {
-      res.status(500).json({ error });
+            res.status(200).end();
+        } catch (error) {
+            res.status(500).json({error});
+        }
     }
-  }
 );
 
 /**
@@ -192,32 +211,33 @@ app.put(
  * Add a order of a client {clientID: client.id, order: order}
  */
 app.post(
-  '/api/orders',
-  check('clientID').isInt(),
-  check('order').custom((value, { req }) => {
-    for (const product of value) {
-      if (
-        !Number.isInteger(product.id) ||
-        !typeof product.quantity == 'number' ||
-        isNaN(product.quantity)
-      ) {
-        return false;
-      }
+    '/api/orders',
+    check('clientID').isInt(),
+    check('order').custom((value, {req}) => {
+        for (const product of value) {
+            if (
+                !Number.isInteger(product.id) ||
+                !typeof product.quantity == 'number' ||
+                isNaN(product.quantity)
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }),
+    (req, res) => {
+        const errors = validationResult(req).formatWith(errorFormatter);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({error: errors.array().join(', ')});
+        }
+        orderDAO.insertOrder(req.body)
+            .then((id) => res.json(id))
+            .catch(() => res.status(500).end());
     }
-    return true;
-  }),
-  (req, res) => {
-    const errors = validationResult(req).formatWith(errorFormatter);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ error: errors.array().join(', ') });
-    }
-    insertOrder(req.body)
-      .then((id) => res.json(id))
-      .catch(() => res.status(500).end());
-  }
 );
 
 // GET /api/orders
+<<<<<<< HEAD
 app.get('/api/orders', isLoggedIn, (req, res) => {
   getOrders()
     .then((orders) => res.json(orders))
@@ -236,10 +256,31 @@ app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
   getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
+=======
+app.get('/api/orders', (req, res) => {
+    orderDAO.getOrders()
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders
+app.get('/api/clients/:clientId/orders', (req, res) => {
+    orderDAO.getOrders(req.params.clientId)
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
+});
+
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+    orderDAO.getOrderById(req.params.orderId, req.params.clientId)
+        .then((orders) => res.json(orders))
+        .catch(() => res.status(500).end());
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 // GET /api/orders/:id
 // Route used to get the order review
+<<<<<<< HEAD
 app.get('/api/orders/:id', isLoggedIn, (req, res) => {
   getOrderById(req.params.id)
     .then((order) => {
@@ -257,6 +298,25 @@ app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
       res.json(orderId);
     })
     .catch(() => res.status(500).end());
+=======
+app.get('/api/orders/:id', (req, res) => {
+    orderDAO.getOrderById(req.params.id)
+        .then((order) => {
+            res.json(order);
+        })
+        .catch(() => {
+            res.status(500).end();
+        });
+});
+
+// POST /api/orders/:id/deliver
+app.post('/api/orders/:id/deliver', (req, res) => {
+    orderDAO.setOrderDelivered(req.params.id)
+        .then((orderId) => {
+            res.json(orderId);
+        })
+        .catch(() => res.status(500).end());
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 });
 
 /** User API **/
@@ -267,104 +327,118 @@ app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
  */
 
 app.post(
-  '/api/register_user',
-  check('name').isString(),
-  check('surname').isString(),
-  check('mail').isEmail(),
-  check('typeUser').isString(),
-  (req, res) => {
+    '/api/register_user',
+    check('name').isString(),
+    check('surname').isString(),
+    check('mail').isEmail(),
+    check('typeUser').isString(),
+    (req, res) => {
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ error: errors.array() });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({error: errors.array()});
+        }
+
+        const user = req.body;
+        userDAO.registerUser(user)
+            .then(() => {
+                res.end();
+            })
+            .catch((err) => {
+                res.status(500).json(err);
+            });
     }
-
-    const user = req.body;
-    registerUser(user)
-      .then(() => {
-        res.end();
-      })
-      .catch((err) => {
-          console.log(err);
-        res.status(500).json(err);
-      });
-  }
 );
 
-/** Login */
+// --- Login/Logout APIs --- //
+/** 
+ * POST /api/sessions
+ * Used to log a user in.
+ * Returns user info when successful
+ */
 app.post('/api/sessions', function (req, res, next) {
-  passport.authenticate(
-    'local',
-    {
-      failureRedirect: '/api/sessions',
-    },
-    (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
+    passport.authenticate(
+        'local',
+        {
+            failureRedirect: '/api/sessions',
+        },
+        (err, user, info) => {
+            if (err) {
+                return next(err);
+            }
 
-      if (!user) {
-        // display wrong login messages
-        return res.status(401).json(info.message);
-      }
-      // success, perform the login
-      req.login(user, (err) => {
-        if (err) return next(err);
+            if (!user) {
+                // display wrong login messages
+                return res.status(401).json(info.message);
+            }
+            // success, perform the login
+            req.login(user, (err) => {
+                if (err) return next(err);
 
-        // req.user contains the authenticated user, we send all the user info back
-        return res.json(req.user);
-      });
-    }
-  )(req, res, next);
+                // req.user contains the authenticated user, we send all the user info back
+                return res.json(req.user);
+            });
+        }
+    )(req, res, next);
 });
 
-/** Logout */
+/** 
+ * DELETE /api/sessions/current
+ * Used to log a user out.
+ */
 app.delete('/api/sessions/current', (req, res) => {
-  req.logout();
-  res.end();
+    req.logout();
+    res.end();
 });
 
-/**  Check whether the user is logged in or not */
+/** 
+ * GET /api/sessions/current
+ * Used to get information about the user that's currently logged in.
+ * Returns user info when successful.
+ */
 app.get('/api/sessions/current', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.status(200).json(req.user);
-  } else res.status(401).json({ message: 'Unauthenticated user' });
+    if (req.isAuthenticated()) {
+        res.status(200).json(req.user);
+    } else res.status(401).json({message: 'Unauthenticated user'});
 });
 
 // --- --- --- //
 // --- Route used for adding an admin (used only for testing purposes)
 app.post(
-  '/test/addUser',
-  [
-    check('username').isString().isLength({ min: 1 }),
-    check('password').isString().isLength({ min: 8 }),
-    check('role').isString().isLength({ min: 1 }),
-  ],
-  (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+    '/test/addUser',
+    [
+        check('username').isString().isLength({min: 1}),
+        check('password').isString().isLength({min: 8}),
+        check('role').isString().isLength({min: 1}),
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({errors: errors.array()});
+        }
+
+        let user = {
+            username: req.body.username,
+            password: req.body.password,
+            role: req.body.role,
+        };
+
+        test_createUser(user)
+            .then((err) => {
+                return res.status(200).end();
+            })
+            .catch(() => res.status(500).end());
     }
-
-    let user = {
-      username: req.body.username,
-      password: req.body.password,
-      role: req.body.role,
-    };
-
-    test_createUser(user)
-      .then((err) => {
-        return res.status(200).end();
-      })
-      .catch(() => res.status(500).end());
-  }
 );
 
 /**
  * POST
  *
- * Insert client's order, with the items on his basket
+ * Insert client's order on database, with the items on its basket.
+ * 
+ * @param {number} userId - User id on database
  */
+<<<<<<< HEAD
 app.post('/api/client/:userId/basket/buy',
     isLoggedIn ,
     [check('userId').isInt()], async (req, res) => {
@@ -372,24 +446,33 @@ app.post('/api/client/:userId/basket/buy',
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
+=======
+app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 
-  const { userId } = req.params;
-  const dateTime = vtc.formatTime();
+    const {userId} = req.params;
+    const dateTime = vtc.formatTime();
 
+  // NOTE: If one of these promise fails, it will immediatly raise
+  // an exception and the next ones won't be executed.
   try {
-    const basket = await getBasketByClientId(userId);
-    const balance = await getBalanceByClientId(userId);
+    const basket = await basketDAO.getBasketByClientId(userId);
+    const balance = await clientDAO.getBalanceByClientId(userId);
 
-    // insert order
-    await insertOrderFromBasket(userId, basket, balance, dateTime);
+        // insert order
+        await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
 
-    // clear basket
-    basket.forEach((p) => removeProductFromBasket(userId, p.productId));
+        // clear basket
+        basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
 
-    res.status(200).json({});
-  } catch (e) {
-    res.status(500).json(e);
-  }
+        res.status(200).json({});
+    } catch (e) {
+        res.status(500).json(e);
+    }
 });
 
 app.delete(
@@ -398,19 +481,20 @@ app.delete(
     (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
+            return res.status(422).json({errors: errors.array()});
         }
 
-        const { userId } = req.params;
-        const { productId } = req.body;
+        const {userId} = req.params;
+        const {productId} = req.body;
 
-        removeProductFromBasket(userId, productId)
+        basketDAO.removeProductFromBasket(userId, productId)
             .then((productId) => res.json(productId))
             .catch(() => res.status(500).end());
     }
 );
 
 app.post(
+<<<<<<< HEAD
   '/api/client/:userId/basket/add',isLoggedIn,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
@@ -418,23 +502,108 @@ app.post(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
+=======
+    '/api/client/:userId/basket/add',
+    [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({errors: errors.array()});
+        }
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
 
-    const { userId } = req.params;
-    const { productId, reservedQuantity } = req.body;
+        const {userId} = req.params;
+        const {productId, reservedQuantity} = req.body;
 
-    addProductToBasket(userId, productId, reservedQuantity)
-      .then((productId) => res.json(productId))
-      .catch(() => res.status(500).end());
-  }
+        basketDAO.addProductToBasket(userId, productId, reservedQuantity)
+            .then((productId) => res.json(productId))
+            .catch(() => res.status(500).end());
+    }
 );
 
 
 // GET /api/clients/:clientId/basket
+<<<<<<< HEAD
 app.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
   getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
+=======
+app.get('/api/client/:clientId/basket', (req, res) => {
+    basketDAO.getBasketByClientId(req.params.clientId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
 });
+
+/*** Farmer APIs **/
+/**
+ * GET
+ *
+ * Get all the products supplied the next week linked by a farmer with {userId}
+ */
+app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+>>>>>>> 46164e581b5568cd12a2bbc44cb4767317d24a3e
+});
+/**
+ * GET
+ *
+ * Get all the products linked to a farmer with {userId}
+ */
+app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+
+    farmerDAO.listFarmerProducts(req.params.farmerId)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+});
+/**
+ * POST
+ *
+ * Add expected available product amounts for the next week
+ */
+app.post('/api/farmer/products/available', [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+    productDAO.addExpectedAvailableProduct(req.body)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
+});
+
+/**
+ * DELETE
+ *
+ * DELETE expected available product {productID} amounts for the next week
+ */
+app.delete('/api/farmer/products/available', [check('productID').isInt()], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+    productDAO.removeExpectedAvailableProduct(req.body)
+        .then((productID) => res.json(productID))
+        .catch(() => res.status(500).end());
+});
+
+/**
+ * post
+ * INSERT a new product description
+ */
+app.post('/api/insert_product_description', isLoggedIn,(req ,res)=>{
+    const description = req.body;
+    insertProductDescription(description).then(()=>{res.end()}).catch(()=>res.status(500).end())
+})
 
 /*** End APIs ***/
 
