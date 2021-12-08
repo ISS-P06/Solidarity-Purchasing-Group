@@ -6,14 +6,8 @@ import passport from 'passport';
 import session from 'express-session';
 import LocalStrategy from 'passport-local';
 
-// --- DAO imports: --- //
-import {getUser, getUserById, registerUser} from './dao/user-dao';
-import {listProducts, addExpectedAvailableProduct, removeExpectedAvailableProduct} from './dao/product-dao';
-import {listFarmerProducts, listSuppliedFarmerProducts} from './dao/farmer-dao';
-import {listClients, updateClientBalance, getBalanceByClientId} from './dao/client-dao';
-import {addProductToBasket, removeProductFromBasket, insertOrderFromBasket, getBasketByClientId} from './dao/basket-dao';
-import {insertOrder, getOrders, getOrderById, setOrderDelivered} from './dao/order-dao';
-// --- --- --- //
+// --- DAO import: --- //
+import { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO } from './dao';
 
 // --- Import and initialize utility classes: --- //
 import VTC from './vtc';
@@ -30,7 +24,7 @@ const sys = new SYS();
 // set up "username and password" strategy
 passport.use(
     new LocalStrategy(function (username, password, done) {
-        getUser(username, password)
+        userDAO.getUser(username, password)
             .then((user) => {
                 if (!user) return done(null, false, {message: 'Incorrect email and/or password.'});
 
@@ -50,7 +44,7 @@ passport.serializeUser((user, done) => {
 
 // starting from the data in the session, we extract the current (logged-in) user
 passport.deserializeUser((id, done) => {
-    getUserById(id)
+    userDAO.getUserById(id)
         .then((user) => {
             done(null, user); // this will be available in req.user
         })
@@ -140,7 +134,7 @@ app.get('/api/products', (req, res) => {
         wednesday.setDate(wednesday.getDate() - 1);
     }
 
-    listProducts(wednesday)
+    productDAO.listProducts(wednesday)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
@@ -151,7 +145,7 @@ app.get('/api/products', (req, res) => {
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
 app.get('/api/clients', (req, res) => {
-    listClients()
+    clientDAO.listClients()
         .then((clients) => res.json(clients))
         .catch(() => res.status(500).end());
 });
@@ -177,7 +171,7 @@ app.put(
         const {id, amount} = req.body;
 
         try {
-            updateClientBalance(id, amount);
+            clientDAO.updateClientBalance(id, amount);
 
             res.status(200).end();
         } catch (error) {
@@ -210,7 +204,7 @@ app.post(
         if (!errors.isEmpty()) {
             return res.status(422).json({error: errors.array().join(', ')});
         }
-        insertOrder(req.body)
+        orderDAO.insertOrder(req.body)
             .then((id) => res.json(id))
             .catch(() => res.status(500).end());
     }
@@ -218,21 +212,21 @@ app.post(
 
 // GET /api/orders
 app.get('/api/orders', (req, res) => {
-    getOrders()
+    orderDAO.getOrders()
         .then((orders) => res.json(orders))
         .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders
 app.get('/api/clients/:clientId/orders', (req, res) => {
-    getOrders(req.params.clientId)
+    orderDAO.getOrders(req.params.clientId)
         .then((orders) => res.json(orders))
         .catch(() => res.status(500).end());
 });
 
 // GET /api/clients/:clientId/orders/:orderId
 app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
-    getOrderById(req.params.orderId, req.params.clientId)
+    orderDAO.getOrderById(req.params.orderId, req.params.clientId)
         .then((orders) => res.json(orders))
         .catch(() => res.status(500).end());
 });
@@ -240,7 +234,7 @@ app.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
 // GET /api/orders/:id
 // Route used to get the order review
 app.get('/api/orders/:id', (req, res) => {
-    getOrderById(req.params.id)
+    orderDAO.getOrderById(req.params.id)
         .then((order) => {
             res.json(order);
         })
@@ -251,7 +245,7 @@ app.get('/api/orders/:id', (req, res) => {
 
 // POST /api/orders/:id/deliver
 app.post('/api/orders/:id/deliver', (req, res) => {
-    setOrderDelivered(req.params.id)
+    orderDAO.setOrderDelivered(req.params.id)
         .then((orderId) => {
             res.json(orderId);
         })
@@ -279,7 +273,7 @@ app.post(
         }
 
         const user = req.body;
-        registerUser(user)
+        userDAO.registerUser(user)
             .then(() => {
                 res.end();
             })
@@ -389,14 +383,14 @@ app.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req
   // NOTE: If one of these promise fails, it will immediatly raise
   // an exception and the next ones won't be executed.
   try {
-    const basket = await getBasketByClientId(userId);
-    const balance = await getBalanceByClientId(userId);
+    const basket = await basketDAO.getBasketByClientId(userId);
+    const balance = await clientDAO.getBalanceByClientId(userId);
 
         // insert order
-        await insertOrderFromBasket(userId, basket, balance, dateTime);
+        await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
 
         // clear basket
-        basket.forEach((p) => removeProductFromBasket(userId, p.productId));
+        basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
 
         res.status(200).json({});
     } catch (e) {
@@ -416,7 +410,7 @@ app.delete(
         const {userId} = req.params;
         const {productId} = req.body;
 
-        removeProductFromBasket(userId, productId)
+        basketDAO.removeProductFromBasket(userId, productId)
             .then((productId) => res.json(productId))
             .catch(() => res.status(500).end());
     }
@@ -434,7 +428,7 @@ app.post(
         const {userId} = req.params;
         const {productId, reservedQuantity} = req.body;
 
-        addProductToBasket(userId, productId, reservedQuantity)
+        basketDAO.addProductToBasket(userId, productId, reservedQuantity)
             .then((productId) => res.json(productId))
             .catch(() => res.status(500).end());
     }
@@ -443,7 +437,7 @@ app.post(
 
 // GET /api/clients/:clientId/basket
 app.get('/api/client/:clientId/basket', (req, res) => {
-    getBasketByClientId(req.params.clientId)
+    basketDAO.getBasketByClientId(req.params.clientId)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
@@ -459,7 +453,7 @@ app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()], 
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
     }
-    listSuppliedFarmerProducts(req.params.farmerId)
+    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
@@ -474,7 +468,7 @@ app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res
         return res.status(422).json({errors: errors.array()});
     }
 
-    listFarmerProducts(req.params.farmerId)
+    farmerDAO.listFarmerProducts(req.params.farmerId)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
@@ -488,7 +482,7 @@ app.post('/api/farmer/products/available', [check('productID').isInt(), check('q
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
     }
-    addExpectedAvailableProduct(req.body)
+    productDAO.addExpectedAvailableProduct(req.body)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
@@ -503,7 +497,7 @@ app.delete('/api/farmer/products/available', [check('productID').isInt()], (req,
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
     }
-    removeExpectedAvailableProduct(req.body)
+    productDAO.removeExpectedAvailableProduct(req.body)
         .then((productID) => res.json(productID))
         .catch(() => res.status(500).end());
 });
