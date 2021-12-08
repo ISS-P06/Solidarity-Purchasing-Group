@@ -1,5 +1,5 @@
 'use strict';
-'use strict';
+
 import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
