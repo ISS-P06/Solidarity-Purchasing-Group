@@ -1,5 +1,10 @@
 import {Row, Col, ListGroup, Image, Button} from 'react-bootstrap'
 
+/**
+ * This component is an entry inside the basket show the product image, the relative information on the quantity and the price
+ * @param {*} props {product}
+ * 
+ */
 export default function ProductItem(props) {
 
     const regex = /[ _]/g;

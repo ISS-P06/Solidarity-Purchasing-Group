@@ -1,6 +1,13 @@
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+/**
+ * This component display a a breaf summury of an order
+ * @param {*} props: {order} 
+ *  - order: custom object representing an order {id, date, email}
+ *    - id: order id
+ *    - date: order date
+ *    - email: owner email (email that belongs to the user)
+ */
 function OrderItem(props) {
 
   let link;

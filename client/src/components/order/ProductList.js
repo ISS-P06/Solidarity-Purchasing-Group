@@ -2,6 +2,11 @@ import ProductItem from './ProductItem'
 
 import {ListGroup} from 'react-bootstrap'
 
+/**
+ * This component is an abstract list of ProductItem component
+ * @param {*} props {productList}
+ * 
+ */
 export default function ProductList(props) {
 
     const handleRemoveProduct = (productId) => {
