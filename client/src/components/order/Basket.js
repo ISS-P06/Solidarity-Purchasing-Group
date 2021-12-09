@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Card } from 'react-bootstrap';
 import { api_getBasket, api_buyNow, api_removeProductFromBasket } from '../../Api';
-import ProductCards from '../ProductCards';
+import ProductCards from '../product/ProductCards';
 import ProductList from './ProductList';
 import { addMessage } from '../Message';
 import { checkOrderInterval } from '../../utils/date';
