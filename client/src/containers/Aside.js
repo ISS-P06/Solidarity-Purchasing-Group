@@ -132,7 +132,7 @@ function FarmerMenu() {
             </MenuItem>
             <MenuItem icon={<GiFruitBowl />}>
                 <Link className="text-light" to="/farmer/products">
-                    Browse products on sale
+                    Browse my products
                 </Link>
             </MenuItem>
         </Menu>

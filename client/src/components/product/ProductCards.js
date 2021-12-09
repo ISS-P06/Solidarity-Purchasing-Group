@@ -12,43 +12,34 @@ const ProductCards = (props) => {
     const [error, setError] = useState("");
     const [searchedProduct, setSearchedProduct] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(12);
 
     // product { id, name, description, category, quantity, price, unit, ref_farmer, farm_name }
     const [productList, setProductList] = useState([]);
 
     useEffect(() => {
-        if (userRole === "farmer") {
-            api_getFarmerProducts(userId)
-                .then((products) => {
+        const apiCall = userRole === "farmer" ? api_getFarmerProducts(userId) : api_getProducts();
+        apiCall.then((products) => {
                     setProductList(products);
                     setLoading(false);
-                })
-                .catch((e) => {
+                }).catch((e) => {
                     addMessage({ message: e.message, type: 'danger' });
                     setLoading(false);
                 });
-        } else {
-            api_getProducts()
-                .then((products) => {
-                    setProductList(products);
-                    setLoading(false);
-                })
-                .catch((e) => {
-                    addMessage({ message: e.message, type: 'danger' });
-                    setLoading(false);
-                });
-        }
     }, [virtualTime]);
 
-    // pagination start
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(12);
+
+
+
+
 
     // go up after changing page
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [currentPage]);
 
+    // pagination start
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = searchText.length > 0 ?
@@ -80,14 +71,9 @@ const ProductCards = (props) => {
      * - text is the product name string you want to looking for.
      */
     const handleOnSearchProduct = (text) => {
-        let products = [];
         setSearchText(text);
         var searchExpr = new RegExp('^' + text, 'i');
-
-        productList.forEach((product) => {
-            if (searchExpr.test(product.name))
-                products.push(product);
-        });
+        const products = productList.filter((product) => searchExpr.test(product.name));
 
         if (products.length === 0 && text.length > 0) {
             setError("Sorry there are no products with name " + text);
@@ -124,12 +110,13 @@ const ProductCards = (props) => {
                 <Row className="mt-4">
                     <Col></Col>
                     <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    {productList.length !== 0 &&
                         <Form>
                             <Form.Control
                                 type="text"
                                 placeholder="Search Product"
                                 onChange={(e) => handleOnSearchProduct(e.target.value)} />
-                        </Form>
+                        </Form>}
                     </Col>
                     <Col style={{ display: 'flex', justifyContent: 'right' }}>
                         {userRole === "farmer" &&
