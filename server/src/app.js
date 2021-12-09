@@ -507,9 +507,10 @@ app.delete('/api/farmer/products/available', [check('productID').isInt()], (req,
  * post
  * INSERT a new product description
  */
-app.post('/api/insert_product_description', isLoggedIn,(req ,res)=>{
-    const description = req.body;
-    insertProductDescription(description).then(()=>{res.end()}).catch(()=>res.status(500).end())
+app.post('/api/insert_product_description', (req ,res)=>{
+    productDAO.insertProductDescription(req.body)
+        .then(() => res.end())
+        .catch(() => res.status(500).end());
 })
 
 /*** End APIs ***/
