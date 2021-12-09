@@ -19,6 +19,7 @@ beforeAll(() => {
 afterAll(() => {
   copyFileSync(backupPath, dbPath);
   unlinkSync(backupPath);
+
 });
 
 /** TEST SUITES */
@@ -47,6 +48,19 @@ describe('Test the get products api', () => {
                 expect(response.statusCode).toBe(200);
             });
     });
+
+/*
+    afterEach(function (done) {
+        authenticatedSession
+            .delete('/api/sessions/current')
+            .end((err, response) => {
+                if (err) return done(err);
+                return done();
+            });
+    });
+*/
+
+
 });
 
 
@@ -60,7 +74,6 @@ describe("Test the get farmer's products api", () => {
             .end((err, response) => {
                 if (err) return done(err);
                 authenticatedSession = testSession;
-                console.log(authenticatedSession);
                 return done();
             });
     });
@@ -80,6 +93,16 @@ describe("Test the get farmer's products api", () => {
         expect(response.statusCode).toBe(404);
       });
   });
+
+/*    afterEach(function (done) {
+        authenticatedSession
+            .delete('/api/sessions/current')
+            .end((err, response) => {
+                if (err) return done(err);
+                return done();
+            });
+    });*/
+
 });
 
 
@@ -112,6 +135,16 @@ describe('Test the get all the products supplied the next week linked by a farme
         expect(response.statusCode).toBe(404);
       });
   });
+/*
+    afterEach(function (done) {
+        authenticatedSession
+            .delete('/api/sessions/current')
+            .end((err, response) => {
+                if (err) return done(err);
+                return done();
+            });
+    });*/
+
 });
 
 describe('Test the post for adding expected available product amounts for the next week', () => {
@@ -157,6 +190,18 @@ describe('Test the post for adding expected available product amounts for the ne
         expect(response.statusCode).toBe(422);
       });
   });
+/*
+
+    afterEach(function (done) {
+        authenticatedSession
+            .delete('/api/sessions/current')
+            .end((err, response) => {
+                if (err) return done(err);
+                return done();
+            });
+    });
+*/
+
 });
 
 describe('Test the delete for remove expected available product amounts for the next week', () => {
@@ -201,6 +246,18 @@ describe('Test the delete for remove expected available product amounts for the 
         expect(response.statusCode).toBe(422);
       });
   });
+
+/*
+    afterEach(function (done) {
+        authenticatedSession
+            .delete('/api/sessions/current')
+            .end((err, response) => {
+                if (err) return done(err);
+                return done();
+            });
+    });
+*/
+
 });
 
 describe('Test the get client orders api', () => {
