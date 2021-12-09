@@ -4,7 +4,7 @@ import { copyFileSync, unlinkSync } from 'fs';
 
 /** During test the database can be modified, so we need to backup its state */
 
-const dbPath = 'database.db';
+const dbPath = './database.db';
 const backupPath = 'database.db.backup';
 
 var session = require('supertest-session');
@@ -23,8 +23,9 @@ afterAll(() => {
 
 /** TEST SUITES */
 
-describe('Test the get products api', () => {
 
+
+describe('Test the get products api', () => {
     var authenticatedSession;
 
     beforeEach(function (done) {
@@ -35,8 +36,9 @@ describe('Test the get products api', () => {
                 if (err) return done(err);
                 authenticatedSession = testSession;
                 return done();
-              });
-        });
+            });
+    });
+
 
     test('It should respond to the GET method', () => {
         authenticatedSession
@@ -46,6 +48,7 @@ describe('Test the get products api', () => {
             });
     });
 });
+
 
 describe("Test the get farmer's products api", () => {
     var authenticatedSession;
@@ -57,6 +60,7 @@ describe("Test the get farmer's products api", () => {
             .end((err, response) => {
                 if (err) return done(err);
                 authenticatedSession = testSession;
+                console.log(authenticatedSession);
                 return done();
             });
     });
@@ -70,13 +74,14 @@ describe("Test the get farmer's products api", () => {
   });
 
   test('It should respond 404 to the GET method', () => {
-    return request(app)
+    return authenticatedSession
       .get('/api/farmers/3/products')
       .then((response) => {
         expect(response.statusCode).toBe(404);
       });
   });
 });
+
 
 describe('Test the get all the products supplied the next week linked by a farmer with {userId}', () => {
     var authenticatedSession;
@@ -110,9 +115,23 @@ describe('Test the get all the products supplied the next week linked by a farme
 });
 
 describe('Test the post for adding expected available product amounts for the next week', () => {
-  test('It should respond 200 to the POST method', () => {
+    var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
+
+    test('It should respond 200 to the POST method', () => {
     const data = { productID: 4, quantity: 10, price: 10 };
-    return request(app)
+    return authenticatedSession
       .post('/api/farmer/products/available')
       .send(data)
       .then((response) => {
@@ -122,7 +141,7 @@ describe('Test the post for adding expected available product amounts for the ne
 
   test('It should respond 404 to the POST method', () => {
     const data = { productID: 4, quantity: 10, price: 10 };
-    return request(app)
+    return authenticatedSession
       .post('/api/farmers/product/available')
       .send(data)
       .then((response) => {
@@ -131,7 +150,7 @@ describe('Test the post for adding expected available product amounts for the ne
   });
   test('It should respond 422 to the POST method', () => {
     const data = { productID: '4', price: 10 };
-    return request(app)
+    return authenticatedSession
       .post('/api/farmer/products/available')
       .send(data)
       .then((response) => {
@@ -183,6 +202,7 @@ describe('Test the delete for remove expected available product amounts for the 
       });
   });
 });
+
 describe('Test the get client orders api', () => {
 
     var authenticatedSession;
@@ -294,7 +314,6 @@ describe('Test the clients topup api', () => {
         });
     });
 });
-
 describe('Test the get customers api', () => {
 
     var authenticatedSession;

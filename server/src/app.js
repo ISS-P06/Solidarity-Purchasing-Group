@@ -13,10 +13,10 @@ import {userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO} from './
 // --- Import and initialize utility classes: --- //
 import VTC from './vtc';
 import SYS from './system';
-import {insertProductDescription} from "./dao/product-dao";
+import {insertProductDescription, listProducts} from "./dao/product-dao";
 import {getOrderById, getOrders, setOrderDelivered} from "./dao/order-dao";
 import {getBasketByClientId} from "./dao/basket-dao";
-
+import {listClients} from "./dao/client-dao";
 
 /** Virtual Time Clock */
 const vtc = new VTC();
