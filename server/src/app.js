@@ -14,7 +14,7 @@ import {userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO} from './
 import VTC from './vtc';
 import SYS from './system';
 import {insertProductDescription, listProducts} from "./dao/product-dao";
-import {getOrderById, getOrders, setOrderDelivered} from "./dao/order-dao";
+import {getOrderById, getOrders, setOrderDelivered, scheduleOrderDeliver} from "./dao/order-dao";
 import {getBasketByClientId} from "./dao/basket-dao";
 
 
@@ -180,6 +180,35 @@ app.put(
 );
 
 /**
+ * Schedule bag delivery
+ * req.params ID of the order
+ * req.body: information about the delivery {address, date, time}
+ */
+
+app.post('/api/orders/:orderId/deliver/schedule', isLoggedIn, check('orderId').isInt(), (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
+    }
+
+    scheduleOrderDeliver(req.params.id, req.body)
+        .then((orderId) => {
+            res.json(orderId);
+        })
+        .catch(() => res.status(500).end());
+});
+
+
+// POST /api/orders/:id/deliver
+app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
+    setOrderDelivered(req.params.id)
+        .then((orderId) => {
+            res.json(orderId);
+        })
+        .catch(() => res.status(500).end());
+});
+
+/**
  * POST /api/orders
  * Add a order of a client {clientID: client.id, order: order}
  */
@@ -209,12 +238,15 @@ app.post(
     }
 );
 
-// GET /api/orders
-app.get('/api/orders', isLoggedIn, (req, res) => {
-    getOrders()
+// GET /api/clients/:clientId/orders/:orderId
+app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
+    getOrderById(req.params.orderId, req.params.clientId)
         .then((orders) => res.json(orders))
         .catch(() => res.status(500).end());
 });
+
+
+
 
 // GET /api/clients/:clientId/orders
 app.get('/api/clients/:clientId/orders', isLoggedIn, (req, res) => {
@@ -223,12 +255,6 @@ app.get('/api/clients/:clientId/orders', isLoggedIn, (req, res) => {
         .catch(() => res.status(500).end());
 });
 
-// GET /api/clients/:clientId/orders/:orderId
-app.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
-    getOrderById(req.params.orderId, req.params.clientId)
-        .then((orders) => res.json(orders))
-        .catch(() => res.status(500).end());
-});
 
 // GET /api/orders/:id
 // Route used to get the order review
@@ -242,12 +268,10 @@ app.get('/api/orders/:id', isLoggedIn, (req, res) => {
         });
 });
 
-// POST /api/orders/:id/deliver
-app.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
-    setOrderDelivered(req.params.id)
-        .then((orderId) => {
-            res.json(orderId);
-        })
+// GET /api/orders
+app.get('/api/orders', isLoggedIn, (req, res) => {
+    getOrders()
+        .then((orders) => res.json(orders))
         .catch(() => res.status(500).end());
 });
 

@@ -190,6 +190,18 @@ export function getOrderById(orderId, clientId = -1) {
   });
 }
 
+/**
+ * Schedule bag delivery for the order with `orderId`.
+ * @param {number} orderId - Order id on the database.
+ * @param {object} delivery - {address,date,time}.
+ * @returns {Promise<object>}
+ */
+export function scheduleOrderDeliver(orderId,delivery){
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Delivery(ref_request, address, date,time) VALUES(?, ?, ?,?)';
+    db.run(sql, [orderId, delivery.address, delivery.date, delivery.time], (err) => (err ? reject(err) : resolve(orderId)));
+  });
+}
 export function setOrderDelivered(orderId) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Request

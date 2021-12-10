@@ -85,6 +85,25 @@ export const api_getClientOrderReview = async (clientId, orderId) => {
     }
 };
 
+/**
+ * Schedule bag delivery
+ * @param orderId: ID of the order
+ * @param delivery: information about the delivery {address, date, time}
+ */
+export const api_scheduleDelivery = async (orderId, delivery) => {
+    try {
+        const res = await axios.post('/api/orders/' + orderId + '/deliver/schedule', delivery);
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in scheduling bad delivery');
+    }
+};
+
+
 export const api_doDelivery = async (orderId) => {
     try {
         const res = await axios.post('/api/orders/' + orderId + '/deliver', {
@@ -291,6 +310,7 @@ export const api_buyNow = async (userId) => {
         manageError(err.response.status, 'Sorry, there was an error in buying');
     }
 };
+
 
 /**
  * remove the product with productId from the basket
