@@ -1,7 +1,7 @@
 'use strict';
 
-import {mail_sendBalanceReminder} from './mailer';
-import {checksClientBalance, emptyBaskets} from './dao/system-dao';
+import { mailerUtil } from './';
+import { systemDAO } from '../dao';
 
 class SYS {
     /**
@@ -52,7 +52,7 @@ class SYS {
      * This triggers the delivery of the reminders for insufficient balance.
      */
     event_updateOrders() {
-        checksClientBalance()
+        systemDAO.checksClientBalance()
             .then((mailList) => {
                 this.event_sendBalanceReminders(mailList);
             })
@@ -68,7 +68,7 @@ class SYS {
      * make orders.
      */
      event_emptyBaskets() {
-        emptyBaskets()
+        systemDAO.emptyBaskets()
             .then(() => {})
             .catch((err) => {
                 console.log("Error: there was an error in emptying baskets: " + err);
@@ -86,7 +86,7 @@ class SYS {
      */
     event_sendBalanceReminders(mailingList) {
         for (let mail of mailingList) {
-            mail_sendBalanceReminder(mail.email, mail.id)
+            mailerUtil.mail_sendBalanceReminder(mail.email, mail.id)
                 .then((res) => {
                     // ok
                 })

@@ -3,69 +3,20 @@
 import express from 'express';
 import morgan from 'morgan';
 import { check, validationResult } from 'express-validator';
-import passport from 'passport';
 import session from 'express-session';
-import LocalStrategy from 'passport-local';
 
-// --- DAO import: --- //
-import { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO } from './dao';
+// --- DAO imports: --- //
+import { productDAO, farmerDAO, clientDAO, basketDAO, orderDAO } from './dao';
 
-// --- Router import: --- //
+// --- Router imports: --- //
 import { userRouter, vtcRouter, productRouter, basketRouter, clientRouter, farmerRouter, orderRouter } from './routes';
 
-// --- Import and initialize utility classes: --- //
-import VTC from './vtc';
+// --- Utility imports: --- //
+import { passportUtil, formatterUtil, VTC } from './utils';
 
-/** Virtual Time Clock */
+// --- --- --- //
+
 const vtc = new VTC();
-
-// --- --- --- //
-
-// --- Set up Passport --- //
-// set up "username and password" strategy
-passport.use(
-    new LocalStrategy(function (username, password, done) {
-        userDAO.getUser(username, password)
-            .then((user) => {
-                if (!user) return done(null, false, {message: 'Incorrect email and/or password.'});
-
-                return done(null, user);
-            })
-            .catch((err) => {
-                return done(null, false, {message: err.msg});
-            });
-    })
-);
-
-// serialize and de-serialize the user (user object <-> session)
-// we serialize the user id and we store it in the session: the session is very small in this way
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-// starting from the data in the session, we extract the current (logged-in) user
-passport.deserializeUser((id, done) => {
-    userDAO.getUserById(id)
-        .then((user) => {
-            done(null, user); // this will be available in req.user
-        })
-        .catch((err) => {
-            done(err, null);
-        });
-});
-
-// custom middleware: check if a given request is coming from an authenticated user
-const isLoggedIn = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-
-    return res.status(401).json({message: 'not authenticated'});
-};
-// --- --- --- //
-
-const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
-    // Format express-validate errors as strings
-    return `${location}[${param}]: ${msg}`;
-};
 
 /* express setup */
 const app = new express();
@@ -83,9 +34,10 @@ app.use(
     })
 );
 
-// then, init passport
-app.use(passport.initialize());
-app.use(passport.session());
+// Initialize passport
+// passport properties are defined in ./utils/passport
+app.use(passportUtil.passportInit);
+app.use(passportUtil.passportSession);
 
 /*** APIs ***/
 
@@ -126,7 +78,7 @@ app.post(
         return true;
     }),
     (req, res) => {
-        const errors = validationResult(req).formatWith(errorFormatter);
+        const errors = validationResult(req).formatWith(formatterUtil.errorFormatter);
         if (!errors.isEmpty()) {
             return res.status(422).json({error: errors.array().join(', ')});
         }
@@ -163,62 +115,6 @@ app.post('/api/orders/:id/deliver', (req, res) => {
         })
         .catch(() => res.status(500).end());
 });
-
-// --- --- --- //
-
-// --- Login/Logout APIs --- //
-/** 
- * POST /api/sessions
- * Used to log a user in.
- * Returns user info when successful
- */
-app.post('/api/sessions', function (req, res, next) {
-    passport.authenticate(
-        'local',
-        {
-            failureRedirect: '/api/sessions',
-        },
-        (err, user, info) => {
-            if (err) {
-                return next(err);
-            }
-
-            if (!user) {
-                // display wrong login messages
-                return res.status(401).json(info.message);
-            }
-            // success, perform the login
-            req.login(user, (err) => {
-                if (err) return next(err);
-
-                // req.user contains the authenticated user, we send all the user info back
-                return res.json(req.user);
-            });
-        }
-    )(req, res, next);
-});
-
-/** 
- * DELETE /api/sessions/current
- * Used to log a user out.
- */
-app.delete('/api/sessions/current', (req, res) => {
-    req.logout();
-    res.end();
-});
-
-/** 
- * GET /api/sessions/current
- * Used to get information about the user that's currently logged in.
- * Returns user info when successful.
- */
-app.get('/api/sessions/current', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.status(200).json(req.user);
-    } else res.status(401).json({message: 'Unauthenticated user'});
-});
-
-// --- --- --- //
 
 // --- Basket APIs --- //
 
@@ -331,6 +227,7 @@ app.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
+
 /**
  * POST
  *

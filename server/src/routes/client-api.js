@@ -3,7 +3,18 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import { clientDAO, orderDAO } from '../dao';
+import { passportUtil } from '../utils';
 var router = express.Router();
+
+const isLoggedIn = passportUtil.isLoggedIn;
+
+/**
+ * ---
+ * This file contains all BE routes used to get and post data about
+ * the site's clients (which are a subset of the site's users, with
+ * specific priviledges and permissions).
+ * ---
+ */
 
 // --- Client APIs --- //
 

@@ -1,14 +1,14 @@
 import request from 'supertest';
 import app from '../app';
 
-import { test_addDummyOrders } from '../dao/system-dao';
+import { systemDAO } from '../dao';
 
 import { copyFileSync, unlinkSync } from 'fs';
 
 /** During test the database can be modified, so we need to backup its state */
 
 const dbPath = 'database.db';
-const backupPath = 'database.db.backup.system';
+const backupPath = 'database.db.backup.sys';
 
 // Save database current state
 beforeAll(() => {
@@ -21,14 +21,14 @@ afterAll(() => {
   unlinkSync(backupPath);
 });
 
-import SYS from '../system';
+import { SYS } from '../utils';
 
 const sys = new SYS();
 
 /** TEST SUITES */
 describe('Test SYS class: trigger for insufficient balance notification', () => {
   beforeAll(async () => {
-    await test_addDummyOrders();
+    await systemDAO.test_addDummyOrders();
   });
 
   test('Everything should work', () => {

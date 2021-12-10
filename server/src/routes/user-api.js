@@ -3,7 +3,68 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import { userDAO } from '../dao';
+import passport from 'passport';
 var router = express.Router();
+
+/**
+ * ---
+ * This file contains all BE routes used to get and post data about the 
+ * site's users. It also contains routes used to log the user in and out, and
+ * to retrieve the logged-in user's data.
+ * ---
+ */
+
+// --- Login/Logout APIs --- //
+/** 
+ * POST /api/sessions
+ * Used to log a user in.
+ * Returns user info when successful
+ */
+router.post('/api/sessions', function (req, res, next) {
+    passport.authenticate(
+        'local',
+        {
+            failureRedirect: '/api/sessions',
+        },
+        (err, user, info) => {
+            if (err) {
+                return next(err);
+            }
+
+            if (!user) {
+                // display wrong login messages
+                return res.status(401).json(info.message);
+            }
+            // success, perform the login
+            req.login(user, (err) => {
+                if (err) return next(err);
+
+                // req.user contains the authenticated user, we send all the user info back
+                return res.json(req.user);
+            });
+        }
+    )(req, res, next);
+});
+
+/** 
+ * DELETE /api/sessions/current
+ * Used to log a user out.
+ */
+router.delete('/api/sessions/current', (req, res) => {
+    req.logout();
+    res.end();
+});
+
+/** 
+ * GET /api/sessions/current
+ * Used to get information about the user that's currently logged in.
+ * Returns user info when successful.
+ */
+router.get('/api/sessions/current', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.status(200).json(req.user);
+    } else res.status(401).json({message: 'Unauthenticated user'});
+});
 
 /**
  * POST /api/register_user
@@ -31,5 +92,7 @@ router.post(
             });
     }
 );
+
+// --- --- --- //
 
 module.exports = router;

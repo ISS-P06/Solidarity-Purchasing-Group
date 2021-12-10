@@ -3,10 +3,11 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import { productDAO } from '../dao';
+import { passportUtil, VTC } from '../utils';
 var router = express.Router();
 
-// --- Import and initialize utility classes: --- //
-import VTC from '../vtc';
+const isLoggedIn = passportUtil.isLoggedIn;
+
 /** Virtual Time Clock */
 const vtc = new VTC();
 

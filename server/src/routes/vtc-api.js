@@ -5,14 +5,21 @@ import { check, validationResult } from 'express-validator';
 var router = express.Router();
 
 // --- Import and initialize utility classes: --- //
-import VTC from '../vtc';
-import SYS from '../system';
+import VTC from '../utils/vtc';
+import SYS from '../utils/system';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
 
 /* System class */
 const sys = new SYS();
+
+/**
+ * ---
+ * This file contains all BE routes used to manipulate and retrieve the
+ * system's virtual time.
+ * ---
+ */
 
 /**
  * GET /api/time
