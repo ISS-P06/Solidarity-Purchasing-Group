@@ -334,35 +334,6 @@ app.get('/api/sessions/current', (req, res) => {
     } else res.status(401).json({message: 'Unauthenticated user'});
 });
 
-// --- --- --- //
-// --- Route used for adding an admin (used only for testing purposes)
-app.post(
-    '/test/addUser',
-    [
-        check('username').isString().isLength({min: 1}),
-        check('password').isString().isLength({min: 8}),
-        check('role').isString().isLength({min: 1}),
-    ],
-    (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({errors: errors.array()});
-        }
-
-        let user = {
-            username: req.body.username,
-            password: req.body.password,
-            role: req.body.role,
-        };
-
-        test_createUser(user)
-            .then((err) => {
-                return res.status(200).end();
-            })
-            .catch(() => res.status(500).end());
-    }
-);
-
 /**
  * POST
  *

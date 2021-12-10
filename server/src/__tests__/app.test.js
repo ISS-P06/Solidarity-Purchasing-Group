@@ -345,6 +345,20 @@ describe('Test POST order ', function () {
 
 // --- Login/logout routes tests
 describe('Test the login APIs', () => {
+
+  var authenticatedSession;
+
+    beforeEach(function (done) {
+        testSession
+            .post('/api/sessions')
+            .send({username: 'pentolino', password: 'pentolino'})
+            .end((err, response) => {
+                if (err) return done(err);
+                authenticatedSession = testSession;
+                return done();
+            });
+    });
+
   test('It should respond to the POST method', () => {
     const user = { username: 'pentolino', password: 'pentolino' };
     return request(app).post('/api/sessions').send(user).expect(200);
@@ -362,6 +376,11 @@ describe('Test the login APIs', () => {
   test('It should respond to the DELETE method', () => {
     return request(app).delete('/api/sessions/current').expect(200);
   });
+
+  test('The GET method shod respond 200', function (done) {
+    authenticatedSession.get('/api/sessions/current').expect(200).end(done);
+  });
+
 });
 // --- --- --- //
 
@@ -604,7 +623,6 @@ describe('test adding new product description' , () => {
             });
     });
 
-  
     test('test add successfully product description', function (done) {
         const productDescription ={
             name:'apple',
