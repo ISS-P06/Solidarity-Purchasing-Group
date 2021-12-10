@@ -494,7 +494,7 @@ app.delete('/api/farmer/products/available', [check('productID').isInt()], (req,
  * INSERT a new product description
  */
 app.post('/api/insert_product_description', isLoggedIn, [
-        check('name').isInt(),
+        check('name').isString(),
         check('description').isString(),
         check('category').isString(),
         check('unit').isString(),

@@ -19,7 +19,6 @@ beforeAll(() => {
 afterAll(() => {
   copyFileSync(backupPath, dbPath);
   unlinkSync(backupPath);
-
 });
 
 /** TEST SUITES */
@@ -41,26 +40,12 @@ describe('Test the get products api', () => {
     });
 
 
-    test('It should respond to the GET method', () => {
+    test('It should respond to the GET method', function (done) {
         authenticatedSession
             .get('/api/products')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
-
-/*
-    afterEach(function (done) {
-        authenticatedSession
-            .delete('/api/sessions/current')
-            .end((err, response) => {
-                if (err) return done(err);
-                return done();
-            });
-    });
-*/
-
-
 });
 
 
@@ -74,35 +59,24 @@ describe("Test the get farmer's products api", () => {
             .end((err, response) => {
                 if (err) return done(err);
                 authenticatedSession = testSession;
+                console.log(authenticatedSession);
                 return done();
             });
     });
 
-  test('It should respond 200 to the GET method', () => {
-    return authenticatedSession
+  test('It should respond 200 to the GET method', function (done) {
+    authenticatedSession
       .get('/api/farmer/3/products')
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
-      });
+      .expect(200)
+      .end(done);
   });
 
-  test('It should respond 404 to the GET method', () => {
-    return authenticatedSession
+  test('It should respond 404 to the GET method', function (done) {
+    authenticatedSession
       .get('/api/farmers/3/products')
-      .then((response) => {
-        expect(response.statusCode).toBe(404);
-      });
+      .expect(404)
+      .end(done);
   });
-
-/*    afterEach(function (done) {
-        authenticatedSession
-            .delete('/api/sessions/current')
-            .end((err, response) => {
-                if (err) return done(err);
-                return done();
-            });
-    });*/
-
 });
 
 
@@ -120,31 +94,19 @@ describe('Test the get all the products supplied the next week linked by a farme
             });
     });
 
-    test('It should respond 200 to the GET method', () => {
-    return authenticatedSession
+    test('It should respond 200 to the GET method', function (done) {
+    authenticatedSession
       .get('/api/farmer/3/products')
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
-      });
+      .expect(200)
+      .end(done);
   });
 
-  test('It should respond 404 to the GET method', () => {
-    return request(app)
+  test('It should respond 404 to the GET method', function (done) {
+    authenticatedSession
       .get('/api/farmer/3/products/supp')
-      .then((response) => {
-        expect(response.statusCode).toBe(404);
-      });
+      .expect(404)
+      .end(done);
   });
-/*
-    afterEach(function (done) {
-        authenticatedSession
-            .delete('/api/sessions/current')
-            .end((err, response) => {
-                if (err) return done(err);
-                return done();
-            });
-    });*/
-
 });
 
 describe('Test the post for adding expected available product amounts for the next week', () => {
@@ -162,46 +124,31 @@ describe('Test the post for adding expected available product amounts for the ne
     });
 
 
-    test('It should respond 200 to the POST method', () => {
+    test('It should respond 200 to the POST method', function (done) {
     const data = { productID: 4, quantity: 10, price: 10 };
-    return authenticatedSession
+    authenticatedSession
       .post('/api/farmer/products/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
-      });
+      .expect(200)
+      .end(done);
   });
 
-  test('It should respond 404 to the POST method', () => {
+  test('It should respond 404 to the POST method', function (done) {
     const data = { productID: 4, quantity: 10, price: 10 };
-    return authenticatedSession
+    authenticatedSession
       .post('/api/farmers/product/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(404);
-      });
+      .expect(404)
+      .end(done);
   });
-  test('It should respond 422 to the POST method', () => {
+  test('It should respond 422 to the POST method', function (done) {
     const data = { productID: '4', price: 10 };
-    return authenticatedSession
+    authenticatedSession
       .post('/api/farmer/products/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(422);
-      });
+      .expect(422)
+      .end(done);
   });
-/*
-
-    afterEach(function (done) {
-        authenticatedSession
-            .delete('/api/sessions/current')
-            .end((err, response) => {
-                if (err) return done(err);
-                return done();
-            });
-    });
-*/
-
 });
 
 describe('Test the delete for remove expected available product amounts for the next week', () => {
@@ -218,46 +165,31 @@ describe('Test the delete for remove expected available product amounts for the 
             });
     });
 
-    test('It should respond 200 to the POST method', () => {
+    test('It should respond 200 to the POST method', function (done) {
     const data = { productID: 4 };
-    return authenticatedSession
+    authenticatedSession
       .delete('/api/farmer/products/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
-      });
+      .expect(200)
+      .end(done);
   });
 
-  test('It should respond 404 to the DELETE method', () => {
+  test('It should respond 404 to the DELETE method', function (done) {
     const data = { productID: 4 };
-    return authenticatedSession
+    authenticatedSession
       .delete('/api/farmers/product/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(404);
-      });
+      .expect(404)
+      .end(done);
   });
-  test('It should respond 422 to the DELETE method', () => {
+  test('It should respond 422 to the DELETE method', function (done) {
     const data = { productID: 'prod' };
-    return authenticatedSession
+    authenticatedSession
       .delete('/api/farmer/products/available')
       .send(data)
-      .then((response) => {
-        expect(response.statusCode).toBe(422);
-      });
+      .expect(422)
+      .end(done);
   });
-
-/*
-    afterEach(function (done) {
-        authenticatedSession
-            .delete('/api/sessions/current')
-            .end((err, response) => {
-                if (err) return done(err);
-                return done();
-            });
-    });
-*/
-
 });
 
 describe('Test the get client orders api', () => {
@@ -275,36 +207,32 @@ describe('Test the get client orders api', () => {
               });
         });
 
-    test('It should respond 200 to the GET method', () => {
+    test('It should respond 200 to the GET method', function (done) {
         authenticatedSession
             .get('/api/clients/4/orders')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 
-    test('It should respond 404 to the GET method', () => {
+    test('It should respond 404 to the GET method', function (done) {
         authenticatedSession
             .get('/api/clients//orders')
-            .then((response) => {
-                expect(response.statusCode).toBe(404);
-            });
+            .expect(404)
+            .end(done);
     });
 
-    test('It should respond 200 to the GET method', () => {
+    test('It should respond 200 to the GET method', function (done) {
         authenticatedSession
             .get('/api/clients/4/orders/2')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 
-    test('It should respond 404 to the GET method', () => {
+    test('It should respond 404 to the GET method', function (done) {
         authenticatedSession
             .get('/api/clients//orders/2')
-            .then((response) => {
-                expect(response.statusCode).toBe(404);
-            });
+            .expect(404)
+            .end(done);
     });
 });
 
@@ -339,38 +267,31 @@ describe('Test the clients topup api', () => {
               });
         });
 
-    test('It should respond to the GET method', () => {
-        authenticatedSession.get('/api/clients').then((response) => {
-            expect(response.statusCode).toBe(200);
-        });
+    test('It should respond to the GET method', function (done) {
+        authenticatedSession.get('/api/clients').expect(200).end(done);
     });
 
-  test('It should respond to the PUT method', () => {
+  test('It should respond to the PUT method', function (done) {
     const id = 1;
     const amount = 100;
 
-        authenticatedSession.put('/api/clients/topup').send({amount, id}).then((response) => {
-            expect(response.statusCode).toBe(200);
-        });
+        authenticatedSession.put('/api/clients/topup').send({amount, id}).expect(200).end(done);
     });
 
-  test('it should fail to the PUT methoh (low amount)', () => {
+  test('it should fail to the PUT methoh (low amount)', function (done) {
     const id = 1;
     const amount = 3;
 
-        authenticatedSession.put('/api/clients/topup').send({amount, id}).then((response) => {
-            expect(response.statusCode).toBe(422);
-        });
+        authenticatedSession.put('/api/clients/topup').send({amount, id}).expect(422).end(done);
     });
 
-  test('it should fail to the PUT methoh (missing parameter)', () => {
+  test('it should fail to the PUT methoh (missing parameter)', function (done) {
     const amount = 50;
 
-        authenticatedSession.put('/api/clients/topup').send({amount}).then((response) => {
-            expect(response.statusCode).toBe(422);
-        });
+        authenticatedSession.put('/api/clients/topup').send({amount}).expect(422).end(done);
     });
 });
+
 describe('Test the get customers api', () => {
 
     var authenticatedSession;
@@ -386,12 +307,11 @@ describe('Test the get customers api', () => {
               });
         });
 
-    test('It should respond to the GET method', () => {
-        authenticatedSession
+    test('It should respond to the GET method', function (done) {
+      authenticatedSession
             .get('/api/clients')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 });
 
@@ -460,20 +380,18 @@ describe('Test the orders path', () => {
               });
         });
 
-    test('It should response GET api/orders', () => {
+    test('It should response GET api/orders', function (done) {
         authenticatedSession
             .get('/api/orders')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 
-    test('It should response GET api/orders/1', () => {
+    test('It should response GET api/orders/1', function (done) {
         authenticatedSession
             .get('/api/orders/1')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 });
 
@@ -491,12 +409,11 @@ describe('Test the client path', () => {
             });
     });
 
-    test('It should response GET api/client/4/basket', () => {
-        return authenticatedSession
+    test('It should response GET api/client/4/basket', function (done) {
+        authenticatedSession
             .get('/api/client/4/basket')
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 });
 
@@ -514,23 +431,22 @@ describe('Test add or delete a product into/from the basket', () => {
             });
     });
 
-    test('Remove a product; It should response 200', () => {
+    test('Remove a product; It should response 200', function(done) {
         const data = {productId: 4};
-        return authenticatedSession
+        authenticatedSession
             .delete('/api/client/4/basket/remove')
             .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
-    test('Add a product; It should response 200', () => {
+
+    test('Add a product; It should response 200', function (done) {
         const data = {productId: 4, reservedQuantity: 0.1};
-        return authenticatedSession
+        authenticatedSession
             .post('/api/client/4/basket/add')
             .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            });
+            .expect(200)
+            .end(done);
     });
 
 
@@ -550,24 +466,22 @@ describe('Test failure add or delete a product into/from the basket', () => {
             });
     });
 
-    test('Add a product; It should response 422 because validation fails', () => {
+    test('Add a product; It should response 422 because validation fails', function (done) {
         const data = {productId: '', reservedQuantity: 0.1};
-        return authenticatedSession
+        authenticatedSession
             .post('/api/client/4/basket/add')
             .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(422);
-            });
+            .expect(422)
+            .end(done);
     });
 
-    test('Remove a product; It should response 422 because validation fails', () => {
+    test('Remove a product; It should response 422 because validation fails', function (done) {
         const data = {productId: ''};
-        return authenticatedSession
+        authenticatedSession
             .delete('/api/client/4/basket/remove')
             .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(422);
-            });
+            .expect(422)
+            .end(done);
     });
 });
 
@@ -610,7 +524,7 @@ describe('test user insertion', () => {
       username: 'salyAshraf',
       password: 'salyAshraf',
     };
-    return request(app).post('/api/register_user').send(shop_employee).expect(200);
+    return request(app).post('/api/register_user').send(shop_employee).then(response => {expect(response.statusCode).toBe(200)});
   });
 
   test('test failure of post method due to missing parameters', () => {
@@ -636,7 +550,7 @@ describe('test user insertion', () => {
       username: 'muhammadibrahim',
       password: 'muhammadibrahim',
     };
-    return request(app).post('/api/register_user').send(farmer).expect(200);
+    return request(app).post('/api/register_user').send(farmer).then(response => {expect(response.statusCode).toBe(200)});
   });
 
   test('test failure of post method due to missing parameters with farmer insertion', () => {
@@ -665,19 +579,18 @@ describe('test place a order', () => {
             });
     });
 
-    test('Submit an order; It should response 200', () => {
+    test('Submit an order; It should response 200', function (done) {
         const userId = 2;
-        return authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(200);
+        authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(200).end(done);
     });
 
-    test('Submit an order; It should response 422', () => {
+    test('Submit an order; It should response 422', function (done) {
         const userId = 'ciao';
-        return authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(422);
+        authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(422).end(done);
     });
 });
 
-
-describe('test adding new product description' ,()=>{
+describe('test adding new product description' , () => {
     var authenticatedSession;
 
     beforeEach(function (done) {
@@ -691,7 +604,8 @@ describe('test adding new product description' ,()=>{
             });
     });
 
-    test('test add successfully product description', ()=>{
+  
+    test('test add successfully product description', function (done) {
         const productDescription ={
             name:'apple',
             description : 'new kind',
@@ -702,15 +616,17 @@ describe('test adding new product description' ,()=>{
         authenticatedSession
             .post('/api/insert_product_description')
             .send(productDescription)
-            .expect(200);
+            .expect(200)
+            .end(done);
     })
 
-    test('test add product description expect failure', ()=>{
+    test('test add product description expect failure', function (done) {
         const productDescription ={}
         authenticatedSession
             .post('/api/insert_product-description')
             .send(productDescription)
-            .expect(422);
+            .expect(404)
+            .end(done);
     })
 
 })
