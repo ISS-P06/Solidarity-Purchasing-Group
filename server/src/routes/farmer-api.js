@@ -27,12 +27,19 @@ router.get(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+        return res.status(422).json({errors: errors.array()});
     }
-    farmerDAO
-      .listSuppliedFarmerProducts(req.params.farmerId)
-      .then((products) => res.json(products))
-      .catch(() => res.status(500).end());
+
+    let currTime = new Date(vtc.time());
+    let wednesday = currTime;
+
+    while(wednesday.getDay() != 3) {
+        wednesday.setDate(wednesday.getDate() - 1);
+    }
+
+    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId, wednesday)
+        .then((products) => res.json(products))
+        .catch(() => res.status(500).end());
   }
 );
 /**
