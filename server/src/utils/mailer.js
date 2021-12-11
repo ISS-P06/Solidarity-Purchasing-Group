@@ -48,9 +48,7 @@ export function mail_sendBalanceReminder(userMail, orderID) {
         a resolved promise every time instead of using nodemailer.
     */
     if (orderID <= 0) {
-        return new Promise((resolve, reject) => {
-            resolve("email sent");
-        });
+        return Promise.resolve("email sent");
     }
     
     return new Promise((resolve, reject) => {
@@ -62,4 +60,4 @@ export function mail_sendBalanceReminder(userMail, orderID) {
                 reject("error: " + err);
             });
     });
-};
+}
