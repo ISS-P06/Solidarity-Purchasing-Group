@@ -3,6 +3,10 @@
 import db from '../db';
 import dayjs from 'dayjs';
 
+import VTC from '../vtc';
+
+const vtc = new VTC();
+
 /**
  * Returns the list of products available for the next week.
  *
@@ -60,7 +64,7 @@ export function addExpectedAvailableProduct(availableProduct) {
         availableProduct.productID,
         availableProduct.quantity,
         availableProduct.price,
-        dayjs().format('YYYY-MM-DD HH:mm'),
+        dayjs(vtc.time()).format('YYYY-MM-DD HH:mm'),
       ],
       (err, rows) => {
         if (err) {

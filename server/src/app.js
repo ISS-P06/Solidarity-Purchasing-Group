@@ -454,10 +454,19 @@ app.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()], 
     if (!errors.isEmpty()) {
         return res.status(422).json({errors: errors.array()});
     }
-    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId)
+
+    let currTime = new Date(vtc.time());
+    let wednesday = currTime;
+
+    while(wednesday.getDay() != 3) {
+        wednesday.setDate(wednesday.getDate() - 1);
+    }
+
+    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId, wednesday)
         .then((products) => res.json(products))
         .catch(() => res.status(500).end());
 });
+
 /**
  * GET
  *

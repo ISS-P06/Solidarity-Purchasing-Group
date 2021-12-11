@@ -1,6 +1,7 @@
 'use strict';
 
 import db from '../db';
+import dayjs from 'dayjs';
 
 /**
  * Get the list of products linked to a farmer
@@ -35,17 +36,23 @@ export function listFarmerProducts(farmerId) {
  * Get the list of products supplied the next week linked to a farmer
  *
  * @param {int} farmerId: the unique ID of the farmer
+ * @param {Date} day: day representing the day from which to filter; it's always a Wednesday as that's
+ *      the day from which farmers are allowed to insert new products for the upcoming week.
  * @returns products: [{id,name,category, price,quantity,unit}]
  */
-/* TODO add virtual clock*/
-export function listSuppliedFarmerProducts(farmerId) {
+export function listSuppliedFarmerProducts(farmerId, day) {
   return new Promise((resolve, reject) => {
+    // Convert day into a format readable by SQLite
+    let date = dayjs(day).format('YYYY-MM-DD');
+    date = date + ' 00:00';
+
     const sql = `SELECT p.id, pd.name, pd.category, p.quantity, p.price, pd.unit
                      FROM Product p,
                           Prod_descriptor pd
                      WHERE pd.id = p.ref_prod_descriptor 
-                        AND pd.ref_farmer=?`;
-    db.all(sql, [farmerId], (err, rows) => {
+                        AND pd.ref_farmer=?
+                        AND p.date >= DATE(?)`;
+    db.all(sql, [farmerId, date], (err, rows) => {
       if (err) {
         reject(err);
         return;
