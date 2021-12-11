@@ -17,22 +17,19 @@ const ProductCards = (props) => {
 
     // product { id, name, description, category, quantity, price, unit, ref_farmer, farm_name }
     const [productList, setProductList] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('All categories');
+    const categories = ["All categories", ...new Set(productList.map(p => p.category))];
 
     useEffect(() => {
         const apiCall = userRole === "farmer" ? api_getFarmerProducts(userId) : api_getProducts();
         apiCall.then((products) => {
-                    setProductList(products);
-                    setLoading(false);
-                }).catch((e) => {
-                    addMessage({ message: e.message, type: 'danger' });
-                    setLoading(false);
-                });
+            setProductList(products);
+            setLoading(false);
+        }).catch((e) => {
+            addMessage({ message: e.message, type: 'danger' });
+            setLoading(false);
+        });
     }, [virtualTime]);
-
-
-
-
-
 
     // go up after changing page
     useEffect(() => {
@@ -42,12 +39,13 @@ const ProductCards = (props) => {
     // pagination start
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = searchText.length > 0 ?
+    const filterOn = searchText.length > 0 || selectedCategory !== "All categories";
+    const currentProducts = filterOn ?
         searchedProduct.slice(indexOfFirstProduct, indexOfLastProduct) :
         productList.slice(indexOfFirstProduct, indexOfLastProduct)
     const pageNumbers = [];
 
-    let endPage = searchText.length > 0 ?
+    let endPage = filterOn ?
         Math.ceil(searchedProduct.length / productsPerPage) :
         Math.ceil(productList.length / productsPerPage)
     let startPage = currentPage - 2;
@@ -60,29 +58,6 @@ const ProductCards = (props) => {
             pageNumbers.push(i);
     }
     // pagination end
-
-    /**
-     * The function handleOnSerachProduct take an argument that is the name of the product that you want to looking for,
-     * it creates a regular expression to find if the serach text matches the name of each product.
-     * If yes the product is added to the list of the product that we want to show.
-     * If there are no product with name specified as parameter is set an error that informs you.
-     *
-     * @param {string} text
-     * - text is the product name string you want to looking for.
-     */
-    const handleOnSearchProduct = (text) => {
-        setSearchText(text);
-        var searchExpr = new RegExp('^' + text, 'i');
-        const products = productList.filter((product) => searchExpr.test(product.name));
-
-        if (products.length === 0 && text.length > 0) {
-            setError("Sorry there are no products with name " + text);
-        } else {
-            setError('');
-        }
-        setSearchedProduct(products);
-        setCurrentPage(1);
-    }
 
     /**
      * This function calls the api of reference to add product on the basket
@@ -99,6 +74,48 @@ const ProductCards = (props) => {
             }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
     }
 
+    const handleOnSearchProduct = (text) => {
+        setSearchText(text);
+        const products = filterProducts(text, selectedCategory);
+        setSearchedProduct(products);
+        setCurrentPage(1);
+    }
+
+    const handleOnSwitchCategory = (category) => {
+        setSelectedCategory(category);
+        const products = filterProducts(searchText, category);
+        setSearchedProduct(products);
+        setCurrentPage(1);
+    }
+
+    /**
+     * Filters the products by name and category
+     * It also manages error messages in case no products are found
+     * @param {*} name Name filter
+     * @param {*} category Category filter
+     * @returns Filtered products
+     */
+    const filterProducts = (name, category) => {
+        var searchExpr = new RegExp('^' + name, 'i');
+
+        let products = productList
+            .filter((p) => {
+                if (category === "All categories")
+                    return true;
+                return p.category === category
+            })
+            .filter((p) => searchExpr.test(p.name));
+
+        if (products.length === 0 && name.length > 0) {
+            setError("Sorry there are no products with name " + name);
+        } else {
+            setError('');
+        }
+
+        return products;
+    }
+
+
     return (
         loading ? <Spinner animation="border" variant="success" className={"mt-3"} /> : (
             <Container style={{ textAlign: 'left' }}>
@@ -108,19 +125,34 @@ const ProductCards = (props) => {
                     </Col>
                 </Row>
                 <Row className="mt-4">
-                    <Col></Col>
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
-                    {productList.length !== 0 &&
-                        <Form>
-                            <Form.Control
-                                type="text"
-                                placeholder="Search Product"
-                                onChange={(e) => handleOnSearchProduct(e.target.value)} />
-                        </Form>}
+                    <Col xs={2}></Col>
+                    <Col xs={8} style={{ display: 'flex', justifyContent: 'center' }}>
+                        {productList.length !== 0 &&
+                            <Form>
+                                <Container>
+                                    <Row>
+                                        <Col xs={12} sm={6}>
+                                            <Form.Control
+                                                value={searchText}
+                                                type="text"
+                                                placeholder="Search Product"
+                                                onChange={(e) => handleOnSearchProduct(e.target.value)} />
+                                        </Col>
+                                        <Col xs={12} sm={6}>
+                                            <Form.Select
+                                                value={selectedCategory}
+                                                onChange={(e) => handleOnSwitchCategory(e.target.value)}>
+                                                {categories.map((c) => { return <option value={c}>{c}</option> })}
+                                            </Form.Select>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            </Form>
+                        }
                     </Col>
-                    <Col style={{ display: 'flex', justifyContent: 'right' }}>
+                    <Col xs={2} style={{ display: 'flex', justifyContent: 'right' }}>
                         {userRole === "farmer" &&
-                            <Link to="/farmer/products/new">
+                            <Link to="/farmer/products/new" className="p-0">
                                 <Button>Add new product</Button>
                             </Link>
                         }
