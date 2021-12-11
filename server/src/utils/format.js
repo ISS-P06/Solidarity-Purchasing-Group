@@ -6,9 +6,7 @@
  * ---
  */
 
-const errorFormatter = ({location, msg, param, value, nestedErrors}) => {
-    // Format express-validate errors as strings
-    return `${location}[${param}]: ${msg}`;
+export const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
+  // Format express-validate errors as strings
+  return `${location}[${param}]: ${msg}`;
 };
-
-export { errorFormatter };

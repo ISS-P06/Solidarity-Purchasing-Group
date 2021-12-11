@@ -1,8 +1,7 @@
 'use strict';
 
-import express from 'express';
+import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
-var router = express.Router();
 
 // --- Import and initialize utility classes: --- //
 import VTC from '../utils/vtc';
@@ -10,9 +9,10 @@ import SYS from '../utils/system';
 
 /** Virtual Time Clock */
 const vtc = new VTC();
-
 /* System class */
 const sys = new SYS();
+
+const router = Router();
 
 /**
  * ---
@@ -27,7 +27,7 @@ const sys = new SYS();
  * Used to pass current virtual time clock to the frontend.
  */
 router.get('/api/time', (_, res) => {
-    res.status(200).json({currentTime: vtc.time(), day: vtc.day()});
+  res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
 });
 
 /**
@@ -38,20 +38,20 @@ router.get('/api/time', (_, res) => {
  * @param {string} time
  */
 router.put('/api/time', [check('time').isISO8601()], (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
-    }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
-    const time = req.body.time;
+  const time = req.body.time;
 
-    try {
-        let newTime = vtc.set(time);
-        sys.checkTimedEvents(newTime);
-        res.status(200).json({currentTime: vtc.time(), day: vtc.day()});
-    } catch (error) {
-        res.status(500).json({error});
-    }
+  try {
+    const newTime = vtc.set(time);
+    sys.checkTimedEvents(newTime);
+    res.status(200).json({ currentTime: vtc.time(), day: vtc.day() });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 });
 
-module.exports = router;
+export default router;

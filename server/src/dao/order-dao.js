@@ -36,6 +36,8 @@ export function insertOrder(orderClient) {
               }
               if (orderClient.order.length === index + 1) {
                 resolve(OrderID);
+              } else {
+                reject();
               }
             });
           });

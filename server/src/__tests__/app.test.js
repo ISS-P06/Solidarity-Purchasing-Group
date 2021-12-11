@@ -210,18 +210,14 @@ describe('Test the get customers api', () => {
   });
 });
 
-describe('TEST POST order ', function () {
-  test('responds with json', function (done) {
-    request(app)
+describe('TEST POST order ', () => {
+  test('responds with json', () => {
+    return request(app)
       .post('/api/orders')
       .send({ clientID: 1, order: [{ id: 55, quantity: 10.0 }] })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
-        return done();
-      });
+      .expect(200);
   });
 });
 
