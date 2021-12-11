@@ -24,7 +24,7 @@ afterAll(() => {
 const testSession = session(app);
 let authenticatedSession = null;
 
-beforeEach(function (done) {
+beforeEach((done) => {
   testSession
     .post('/api/sessions')
     .send({ username: 'pentolino', password: 'pentolino' })

@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { userDAO } from '../dao';
 import passport from 'passport';
 
-const router = Router();
+export const router = Router();
 
 /**
  * ---
@@ -95,5 +95,3 @@ router.post(
       });
   }
 );
-
-export default router;

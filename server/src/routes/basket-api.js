@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { basketDAO, orderDAO, clientDAO } from '../dao';
 import { isLoggedIn, VTC } from '../utils';
 
-const router = Router();
+export const router = Router();
 
 const vtc = new VTC();
 
@@ -78,7 +78,7 @@ router.delete(
 
     basketDAO
       .removeProductFromBasket(userId, productId)
-      .then((productId) => res.json(productId))
+      .then((p) => res.json(p))
       .catch(() => res.status(500).end());
   }
 );
@@ -107,7 +107,7 @@ router.post(
 
     basketDAO
       .addProductToBasket(userId, productId, reservedQuantity)
-      .then((productId) => res.json(productId))
+      .then((p) => res.json(p))
       .catch(() => res.status(500).end());
   }
 );
@@ -123,5 +123,3 @@ router.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
     .then((products) => res.json(products))
     .catch(() => res.status(500).end());
 });
-
-export default router;

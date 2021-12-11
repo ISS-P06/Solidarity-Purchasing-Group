@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { productDAO, farmerDAO } from '../dao';
 import { isLoggedIn } from '../utils/passport';
 
-const router = Router();
+export const router = Router();
 
 /**
  * ---
@@ -93,5 +93,3 @@ router.delete('/api/farmer/products/available', [check('productID').isInt()], (r
     .then((productID) => res.json(productID))
     .catch(() => res.status(500).end());
 });
-
-export default router;

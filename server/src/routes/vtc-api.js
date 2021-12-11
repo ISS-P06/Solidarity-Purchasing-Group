@@ -12,7 +12,7 @@ const vtc = new VTC();
 /* System class */
 const sys = new SYS();
 
-const router = Router();
+export const router = Router();
 
 /**
  * ---
@@ -53,5 +53,3 @@ router.put('/api/time', [check('time').isISO8601()], (req, res) => {
     res.status(500).json({ error });
   }
 });
-
-export default router;

@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { clientDAO, orderDAO } from '../dao';
 import { isLoggedIn } from '../utils/passport';
 
-const router = Router();
+export const router = Router();
 
 /**
  * ---
@@ -73,5 +73,3 @@ router.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
-
-export default router;

@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { orderDAO } from '../dao';
 import { isLoggedIn, formatterUtil } from '../utils';
 
-const router = Router();
+export const router = Router();
 
 /**
  * ---
@@ -70,5 +70,3 @@ router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
     })
     .catch(() => res.status(500).end());
 });
-
-export default router;

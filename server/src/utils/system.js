@@ -69,7 +69,6 @@ class SYS {
      */
      event_emptyBaskets() {
         systemDAO.emptyBaskets()
-            .then(() => {})
             .catch((err) => {
                 console.log("Error: there was an error in emptying baskets: " + err);
             });

@@ -5,7 +5,7 @@ import { check, validationResult } from 'express-validator';
 import { productDAO } from '../dao';
 import { passportUtil, VTC } from '../utils';
 
-const router = Router();
+export const router = Router();
 const isLoggedIn = passportUtil.isLoggedIn;
 
 /** Virtual Time Clock */
@@ -52,11 +52,10 @@ router.post(
     }
 
     const description = req.body;
+
     productDAO
       .insertProductDescription(description)
       .then(() => res.status(200).end())
       .catch(() => res.status(500).end());
   }
 );
-
-export default router;
