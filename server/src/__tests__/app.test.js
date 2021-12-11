@@ -641,9 +641,9 @@ describe('test adding new product description' , () => {
     test('test add product description expect failure', function (done) {
         const productDescription ={}
         authenticatedSession
-            .post('/api/insert_product-description')
+            .post('/api/insert_product_description')
             .send(productDescription)
-            .expect(404)
+            .expect(422)
             .end(done);
     })
 
