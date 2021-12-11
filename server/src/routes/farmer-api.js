@@ -20,33 +20,42 @@ const router = Router();
  *
  * Get all the products supplied the next week linked by a farmer with {userId}
  */
-router.get('/api/farmer/:farmerId/products/supplied', [check('farmerId').isInt()], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+router.get(
+  '/api/farmer/:farmerId/products/supplied',
+  isLoggedIn,
+  [check('farmerId').isInt()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    farmerDAO
+      .listSuppliedFarmerProducts(req.params.farmerId)
+      .then((products) => res.json(products))
+      .catch(() => res.status(500).end());
   }
-  farmerDAO
-    .listSuppliedFarmerProducts(req.params.farmerId)
-    .then((products) => res.json(products))
-    .catch(() => res.status(500).end());
-});
-
+);
 /**
  * GET
  *
  * Get all the products linked to a farmer with {userId}
  */
-router.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
+router.get(
+  '/api/farmer/:farmerId/products',
+  isLoggedIn,
+  [check('farmerId').isInt()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
-  farmerDAO
-    .listFarmerProducts(req.params.farmerId)
-    .then((products) => res.json(products))
-    .catch(() => res.status(500).end());
-});
+    farmerDAO
+      .listFarmerProducts(req.params.farmerId)
+      .then((products) => res.json(products))
+      .catch(() => res.status(500).end());
+  }
+);
 
 /**
  * POST
@@ -55,6 +64,7 @@ router.get('/api/farmer/:farmerId/products', [check('farmerId').isInt()], (req, 
  */
 router.post(
   '/api/farmer/products/available',
+  isLoggedIn,
   [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);

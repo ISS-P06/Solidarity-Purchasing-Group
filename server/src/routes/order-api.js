@@ -27,6 +27,7 @@ router.post(
         (p) => !Number.isInteger(p.id) || !typeof p.quantity == 'number' || isNaN(p.quantity)
       ).length
   ),
+  isLoggedIn,
   (req, res) => {
     const errors = validationResult(req).formatWith(formatterUtil.errorFormatter);
     if (!errors.isEmpty()) {
@@ -40,7 +41,7 @@ router.post(
 );
 
 // GET /api/orders
-router.get('/api/orders', (req, res) => {
+router.get('/api/orders', isLoggedIn, (_, res) => {
   orderDAO
     .getOrders()
     .then((orders) => res.json(orders))
@@ -49,7 +50,7 @@ router.get('/api/orders', (req, res) => {
 
 // GET /api/orders/:id
 // Route used to get the order review
-router.get('/api/orders/:id', (req, res) => {
+router.get('/api/orders/:id', isLoggedIn, (req, res) => {
   orderDAO
     .getOrderById(req.params.id)
     .then((order) => {
@@ -61,7 +62,7 @@ router.get('/api/orders/:id', (req, res) => {
 });
 
 // POST /api/orders/:id/deliver
-router.post('/api/orders/:id/deliver', (req, res) => {
+router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
   orderDAO
     .setOrderDelivered(req.params.id)
     .then((orderId) => {

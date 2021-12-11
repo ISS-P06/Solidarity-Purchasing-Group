@@ -23,32 +23,37 @@ const vtc = new VTC();
  *
  * @param {number} userId - User id on database.
  */
-router.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+router.post(
+  '/api/client/:userId/basket/buy',
+  isLoggedIn,
+  [check('userId').isInt()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const { userId } = req.params;
+    const dateTime = vtc.formatTime();
+
+    // NOTE: If one of these promise fails, it will immediatly raise
+    // an exception and the next ones won't be executed.
+    try {
+      const basket = await basketDAO.getBasketByClientId(userId);
+      const balance = await clientDAO.getBalanceByClientId(userId);
+
+      // insert order
+      await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
+
+      // clear basket
+      basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
+
+      res.status(200).json({});
+    } catch (e) {
+      res.status(500).json(e);
+    }
   }
-
-  const { userId } = req.params;
-  const dateTime = vtc.formatTime();
-
-  // NOTE: If one of these promise fails, it will immediatly raise
-  // an exception and the next ones won't be executed.
-  try {
-    const basket = await basketDAO.getBasketByClientId(userId);
-    const balance = await clientDAO.getBalanceByClientId(userId);
-
-    // insert order
-    await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
-
-    // clear basket
-    basket.forEach((p) => basketDAO.removeProductFromBasket(userId, p.productId));
-
-    res.status(200).json({});
-  } catch (e) {
-    res.status(500).json(e);
-  }
-});
+);
 
 /**
  * DELETE
@@ -60,6 +65,7 @@ router.post('/api/client/:userId/basket/buy', [check('userId').isInt()], async (
  */
 router.delete(
   '/api/client/:userId/basket/remove',
+  isLoggedIn,
   [check('userId').isInt(), check('productId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
@@ -88,6 +94,7 @@ router.delete(
  */
 router.post(
   '/api/client/:userId/basket/add',
+  isLoggedIn,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);
@@ -110,7 +117,7 @@ router.post(
  *
  * Retrive the entire user's basket.
  */
-router.get('/api/client/:clientId/basket', (req, res) => {
+router.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
   basketDAO
     .getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))

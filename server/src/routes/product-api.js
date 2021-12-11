@@ -16,7 +16,7 @@ const vtc = new VTC();
  * get the list of products
  * @returns product: [{id,name,description,category,name,price,quantity,unit, ref_farmer, farm_name}]
  */
-router.get('/api/products', (req, res) => {
+router.get('/api/products', isLoggedIn, (_, res) => {
   let currTime = new Date(vtc.time());
   let wednesday = currTime;
 
@@ -35,11 +35,28 @@ router.get('/api/products', (req, res) => {
  *
  * INSERT a new product description
  */
-router.post('/api/insert_product_description', (req, res) => {
-  productDAO
-    .insertProductDescription(req.body)
-    .then(() => res.end())
-    .catch(() => res.status(500).end());
-});
+router.post(
+  '/api/insert_product_description',
+  isLoggedIn,
+  [
+    check('name').isString(),
+    check('description').isString(),
+    check('category').isString(),
+    check('unit').isString(),
+    check('ref_farmer').isInt(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    const description = req.body;
+    productDAO
+      .insertProductDescription(description)
+      .then(() => res.status(200).end())
+      .catch(() => res.status(500).end());
+  }
+);
 
 export default router;

@@ -15,14 +15,12 @@ const router = Router();
  * ---
  */
 
-// --- Client APIs --- //
-
 /**
  * GET /api/clients
  * get the list of clients
  * @returns res.data: [{id,name,surname,address,balance,mail,phone}]
  */
-router.get('/api/clients', (req, res) => {
+router.get('/api/clients', isLoggedIn, (_, res) => {
   clientDAO
     .listClients()
     .then((clients) => res.json(clients))
@@ -39,6 +37,7 @@ router.get('/api/clients', (req, res) => {
  */
 router.put(
   '/api/clients/topup',
+  isLoggedIn,
   check('id').isInt(),
   check('amount').isInt({ min: 5 }),
   async (req, res) => {
@@ -60,7 +59,7 @@ router.put(
 );
 
 // GET /api/clients/:clientId/orders
-router.get('/api/clients/:clientId/orders', (req, res) => {
+router.get('/api/clients/:clientId/orders', isLoggedIn, (req, res) => {
   orderDAO
     .getOrders(req.params.clientId)
     .then((orders) => res.json(orders))
@@ -68,13 +67,11 @@ router.get('/api/clients/:clientId/orders', (req, res) => {
 });
 
 // GET /api/clients/:clientId/orders/:orderId
-router.get('/api/clients/:clientId/orders/:orderId', (req, res) => {
+router.get('/api/clients/:clientId/orders/:orderId', isLoggedIn, (req, res) => {
   orderDAO
     .getOrderById(req.params.orderId, req.params.clientId)
     .then((orders) => res.json(orders))
     .catch(() => res.status(500).end());
 });
-
-// --- --- --- //
 
 export default router;
