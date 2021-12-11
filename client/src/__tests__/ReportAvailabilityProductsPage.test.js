@@ -11,6 +11,11 @@ jest.mock('../components/Message', () => ({
     addMessage: jest.fn(),
 }));
 
+// Wednesday; date inside interval to insert products
+const date_in = new Date("December 8, 2021 00:00:00");
+// Sunday; date outside intervale to insert products
+const date_out = new Date("December 5, 2021 17:00:00");
+
 jest.mock('axios');
 
 const server = setupServer();
@@ -54,7 +59,7 @@ test('test avaiability product component correct rendering', async () => {
         })
     );
     // test code
-    render(<ReportAvailabilityProductsPage user={jest.fn()}/>);
+    render(<ReportAvailabilityProductsPage user={jest.fn()} virtualTime={date_in}/>);
     const title1 = screen.getByText(/Your expected available product amounts for the next week/);
     expect(title1).toBeInTheDocument();
 
@@ -68,7 +73,7 @@ test('test supplied product form correct rendering', async () => {
     // add a runtime request handler
 
     // test code
-    render(<SuppliedProductForm productsList={[jest.fn()]} setDirty={jest.fn()}/>);
+    render(<SuppliedProductForm productsList={[jest.fn()]} setDirty={jest.fn()} virtualTime={date_in}/>);
     const productName = screen.getByLabelText(/Name of the product/);
     userEvent.selectOptions(productName, '');
 
@@ -100,7 +105,7 @@ test('test supplied product form correct rendering', async () => {
 test('test supplied products component correct rendering', async () => {
 
     // test code
-    render(<SuppliedProducts suppliedProducts={[jest.fn()]} setDirty={jest.fn()} />);
+    render(<SuppliedProducts suppliedProducts={[jest.fn()]} setDirty={jest.fn()} virtualTime={date_in}/>);
     const productName = screen.getByText(/Name/);
     expect(productName).toBeInTheDocument();
 
