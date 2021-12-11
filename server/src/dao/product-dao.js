@@ -95,7 +95,7 @@ export function removeExpectedAvailableProduct(product) {
 
 /**
  * method to insert a new product description through a farmer
- * @param description: is an object with {name ,descrption ,category ,unit , ref_farmer}
+ * @param description: is an object with {name ,description ,category ,unit , ref_farmer}
  * @returns Promise <null>
  */
 export function insertProductDescription(description) {
