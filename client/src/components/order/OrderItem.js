@@ -1,5 +1,7 @@
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import ScheduleDelivery from "../client/scheduleDelivery";
+
 /**
  * This component display a a breaf summury of an order
  * @param {*} props: {order} 
@@ -40,9 +42,19 @@ function OrderItem(props) {
         </Container>
       </Card.Body>
       <Card.Footer>
-        <Link to={{ pathname: link, }}>
-          <Button variant="primary" className="float-end text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }}>Read more</Button>
-        </Link>
+        <Row>
+          <Col>
+            <ScheduleDelivery orderID ={props.order.orderId} />
+{/*            <Link to={{ pathname: `/client/order/delivery/schedule/${props.order.orderId}`  }}>
+              <Button variant="success" className="float-start text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }}>Schedule delivery</Button>
+            </Link>*/}
+          </Col>
+          <Col>
+            <Link to={{ pathname: link, }}>
+              <Button variant="primary" className="float-end text-light m-0 pt-1 pb-1" style={{ fontSize: 16 }}>Read more</Button>
+            </Link>
+          </Col>
+        </Row>
       </Card.Footer>
     </Card>
   );

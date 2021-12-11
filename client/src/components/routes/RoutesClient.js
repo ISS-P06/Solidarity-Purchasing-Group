@@ -5,6 +5,7 @@ import { ClientHomePage } from '../client';
 import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { getUserRoute } from '../../utils';
+import ScheduleDelivery from "../client/scheduleDelivery";
 
 /**
  *  This component contains all client-only routes.
