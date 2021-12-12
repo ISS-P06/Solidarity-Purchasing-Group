@@ -207,6 +207,6 @@ Below is a list of all users registered in the database for testing purposes:
 | ------------- | --------------------- | ------------- | --------- | ------------- | -------------------------- |
 | pentolino     | pentolino             | Shop employee | pentolino | de' pentolini | giorgiomastrota@mail.com   |
 | teiera        | teiera123             | Client        | Teiera    | McTeapot      | s287037@studenti.polito.it |
-| nonnaPapera   | humperdink            | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
+| nonnaPapera   | paperino            | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
 | iosonoironman | tonystark             | Client        | Tony      | Stark         | tony.stark@starkinc.us     |
 | mario         | itsamemario           | Client        | Mario     | Mario         | mariomario@mail.msh        |

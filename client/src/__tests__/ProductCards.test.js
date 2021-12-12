@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import ProductCards from '../components/ProductCards';
+import ProductCards from '../components/product/ProductCards';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import userEvent from '@testing-library/user-event';

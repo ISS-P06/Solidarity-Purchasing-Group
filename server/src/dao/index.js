@@ -4,5 +4,6 @@ import * as farmerDAO from './farmer-dao';
 import * as clientDAO from './client-dao';
 import * as basketDAO from './basket-dao';
 import * as orderDAO from './order-dao';
+import * as systemDAO from './system-dao';
 
-export { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO };
+export { userDAO, productDAO, farmerDAO, clientDAO, basketDAO, orderDAO, systemDAO };

@@ -36,7 +36,7 @@ export function checksClientBalance() {
       //Contains emails and request id obtained from the previous query
       const users_requests_under_balance = rows;
 
-      const sql = `
+      const sql2 = `
                     SELECT R.id
                     FROM Request R, Product_Request PR, Product P, Client C
                     WHERE R.ref_client = C.ref_user AND PR.ref_request = R.id AND PR.ref_product = P.id 
@@ -48,7 +48,7 @@ export function checksClientBalance() {
                     );
                 `;
 
-      db.all(sql, [], (err, rows) => {
+      db.all(sql2, [], (err, rows) => {
         if (err) {
           reject(err);
           return;
@@ -57,18 +57,18 @@ export function checksClientBalance() {
         //Contains requests obtained from previous query
         const requests_over_balance = rows;
 
-        const sql = `UPDATE Request SET status = 'pending_canc' WHERE status = 'pending'`;
+        const sql3 = `UPDATE Request SET status = 'pending_canc' WHERE status = 'pending'`;
 
-        db.run(sql, [], (err) => {
+        db.run(sql3, [], (err) => {
           if (err) {
             reject(err);
             return;
           }
 
-          const sql = `UPDATE Request SET status = 'confirmed' WHERE id = ?`;
+          const sql4 = `UPDATE Request SET status = 'confirmed' WHERE id = ?`;
 
           requests_over_balance.map((row) => {
-            db.run(sql, [row.id], (err) => {
+            db.run(sql4, [row.id], (err) => {
               if (err) {
                 reject(err);
                 return;
@@ -117,9 +117,9 @@ export function test_addDummyOrders() {
     db.run(sql, [], (err) => {
       if (err) reject(err);
 
-      const sql = 'DELETE FROM Product_Request WHERE ref_request = -1 OR ref_request = -2;';
+      const sql2 = 'DELETE FROM Product_Request WHERE ref_request = -1 OR ref_request = -2;';
 
-      db.run(sql, [], (err) => {
+      db.run(sql2, [], (err) => {
         if (err) {
           reject(err);
           return;
@@ -131,8 +131,8 @@ export function test_addDummyOrders() {
             `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
             function (err) {
-              const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
-              db.run(sql, [], function (err) {
+              const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
+              db.run(sql3, [], function (err) {
                 if (err) {
                   reject(err);
                   return;
@@ -144,8 +144,8 @@ export function test_addDummyOrders() {
             `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, pending, ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
             function (err) {
-              const sql = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-2,2,0.1)`;
-              db.run(sql, [], function (err) {
+              const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-2,2,0.1)`;
+              db.run(sql4, [], function (err) {
                 if (err) {
                   reject(err);
                   return;

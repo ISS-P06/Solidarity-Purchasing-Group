@@ -2,6 +2,9 @@
 
 import db from '../db';
 import dayjs from 'dayjs';
+import VTC from '../utils/vtc';
+
+const vtc = new VTC();
 
 /**
  * Returns the list of products available for the next week.
@@ -60,15 +63,14 @@ export function addExpectedAvailableProduct(availableProduct) {
         availableProduct.productID,
         availableProduct.quantity,
         availableProduct.price,
-        dayjs().format('YYYY-MM-DD HH:mm'),
+        dayjs(vtc.time()).format('YYYY-MM-DD HH:mm'),
       ],
       (err, rows) => {
         if (err) {
           reject(err);
           return;
         }
-
-        resolve(this.lastID);
+        resolve("ok");
       }
     );
   });
@@ -81,7 +83,6 @@ export function addExpectedAvailableProduct(availableProduct) {
  * @returns {Promise<int>}: the same ID passed as a parameter.
  */
 export function removeExpectedAvailableProduct(product) {
-  console.log(product);
   return new Promise((resolve, reject) => {
     const sql = `DELETE FROM Product WHERE id=?`;
     db.run(sql, [product.productID], (err, rows) => {
@@ -103,7 +104,7 @@ export function removeExpectedAvailableProduct(product) {
 export function insertProductDescription(description) {
   return new Promise((resolve, reject) => {
     const sql =
-      'INSERT INTO Prod_descriptor(name , description, category, unit ,ref_farmer) VALUES(?,?,?,?,?) ';
+      'INSERT INTO Prod_descriptor(name, description, category, unit, ref_farmer) VALUES(?,?,?,?,?)';
     db.run(
       sql,
       [
@@ -115,7 +116,7 @@ export function insertProductDescription(description) {
       ],
       function (err) {
         if (err) reject(err);
-        else resolve(this.lastID);
+        else resolve("ok");
       }
     );
   });
