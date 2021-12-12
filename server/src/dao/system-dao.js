@@ -2,6 +2,7 @@
 
 import db from '../db';
 import dayjs from 'dayjs';
+import { clientDAO, orderDAO } from '.';
 
 /**
  * Checks client balance before confirm their order and update the Request table.
@@ -13,6 +14,7 @@ import dayjs from 'dayjs';
  *  - The promise is resolved if all the queries run well, otherwise is rejected.
  */
 
+/*
 export function checksClientBalance() {
   return new Promise((resolve, reject) => {
     const sql = `
@@ -82,6 +84,7 @@ export function checksClientBalance() {
     });
   });
 }
+*/
 
 /**
  * Deletes all tuples from the "Basket" table from the DB.
@@ -159,4 +162,81 @@ export function test_addDummyOrders() {
       });
     });
   });
+}
+
+/**
+ * This function checs if you have enough balance to confirm the order, otherwise it enter in pending_canc state
+ *
+ * @returns {Promise}
+ *  - The promise with the mailList to contact for topup the account
+ */
+ export function checksClientBalance() {
+  return new Promise((resolve, reject) => {
+    getClientsOrders().then(orders => {
+      orders.forEach(order => {
+        clientDAO.getBalanceByClientId(order.clientId).then((balance) => {
+            if(balance >= order.total) {
+              clientDAO.updateClientBalance(order.clientId, -order.total);
+              orderDAO.setOrderConfirmed(order.requestId);
+            }else{
+              orderDAO.setOrderPendingCanc(order.requestId);
+            }
+          }
+        );
+      });
+    });
+    getPendingOrdersWithUnderBalance().then((mailList) => resolve(mailList));
+  });
+}
+
+function getClientsOrders() {
+  return new Promise((resolve, reject) => {
+
+    const sql = `
+                  SELECT r.id, r.ref_client, SUM(pr.quantity * p.price) AS total
+                  FROM Client c, Product_Request pr, Request r, Product p
+                  WHERE c.ref_user = r.ref_client 
+                  AND r.id = pr.ref_request
+                  AND pr.ref_product = p.id
+                  AND r.status = 'pending'
+                  GROUP BY r.id
+                  `;
+
+    db.all(sql, [], (err, rows) => {
+      if (err) reject(err);
+      const orders = rows.map((o) => ({
+        requestId: o.id,
+        clientId: o.ref_client,
+        total: o.total
+      }));
+      resolve(orders)
+    });
+  });
+}
+
+function getPendingOrdersWithUnderBalance() {
+  return new Promise((resolve, reject) => {
+
+    const sql = `
+                      SELECT DISTINCT U.email, R.id
+                      FROM Request R, Product_Request PR, Product P, Client C, User U
+                      WHERE R.ref_client = C.ref_user AND PR.ref_request = R.id AND PR.ref_product = P.id
+                          AND C.ref_user = U.id 
+                      AND R.status = 'pending'
+                      AND C.balance < (
+                                          SELECT SUM(P1.price * PR1.quantity)
+                                          FROM Product P1, Product_Request PR1
+                                          WHERE PR1.ref_product = P1.id AND PR1.ref_request = R.id
+                      );
+                  `;
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const users_requests_under_balance = rows;
+      //Contains emails and request id obtained from the previous query
+      resolve(users_requests_under_balance)
+    });
+  })
 }

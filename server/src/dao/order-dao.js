@@ -206,3 +206,33 @@ export function setOrderDelivered(orderId) {
     resolve(orderId);
   });
 }
+
+export function setOrderPendingCanc(orderId) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE Request
+                  SET status = 'pending_canc'
+                  WHERE id=?`;
+    db.run(sql, orderId, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+    });
+    resolve(orderId);
+  });
+}
+
+export function setOrderConfirmed(orderId) {
+  return new Promise((resolve, reject) => {
+    const sql = `UPDATE Request
+                  SET status = 'confirmed'
+                  WHERE id=?`;
+    db.run(sql, orderId, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+    });
+    resolve(orderId);
+  });
+}
