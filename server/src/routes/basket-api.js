@@ -1,9 +1,9 @@
 'use strict';
 
 import { Router } from 'express';
-import { check, validationResult } from 'express-validator';
+import { param, check, validationResult } from 'express-validator';
 import { basketDAO, orderDAO, clientDAO } from '../dao';
-import { isLoggedIn, VTC } from '../utils';
+import { isLoggedIn, VTC, formatterUtil } from '../utils';
 
 export const router = Router();
 
@@ -63,10 +63,10 @@ router.post(
  * @param {number} userId - User id on database.
  * @param {number} productId - Product id on database.
  */
-router.delete(
+router.post(
   '/api/client/:userId/basket/remove',
   isLoggedIn,
-  [check('userId').isInt(), check('productId').isInt()],
+  [param('userId').isInt(), check('productId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

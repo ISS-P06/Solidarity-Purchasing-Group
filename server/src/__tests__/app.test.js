@@ -3,7 +3,12 @@ import session from 'supertest-session';
 
 import app from '../app';
 import { farmerDAO } from '../dao';
-import { restoreBackup } from '../db';
+import { doBackup, restoreBackup } from '../db';
+
+
+beforeAll(() => {
+  doBackup();
+})
 
 /**
  * During test the database can be modified, so we need to
@@ -255,15 +260,17 @@ describe('Test the client path', () => {
 });
 
 describe('Test add or delete a product into/from the basket', () => {
-  test('Remove a product; It should response 200', function (done) {
-    const data = { productId: 4 };
-    authenticatedSession.delete('/api/client/4/basket/remove').send(data).expect(200).end(done);
-  });
 
   test('Add a product; It should response 200', function (done) {
     const data = { productId: 4, reservedQuantity: 0.1 };
     authenticatedSession.post('/api/client/4/basket/add').send(data).expect(200).end(done);
   });
+
+  test('Remove a product; It should response 200', function (done) {
+    const data = { productId: 4 };
+    authenticatedSession.post('/api/client/4/basket/remove').send(data).expect(200).end(done);
+  });
+
 });
 
 describe('Test failure add or delete a product into/from the basket', () => {
@@ -274,7 +281,7 @@ describe('Test failure add or delete a product into/from the basket', () => {
 
   test('Remove a product; It should response 422 because validation fails', function (done) {
     const data = { productId: '' };
-    authenticatedSession.delete('/api/client/4/basket/remove').send(data).expect(422).end(done);
+    authenticatedSession.post('/api/client/4/basket/remove').send(data).expect(422).end(done);
   });
 });
 
