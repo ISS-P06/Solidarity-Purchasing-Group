@@ -1,8 +1,6 @@
-import { RedirectRoute } from '../../utils/route';
+
 import { checkOrderInterval } from '../../utils/date';
-import { OrderReview } from '..';
 import { Redirect, Route } from 'react-router-dom';
-import { getUserRoute } from '../../utils';
 import { ClientsList, InsertUser, ProductCards, OrderList, OrderReview } from '..';
 import { getUserRoute, RedirectRoute} from '../../utils';
 

@@ -95,11 +95,13 @@ export default function Basket(props) {
         handleRemoveProduct={handleRemoveProduct}
         handleBuyNow={handleBuyNow}
         loading={loading}
+        virtualTime={props.virtualTime}
       />
       <ProductCards
         userRole={props.userRole}
         userId={props.userId}
         handleAddProduct={handleAddProduct}
+        virtualTime={props.virtualTime}
       />
     </>
   );

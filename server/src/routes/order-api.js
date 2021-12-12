@@ -48,6 +48,21 @@ router.get('/api/orders', isLoggedIn, (_, res) => {
     .catch(() => res.status(500).end());
 });
 
+
+
+router.post('/api/orders/:orderId/deliver/schedule', check('orderId').isInt(), (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+  console.log(req.params.orderId, req.body);
+  orderDAO.scheduleOrderDeliver(req.params.orderId, req.body)
+      .then((orderId) => {
+        res.json(orderId);
+      })
+      .catch(() => res.status(500).end());
+});
+
 // GET /api/orders/:id
 // Route used to get the order review
 router.get('/api/orders/:id', isLoggedIn, (req, res) => {
