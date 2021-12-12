@@ -70,6 +70,22 @@ describe('Test the query to get available products supplied for next week by a f
   });
 });
 
+describe('Test the query to get available products supplied for next week by a farmer', () => {
+  test('It should return a non-empty object', async () => {
+    const dummyRes = await farmerDAO.test_addDummyProductSupplies()
+      .then(() => {return 'ok'})
+      .catch((err) => {console.log(err); return 'not ok'});
+
+    expect(dummyRes).toBe('ok');
+
+    const date = new Date("January, 1 2999 00:00:00");
+
+    const result = await farmerDAO.listSuppliedFarmerProducts(3, date);
+
+    expect(result[0].name).toBe('equijoin');
+  });
+});
+
 describe('Test the get all the products supplied the next week linked by a farmer with {userId}', () => {
   test('It should respond 200 to the GET method', function (done) {
     authenticatedSession.get('/api/farmer/3/products').expect(200).end(done);

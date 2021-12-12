@@ -6,6 +6,10 @@ import VTC from '../utils/vtc';
 
 const vtc = new VTC();
 
+import VTC from '../vtc';
+
+const vtc = new VTC();
+
 /**
  * Returns the list of products available for the next week.
  *
