@@ -54,7 +54,6 @@ class SYS {
     event_updateOrders() {
         systemDAO.checksClientBalance()
             .then((mailList) => {
-                console.log(mailList);
                 this.event_sendBalanceReminders(mailList);
             })
             .catch((err) => {

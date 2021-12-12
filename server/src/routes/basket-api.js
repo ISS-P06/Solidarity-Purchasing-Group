@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { param, check, validationResult } from 'express-validator';
 import { basketDAO, orderDAO, clientDAO } from '../dao';
-import { isLoggedIn, VTC, formatterUtil } from '../utils';
+import { isLoggedIn, VTC } from '../utils';
 
 export const router = Router();
 
