@@ -2,6 +2,7 @@ import request from 'supertest';
 import session from 'supertest-session';
 import { copyFileSync, unlinkSync } from 'fs';
 import app from '../app';
+import { farmerDAO } from '../dao';
 
 /** During test the database can be modified, so we need to backup its state */
 
@@ -50,6 +51,22 @@ describe("Test the get farmer's products api", () => {
 
   test('It should respond 404 to the GET method', function (done) {
     authenticatedSession.get('/api/farmers/3/products').expect(404).end(done);
+  });
+});
+
+describe('Test the query to get available products supplied for next week by a farmer', () => {
+  test('It should return a non-empty object', async () => {
+    const dummyRes = await farmerDAO.test_addDummyProductSupplies()
+      .then(() => {return 'ok'})
+      .catch((err) => {console.log(err); return 'not ok'});
+
+    expect(dummyRes).toBe('ok');
+
+    const date = new Date("January, 1 2999 00:00:00");
+
+    const result = await farmerDAO.listSuppliedFarmerProducts(3, date);
+
+    expect(result[0].name).toBe('equijoin');
   });
 });
 
