@@ -49,3 +49,24 @@ export function checkOrderInterval(virtualTime) {
     return false;
   }
 }
+
+/**
+ * Check if the virtual time is in the interval: Wed - Sat, 9am.
+ * If so, farmers can insert available products for the next week.
+ * 
+ * @param {Date} virtualTime
+ * @return {boolean} true if the farmer can insert products, false otherwise 
+ */
+export function checkSupplyInterval(virtualTime) {
+  const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
+  const timeOfDay = virtualTime.getHours(); // 0 ... 23
+
+  if(dayOfWeek==3 || dayOfWeek==4 || dayOfWeek==5){
+    return true;
+  }else if(dayOfWeek==6 && timeOfDay<10){
+    return true;
+  } else {
+    return false;
+  }
+
+}

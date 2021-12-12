@@ -39,7 +39,7 @@ function RoutesFarmer(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'farmer'}
-              component={<ReportAvailabilityProductsPage user={user}/>}
+              component={<ReportAvailabilityProductsPage user={user} virtualTime={virtualTime}/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 

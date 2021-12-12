@@ -1,21 +1,22 @@
-import {Modal, Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner} from 'react-bootstrap';
-import {useState, useEffect} from 'react';
-import {api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts, api_removeAvailableProductQuantity} from '../../Api';
-import {addMessage} from '../Message';
+import { Modal, Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts, api_removeAvailableProductQuantity } from '../../Api';
+import { addMessage } from '../Message';
+import { checkSupplyInterval } from '../../utils/date';
 
 function ReportAvailabilityProductsPage(props) {
-    const {user} = props;
+    const { user } = props;
     const [productsList, setProductsList] = useState([]); /* list of farmer's products */
     const [suppliedProducts, setSuppliedProducts] = useState([]); /* list of products supplied the next week */
-    const [dirty,setDirty]=useState(false) /* used to reaload the list  of products supplied the next week */
-    const [loading,setLoading]=useState(true); /* used for visualize the spinner
+    const [dirty, setDirty] = useState(false) /* used to reaload the list  of products supplied the next week */
+    const [loading, setLoading] = useState(true); /* used for visualize the spinner
     */
     useEffect(() => {
         api_getFarmerProducts(user.id)
             .then((products) => {
                 setProductsList(products);
             })
-            .catch((e) => addMessage({message: e.message, type: 'danger'}));
+            .catch((e) => addMessage({ message: e.message, type: 'danger' }));
 
     }, []);
 
@@ -26,8 +27,8 @@ function ReportAvailabilityProductsPage(props) {
                 setDirty(false)
                 setLoading(false);
             })
-            .catch((e) => addMessage({message: e.message, type: 'danger'}));
-    }, [dirty]);
+            .catch((e) => addMessage({ message: e.message, type: 'danger' }));
+    }, [dirty, props.virtualTime]);
 
     return (
         <Container>
@@ -35,48 +36,48 @@ function ReportAvailabilityProductsPage(props) {
                 <Col lg={8} className="pl-5">
                     <h3 className={"mb-3"}>Your expected available product amounts for the next week</h3>
                     {loading ? <Spinner animation="border" variant="success" /> :
-                    <SuppliedProducts  suppliedProducts={suppliedProducts} setDirty={setDirty} ></SuppliedProducts> }
+                        <SuppliedProducts suppliedProducts={suppliedProducts} setDirty={setDirty} ></SuppliedProducts>}
                     <h3 className={"mb-3 mt-5"}>Add product amounts for the next week</h3>
-                    <SuppliedProductForm productsList={productsList} setDirty={setDirty} />
+                    <SuppliedProductForm productsList={productsList} setDirty={setDirty} virtualTime={props.virtualTime} />
                 </Col>
             </Row>
         </Container>
     );
 }
 
-export function SuppliedProducts(props){
-    const {suppliedProducts, setDirty}=props;
+export function SuppliedProducts(props) {
+    const { suppliedProducts, setDirty } = props;
 
-    const removeAvailableProductQuantity=(productID)=>{
+    const removeAvailableProductQuantity = (productID) => {
         api_removeAvailableProductQuantity(productID)
-            .then(()=>{
+            .then(() => {
                 setDirty(true);
-                addMessage({message: 'Report available product remove with success ', type: 'success'});
-            }).catch((err)=> {
-            addMessage({ message: err.message, type: 'danger' });
-        });
+                addMessage({ message: 'Report available product remove with success ', type: 'success' });
+            }).catch((err) => {
+                addMessage({ message: err.message, type: 'danger' });
+            });
     }
-    return(
+    return (
         <Table striped bordered hover responsive size="sm">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            {suppliedProducts.length>0 && suppliedProducts.map((product, index)=>
+                {suppliedProducts.length > 0 && suppliedProducts.map((product, index) =>
 
-                <tr key={suppliedProducts[index].id}>
-                    <td>{suppliedProducts[index].name}</td>
-                    <td>{suppliedProducts[index].quantity} {suppliedProducts[index].unit}</td>
-                    <td>{suppliedProducts[index].price} € /{suppliedProducts[index].unit}</td>
-                    <td><Button className="btn-danger" onClick={()=>removeAvailableProductQuantity(Number(suppliedProducts[index].id))}>Remove</Button></td>
-                </tr>
+                    <tr key={suppliedProducts[index].id}>
+                        <td>{suppliedProducts[index].name}</td>
+                        <td>{suppliedProducts[index].quantity} {suppliedProducts[index].unit}</td>
+                        <td>{suppliedProducts[index].price} € /{suppliedProducts[index].unit}</td>
+                        <td><Button className="btn-danger" onClick={() => removeAvailableProductQuantity(Number(suppliedProducts[index].id))}>Remove</Button></td>
+                    </tr>
 
-            )}
+                )}
             </tbody>
         </Table>
     )
@@ -93,30 +94,29 @@ export function SuppliedProductForm(props) {
     const [expectedQuantityAvailable, setExpectedQuantityAvailable] = useState(); /* expected quantity available for the next week  */
     const [price, setPrice] = useState(); /* price of the product for unit */
 
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
 
-        const handleSubmit = (event) => {
-            const form = event.currentTarget;
-            event.preventDefault();
-            event.stopPropagation();
+        if (form.checkValidity() === true) {
+            const supplyProduct = { productID: Number(productID), quantity: Number(expectedQuantityAvailable).toFixed(2), price: Number(price).toFixed(2) }
 
-            if (form.checkValidity() === true) {
-                const supplyProduct = {productID: Number(productID), quantity: Number(expectedQuantityAvailable).toFixed(2), price: Number(price).toFixed(2)}
-
-                api_addAvailableProductQuantity(supplyProduct)
-                    .then(()=>{
-                        setDirty(true)
-                    addMessage({message: 'Report available product added with success ', type: 'success'});
-                }).catch((err)=> {
+            api_addAvailableProductQuantity(supplyProduct)
+                .then(() => {
+                    setDirty(true)
+                    addMessage({ message: 'Report available product added with success ', type: 'success' });
+                }).catch((err) => {
                     addMessage({ message: err.message, type: 'danger' });
                 });
-         /*       setProductID();
-                setExpectedQuantityAvailable();
-                setPrice();*/
-                setValidated(false);
-            } else {
-                setValidated(true);
-            }
-        };
+            /*       setProductID();
+                   setExpectedQuantityAvailable();
+                   setPrice();*/
+            setValidated(false);
+        } else {
+            setValidated(true);
+        }
+    };
 
 
     return (
@@ -125,17 +125,33 @@ export function SuppliedProductForm(props) {
             <Row>
                 <Col xs={12} lg={4}>
                     <FloatingLabel controlId="ProductName" label="Name of the product" className="mt-2">
-                        <Form.Select
-                            aria-label="Name of the product"
-                            onChange={(e) => setProductID(e.target.value)} required>
-                            <option></option>
-                            {productsList && productsList.map((p, k) => (
-                                <option key={p.id} value={p.id}>
-                                    {p.name}
-                                </option>
-                            ))}
+                        {checkSupplyInterval(props.virtualTime) ? (
+                            <Form.Select
+                                aria-label="Name of the product"
+                                onChange={(e) => setProductID(e.target.value)} required>
+                                <option></option>
+                                {productsList && productsList.map((p, k) => (
+                                    <option key={p.id} value={p.id}>
+                                        {p.name}
+                                    </option>
+                                ))}
 
-                        </Form.Select>
+                            </Form.Select>
+                        ) : (
+                            <Form.Select
+                                disabled
+                                aria-label="Name of the product"
+                                onChange={(e) => setProductID(e.target.value)} required>
+                                <option></option>
+                                {productsList && productsList.map((p, k) => (
+                                    <option key={p.id} value={p.id}>
+                                        {p.name}
+                                    </option>
+                                ))}
+
+                            </Form.Select>
+                        )}
+
                         <Form.Control.Feedback type="invalid">
                             Please insert the category of the product
                         </Form.Control.Feedback>
@@ -145,11 +161,12 @@ export function SuppliedProductForm(props) {
                 <Col xs={12} lg={4}>
                     <FloatingLabel
                         controlId="ProductQuantity"
-                        label={`Product quantity${productsList.length>0 && productID ? '('+productsList.find((product)=>product.id==productID).unit + ')' : ""}`}
+                        label={`Product quantity${productsList.length > 0 && productID ? '(' + productsList.find((product) => product.id == productID).unit + ')' : ""}`}
                         className="mt-2"
                         required
                         onChange={(e) => setExpectedQuantityAvailable(Number(e.target.value))}>
-                        <Form.Control
+                        {checkSupplyInterval(props.virtualTime) ? (
+                            <Form.Control
                             type="number"
                             placeholder="number"
                             step="0.5"
@@ -157,6 +174,18 @@ export function SuppliedProductForm(props) {
                             max={1000}
                             required
                         />
+                        ): (
+                            <Form.Control
+                            type="number"
+                            placeholder="number"
+                            step="0.5"
+                            min={0.5}
+                            max={1000}
+                            required
+                            disabled
+                        />
+                        )}
+                        
                         <Form.Control.Feedback type="invalid">
                             Please insert a quantity between 0.1 e 1000
                         </Form.Control.Feedback>
@@ -166,11 +195,13 @@ export function SuppliedProductForm(props) {
                 <Col xs={12} lg={4}>
                     <FloatingLabel
                         controlId="Price"
-                        label={`Price${productsList.length>0 && productID ? '/'+productsList.find((product)=>product.id==productID).unit : ""}`}
+                        label={`Price${productsList.length > 0 && productID ? '/' + productsList.find((product) => product.id == productID).unit : ""}`}
                         className="mt-2"
                         required
                         onChange={(e) => setPrice(Number(e.target.value))}>
-                        <Form.Control
+
+                        {checkSupplyInterval(props.virtualTime) ? (
+                            <Form.Control
                             type="number"
                             placeholder="number"
                             step="0.1"
@@ -179,18 +210,40 @@ export function SuppliedProductForm(props) {
                             max={1000}
                             required
                         />
+                        ): (
+                            <Form.Control
+                            type="number"
+                            placeholder="number"
+                            step="0.1"
+
+                            min={0.1}
+                            max={1000}
+                            required
+                            disabled
+                        />
+                        )}
+                        
                         <Form.Control.Feedback type="invalid">
                             Please insert a price between 0.1 e 1000
                         </Form.Control.Feedback>
                     </FloatingLabel>
                 </Col>
             </Row>
+            {checkSupplyInterval(props.virtualTime) ? (
+                <Row className={"justify-content-center"}>
+                    <Col xs={6} lg={9}>
+                        <Button type="submit" variant="primary" className="mt-3 mb-3"> Add product available amounts </Button>
+                    </Col>
+                </Row>
+            ) : (
+                <Row className={"justify-content-center"}>
+                    <Col xs={6} lg={9}>
+                        <Button type="submit" variant="primary" className="mt-3 mb-3" disabled> Add product available amounts </Button>
+                        <h5>Sorry but you can insert available products only from Wed. to Sat. 9 am</h5>
+                    </Col>
+                </Row>
+            )}
 
-            <Row className={"justify-content-center"}>
-                <Col xs={6} lg={9}>
-                    <Button type="submit" variant="primary" className="mt-3 mb-3"> Add product available amounts </Button>
-                </Col>
-            </Row>
         </Form>
     );
 }
