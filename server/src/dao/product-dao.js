@@ -2,8 +2,7 @@
 
 import db from '../db';
 import dayjs from 'dayjs';
-
-import VTC from '../vtc';
+import VTC from '../utils/vtc';
 
 const vtc = new VTC();
 

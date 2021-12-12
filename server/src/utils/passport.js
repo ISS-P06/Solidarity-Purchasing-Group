@@ -48,12 +48,12 @@ passport.deserializeUser((id, done) => {
     });
 });
 
+export const passportInit = passport.initialize();
+export const passportSession = passport.session();
+
 // custom middleware: check if a given request is coming from an authenticated user
 export const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
   return res.status(401).json({ message: 'not authenticated' });
 };
-
-export const passportInit = passport.initialize();
-export const passportSession = passport.session();

@@ -3,7 +3,9 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { productDAO, farmerDAO } from '../dao';
-import { isLoggedIn } from '../utils/passport';
+import { isLoggedIn, VTC } from '../utils';
+
+const vtc = new VTC();
 
 export const router = Router();
 
