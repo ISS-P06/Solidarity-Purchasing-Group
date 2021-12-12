@@ -4,7 +4,7 @@ import {useFormik} from "formik";
 import * as Yup from 'yup'
 import {api_scheduleDelivery} from '../../Api'
 import {addMessage} from "../Message";
-
+import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
     const orderID = props.orderID
@@ -37,7 +37,7 @@ function ScheduleDelivery(props) {
 
     const formik = useFormik({
         initialValues: {
-            date: '',
+            date: dayjs().toString(),
             time: '',
             address: ''
         },
@@ -70,6 +70,7 @@ function ScheduleDelivery(props) {
                         <Form.Control id="date" data-testid="date-element" type='date' value={formik.values.date}
                                       onChange={formik.handleChange}
                                       isInvalid={formik.touched.date && formik.errors.date}
+                                      min={dayjs().add(1, 'day').format("YYYY-MM-DD").toString()}
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.date}</Form.Control.Feedback>
                     </InputGroup>

@@ -214,7 +214,6 @@ export function setOrderDelivered(orderId) {
 * @returns {Promise<object>}
 */
 export function scheduleOrderDeliver(orderId,delivery){
-  console.log(orderId,delivery.address,delivery.date, delivery.time)
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO Delivery(ref_request, address, date,time) VALUES(?, ?, ?,?)';
     db.run(sql, [orderId, delivery.address, delivery.date, delivery.time], (err) => (err ? reject(err) : resolve(orderId)));
