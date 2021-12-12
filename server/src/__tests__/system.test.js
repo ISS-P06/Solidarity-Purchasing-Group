@@ -1,29 +1,16 @@
-import request from 'supertest';
-import app from '../app';
-
 import { systemDAO } from '../dao';
-
-import { copyFileSync, unlinkSync } from 'fs';
-
-/** During test the database can be modified, so we need to backup its state */
-
-const dbPath = 'database.db';
-const backupPath = 'database.db.backup.sys';
-
-// Save database current state
-beforeAll(() => {
-  copyFileSync(dbPath, backupPath);
-});
-
-// Reset database current state
-afterAll(() => {
-  copyFileSync(backupPath, dbPath);
-  unlinkSync(backupPath);
-});
-
 import { SYS } from '../utils';
+import { restoreBackup } from '../db';
 
 const sys = new SYS();
+
+/**
+ * During test the database can be modified, so we need to
+ * restore its state from a backup
+ */
+afterAll(() => {
+  restoreBackup();
+});
 
 /** TEST SUITES */
 describe('Test SYS class: trigger for insufficient balance notification', () => {

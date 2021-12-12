@@ -6,7 +6,7 @@
 # testing
 /coverage
 test-report.xml
-
+*.bak
 
 # misc
 .DS_Store

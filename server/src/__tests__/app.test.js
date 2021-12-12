@@ -1,27 +1,19 @@
 import request from 'supertest';
 import session from 'supertest-session';
-import { copyFileSync, unlinkSync } from 'fs';
+
 import app from '../app';
 import { farmerDAO } from '../dao';
+import { restoreBackup } from '../db';
 
-/** During test the database can be modified, so we need to backup its state */
-
-const dbPath = 'database.db';
-const backupPath = 'database.db.backup';
-
-// Save database current state
-beforeAll(() => {
-  copyFileSync(dbPath, backupPath);
-});
-
-// Reset database current state
+/**
+ * During test the database can be modified, so we need to
+ * restore its state from a backup
+ */
 afterAll(() => {
-  copyFileSync(backupPath, dbPath);
-  unlinkSync(backupPath);
+  restoreBackup();
 });
 
-// Auth
-
+// Auth session for logged user tests
 const testSession = session(app);
 let authenticatedSession = null;
 
@@ -56,14 +48,19 @@ describe("Test the get farmer's products api", () => {
 
 describe('Test the query to get available products supplied for next week by a farmer', () => {
   test('It should return a non-empty object', async () => {
-    const dummyRes = await farmerDAO.test_addDummyProductSupplies()
-      .then(() => {return 'ok'})
-      .catch((err) => {console.log(err); return 'not ok'});
+    const dummyRes = await farmerDAO
+      .test_addDummyProductSupplies()
+      .then(() => {
+        return 'ok';
+      })
+      .catch((err) => {
+        console.log(err);
+        return 'not ok';
+      });
 
     expect(dummyRes).toBe('ok');
 
-    const date = new Date("January, 1 2999 00:00:00");
-
+    const date = new Date('January, 1 2999 00:00:00');
     const result = await farmerDAO.listSuppliedFarmerProducts(3, date);
 
     expect(result[0].name).toBe('equijoin');
@@ -72,13 +69,19 @@ describe('Test the query to get available products supplied for next week by a f
 
 describe('Test the query to get available products supplied for next week by a farmer', () => {
   test('It should return a non-empty object', async () => {
-    const dummyRes = await farmerDAO.test_addDummyProductSupplies()
-      .then(() => {return 'ok'})
-      .catch((err) => {console.log(err); return 'not ok'});
+    const dummyRes = await farmerDAO
+      .test_addDummyProductSupplies()
+      .then(() => {
+        return 'ok';
+      })
+      .catch((err) => {
+        console.log(err);
+        return 'not ok';
+      });
 
     expect(dummyRes).toBe('ok');
 
-    const date = new Date("January, 1 2999 00:00:00");
+    const date = new Date('January, 1 2999 00:00:00');
 
     const result = await farmerDAO.listSuppliedFarmerProducts(3, date);
 
