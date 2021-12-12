@@ -48,6 +48,13 @@ export function addProductToBasket(clientId, productId, quantity) {
         reject(err);
         return;
       }
+    });
+    const sql2 = `UPDATE Product SET quantity = quantity - ? WHERE id = ?`;
+    db.run(sql2, [quantity, productId], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
       resolve(productId);
     });
   });
@@ -62,13 +69,27 @@ export function addProductToBasket(clientId, productId, quantity) {
  */
 export function removeProductFromBasket(clientId, productId) {
   return new Promise((resolve, reject) => {
-    const sql = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
-    db.run(sql, [clientId, productId], (err, rows) => {
+    const sql1 = `SELECT quantity FROM Basket WHERE ref_client=? AND ref_product=? `;
+    db.get(sql1, [clientId, productId], (err, row) => {
       if (err) {
         reject(err);
         return;
       }
-      resolve(productId);
+      const sql2 = `UPDATE Product SET quantity = quantity + ? WHERE id = ?`;
+      db.run(sql2, [row.quantity, productId], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+      });
+      const sql3 = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
+      db.run(sql3, [clientId, productId], (err, rows) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(productId);
+      });
     });
   });
 }
