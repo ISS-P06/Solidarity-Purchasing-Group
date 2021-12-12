@@ -69,3 +69,33 @@ export function listSuppliedFarmerProducts(farmerId, day) {
     });
   });
 }
+
+/**
+ * Adds a dummy product supply for testing purposes.
+ */
+export function test_addDummyProductSupplies() {
+  return new Promise((resolve, reject) => {
+    const date = dayjs(new Date("January, 3 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
+
+    // delete all products with dummy ids
+    db.run("DELETE FROM prod_descriptor WHERE name = 'equijoin'", [], (err) => {
+      if (err) reject(err);
+
+      // insert dummy product descriptor
+      db.run(`INSERT INTO prod_descriptor(name, description, category, unit, ref_farmer) 
+        VALUES ('equijoin', 'unica operazione ammissibile', 'meats_cold_cuts', 'kg', 3);`, [], 
+        function (err) {
+            if (err) reject(err);
+            const id = this.lastID;
+
+            // insert dummy product supply
+            db.run(`INSERT INTO Product(ref_prod_descriptor, quantity, price, date) 
+            VALUES (?, 1, 39, DATE(?));`, [id, date], (err) => {
+                if (err) reject(err);
+
+                resolve('ok');
+              });
+          });
+      });
+  });
+}

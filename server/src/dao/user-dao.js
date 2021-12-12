@@ -123,7 +123,6 @@ export function registerUser(user) {
               console.log(err);
               reject(err);
             }
-            console.log(this.lastID);
             const userID = this.lastID;
             if (user.typeUser === 'shop_employee') {
               resolve(this.lastID);
@@ -150,7 +149,6 @@ export function registerUser(user) {
                   }
                 });
               });
-              console.log(userID);
               resolve(userID);
             }
           }
