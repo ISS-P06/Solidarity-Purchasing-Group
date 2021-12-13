@@ -161,7 +161,7 @@ const ProductCards = (props) => {
                 <Row className="mt-4">
                     {productList.length === 0 && (
                         <Col style={{ display: 'flex', justifyContent: 'center' }}>
-                            <h5>No products found</h5>
+                            <h5>No products found for this week</h5>
                         </Col>
                     )}
                     {error && (
