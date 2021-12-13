@@ -17,7 +17,7 @@ function ScheduleDelivery(props) {
     useEffect(async()=>{
         let date = dayjs(virtualTime);
         console.log(date);
-        
+
         for (let i = 0 ; i < 7 ;i++ ){
              if(date.day() === 3){
                  setWednesday( date.format("YYYY-MM-DD").toString());
@@ -97,6 +97,8 @@ function ScheduleDelivery(props) {
                         <InputGroup.Text>Time</InputGroup.Text>
                         <Form.Control id="time" data-testid="time-element" type='time' value={formik.values.time}
                                       onChange={formik.handleChange}
+                                      min={"08:00"}
+                                      max={"20:00"}
                                       isInvalid={formik.touched.time && formik.errors.time}
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
