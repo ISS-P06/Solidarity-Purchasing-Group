@@ -45,7 +45,6 @@ router.post(
       // insert order
       const requestId = await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
 
-      console.log(requestId);
       basket.forEach((p) => {
         // insert product info on table `Product_Request`
         orderDAO.insertProductRequest(requestId, p.productId, p.quantity);
