@@ -60,7 +60,6 @@ export function Client(props) {
   const [confirmationModalShow, setConfirmationModalShow] = useState(false); /* used for opening confirmartion modal*/
 
 
-
   return (
     <Card className="text-left shadow">
       <Card.Header as="h5">{client.name + ' ' + client.surname}</Card.Header>
@@ -101,6 +100,7 @@ export function Client(props) {
         onHide={() => setClientOrderFormShow(false)}
         client={client}
         openConfirmationModal={() => setConfirmationModalShow(true)}
+        virtualTime={virtualTime}
       />
       <ClientTopUpForm
         show={clientTopUpFormShow}
@@ -114,6 +114,7 @@ export function Client(props) {
         openTopUpForm={() => setClientTopUpFormShow(true)}
         handleClose={() => setConfirmationModalShow(false)}
       />
+
     </Card>
   );
 }

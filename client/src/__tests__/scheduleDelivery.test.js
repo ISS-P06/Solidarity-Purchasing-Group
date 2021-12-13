@@ -21,21 +21,19 @@ afterAll(() => server.close());
 describe('My component SchduleDelivery', () => {
     test('Is Rendered', async () => {
 
-        render(<ScheduleDelivery orderID={1}/>);
+        render(<ScheduleDelivery orderID={1}  show={true} setShow={jest.fn()} virtualTime={jest.fn()}/>);
 
-        const scheduleDeliveryButton = screen.getByText(/Schedule delivery/);
-        expect(scheduleDeliveryButton).toBeInTheDocument();
+        await waitFor(() => screen.getByText(/Submit/));
+        expect(screen.getByText(/Submit/)).toBeInTheDocument();
 
-        await userEvent.click(scheduleDeliveryButton);
+        await userEvent.click(screen.getByText(/Submit/));
 
         expect(screen.getByTestId('date-element')).toBeInTheDocument();
         expect(screen.getByTestId('time-element')).toBeInTheDocument();
         expect(screen.getByTestId('address-element')).toBeInTheDocument();
 
-        expect(screen.getByTestId('close-element')).toBeInTheDocument();
         expect(screen.getByTestId('submit-element')).toBeInTheDocument();
 
-        await userEvent.click(screen.getByTestId('close-element'));
 
     });
 
@@ -57,12 +55,12 @@ describe('My component SchduleDelivery', () => {
         // mock push function
         history.push = jest.fn();
 
-        render(<Router history={history}><ScheduleDelivery orderID={1}/></Router>);
+        render(<Router history={history}><ScheduleDelivery orderID={1} show={true} setShow={jest.fn()} virtualTime={jest.fn()}/></Router>);
 
-        const scheduleDeliveryButton = screen.getByText(/Schedule delivery/);
+     const scheduleDeliveryButton = screen.getByText(/Submit/);
         expect(scheduleDeliveryButton).toBeInTheDocument();
 
-        await userEvent.click(scheduleDeliveryButton);
+       await userEvent.click(scheduleDeliveryButton);
 
         const dateElement = screen.getByTestId('date-element')
         expect(dateElement).toBeInTheDocument();

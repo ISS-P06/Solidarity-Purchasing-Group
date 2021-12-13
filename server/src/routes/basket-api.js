@@ -52,7 +52,7 @@ router.post(
         basketDAO.removeProductFromBasket(userId, p.productId);
       });
 
-      res.status(200).json({});
+      res.status(200).json(requestId);
     } catch (e) {
       res.status(500).json(e);
     }

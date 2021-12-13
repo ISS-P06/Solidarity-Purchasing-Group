@@ -7,34 +7,29 @@ import {addMessage} from "../Message";
 import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
-    const orderID = props.orderID
-    const [showModal, setShowModal] = useState(false);
+    const {orderID, show, setShow, virtualTime}= props;
     const [wednesday ,setWednesday] = useState('')
     const [friday ,setFriday] = useState('')
     const [dirty ,setDirty] = useState(false)
 
-    let date;
+
 
     useEffect(async()=>{
-        let today = await api_getTime();
-        date = dayjs(today.currentTime);
-
-        let tempDate = date.add(7 , 'day');
-
+        let date = dayjs(virtualTime);
+        console.log(date);
+        
         for (let i = 0 ; i < 7 ;i++ ){
-
-             if(tempDate.day() === 3){
-                 setWednesday( tempDate.format("YYYY-MM-DD").toString());
+             if(date.day() === 3){
+                 setWednesday( date.format("YYYY-MM-DD").toString());
              }
-             if (tempDate.day() === 5){
-                 setFriday( tempDate.format("YYYY-MM-DD").toString());
+             if (date.day() === 5){
+                 setFriday( date.format("YYYY-MM-DD").toString());
              }
-            tempDate = tempDate.add(1 , 'day')
+            date = date.add(1 , 'day')
         }
-        console.log(wednesday);
-        console.log(friday);
+
         setDirty(old=> ! old)
-    },[])
+    },[virtualTime])
 
     const handleSubmit = (values) => {
         let delivery = {
@@ -52,11 +47,11 @@ function ScheduleDelivery(props) {
     }
 
     const handleClose = () => {
-        setShowModal(false)
+        setShow(false)
     }
 
     function handleShow() {
-        setShowModal(true)
+        setShow(true)
     }
 
     const formik = useFormik({
@@ -74,11 +69,9 @@ function ScheduleDelivery(props) {
     })
 
 
-    return (<>
-        <Button className="float-md-start text-light m-0 pt-1 pb-1" variant="success" onClick={handleShow}>
-            Schedule delivery
-        </Button>
-        <Modal show={showModal} onHide={handleClose}>
+    return (
+
+        <Modal show={show} onHide={handleClose}>
 
             <Modal.Header closeButton>
                 <Container className="justify-content-between offset-md-3">
@@ -120,10 +113,7 @@ function ScheduleDelivery(props) {
 
                     <Modal.Footer>
                         <Container>
-                            <Button data-testid="close-element" className={'float-md-start'} variant="danger"
-                                    onClick={handleClose}>
-                                Close
-                            </Button>
+
                             <Button data-testid="submit-element" className={'float-md-end btn'} type='submit'
                                     variant="success">Submit</Button>
                         </Container>
@@ -131,7 +121,7 @@ function ScheduleDelivery(props) {
                 </Form>
             </Modal.Body>
         </Modal>
-    </>);
+    );
 }
 
 export default ScheduleDelivery;
