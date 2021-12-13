@@ -68,7 +68,7 @@ router.post(
 // POST /api/orders/:id/deliver
 router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
   orderDAO
-    .setOrderDelivered(req.params.id)
+    .setOrderStatus(req.params.id, 'delivered')
     .then((orderId) => {
       res.json(orderId);
     })

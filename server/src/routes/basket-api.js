@@ -39,12 +39,10 @@ router.post(
     // NOTE: If one of these promise fails, it will immediatly raise
     // an exception and the next ones won't be executed.
     try {
-      const basket = await basketDAO.getBasketByClientId(userId);
-      const balance = await clientDAO.getBalanceByClientId(userId);
-
       // insert order
-      const requestId = await orderDAO.insertOrderFromBasket(userId, basket, balance, dateTime);
+      const requestId = await orderDAO.insertOrderFromBasket(userId, dateTime);
 
+      const basket = await basketDAO.getBasketByClientId(userId);
       basket.forEach((p) => {
         // insert product info on table `Product_Request`
         orderDAO.insertProductRequest(requestId, p.productId, p.quantity);

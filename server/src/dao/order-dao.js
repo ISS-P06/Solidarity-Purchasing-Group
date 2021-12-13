@@ -109,21 +109,12 @@ export function getOrder(orderId) {
  * Make an order with the product corrently on basket.
  *
  * @param {number} clientId - User id on the database.
- * @param {object} basket - User's basket.
- * @param {number} balance - Current balance on user's wallet.
  * @returns {Promise<number>} Request id of th current order.
  */
-export function insertOrderFromBasket(clientId, basket, balance, date) {
+export function insertOrderFromBasket(clientId, date) {
   return new Promise((resolve, reject) => {
-    const totalAmount = basket
-      .map((p) => p.price * p.quantity)
-      .reduce((a, b) => a + b, 0)
-      .toFixed(2);
-
-    const status = totalAmount <= balance ? 'confirmed' : 'pending_canc';
-
     const sql = 'INSERT INTO Request(ref_client, status, date) VALUES(?, ?, ?)';
-    db.run(sql, [clientId, status, date], function (err) {
+    db.run(sql, [clientId, 'pending', date], function (err) {
       err ? reject(err) : resolve(this.lastID);
     });
   });

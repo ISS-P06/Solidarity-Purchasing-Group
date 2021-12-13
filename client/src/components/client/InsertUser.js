@@ -259,7 +259,6 @@ return (
                                     onChange={formik.handleChange}
                                     aria-label="Type of User">
                                     <option selected value="client"> Client</option>
-                                    <option value="shop_employee"> Shop Employee</option>
                                     <option value="farmer"> Farmer</option>
                                 </Form.Select>
                             </Form.Group>
