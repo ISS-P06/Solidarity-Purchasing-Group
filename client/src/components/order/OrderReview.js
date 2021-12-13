@@ -39,6 +39,7 @@ function OrderReview(props) {
       } else if (props.userRole === 'client') {
         api_getClientOrderReview(props.userId, match.params.id)
           .then((order) => {
+            console.log(order);
             setOrderReview(order);
             setIsUpdated(true);
           })
@@ -85,23 +86,20 @@ function OrderReview(props) {
                   <Col>Email: {orderReview.email}</Col>
                 </Row>
                 <Row>
-                  <Col>Username: {orderReview.username}</Col>
-                </Row>
-                <Row>
                   <Col>Name: {orderReview.name}</Col>
                 </Row>
                 <Row>
                   <Col>Surname: {orderReview.surname}</Col>
                 </Row>
                 <Row>
-                  <Col>Role: {orderReview.role}</Col>
-                </Row>
-                <Row>
                   <Col>Phone: {orderReview.phone}</Col>
                 </Row>
-                <Row className="pb-4">
-                  <Col>Address: {orderReview.address}</Col>
-                </Row>
+                {orderReview.delivery &&
+                    <Row>
+                      <Col>Delivery: {orderReview.delivery.address} {orderReview.delivery.date} {orderReview.delivery.time} </Col>
+                    </Row>
+                }
+
               </Container>
               <OrderTable products={orderReview.products} />
               <Container>
