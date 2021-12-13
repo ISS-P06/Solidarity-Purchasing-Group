@@ -412,3 +412,37 @@ describe('test adding new product description', () => {
       .end(done);
   });
 });
+
+describe('Test schedule a bag delivery', () => {
+
+
+  test('Schedule a bag delivery; It should response 200', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
+    return  authenticatedSession
+        .post('/api/orders/3/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        })
+  });
+  test('Schedule a bag delivery; It should response 422 because validation fails', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
+    return  authenticatedSession
+        .post('/api/orders/marco/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(422);
+        });
+  });
+  test('Schedule a bag delivery; It should response 404', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
+    return request(app)
+        .post('/api/order/3/delivery/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+  });
+
+
+});

@@ -15,7 +15,12 @@ export function insertOrder(orderClient) {
       insertReqQuery,
       [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
 
-      function () {
+      function (err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+
         const OrderID = this.lastID;
 
         orderClient.order.map((product, index) => {
@@ -34,10 +39,10 @@ export function insertOrder(orderClient) {
                 reject(err);
                 return;
               }
+
+              // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
                 resolve(OrderID);
-              } else {
-                reject();
               }
             });
           });
@@ -161,6 +166,10 @@ export function getOrderById(orderId, clientId = -1) {
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
 
+    const sql3 = `SELECT d.address, d.date, d.time
+                  FROM Delivery d
+                  WHERE d.ref_request= ? `;
+
     let deps = [orderId];
     if (clientId !== -1) {
       sql += ` AND u.id = ?`;
@@ -190,7 +199,7 @@ export function getOrderById(orderId, clientId = -1) {
       });
 
       productsPromise.then((products) => {
-        resolve({
+        const order = {
           orderId: row.id,
           date: row.date,
           status: row.status,
@@ -202,6 +211,18 @@ export function getOrderById(orderId, clientId = -1) {
           phone: row.phone,
           address: row.address,
           products: products,
+        };
+        db.get(sql3, [orderId], function (err, row) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (row == undefined) {
+            resolve(order);
+            return;
+          }
+          order.delivery = { address: row.address, date: row.date, time: row.time };
+          resolve(order);
         });
       });
     });
@@ -220,5 +241,20 @@ export function setOrderStatus(orderId, status) {
       }
     });
     resolve(orderId);
+  });
+}
+
+/**
+ * Schedule bag delivery for the order with `orderId`.
+ * @param {number} orderId - Order id on the database.
+ * @param {object} delivery - {address,date,time}.
+ * @returns {Promise<object>}
+ */
+export function scheduleOrderDeliver(orderId, delivery) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Delivery(ref_request, address, date,time) VALUES(?, ?, ?,?)';
+    db.run(sql, [orderId, delivery.address, delivery.date, delivery.time], (err) =>
+      err ? reject(err) : resolve(orderId)
+    );
   });
 }

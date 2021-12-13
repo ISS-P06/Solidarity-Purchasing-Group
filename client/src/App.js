@@ -164,9 +164,8 @@ function App() {
             </Route>
 
 
-            {/* Login route */
-              console.log(virtualTime)
-            }
+            {/* Login route */}
+
             <RedirectRoute
               path="/login"
               exact={true}

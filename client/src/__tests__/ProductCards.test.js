@@ -57,7 +57,7 @@ test("test ProductCards component wrong rendering'", async () => {
   // test code
   window.scrollTo = jest.fn();
   render(<ProductCards virtualTime={date_in}/>);
-  await waitFor(() => screen.getByText('No products found'));
+  await waitFor(() => screen.getByText('No products found for this week'));
 
 });
 
