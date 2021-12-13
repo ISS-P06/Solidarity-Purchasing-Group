@@ -95,9 +95,9 @@ export function test_addDummyOrders() {
         clientDAO.getBalanceByClientId(order.clientId).then((balance) => {
             if(balance >= order.total) {
               clientDAO.updateClientBalance(order.clientId, -order.total);
-              orderDAO.setOrderConfirmed(order.requestId);
+              orderDAO.setOrderStatus(order.requestId, 'confirmed');
             }else{
-              orderDAO.setOrderPendingCanc(order.requestId);
+              orderDAO.setOrderStatus(order.requestId, 'pending_canc');
             }
           }
         );

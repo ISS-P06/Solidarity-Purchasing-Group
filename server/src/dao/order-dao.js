@@ -192,42 +192,12 @@ export function getOrderById(orderId, clientId = -1) {
   });
 }
 
-export function setOrderDelivered(orderId) {
+export function setOrderStatus(orderId, status) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Request
-                  SET status = 'delivered'
-                  WHERE id=?`;
-    db.run(sql, orderId, (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-    });
-    resolve(orderId);
-  });
-}
-
-export function setOrderPendingCanc(orderId) {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE Request
-                  SET status = 'pending_canc'
-                  WHERE id=?`;
-    db.run(sql, orderId, (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-    });
-    resolve(orderId);
-  });
-}
-
-export function setOrderConfirmed(orderId) {
-  return new Promise((resolve, reject) => {
-    const sql = `UPDATE Request
-                  SET status = 'confirmed'
-                  WHERE id=?`;
-    db.run(sql, orderId, (err) => {
+                  SET status = ?
+                  WHERE id = ?`;
+    db.run(sql, [status, orderId], (err) => {
       if (err) {
         reject(err);
         return;
