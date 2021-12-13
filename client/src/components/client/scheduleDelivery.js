@@ -1,15 +1,40 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button, Col, Container, Form, InputGroup, Modal, Row} from "react-bootstrap";
 import {useFormik} from "formik";
 import * as Yup from 'yup'
-import {api_scheduleDelivery} from '../../Api'
+import {api_scheduleDelivery, api_getTime} from '../../Api'
 import {addMessage} from "../Message";
 import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
     const orderID = props.orderID
     const [showModal, setShowModal] = useState(false);
+    const [wednesday ,setWednesday] = useState('')
+    const [friday ,setFriday] = useState('')
+    const [dirty ,setDirty] = useState(false)
 
+    let date;
+
+    useEffect(async()=>{
+        let today = await api_getTime();
+        date = dayjs(today.currentTime);
+
+        let tempDate = date.add(7 , 'day');
+
+        for (let i = 0 ; i < 7 ;i++ ){
+
+             if(tempDate.day() === 3){
+                 setWednesday( tempDate.format("YYYY-MM-DD").toString());
+             }
+             if (tempDate.day() === 5){
+                 setFriday( tempDate.format("YYYY-MM-DD").toString());
+             }
+            tempDate = tempDate.add(1 , 'day')
+        }
+        console.log(wednesday);
+        console.log(friday);
+        setDirty(old=> ! old)
+    },[])
 
     const handleSubmit = (values) => {
         let delivery = {
@@ -17,7 +42,6 @@ function ScheduleDelivery(props) {
             date: values.date,
             time: values.time
         }
-        console.log(orderID,delivery)
         api_scheduleDelivery(orderID, delivery)
             .then(() => {
                 addMessage({title: "", message: 'Scheduling delivery completed with success', type: 'success'})
@@ -70,7 +94,8 @@ function ScheduleDelivery(props) {
                         <Form.Control id="date" data-testid="date-element" type='date' value={formik.values.date}
                                       onChange={formik.handleChange}
                                       isInvalid={formik.touched.date && formik.errors.date}
-                                      min={dayjs().add(1, 'day').format("YYYY-MM-DD").toString()}
+                                      min={wednesday}
+                                      max={friday}
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.date}</Form.Control.Feedback>
                     </InputGroup>

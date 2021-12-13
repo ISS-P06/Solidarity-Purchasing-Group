@@ -32,7 +32,7 @@ function RoutesClient(props) {
               exact={true}
               role={userRole}
               condition={loggedIn}
-              component={<OrderList userRole={userRole} userId={userId} />}
+              component={<OrderList userRole={userRole} userId={userId} virtualTime={virtualTime}/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 

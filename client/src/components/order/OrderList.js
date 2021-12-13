@@ -58,7 +58,7 @@ function OrderList(props) {
 
     const orderList = ordersVisualized.map((order) => (
         <div key={order.orderId.toString()} className="pb-3">
-            <OrderItem key={order.orderId.toString()} order={order} userRole={props.userRole} userId={props.userId}/>
+            <OrderItem key={order.orderId.toString()} order={order} userRole={props.userRole} userId={props.userId} virtualTime={props.virtualTime}/>
         </div>
     ));
 
