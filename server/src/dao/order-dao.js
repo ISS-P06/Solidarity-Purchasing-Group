@@ -106,7 +106,7 @@ export function getOrder(orderId) {
  * @param {number} clientId - User id on the database.
  * @param {object} basket - User's basket.
  * @param {number} balance - Current balance on user's wallet.
- * @returns {Promise<null>}
+ * @returns {Promise<number>} Request id of th current order.
  */
 export function insertOrderFromBasket(clientId, basket, balance, date) {
   return new Promise((resolve, reject) => {
@@ -118,8 +118,24 @@ export function insertOrderFromBasket(clientId, basket, balance, date) {
     const status = totalAmount <= balance ? 'confirmed' : 'pending_canc';
 
     const sql = 'INSERT INTO Request(ref_client, status, date) VALUES(?, ?, ?)';
+    db.run(sql, [clientId, status, date], function (err) {
+      err ? reject(err) : resolve(this.lastID);
+    });
+  });
+}
 
-    db.run(sql, [clientId, status, date], (err) => (err ? reject(err) : resolve(null)));
+/**
+ * Insert informations of the ordered product.
+ *
+ * @param {number} requestId - Request id on the database.
+ * @param {number} productId - Product id on the database.
+ * @param {number} quantity - Product quantity to order.
+ * @returns {Promise<null>}
+ */
+export function insertProductRequest(requestId, productId, quantity) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Product_Request(ref_request, ref_product, quantity) VALUES(?, ?, ?)';
+    db.run(sql, [requestId, productId, quantity], (err) => (err ? reject(err) : resolve(null)));
   });
 }
 
