@@ -229,12 +229,12 @@ export function getOrderById(orderId, clientId = -1) {
   });
 }
 
-export function setOrderDelivered(orderId) {
+export function setOrderStatus(orderId, status) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Request
-                  SET status = 'delivered'
-                  WHERE id=?`;
-    db.run(sql, orderId, (err) => {
+                  SET status = ?
+                  WHERE id = ?`;
+    db.run(sql, [status, orderId], (err) => {
       if (err) {
         reject(err);
         return;
