@@ -89,18 +89,29 @@ export function test_addDummyOrders() {
  *  - The promise with the mailList to contact for topup the account
  */
  export function checksClientBalance() {
+  const fee = 10.0;
   return new Promise((resolve, reject) => {
     getClientsOrders().then(orders => {
       orders.forEach(order => {
         clientDAO.getBalanceByClientId(order.clientId).then((balance) => {
-            if(balance >= order.total) {
-              clientDAO.updateClientBalance(order.clientId, -order.total);
-              orderDAO.setOrderStatus(order.requestId, 'confirmed');
-            }else{
-              orderDAO.setOrderStatus(order.requestId, 'pending_canc');
+          getDeliveryByRequestId(order.requestId).then( (rid) => {
+            if(rid !== undefined){ // delivery
+              if(balance >= order.total + fee) {// 10 euro fee
+                clientDAO.updateClientBalance(order.clientId, -order.total -fee);
+                orderDAO.setOrderStatus(order.requestId, 'confirmed');
+              }else{
+                orderDAO.setOrderStatus(order.requestId, 'pending_canc');
+              }
+            }else{ // no delivery
+              if(balance >= order.total) {
+                clientDAO.updateClientBalance(order.clientId, -order.total);
+                orderDAO.setOrderStatus(order.requestId, 'confirmed');
+              }else{
+                orderDAO.setOrderStatus(order.requestId, 'pending_canc');
+              }
             }
-          }
-        );
+          });          
+        });
       });
     });
     getPendingOrdersWithUnderBalance().then((mailList) => resolve(mailList));
@@ -157,4 +168,20 @@ function getPendingOrdersWithUnderBalance() {
       resolve(users_requests_under_balance)
     });
   })
+}
+
+function getDeliveryByRequestId(requestId) {
+  return new Promise((resolve, reject) => {
+
+    const sql = `
+                  SELECT d.ref_request
+                  FROM Delivery d
+                  WHERE d.ref_request = ?;
+                  `;
+
+    db.get(sql, [requestId], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
+    });
+  });
 }
