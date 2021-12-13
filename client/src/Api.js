@@ -376,7 +376,7 @@ export const api_buyNow = async (userId) => {
  */
 export const api_removeProductFromBasket = async (userId, productId) => {
     try {
-        const res = await axios.delete('/api/client/' + userId + '/basket/remove', {data: {productId}});
+        const res = await axios.post('/api/client/' + userId + '/basket/remove', {productId});
         if (res.data) {
             return res.data;
         } else {
