@@ -90,6 +90,6 @@ sections:
   - Refining estimation of story points for old estimated stories not committed yet.
 
 - One thing you are proud of as a Team!!
-  - We are proud of having **compleated** all committed stories and improved our github time spent for management with its "Squash" feature.
+  - We are proud of having **completed** all committed stories and improved our github time spent for management with its "Squash" feature.
   - We merged developement branches when a task was compleated and not all tasks at the end of the story or sprint.
-  - We managed to integrate Docker in the project, both for development and testing
+  - We are proud of having completed the integration Docker for production, developement and tests, removing all the "it works on my machine" cases.
