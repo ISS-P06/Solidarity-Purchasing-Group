@@ -3,9 +3,9 @@ import { BsBasket2, BsPersonCircle } from 'react-icons/bs';
 import { BiUser, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { BasketOffcanvas } from '.';
 
 import { getUserRoute } from '../utils';
-import { BasketOffcanvas } from './BasketOffcanvas';
 
 function Navbar(props) {
   const userRole = props.userRole;

@@ -4,7 +4,7 @@ import { Offcanvas } from 'react-bootstrap';
 import { BsBasket2} from 'react-icons/bs';
 import Basket from '../components/order/Basket';
 
-export function BasketOffcanvas({userId, virtualTime}) {
+export default function BasketOffcanvas({userId, virtualTime}) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -12,7 +12,7 @@ export function BasketOffcanvas({userId, virtualTime}) {
 
   return (
     <>
-      <Button  
+      <Button data-testid="basket-button"
         style={{background: '#f71'}} 
         onClick={handleShow}
         ><BsBasket2 size={30} />
