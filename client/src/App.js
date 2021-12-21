@@ -103,6 +103,7 @@ function App() {
     loggedIn,
     doLogout,
     userRole,
+    userId,
     dirtyVT,
     setDirtyVT,
     virtualTime

@@ -69,7 +69,6 @@ const ProductCards = (props) => {
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
             .then(() => {
-                props.handleAddProduct();
                 addMessage({ message: 'Product correctly added to the basket', type: "info" });
             }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
     }

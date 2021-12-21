@@ -5,9 +5,12 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 
 import { getUserRoute } from '../utils';
+import { BasketOffcanvas } from './BasketOffcanvas';
 
 function Navbar(props) {
   const userRole = props.userRole;
+  const userId = props.userId;
+  const virtualTime = props.virtualTime;
 
   return (
     <BNavbar collapseOnSelect className="navbar text-light" fixed="top" fluid="true" expand="lg">
@@ -17,9 +20,17 @@ function Navbar(props) {
 
       <BNavbar.Collapse
         id="responsive-navbar-nav"
-        className="justify-content-end"></BNavbar.Collapse>
+        className="justify-content-end">
+      </BNavbar.Collapse>
 
       <SettingsDropdown {...props} />
+
+      {
+      props.userRole === "client" ?
+      <BasketOffcanvas userId={userId} virtualTime={virtualTime}/>
+      : <></>
+      }
+      
     </BNavbar>
   );
 }

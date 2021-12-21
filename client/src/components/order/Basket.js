@@ -55,10 +55,6 @@ export default function Basket(props) {
             });
     };
 
-    const handleAddProduct = () => {
-        setIsUpdated(true);
-    };
-
     /**
      * This function computes the total as product quantity times the unit price
      * @param {*} products
@@ -102,12 +98,6 @@ export default function Basket(props) {
                 loading={loading}
                 virtualTime={props.virtualTime}
             />
-            <ProductCards
-                userRole={props.userRole}
-                userId={props.userId}
-                handleAddProduct={handleAddProduct}
-                virtualTime={props.virtualTime}
-            />
             <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime}/>
         </>
     );
@@ -118,9 +108,6 @@ const BasketProductList = (props) => {
 
     return (
         <div class="main">
-            <div class="title" style={{padding: '2%'}}>
-                <h2> Basket </h2>
-            </div>
             {checkOrderInterval(props.virtualTime) ? (
                 <Card
                     className="shadow"
@@ -134,7 +121,7 @@ const BasketProductList = (props) => {
                             <div style={{padding: '2%'}} class="productList">
                                 <ProductList productList={basket} removeProduct={handleRemoveProduct}/>
                             </div>
-                            <div style={{padding: '0 4% 2% 0'}}>
+                            <div style={{textAlign: 'center'}}>
                                 <h5>Total: € {computeTotal(basket).toFixed(2)}</h5>
                             </div>
                         </div>
