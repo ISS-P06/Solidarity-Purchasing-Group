@@ -57,3 +57,41 @@ export const isLoggedIn = (req, res, next) => {
 
   return res.status(401).json({ message: 'not authenticated' });
 };
+
+// --- --- --- //
+/* 
+  The following is a list of middlewares that both check
+  whether a user is logged in AND has a specific role.
+  Their use is the same as the "isLoggedIn" middleware.
+*/
+// Employee
+export const isLoggedIn_Employee = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "shop_employee")
+    return next();
+
+  return res.status(401).json({ message: 'not authenticated'});
+};
+
+// Client
+export const isLoggedIn_Client = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "client")
+    return next();
+
+  return res.status(401).json({ message: 'not authenticated'});
+};
+
+// Farmer
+export const isLoggedIn_Farmer = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "farmer")
+    return next();
+
+  return res.status(401).json({ message: 'not authenticated'});
+};
+
+// Manager
+export const isLoggedIn_Manager = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "manager")
+    return next();
+
+  return res.status(401).json({ message: 'not authenticated'});
+};

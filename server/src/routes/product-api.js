@@ -3,10 +3,9 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { productDAO } from '../dao';
-import { passportUtil, VTC } from '../utils';
+import { VTC, isLoggedIn, isLoggedIn_Farmer } from '../utils';
 
 export const router = Router();
-const isLoggedIn = passportUtil.isLoggedIn;
 
 /** Virtual Time Clock */
 const vtc = new VTC();
@@ -37,7 +36,7 @@ router.get('/api/products', isLoggedIn, (_, res) => {
  */
 router.post(
   '/api/insert_product_description',
-  isLoggedIn,
+  isLoggedIn_Farmer,
   [
     check('name').isString(),
     check('description').isString(),

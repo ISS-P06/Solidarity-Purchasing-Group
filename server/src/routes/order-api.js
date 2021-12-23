@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { orderDAO } from '../dao';
-import { isLoggedIn, formatterUtil } from '../utils';
+import { isLoggedIn_Employee, isLoggedIn_Client, formatterUtil } from '../utils';
 
 export const router = Router();
 
@@ -27,7 +27,7 @@ router.post(
         (p) => !Number.isInteger(p.id) || !typeof p.quantity == 'number' || isNaN(p.quantity)
       ).length
   ),
-  isLoggedIn,
+  isLoggedIn_Employee,
   (req, res) => {
     const errors = validationResult(req).formatWith(formatterUtil.errorFormatter);
     if (!errors.isEmpty()) {
@@ -48,7 +48,7 @@ router.post(
 
 router.post(
   '/api/orders/:orderId/deliver/schedule',
-  isLoggedIn,
+  isLoggedIn_Employee,
   check('orderId').isInt(),
   (req, res) => {
     const errors = validationResult(req);
@@ -66,7 +66,7 @@ router.post(
 );
 
 // POST /api/orders/:id/deliver
-router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
+router.post('/api/orders/:id/deliver', isLoggedIn_Employee, (req, res) => {
   orderDAO
     .setOrderStatus(req.params.id, 'delivered')
     .then((orderId) => {
@@ -76,7 +76,7 @@ router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
 });
 
 // GET /api/orders
-router.get('/api/orders', isLoggedIn, (_, res) => {
+router.get('/api/orders', isLoggedIn_Employee, (_, res) => {
   orderDAO
     .getOrders()
     .then((orders) => res.json(orders))
@@ -85,7 +85,7 @@ router.get('/api/orders', isLoggedIn, (_, res) => {
 
 // GET /api/orders/:id
 // Route used to get the order review
-router.get('/api/orders/:id', isLoggedIn, (req, res) => {
+router.get('/api/orders/:id', isLoggedIn_Employee, (req, res) => {
   orderDAO
     .getOrderById(req.params.id)
     .then((order) => {
@@ -97,7 +97,7 @@ router.get('/api/orders/:id', isLoggedIn, (req, res) => {
 });
 
 // POST /api/orders/:id/deliver
-router.post('/api/orders/:id/deliver', isLoggedIn, (req, res) => {
+router.post('/api/orders/:id/deliver', isLoggedIn_Employee, (req, res) => {
   orderDAO
     .setOrderStatus(req.params.id, 'delivered')
     .then((orderId) => {
