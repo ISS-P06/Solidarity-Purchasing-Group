@@ -3,11 +3,7 @@ import session from 'supertest-session';
 
 import app from '../app';
 import { farmerDAO } from '../dao';
-import { doBackup, restoreBackup } from '../db';
-
-beforeAll(() => {
-  doBackup();
-})
+import { restoreBackup } from '../db';
 
 /**
  * During test the database can be modified, so we need to
