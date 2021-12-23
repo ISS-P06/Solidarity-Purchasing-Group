@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { productDAO, farmerDAO } from '../dao';
-import { isLoggedIn, VTC } from '../utils';
+import { isLoggedIn_Farmer, VTC } from '../utils';
 
 const vtc = new VTC();
 
@@ -24,7 +24,7 @@ export const router = Router();
  */
 router.get(
   '/api/farmer/:farmerId/products/supplied',
-  isLoggedIn,
+  isLoggedIn_Farmer,
   [check('farmerId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
@@ -51,7 +51,7 @@ router.get(
  */
 router.get(
   '/api/farmer/:farmerId/products',
-  isLoggedIn,
+  isLoggedIn_Farmer,
   [check('farmerId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
@@ -73,7 +73,7 @@ router.get(
  */
 router.post(
   '/api/farmer/products/available',
-  isLoggedIn,
+  isLoggedIn_Farmer,
   [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);
@@ -92,7 +92,9 @@ router.post(
  *
  * DELETE expected available product {productID} amounts for the next week
  */
-router.delete('/api/farmer/products/available', [check('productID').isInt()], (req, res) => {
+router.delete('/api/farmer/products/available', 
+  isLoggedIn_Farmer,
+  [check('productID').isInt()], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
