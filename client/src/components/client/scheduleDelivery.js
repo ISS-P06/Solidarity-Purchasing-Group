@@ -7,32 +7,32 @@ import {addMessage} from "../Message";
 import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
-    const {orderID, show, setShow, virtualTime}= props;
-    const [wednesday ,setWednesday] = useState('')
-    const [friday ,setFriday] = useState('')
-    const [dirty ,setDirty] = useState(false)
+    const {orderID, show, setShow, virtualTime} = props;
+    const [wednesday, setWednesday] = useState('')
+    const [friday, setFriday] = useState('')
+    const [dirty, setDirty] = useState(false)
 
 
-
-    useEffect(async()=>{
+    useEffect(async () => {
         let date = dayjs(virtualTime);
         console.log(date);
 
-        for (let i = 0 ; i < 7 ;i++ ){
-             if(date.day() === 3){
-                 setWednesday( date.format("YYYY-MM-DD").toString());
-             }
-             if (date.day() === 5){
-                 setFriday( date.format("YYYY-MM-DD").toString());
-             }
-            date = date.add(1 , 'day')
+        for (let i = 0; i < 7; i++) {
+            if (date.day() === 3) {
+                setWednesday(date.format("YYYY-MM-DD").toString());
+            }
+            if (date.day() === 5) {
+                setFriday(date.format("YYYY-MM-DD").toString());
+            }
+            date = date.add(1, 'day')
         }
 
-        setDirty(old=> ! old)
-    },[virtualTime])
+        setDirty(old => !old)
+    }, [virtualTime])
 
     const handleSubmit = (values) => {
         let delivery = {
+            typeDelivery: values.typeDelivery,
             address: values.address,
             date: values.date,
             time: values.time
@@ -54,16 +54,24 @@ function ScheduleDelivery(props) {
         setShow(true)
     }
 
+    const changeTypeDelivery = (event) => {
+        formik.setFieldValue("typeDelivery", event.target.id)
+    }
     const formik = useFormik({
         initialValues: {
+            typeDelivery: "home",
             date: dayjs().toString(),
             time: '',
             address: ''
         },
         validationSchema: Yup.object({
-            address: Yup.string().required('address field is required'),
-            time: Yup.string().required('time field is required'),
-            date: Yup.string().required('date field is required'),
+            address: Yup.string().when('typeDelivery', {
+                is: "home",
+                then: Yup.string().required('Address is required'),
+                otherwise: Yup.string(),
+            }),
+            time: Yup.string().required('Time is required'),
+            date: Yup.string().required('Date is required'),
         }),
         onSubmit: handleSubmit,
     })
@@ -81,6 +89,24 @@ function ScheduleDelivery(props) {
 
             <Modal.Body className="text-center">
                 <Form onSubmit={formik.handleSubmit}>
+                    <Col className="mb-2">
+                        <Form.Check
+                            inline
+                            label="Delivery at home"
+                            name="typeDelivery"
+                            type="radio"
+                            id="home"
+                            onClick={changeTypeDelivery}
+                        />
+                        <Form.Check
+                            inline
+                            label="Pick up in store"
+                            name="typeDelivery"
+                            type="radio"
+                            id="store"
+                            onClick={changeTypeDelivery}
+                        />
+                    </Col>
 
                     <InputGroup controlID={'Date'}>
                         <InputGroup.Text>Date</InputGroup.Text>
@@ -104,14 +130,21 @@ function ScheduleDelivery(props) {
                         <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
                     </InputGroup>
 
-                    <InputGroup controlID={'address'} className={'mt-4'}>
-                        <InputGroup.Text>Address</InputGroup.Text>
-                        <Form.Control id="address" data-testid="address-element" type='text'
-                                      value={formik.values.address} onChange={formik.handleChange}
-                                      isInvalid={formik.touched.address && formik.errors.address}
-                        />
-                        <Form.Control.Feedback type="invalid">{formik.errors.address}</Form.Control.Feedback>
-                    </InputGroup>
+                    {console.log(formik.values.typeDelivery)}
+                    {formik.values.typeDelivery === "home" && //only for delivery at home
+                    <>
+                        <InputGroup controlID={'address'} className={'mt-4'}>
+                            <InputGroup.Text>Address</InputGroup.Text>
+                            <Form.Control id="address" data-testid="address-element" type='text'
+                                          value={formik.values.address} onChange={formik.handleChange}
+                                          isInvalid={formik.touched.address && formik.errors.address}
+                            />
+                            <Form.Control.Feedback type="invalid">{formik.errors.address}</Form.Control.Feedback>
+                        </InputGroup>
+                        <p className="mt-1">If you choose to delivery at home, you will pay an extra fee!</p>
+                    </>
+                    }
+
 
                     <Modal.Footer>
                         <Container>
