@@ -4,6 +4,10 @@ import { FarmerProductForm } from '../components/farmer';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 
+// add mock function for an external function
+jest.mock('../components/Message', () => ({
+    addMessage: jest.fn(),
+}));
 describe('FarmerProductForm', () => {
 
     const history = createMemoryHistory();
