@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react';
 import { api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts, api_removeAvailableProductQuantity } from '../../Api';
 import { addMessage } from '../Message';
 import { checkSupplyInterval } from '../../utils/date';
-
+import FarmerProductForm from './FarmerProductForm';
 function ReportAvailabilityProductsPage(props) {
     const { user } = props;
     const [productsList, setProductsList] = useState([]); /* list of farmer's products */
     const [suppliedProducts, setSuppliedProducts] = useState([]); /* list of products supplied the next week */
     const [dirty, setDirty] = useState(false) /* used to reaload the list  of products supplied the next week */
-    const [loading, setLoading] = useState(true); /* used for visualize the spinner
-    */
+    const [loading, setLoading] = useState(true); /* used for visualize the spinner  */
+    const [farmerProductFormShow, setFarmerProductFormShow] = useState(false); /* used for opening farmerProductFormShow modal*/
+
     useEffect(() => {
         api_getFarmerProducts(user.id)
             .then((products) => {
@@ -38,9 +39,22 @@ function ReportAvailabilityProductsPage(props) {
                     {loading ? <Spinner animation="border" variant="success" /> :
                         <SuppliedProducts suppliedProducts={suppliedProducts} setDirty={setDirty} ></SuppliedProducts>}
                     <h3 className={"mb-3 mt-5"}>Add product amounts for the next week</h3>
+
                     <SuppliedProductForm productsList={productsList} setDirty={setDirty} virtualTime={props.virtualTime} />
+
+                    <Row className={"justify-content-center"}>
+                        <Col xs={6} md={3}>
+                            <Button onClick={()=>setFarmerProductFormShow(true)}>Add new product</Button>
+                        </Col>
+
+                    </Row>
                 </Col>
             </Row>
+            <FarmerProductForm
+                user={user}
+                show={farmerProductFormShow}
+                handleClose={() => setFarmerProductFormShow(false)}
+            />
         </Container>
     );
 }
