@@ -185,3 +185,20 @@ function getDeliveryByRequestId(requestId) {
     });
   });
 }
+
+/**
+ * Function that is used to change the orders state from 'confirmed' to 'unretrieved'
+ * @returns {Promise}
+ */
+export function setUndeliveredOrders() {
+  return new Promise((resolve, reject) => {
+      const sql = " UPDATE Request SET status = 'unretrieved' WHERE status = 'confirmed'";
+      db.run(sql, [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+      });
+      resolve();
+  });
+}
