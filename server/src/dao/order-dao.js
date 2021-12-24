@@ -249,3 +249,23 @@ export function scheduleOrderDeliver(orderId, delivery) {
     );
   });
 }
+
+/**
+ *
+ * @param 
+ * @returns all the unretrieved orders
+ */
+ export function getUnretrievedOrders() {
+  return new Promise((resolve, reject) => {
+    const sql = `SELECT *
+            FROM Request r
+            WHERE r.status = 'unretrieved'`;
+    db.get(sql, [], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(rows);
+    });
+  });
+}
