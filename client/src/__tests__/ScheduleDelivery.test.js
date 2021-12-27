@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen, waitFor,fireEvent} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ScheduleDelivery from '../components/client/scheduleDelivery';
+import ScheduleDelivery from '../components/client/ScheduleDelivery';
 import {createMemoryHistory} from 'history';
 import {rest} from 'msw';
 import {setupServer} from 'msw/node';
