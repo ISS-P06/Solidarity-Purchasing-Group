@@ -63,14 +63,10 @@ describe('My component ScheduleDelivery', () => {
 
        await userEvent.click(scheduleDeliveryButton);
 
-        screen.debug()
 
         fireEvent.click(screen.getAllByRole("radio")[0])
         expect(screen.getAllByRole("radio")[0].checked).toEqual(true);
 
-        const dateElement = screen.getByTestId('date-element')
-        expect(dateElement).toBeInTheDocument();
-        userEvent.type(dateElement, "2022-01-01");
 
         const startTimeElement = screen.getByTestId('startTime-element')
         expect(startTimeElement).toBeInTheDocument();
@@ -102,7 +98,6 @@ describe('My component ScheduleDelivery', () => {
             rest.post('/api/orders/1/deliver/schedule', (req, res, ctx) => {
                 const delivery = req.body;
                 db.push(delivery);
-                console.log(delivery)
                 return res(ctx.status(200));
             })
         );
@@ -119,14 +114,9 @@ describe('My component ScheduleDelivery', () => {
 
         await userEvent.click(scheduleDeliveryButton);
 
-        screen.debug()
+        fireEvent.click(screen.getAllByRole("radio")[1])
+        expect(screen.getAllByRole("radio")[1].checked).toEqual(true);
 
-        fireEvent.click(screen.getAllByRole("radio")[0])
-        expect(screen.getAllByRole("radio")[0].checked).toEqual(true);
-
-        const dateElement = screen.getByTestId('date-element')
-        expect(dateElement).toBeInTheDocument();
-        userEvent.type(dateElement, "2022-01-01");
 
        const startTimeElement = screen.getByTestId('startTime-element')
         expect(startTimeElement).toBeInTheDocument();
@@ -138,9 +128,9 @@ describe('My component ScheduleDelivery', () => {
 
         await userEvent.click(screen.getByTestId('submit-element'));
 
-     /*   await waitFor(() => {
+      await waitFor(() => {
             expect(db).toHaveLength(1)
-        });*/
+        });
 
     });
 
