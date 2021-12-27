@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Button, Card} from 'react-bootstrap';
+import {Button, Card, Row, Col} from 'react-bootstrap';
 import {api_getBasket, api_buyNow, api_removeProductFromBasket} from '../../Api';
 import ProductCards from '../product/ProductCards';
 import ProductList from './ProductList';
@@ -126,13 +126,7 @@ const BasketProductList = (props) => {
                             </div>
                         </div>
                     )}
-                    {isEmpty ? null : (
-                        <Card.Footer>
-                            <Button className="float-end btn mr-2" onClick={() => handleBuyNow(userId)}>
-                                Buy Now
-                            </Button>
-                        </Card.Footer>
-                    )}
+
                 </Card>) : (
                 <Card
                     className="shadow"
@@ -144,6 +138,18 @@ const BasketProductList = (props) => {
 
             )
             }
+            {isEmpty ? null : (
+                <Row className="justify-content-center ">
+                    <Col xs={10} style={{textAlign: 'center', position:"absolute", bottom:"65px"}} className="d-grid" >
+                        <Button className="btn"  onClick={() => handleBuyNow(userId)} className={"mb-2"}>
+                            Buy Now
+                        </Button>
+                    </Col>
+
+                </Row>
+            )}
+
+
         </div>
     );
 };

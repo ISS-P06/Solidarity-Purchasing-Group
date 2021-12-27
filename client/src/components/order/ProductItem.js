@@ -29,8 +29,11 @@ export default function ProductItem(props) {
                         Price: € {(props.product.price * props.product.quantity).toFixed(2)}.
                     </div>
                 </Col>
+
+            </Row>
+            <Row >
                 <Col className="mt-2">
-                <Button style={{position: 'absolute', bottom: '10%', right: '2%'}} className="float-end btn mr-2" variant="primary" onClick={() => handleRemoveProduct(props.product.productId)} >Remove</Button>
+                    <Button className="float-end btn" variant="primary" onClick={() => handleRemoveProduct(props.product.productId)} >Remove</Button>
                 </Col>
             </Row>
         </ListGroup.Item>

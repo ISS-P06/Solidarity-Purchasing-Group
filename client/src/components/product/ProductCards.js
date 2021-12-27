@@ -1,12 +1,13 @@
-import { Container, Row, Col, Pagination, Form, Spinner, Button } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
-import { api_getProducts, api_addProductToBasket, api_getFarmerProducts } from '../../Api';
-import { addMessage } from '../Message';
-import { Link } from 'react-router-dom';
+import {Container, Row, Col, Pagination, Form, Spinner, Button, Card} from 'react-bootstrap';
+import {useState, useEffect} from 'react';
+import {api_getProducts, api_addProductToBasket, api_getFarmerProducts} from '../../Api';
+import {addMessage} from '../Message';
+import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
+import { checkOrderInterval } from '../../utils/date';
 
 const ProductCards = (props) => {
-    const { userRole, userId, virtualTime } = props;
+    const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -26,7 +27,7 @@ const ProductCards = (props) => {
             setProductList(products);
             setLoading(false);
         }).catch((e) => {
-            addMessage({ message: e.message, type: 'danger' });
+            addMessage({message: e.message, type: 'danger'});
             setLoading(false);
         });
     }, [virtualTime]);
@@ -61,16 +62,16 @@ const ProductCards = (props) => {
 
     /**
      * This function calls the api of reference to add product on the basket
-     * @param {*} reservedQuantity 
+     * @param {*} reservedQuantity
      *  - The quantity to add in the basket
-     * @param {*} productId 
+     * @param {*} productId
      *  - The id of the product we wnat to add
      */
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
             .then(() => {
-                addMessage({ message: 'Product correctly added to the basket', type: "info" });
-            }).catch((e) => addMessage({ message: e.message, type: 'danger' }));
+                setOpenBasketOffCanvas(true);
+            }).catch((e) => addMessage({message: e.message, type: 'danger'}));
     }
 
     const handleOnSearchProduct = (text) => {
@@ -116,77 +117,89 @@ const ProductCards = (props) => {
 
 
     return (
-        loading ? <Spinner animation="border" variant="success" className={"mt-3"} /> : (
-            <Container style={{ textAlign: 'left' }}>
+        loading ? <Spinner animation="border" variant="success" className={"mt-3"}/> : (
+            <Container style={{textAlign: 'left'}}>
                 <Row className="mt-4">
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
                         <h3>Browse products</h3>
                     </Col>
                 </Row>
                 <Row className="mt-4">
                     <Col xs={2}></Col>
-                    <Col xs={8} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col xs={8} style={{display: 'flex', justifyContent: 'center'}}>
                         {productList.length !== 0 &&
-                            <Form>
-                                <Container>
-                                    <Row>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Control
-                                                value={searchText}
-                                                type="text"
-                                                placeholder="Search Product"
-                                                onChange={(e) => handleOnSearchProduct(e.target.value)} />
-                                        </Col>
-                                        <Col xs={12} sm={6}>
-                                            <Form.Select
-                                                value={selectedCategory}
-                                                onChange={(e) => handleOnSwitchCategory(e.target.value)}>
-                                                {categories.map((c) => { return <option value={c}>{c}</option> })}
-                                            </Form.Select>
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </Form>
+                        <Form>
+                            <Container>
+                                <Row>
+                                    <Col xs={12} sm={6}>
+                                        <Form.Control
+                                            value={searchText}
+                                            type="text"
+                                            placeholder="Search Product"
+                                            onChange={(e) => handleOnSearchProduct(e.target.value)}/>
+                                    </Col>
+                                    <Col xs={12} sm={6}>
+                                        <Form.Select
+                                            value={selectedCategory}
+                                            onChange={(e) => handleOnSwitchCategory(e.target.value)}>
+                                            {categories.map((c) => {
+                                                return <option value={c}>{c}</option>
+                                            })}
+                                        </Form.Select>
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </Form>
                         }
                     </Col>
-                    <Col xs={2} style={{ display: 'flex', justifyContent: 'right' }}>
+                    <Col xs={2} style={{display: 'flex', justifyContent: 'right'}}>
                         {userRole === "farmer" &&
-                            <Link to="/farmer/products/new" className="p-0">
-                                <Button>Add new product</Button>
-                            </Link>
+                        <Link to="/farmer/products/new" className="p-0">
+                            <Button>Add new product</Button>
+                        </Link>
                         }
                     </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className="mt-4 justify-content-center">
                     {productList.length === 0 && (
-                        <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>No products found for this week</h5>
                         </Col>
                     )}
                     {error && (
-                        <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>{error}</h5>
                         </Col>
                     )}
                     {currentProducts.map((p) => {
                         return <ProductCard key={p.id} product={p} userRole={userRole}
-                            onBasketAdd={handleAddProductToBasket} virtualTime={virtualTime} />;
+                                            onBasketAdd={handleAddProductToBasket} virtualTime={virtualTime}/>;
                     })}
                 </Row>
+                {userRole === "client" && !checkOrderInterval(virtualTime) &&
+                <Card
+                    className="shadow"
+                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '40rem'}}>
+                    <div style={{padding: '4%'}}>
+                        <h5><u> Sorry, but orders are accepted only from Sat. 9am until Sun. 11pm. </u></h5>
+                    </div>
+                </Card>
+                }
                 {!error && (<Row className="mt-3 mb-3">
-                    <Col style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Col style={{display: 'flex', justifyContent: 'center'}}>
                         {productList.length !== 0 &&
-                            <Pagination size="md">
-                                {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)} />}
-                                {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
-                                {pageNumbers.map((i) => (
-                                    <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
-                                        {i}
-                                    </Pagination.Item>
-                                ))}
-                                {currentPage !== endPage && <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
-                                {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)} />}
-                            </Pagination>
+                        <Pagination size="md">
+                            {currentPage !== 1 && <Pagination.First onClick={() => setCurrentPage(1)}/>}
+                            {currentPage !== 1 && <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)}/>}
+                            {pageNumbers.map((i) => (
+                                <Pagination.Item key={i} active={currentPage === i} onClick={() => setCurrentPage(i)}>
+                                    {i}
+                                </Pagination.Item>
+                            ))}
+                            {currentPage !== endPage &&
+                            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)}/>}
+                            {currentPage !== endPage && <Pagination.Last onClick={() => setCurrentPage(endPage)}/>}
+                        </Pagination>
                         }
                     </Col>
                 </Row>)}

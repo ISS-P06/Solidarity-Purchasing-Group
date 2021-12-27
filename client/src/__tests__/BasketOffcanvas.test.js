@@ -9,7 +9,7 @@ describe("The component BasketOffcanvas", () => {
         // Sunday; date inside intervale to make orders
         const date_in = new Date("December 5, 2021 17:00:00");
 
-        render(<BasketOffcanvas userId={3} virtualTime={date_in}/>);
+        render(<BasketOffcanvas userId={3} virtualTime={date_in} show={true} setShow={jest.fn()}/>);
 
         await userEvent.click(screen.getByTestId("basket-button"));
         
