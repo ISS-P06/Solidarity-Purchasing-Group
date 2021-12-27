@@ -12,7 +12,6 @@ function ScheduleDelivery(props) {
     const [friday, setFriday] = useState('')
     const [dirty, setDirty] = useState(false)
 
-
     useEffect(async () => {
         let date = dayjs(virtualTime);
         console.log(date);
@@ -35,7 +34,8 @@ function ScheduleDelivery(props) {
             typeDelivery: values.typeDelivery,
             address: values.address,
             date: values.date,
-            time: values.time
+            startTime: values.startTime,
+            endTime: values.endTime
         }
         api_scheduleDelivery(orderID, delivery)
             .then(() => {
@@ -61,7 +61,8 @@ function ScheduleDelivery(props) {
         initialValues: {
             typeDelivery: "home",
             date: dayjs().toString(),
-            time: '',
+            StartTime: '08:00',
+            EndTime:'20:00',
             address: ''
         },
         validationSchema: Yup.object({
@@ -70,7 +71,8 @@ function ScheduleDelivery(props) {
                 then: Yup.string().required('Address is required'),
                 otherwise: Yup.string(),
             }),
-            time: Yup.string().required('Time is required'),
+            StartTime: Yup.string().required('Time is required'),
+            EndTime: Yup.string().required('Time is required'),
             date: Yup.string().required('Date is required'),
         }),
         onSubmit: handleSubmit,
@@ -79,9 +81,9 @@ function ScheduleDelivery(props) {
 
     return (
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose}  backdrop="static"   aria-labelledby="contained-modal-title-vcenter">
 
-            <Modal.Header closeButton>
+            <Modal.Header closeButton={false}>
                 <Container className="justify-content-between offset-md-3">
                     <Modal.Title>Schedule delivery</Modal.Title>
                 </Container>
@@ -97,6 +99,7 @@ function ScheduleDelivery(props) {
                             type="radio"
                             id="home"
                             onClick={changeTypeDelivery}
+                            checked={formik.values.typeDelivery==="home"}
                         />
                         <Form.Check
                             inline
@@ -105,6 +108,7 @@ function ScheduleDelivery(props) {
                             type="radio"
                             id="store"
                             onClick={changeTypeDelivery}
+                            value={formik.values.typeDelivery==="store"}
                         />
                     </Col>
 
@@ -119,18 +123,27 @@ function ScheduleDelivery(props) {
                         <Form.Control.Feedback type="invalid">{formik.errors.date}</Form.Control.Feedback>
                     </InputGroup>
 
-                    <InputGroup controlID={'Time'} className={'mt-4'}>
-                        <InputGroup.Text>Time</InputGroup.Text>
-                        <Form.Control id="time" data-testid="time-element" type='time' value={formik.values.time}
+                    <InputGroup controlID={'startTime'} className={'mt-4'}>
+                        <InputGroup.Text>From </InputGroup.Text>
+                        <Form.Control id="startTime" data-testid="startTime-element" type='time' value={formik.values.startTime}
                                       onChange={formik.handleChange}
                                       min={"08:00"}
+                                      max={formik.values.EndTime}
+                                      isInvalid={formik.touched.time && formik.errors.time}
+                        />
+                        <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
+                    </InputGroup>
+                    <InputGroup controlID={'endTime'} className={'mt-4'}>
+                        <InputGroup.Text>To</InputGroup.Text>
+                        <Form.Control id="endTime" data-testid="endTime-element" type='time' value={formik.values.endTime}
+                                      onChange={formik.handleChange}
+                                      min={formik.values.StartTime}
                                       max={"20:00"}
                                       isInvalid={formik.touched.time && formik.errors.time}
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
                     </InputGroup>
 
-                    {console.log(formik.values.typeDelivery)}
                     {formik.values.typeDelivery === "home" && //only for delivery at home
                     <>
                         <InputGroup controlID={'address'} className={'mt-4'}>
