@@ -3,7 +3,7 @@ import {Modal, Button, Form, Col, FloatingLabel, Row} from 'react-bootstrap';
 import {useState, useEffect} from 'react';
 import {api_getProducts, api_addOrder} from '../../Api';
 import {addMessage} from '../Message';
-import ScheduleDelivery from "../client/scheduleDelivery";
+import ScheduleDelivery from "../client/ScheduleDelivery";
 function ClientOrderForm(props) {
     const {show, onHide, client, openConfirmationModal, virtualTime} = props;
     const [productsList, setProductsList] = useState([]); /* list of products of available */

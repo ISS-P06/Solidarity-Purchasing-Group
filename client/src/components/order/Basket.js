@@ -5,7 +5,7 @@ import ProductCards from '../product/ProductCards';
 import ProductList from './ProductList';
 import {addMessage} from '../Message';
 import {checkOrderInterval} from '../../utils/date';
-import ScheduleDelivery from "../client/scheduleDelivery";
+import ScheduleDelivery from "../client/ScheduleDelivery";
 
 /**
  * This functional components shows the list of items that a given client wants to buy
@@ -32,7 +32,6 @@ export default function Basket(props) {
     const handleBuyNow = (userId) => {
         api_buyNow(userId)
             .then((id) => {
-                addMessage({title: 'Order', message: 'Your order has been inserted!'});
                 setIsUpdated(true);
                 setOrderID(id);
                 setScheduleDeliveryModal(true);

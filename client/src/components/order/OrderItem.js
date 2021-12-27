@@ -1,6 +1,6 @@
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import ScheduleDelivery from "../client/scheduleDelivery";
+
 
 /**
  * This component display a a breaf summury of an order
