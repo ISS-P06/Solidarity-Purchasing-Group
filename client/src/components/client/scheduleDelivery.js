@@ -14,7 +14,6 @@ function ScheduleDelivery(props) {
 
     useEffect(async () => {
         let date = dayjs(virtualTime);
-        console.log(date);
 
         for (let i = 0; i < 7; i++) {
             if (date.day() === 3) {
@@ -61,8 +60,8 @@ function ScheduleDelivery(props) {
         initialValues: {
             typeDelivery: "home",
             date: dayjs().toString(),
-            StartTime: '08:00',
-            EndTime:'20:00',
+            startTime: '08:00',
+            endTime:'20:00',
             address: ''
         },
         validationSchema: Yup.object({
@@ -71,8 +70,8 @@ function ScheduleDelivery(props) {
                 then: Yup.string().required('Address is required'),
                 otherwise: Yup.string(),
             }),
-            StartTime: Yup.string().required('Time is required'),
-            EndTime: Yup.string().required('Time is required'),
+            startTime: Yup.string().required('Time is required'),
+            endTime: Yup.string().required('Time is required'),
             date: Yup.string().required('Date is required'),
         }),
         onSubmit: handleSubmit,
@@ -99,7 +98,6 @@ function ScheduleDelivery(props) {
                             type="radio"
                             id="home"
                             onClick={changeTypeDelivery}
-                            checked={formik.values.typeDelivery==="home"}
                         />
                         <Form.Check
                             inline
@@ -108,7 +106,6 @@ function ScheduleDelivery(props) {
                             type="radio"
                             id="store"
                             onClick={changeTypeDelivery}
-                            value={formik.values.typeDelivery==="store"}
                         />
                     </Col>
 
@@ -119,6 +116,7 @@ function ScheduleDelivery(props) {
                                       isInvalid={formik.touched.date && formik.errors.date}
                                       min={wednesday}
                                       max={friday}
+                                      required
                         />
                         <Form.Control.Feedback type="invalid">{formik.errors.date}</Form.Control.Feedback>
                     </InputGroup>
@@ -128,20 +126,20 @@ function ScheduleDelivery(props) {
                         <Form.Control id="startTime" data-testid="startTime-element" type='time' value={formik.values.startTime}
                                       onChange={formik.handleChange}
                                       min={"08:00"}
-                                      max={formik.values.EndTime}
-                                      isInvalid={formik.touched.time && formik.errors.time}
+                                      max={formik.values.endTime}
+                                      isInvalid={formik.touched.startTime && formik.errors.startTime}
                         />
-                        <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{formik.errors.startTime}</Form.Control.Feedback>
                     </InputGroup>
                     <InputGroup controlID={'endTime'} className={'mt-4'}>
                         <InputGroup.Text>To</InputGroup.Text>
                         <Form.Control id="endTime" data-testid="endTime-element" type='time' value={formik.values.endTime}
                                       onChange={formik.handleChange}
-                                      min={formik.values.StartTime}
+                                      min={formik.values.startTime}
                                       max={"20:00"}
-                                      isInvalid={formik.touched.time && formik.errors.time}
+                                      isInvalid={formik.touched.endTime && formik.errors.endTime}
                         />
-                        <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">{formik.errors.endTime}</Form.Control.Feedback>
                     </InputGroup>
 
                     {formik.values.typeDelivery === "home" && //only for delivery at home
