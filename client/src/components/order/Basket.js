@@ -107,11 +107,11 @@ const BasketProductList = (props) => {
     const {isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId, loading} = props;
 
     return (
-        <div class="main">
+        <div class="main " style={{height:"100%"}}>
             {checkOrderInterval(props.virtualTime) ? (
                 <Card
                     className="shadow"
-                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '35rem'}}>
+                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '35rem', height:'82%',   overflowY:"auto"}}>
                     {isEmpty ? (
                         <div style={{padding: '4%'}}>
                             <h5> There are no products in the basket </h5>
@@ -139,9 +139,9 @@ const BasketProductList = (props) => {
             )
             }
             {isEmpty ? null : (
-                <Row className="justify-content-center ">
-                    <Col xs={10} style={{textAlign: 'center', position:"absolute", bottom:"65px"}} className="d-grid" >
-                        <Button className="btn"  onClick={() => handleBuyNow(userId)} className={"mb-2"}>
+                <Row className="justify-content-center mt-3 " style={{ height:'18%'}}>
+                    <Col xs={10} style={{textAlign: 'center'}} >
+                        <Button className="btn" style={{paddingLeft:"100px", paddingRight:"100px"}}  onClick={() => handleBuyNow(userId)} className={"mb-2"}>
                             Buy Now
                         </Button>
                     </Col>
