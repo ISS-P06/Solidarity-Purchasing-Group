@@ -22,7 +22,7 @@ let authSession_manager = null;
 beforeEach((done) => {
   testSession
     .post('/api/sessions')
-    .send({ username: 'giorno', password: 'mudamuda' })
+    .send({ username: 'manager', password: 'mudamuda' })
     .end((err) => {
       if (err) return done(err);      
       authSession_manager = testSession;
@@ -32,29 +32,42 @@ beforeEach((done) => {
 
 // --- Test suites --- //
 describe('Test the manager report APIs', () => {
-    beforeAll(async () => {
-        await managerDAO.test_addDummyOrders_report();
-    });
+  const date = dayjs(new Date("January, 3 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
 
-    const date = dayjs(new Date("January, 3 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
-
-    // --- Test weekly report API
-    test('It should respond 200 to the POST method', function (done) {
+  // --- Test weekly report API
+  test('It should respond 200 to the POST method', function (done) {
 		authSession_manager.post('/api/manager/report/weekly').send({ date: date }).expect(200).end(done);
 	});
 
-    test('It should respond 422 to the POST method', function (done) {
-        // no body supplied -> error
+  test('It should respond 422 to the POST method', function (done) {
+    // no body supplied -> error
 		authSession_manager.post('/api/manager/report/weekly').send({}).expect(422).end(done);
 	});
 
-    // --- Test monthly report API
-    test('It should respond 200 to the POST method', function (done) {
+  // --- Test monthly report API
+  test('It should respond 200 to the POST method', function (done) {
 		authSession_manager.post('/api/manager/report/monthly').send({ date: date }).expect(200).end(done);
 	});
 
-    test('It should respond 422 to the POST method', function (done) {
-        // no body supplied -> error
+  test('It should respond 422 to the POST method', function (done) {
+    // no body supplied -> error
 		authSession_manager.post('/api/manager/report/monthly').send({}).expect(422).end(done);
 	});
+});
+
+describe("Test manager reports", () => {
+  beforeAll(async () => {
+    await managerDAO.test_addDummyOrders_report();
+  });
+
+  const date = dayjs(new Date("January, 3 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
+
+  // --- Test suites --- //
+  test("Test monthly report results", async () => {
+    const stats = await managerDAO.generateMonthlyReport(new Date(date));
+
+    expect(stats.totalOrders).toBe(2);
+    expect(stats.deliveredOrders).toBe(1);
+    expect(stats.perc_undeliveredOrd).toBe(0.5);
+  });
 });

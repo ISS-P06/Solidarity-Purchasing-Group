@@ -99,7 +99,7 @@ function computeMonth(date) {
 function computeReport(startDate, endDate) {
     return new Promise((resolve, reject) => {
         const sql = `
-                SELECT status, COUNT(*) AS n, SUM(PR.quantity) AS totQuantity
+                SELECT status, COUNT(DISTINCT R.id) AS n, SUM(PR.quantity) AS totQuantity
                 FROM request R, product_request PR
                 WHERE R.id = PR.ref_request
                     AND R.date >= DATE(?)
@@ -205,7 +205,7 @@ export function test_addDummyOrders_report() {
         // Delete pre-existing dummy orders if present
         const date1 = dayjs(new Date("January, 1 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
         const date2 = dayjs(new Date("January, 3 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
-        const sql = 'DELETE FROM Request WHERE date > DATE(?)';
+        const sql = 'DELETE FROM Request WHERE date >= DATE(?)';
     
         db.run(sql, [date1], function (err) {
             if (err) reject(err);
