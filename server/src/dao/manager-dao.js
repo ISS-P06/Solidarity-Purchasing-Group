@@ -60,15 +60,12 @@ function computeMonth(date) {
 
     let lastDay = "";
     switch(date.getMonth() + 1) {
-        // trenta giorni ha novembre, con aprile, giugno e settembre
         case 11:
         case 4:
         case 6:
         case 9:
             lastDay = "30";
             break;
-        // di ventotto ce n'è uno
-        // (... se non è bisestile)
         case 2:
             let year = date.getFullYear();
             if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
@@ -78,7 +75,6 @@ function computeMonth(date) {
                 lastDay = "28";
             }            
             break;
-        // tutti gli altri ne han trentuno
         default: 
             lastDay = "31";
             break;
@@ -110,7 +106,6 @@ function computeReport(startDate, endDate) {
         db.all(sql, [startDate, endDate], (err, rows) => {
             if (err) {
                 reject(err);
-                return;
             }
 
             let stats = rows.filter((r) => (r.status === "delivered" || r.status === "undelivered"));
@@ -215,36 +210,32 @@ export function test_addDummyOrders_report() {
                 db.run(
                     `INSERT INTO Request(ref_client, status, date) VALUES (2, 'delivered', DATE(?))`,
                     [date2],
-                    function (err) {
-                        if (err) {
-                            reject(err);
-                            return;
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
                         }
                         const id = this.lastID;
 
                         const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,1,100.0)`;
-                        db.run(sql3, [id], function (err) {
-                            if (err) {
-                            reject(err);
-                            return;
+                        db.run(sql3, [id], function (err2) {
+                            if (err2) {
+                                reject(err2);
                             }
                         });
                     });
                 db.run(
                     `INSERT INTO Request(ref_client, status, date) VALUES (2, 'undelivered', DATE(?))`,
                     [date2],
-                    function (err) {
-                        if (err) {
-                            reject(err);
-                            return;
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
                         }
                         const id = this.lastID;
                         const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,2,50.0), (?, 3, 150.0)`;
 
-                        db.run(sql4, [id, id], function (err) {
-                            if (err) {
-                            reject(err);
-                            return;
+                        db.run(sql4, [id, id], function (err2) {
+                            if (err2) {
+                                reject(err2);
                             }
                             resolve(0);
                         });

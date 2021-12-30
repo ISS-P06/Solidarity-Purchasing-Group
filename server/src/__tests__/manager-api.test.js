@@ -60,14 +60,24 @@ describe("Test manager reports", () => {
     await managerDAO.test_addDummyOrders_report();
   });
 
-  const date = dayjs(new Date("January, 3 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
+  const date1 = dayjs(new Date("January, 3 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
+  const date2 = dayjs(new Date("February, 2 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
+  const date3 = dayjs(new Date("November, 13 2999 00:00:00")).format("YYYY-MM-DD HH:mm");
 
   // --- Test suites --- //
   test("Test monthly report results", async () => {
-    const stats = await managerDAO.generateMonthlyReport(new Date(date));
+    const stats_jan = await managerDAO.generateMonthlyReport(new Date(date1));
 
-    expect(stats.totalOrders).toBe(2);
-    expect(stats.deliveredOrders).toBe(1);
-    expect(stats.perc_undeliveredOrd).toBe(0.5);
+    expect(stats_jan.totalOrders).toBe(2);
+    expect(stats_jan.deliveredOrders).toBe(1);
+    expect(stats_jan.perc_undeliveredOrd).toBe(0.5);
+
+    const stats_feb = await managerDAO.generateMonthlyReport(new Date(date2));
+    
+    expect(stats_feb.totalOrders).toBe(0);
+
+    const stats_nov = await managerDAO.generateMonthlyReport(new Date(date3));
+
+    expect(stats_nov.totalOrders).toBe(0);
   });
 });
