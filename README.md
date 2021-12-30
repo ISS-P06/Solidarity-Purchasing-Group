@@ -231,3 +231,4 @@ Below is a list of all users registered in the database for testing purposes:
 | nonnaPapera   | paperino            | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
 | iosonoironman | tonystark             | Client        | Tony      | Stark         | tony.stark@starkinc.us     |
 | mario         | itsamemario           | Client        | Mario     | Mario         | mariomario@mail.msh        |
+| manager         | mudamuda           | Manager        | Giorno     | Giovanna         | manager@passione.mail.com        |
