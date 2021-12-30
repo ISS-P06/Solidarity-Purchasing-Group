@@ -27,7 +27,6 @@ import dayjs from 'dayjs';
  */
 function computeWeek(date) {
     let startDate = new Date(date);
-
     // 0 = Sunday => Saturday = 6
     while (startDate.getDay() != 6) {
         startDate.setDate(startDate.getDate() - 1);
@@ -46,7 +45,7 @@ function computeWeek(date) {
     let end = dayjs(endDate).format('YYYY-MM-DD');
     end = end + ' 23:59';
 
-    return {startDate: start, endDate: end};
+    return [ start, end ];
 }
 
 /**
@@ -57,9 +56,7 @@ function computeWeek(date) {
  * @returns {Object} containing startDate and endDate
  */
 function computeMonth(date) {
-    let startDate = new Date(date);
-
-    let startDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-01" + " 00:00";
+    let startDate = dayjs(date).format("YYYY-MM") + "-01 00:00";
 
     let lastDay = "";
     switch(date.getMonth() + 1) {
@@ -87,9 +84,9 @@ function computeMonth(date) {
             break;
     }
 
-    let endDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + lastDay + " 23:59";
+    let endDate = dayjs(date).format("YYYY-MM") + "-" + lastDay + " 23:59";
 
-    return {startDate: startDate, endDate: endDate};
+    return [ startDate, endDate ];
 }
 
 /**
@@ -105,8 +102,8 @@ function computeReport(startDate, endDate) {
                 SELECT status, COUNT(*) AS n, SUM(PR.quantity) AS totQuantity
                 FROM request R, product_request PR
                 WHERE R.id = PR.ref_request
-                    AND date >= DATE(?)
-                    AND date < DATE(?)
+                    AND R.date >= DATE(?)
+                    AND R.date < DATE(?)
                 GROUP BY status;
             `;
 
@@ -116,7 +113,7 @@ function computeReport(startDate, endDate) {
                 return;
             }
 
-            let stats = rows.filter((r) => r.status === "delivered" || r.status === "undelivered");
+            let stats = rows.filter((r) => (r.status === "delivered" || r.status === "undelivered"));
 
             let deliveredOrders = 0;
             let deliveredFood = 0.0;
@@ -165,7 +162,10 @@ export function generateWeeklyReport(date) {
     return new Promise((resolve, reject) => {
         // Compute the start and end dates for the week
         // that contains the inserted date
-        let { startDate, endDate } = computeWeek(date);
+        let date_array = computeWeek(date);
+
+        let startDate = date_array[0];
+        let endDate = date_array[1];
 
         computeReport(startDate, endDate)
             .then((res) => resolve(res))
@@ -183,7 +183,10 @@ export function generateMonthlyReport(date) {
     return new Promise((resolve, reject) => {
         // Compute the start and end dates for the week
         // that contains the inserted date
-        let { startDate, endDate } = computeMonth(date);
+        let date_array = computeMonth(date);
+
+        let startDate = date_array[0];
+        let endDate = date_array[1];
 
         computeReport(startDate, endDate)
             .then((res) => resolve(res))
@@ -204,51 +207,49 @@ export function test_addDummyOrders_report() {
         const date2 = dayjs(new Date("January, 3 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
         const sql = 'DELETE FROM Request WHERE date > DATE(?)';
     
-        db.run(sql, [date1], (err) => {
-          if (err) reject(err);
-    
-          db.run(sql2, [], (err) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-    
+        db.run(sql, [date1], function (err) {
+            if (err) reject(err);
+
             // Serialize queries
-            db.serialize(() => {
-              db.run(
-                `INSERT INTO Request(ref_client, status, date) VALUES (2, delivered, DATE(?))`,
-                [date2],
-                function (err) {
-                    const lastID = this.lastID;
-
-                    const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,1,100.0)`;
-                    db.run(sql3, [lastID], function (err) {
+            db.serialize(function () {
+                db.run(
+                    `INSERT INTO Request(ref_client, status, date) VALUES (2, 'delivered', DATE(?))`,
+                    [date2],
+                    function (err) {
                         if (err) {
-                        reject(err);
-                        return;
+                            reject(err);
+                            return;
                         }
-                    });
-                }
-              );
-              db.run(
-                `INSERT INTO Request(ref_client, status, date) VALUES (2, undelivered, DATE(?))`,
-                [date2],
-                function (err) {
-                    const lastID = this.lastID;
-                    const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,2,50.0), (?, 3, 150.0)`;
+                        const id = this.lastID;
 
-                    db.run(sql4, [lastID, lastID], function (err) {
-                        if (err) {
-                        reject(err);
-                        return;
-                        }
-        
-                        resolve(0);
+                        const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,1,100.0)`;
+                        db.run(sql3, [id], function (err) {
+                            if (err) {
+                            reject(err);
+                            return;
+                            }
+                        });
                     });
-                }
-              );
+                db.run(
+                    `INSERT INTO Request(ref_client, status, date) VALUES (2, 'undelivered', DATE(?))`,
+                    [date2],
+                    function (err) {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        const id = this.lastID;
+                        const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,2,50.0), (?, 3, 150.0)`;
+
+                        db.run(sql4, [id, id], function (err) {
+                            if (err) {
+                            reject(err);
+                            return;
+                            }
+                            resolve(0);
+                        });
+                    });
             });
-          });
         });
-      });
+    });
 }
