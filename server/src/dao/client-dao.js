@@ -82,8 +82,13 @@ export function checkOrdersAfterTopUp(clientID) {
         SELECT R.id AS orderID
         FROM request R
         WHERE R.ref_client = ?
-          AND status = 'pending_canc';
+          AND status = 'pending_canc'
+        ORDER BY R.date;
       `;
+
+    /*
+      Note: orders are sorted by date so that they are checked in order
+    */
 
     db.all(sql, [clientID], (err, rows) => {
       if (err) {

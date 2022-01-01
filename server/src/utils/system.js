@@ -23,10 +23,23 @@ class SYS {
         /**
          * Check if the current day and time is
          * Monday, 9am
+         * 
+         * This triggers email notifications for "pending_canc" orders. 
          */
         if (day == 1
          && hours == 9) {
-            this.event_updateOrders();
+            this.event_checkForInsufficientBalance();
+        }
+
+        /**
+         * Check if the current day and time is
+         * Monday, 11pm 
+         * 
+         * This triggers the cancellation (= status change) of all "pending_canc" orders.
+         */
+        if (day == 1
+         && hours == 23) {
+            this.event_cancelPendingOrders();
         }
 
         /**
@@ -46,25 +59,32 @@ class SYS {
         /**
          * Check if the current day and time is Friday, 11pm
          */
-        if(day==5 && hours == 23){
+        if(day == 5 && hours == 23){
             this.event_setUndeliveredOrders();
         }
     }
 
     /**
-     * Updates order statuses on Monday at 9am.
-     * All "pending" orders are either set to "confirmed"
-     * or "pending_canc" (i.e. pending cancellation due to
-     * insufficient funds).
+     * Event that cancels all orders with "pending_canc" status
+     * on Monday at 11pm.
+     */
+    event_cancelPendingOrders() {
+        systemDAO.cancelPendingCancOrders()
+            .then()
+            .catch((err) => {console.log("Error: " + err)});
+    }
+
+    /**
+     * Event that checks which orders are still in pending_canc.
      * This triggers the delivery of the reminders for insufficient balance.
      */
-    event_updateOrders() {
-        systemDAO.checksClientBalance()
+    event_checkForInsufficientBalance() {
+        systemDAO.getClientEmailsForReminder()
             .then((mailList) => {
                 this.event_sendBalanceReminders(mailList);
             })
             .catch((err) => {
-                console.log("Error: could not update order status: " + err);
+                console.log("Error: " + err);
             });
     }
 
