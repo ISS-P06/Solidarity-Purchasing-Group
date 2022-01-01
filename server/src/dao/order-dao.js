@@ -40,6 +40,10 @@ export function insertOrder(orderClient) {
                 return;
               }
 
+              checkBalanceAndSetStatus(OrderID)
+                .then()
+                .catch((err) => reject(err));
+
               // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
                 resolve(OrderID);
@@ -49,6 +53,86 @@ export function insertOrder(orderClient) {
         });
       }
     );
+  });
+}
+
+/**
+ * This function checks if a client's balance is enough to pay for
+ * the given order and changes the order's status to:
+ * - "confirmed", if the client has enough balance;
+ * - "pendinc_canc", if the balance is insufficient
+ * The function also updates the client's balance if it is sufficient.
+ * 
+ * @param {int} orderID: the unique ID of the order  
+ */
+export function checkBalanceAndSetStatus(orderID) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+        SELECT C.ref_user AS clientID, C.balance AS clientBalance, SUM(P.price * PR.quantity) AS totalAmount
+        FROM client C, request R, product_request PR, product P
+        WHERE R.id = ?
+          AND PR.ref_request = R.id
+          AND PR.ref_product = P.id
+          AND R.ref_client = C.ref_user
+          AND R.status = 'pending';
+      `;
+    
+    db.all(sql, [orderID], (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (rows.length === 0) {
+        reject("error: no order found");
+      }
+
+      const order = rows[0];
+
+      if (order.clientBalance >= order.totalAmount) {
+        // Decrease the client's balance and set the order's status to "confirmed"
+        const sql_balance = `
+            UPDATE client
+            SET balance = balance - ?
+            WHERE ref_user = ?;
+          `;
+        const sql_order = `
+          UPDATE request
+          SET status = 'confirmed'
+          WHERE id = ?;
+          `;
+
+        db.serialize(() => {
+          db.run(sql_balance, [order.totalAmount, order.clientID], (err) => {
+            if (err) {
+              reject(err);
+            }
+          });
+          db.run(sql_order, [orderID], (err) => {
+            if (err) {
+              reject(err);
+            }
+
+            resolve("confirmed");
+          });
+        }); 
+      }
+      else {
+        // Set the order's status to "pending_canc"
+        const sql_order = `
+          UPDATE request
+          SET status = 'pending_canc'
+          WHERE id = ?;
+          `;
+
+        db.run(sql_order, [orderID], (err) => {
+            if (err) {
+              reject(err);
+            }
+
+            resolve("pending_canc");
+          });
+      }
+    });
   });
 }
 

@@ -1,5 +1,6 @@
 'use strict';
 
+import { orderDAO } from '.';
 import db from '../db';
 
 /**
@@ -41,7 +42,15 @@ export function updateClientBalance(id, amount) {
   return new Promise((resolve, reject) => {
     const sql = `UPDATE Client SET balance = balance + ? WHERE ref_user = ?`;
     db.run(sql, [amount, id], (err) => {
-      err ? reject(err) : resolve(null);
+      if (err) {
+        reject(err)
+      } 
+      
+      checkOrdersAfterTopUp(id)
+        .then()
+        .catch((err) => reject(err));
+
+      resolve(null);
     });
   });
 }
@@ -57,5 +66,44 @@ export function getBalanceByClientId(clientId) {
     const sql = 'SELECT balance FROM Client WHERE ref_user = ?';
 
     db.get(sql, [clientId], (err, row) => (err ? reject(err) : resolve(row.balance)));
+  });
+}
+
+/**
+ * This function checks each of a client's orders to see if their status can be updated
+ * after a top-up of the client's wallet.
+ * 
+ * @param {int} clientID: the client's unique ID 
+ * @returns Promise; recolved if the operation is successful, rejected otherwise
+ */
+export function checkOrdersAfterTopUp(clientID) {
+  return new Promise(async (resolve, reject) => {
+    const sql = `
+        SELECT R.id AS orderID
+        FROM request R
+        WHERE R.ref_client = ?
+          AND status = 'pending_canc';
+      `;
+
+    db.all(sql, [clientID], (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (rows.length === 0) {
+        resolve("no orders found");
+      }
+
+      for (let r in rows) {
+        try {
+          await orderDAO.checkBalanceAndSetStatus(r.orderID);
+        }
+        catch(err) {
+          reject(err);
+        }
+      }
+
+      resolve("ok");
+    });
   });
 }
