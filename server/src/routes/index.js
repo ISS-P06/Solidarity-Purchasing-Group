@@ -5,6 +5,7 @@ import { router as basketRouter } from './basket-api';
 import { router as clientRouter } from './client-api';
 import { router as farmerRouter } from './farmer-api';
 import { router as orderRouter } from './order-api';
+import { router as managerRouter } from './manager-api';
 
 export {
   userRouter,
@@ -14,4 +15,5 @@ export {
   clientRouter,
   farmerRouter,
   orderRouter,
+  managerRouter,
 };
