@@ -57,6 +57,54 @@ export function insertOrder(orderClient) {
 }
 
 /**
+ * Computes an order's total amount to be paid, eventually taking into
+ * account delivery fees.
+ * 
+ * @param {int} orderID: the order's unique ID 
+ */
+export function computeOrderTotal(orderID) {
+  return new Promise(async (resolve, reject) => {
+    const deliveryFee = 10.0;
+
+    const sql = `
+        SELECT SUM(P.price * PR.quantity) AS totalAmount
+        FROM client C, request R, product_request PR, product P
+        WHERE R.id = ?
+          AND PR.ref_request = R.id
+          AND PR.ref_product = P.id
+          AND R.ref_client = C.ref_user;
+      `;
+
+    db.all(sql, [orderID], (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (!rows) {
+        reject("order not found");
+      }
+
+      const order = rows[0];
+
+      try {
+        const delivery = await getDeliveryByRequestId(orderID);
+
+        // TODO: check if the order has to be delivered at home or if it's a pick up
+        if (delivery) {
+          resolve(order.totalAmount + deliveryFee);
+        }
+        else {
+          resolve(order.totalAmount);
+        }
+      }
+      catch(err) {
+        reject(err);
+      }
+    }); 
+  });
+}
+
+/**
  * This function checks if a client's balance is enough to pay for
  * the given order and changes the order's status to:
  * - "confirmed", if the client has enough balance;
@@ -66,10 +114,11 @@ export function insertOrder(orderClient) {
  * @param {int} orderID: the unique ID of the order  
  */
 export function checkBalanceAndSetStatus(orderID) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    // Get the client's ID and balance for the given order
     const sql = `
-        SELECT C.ref_user AS clientID, C.balance AS clientBalance, SUM(P.price * PR.quantity) AS totalAmount
-        FROM client C, request R, product_request PR, product P
+        SELECT C.ref_user AS clientID, C.balance AS clientBalance
+        FROM client C, request R
         WHERE R.id = ?
           AND PR.ref_request = R.id
           AND PR.ref_product = P.id
@@ -82,13 +131,21 @@ export function checkBalanceAndSetStatus(orderID) {
         reject(err);
       }
 
-      if (rows.length === 0) {
+      if (!rows) {
         reject("error: no order found");
       }
 
-      const order = rows[0];
+      const clientInfo = rows[0];
+      let orderTotal = 0.0;
 
-      if (order.clientBalance >= order.totalAmount) {
+      try {
+        orderTotal = await computeOrderTotal(orderID);
+      }
+      catch (err) {
+        reject(err);
+      }
+
+      if (clientInfo.clientBalance >= orderTotal) {
         // Decrease the client's balance and set the order's status to "confirmed"
         const sql_balance = `
             UPDATE client
@@ -364,6 +421,31 @@ export function scheduleOrderDeliver(orderId, delivery) {
         return;
       }
       resolve(rows);
+    });
+  });
+}
+
+/**
+ * Returns the DB tuple associated with a given order. Can also
+ * return an "undefined" object in case there's no delivery associated
+ * with it.
+ * 
+ * @param {int} requestId: the order's unique ID 
+ * @returns {Promise}
+ * - resolved promise containing the tuple, if the operation is successful
+ * - rejected promise otherwise
+ */
+function getDeliveryByRequestId(requestId) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+                  SELECT d.ref_request
+                  FROM Delivery d
+                  WHERE d.ref_request = ?;
+                  `;
+
+    db.get(sql, [requestId], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
     });
   });
 }
