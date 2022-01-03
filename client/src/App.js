@@ -6,7 +6,8 @@ import {
     InsertUser,
     RoutesEmployee,
     RoutesClient,
-    RoutesFarmer
+    RoutesFarmer,
+    RoutesManager
 } from './components';
 
 import HomePage from './containers/HomePage';
@@ -25,6 +26,7 @@ function App() {
     - shop_employee
     - client
     - farmer
+    - manager
 
     other values will be considered in subsequent sprints
     when necessary
@@ -142,6 +144,15 @@ function App() {
     virtualTime,
   };
 
+  const RoutesManagerProps = {
+    loggedIn,
+    doLogin,
+    userRole,
+    userId,
+    user,
+    virtualTime,
+  };
+
   return (
     <div className="app-container">
       <Router>
@@ -159,6 +170,10 @@ function App() {
             {/* --- Farmer-only routes --- */}
             <RoutesFarmer
               {...RoutesFarmerProps}/>
+
+            {/* --- Manager-only routes --- */}
+            <RoutesManager
+              {...RoutesManagerProps}/>
 
             {/* --- Default routes --- */}
             {/* User registration route */}
