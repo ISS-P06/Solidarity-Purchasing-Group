@@ -192,3 +192,75 @@ describe('test user insertion', () => {
       });
   });
 });
+
+describe('test place a order', () => {
+  test('Submit an order; It should response 200', function (done) {
+    const userId = 2;
+    authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(200).end(done);
+  });
+
+  test('Submit an order; It should response 422', function (done) {
+    const userId = 'ciao';
+    authenticatedSession.post(`/api/client/${userId}/basket/buy`).send().expect(422).end(done);
+  });
+});
+
+describe('test adding new product description', () => {
+  test('test add successfully product description', function (done) {
+    const productDescription = {
+      name: 'apple',
+      description: 'new kind',
+      category: 'fruit',
+      unit: 'kg',
+      ref_farmer: 3,
+    };
+
+    authenticatedSession
+      .post('/api/insert_product_description')
+      .send(productDescription)
+      .expect(200, done);
+  });
+
+  test('test add product description expect failure', function (done) {
+    const productDescription = {};
+    authenticatedSession
+      .post('/api/insert_product_description')
+      .send(productDescription)
+      .expect(422)
+      .end(done);
+  });
+});
+
+describe('Test schedule a bag delivery', () => {
+
+
+  test('Schedule a bag delivery; It should response 200', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return  authenticatedSession
+        .post('/api/orders/3/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        })
+  });
+  test('Schedule a bag delivery; It should response 422 because validation fails', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return  authenticatedSession
+        .post('/api/orders/marco/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(422);
+        });
+  });
+  test('Schedule a bag delivery; It should response 404', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return request(app)
+        .post('/api/order/3/delivery/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+  });
+
+
+});
