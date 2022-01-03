@@ -305,7 +305,7 @@ export function getOrderById(orderId, clientId = -1) {
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
 
-    const sql3 = `SELECT d.address, d.date, d.startTime, d.endTime
+    const sql3 = `SELECT d.address, d.date, d.startTime, d.endTime, d.deliveryAtHome
                   FROM Delivery d
                   WHERE d.ref_request= ? `
 
@@ -360,7 +360,7 @@ export function getOrderById(orderId, clientId = -1) {
             resolve(order);
             return;
           }
-          order.delivery = { address: row.address, date: row.date, time: row.time };
+          order.delivery = { address: row.address, date: row.date, startTime: row.startTime, endTime: row.endTime, deliveryAtHome: row.deliveryAtHome };
           resolve(order);
         });
       });
