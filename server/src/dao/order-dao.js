@@ -249,3 +249,37 @@ export function scheduleOrderDeliver(orderId, delivery) {
     );
   });
 }
+
+/**
+ *
+ * @param {Date} currentDate current date needed to get only the unretrieved orders of the last month
+ * @returns all the unretrieved orders
+ */
+ export function getUnretrievedOrders(currentDate) {
+  return new Promise((resolve, reject) => {
+
+    // Convert currentDate into a format readable by SQLite
+    let endDate = dayjs(currentDate).format('YYYY-MM-DD');
+    endDate = endDate + ' 00:00';
+
+    //Start date corresponds to the first day of the current month
+    //We want to get the unretrieved the orders of the last month
+    const month = dayjs(currentDate).get("month"); 
+    const year = dayjs(currentDate).get("year");
+    const startDateString = "" + year + "-" + month + "-" + "01";
+    let startDate = dayjs(startDateString, 'YYYY-MM-DD');
+    startDate = startDate + ' 00:00';
+
+    const sql = `SELECT *
+            FROM Request r
+            WHERE r.status = 'unretrieved'
+            AND r.date >= DATE(?) AND r.date <= DATE(?)`;
+    db.get(sql, [startDate, endDate], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(rows);
+    });
+  });
+}

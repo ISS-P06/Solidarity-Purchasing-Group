@@ -89,7 +89,7 @@ export function getUserById(id) {
               resolve(user);
             }
           });
-        } else if (role === 'shop_employee') {
+        } else {
           resolve(user);
         }
       }

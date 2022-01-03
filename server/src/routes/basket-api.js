@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { param, check, validationResult } from 'express-validator';
 import { basketDAO, orderDAO, clientDAO } from '../dao';
-import { isLoggedIn, VTC } from '../utils';
+import { isLoggedIn_Client, VTC } from '../utils';
 
 export const router = Router();
 
@@ -25,7 +25,7 @@ const vtc = new VTC();
  */
 router.post(
   '/api/client/:userId/basket/buy',
-  isLoggedIn,
+  isLoggedIn_Client,
   [check('userId').isInt()],
   async (req, res) => {
     const errors = validationResult(req);
@@ -67,7 +67,7 @@ router.post(
  */
 router.post(
   '/api/client/:userId/basket/remove',
-  isLoggedIn,
+  isLoggedIn_Client,
   [param('userId').isInt(), check('productId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
@@ -96,7 +96,7 @@ router.post(
  */
 router.post(
   '/api/client/:userId/basket/add',
-  isLoggedIn,
+  isLoggedIn_Client,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);
@@ -119,7 +119,7 @@ router.post(
  *
  * Retrive the entire user's basket.
  */
-router.get('/api/client/:clientId/basket', isLoggedIn, (req, res) => {
+router.get('/api/client/:clientId/basket', isLoggedIn_Client, (req, res) => {
   basketDAO
     .getBasketByClientId(req.params.clientId)
     .then((products) => res.json(products))

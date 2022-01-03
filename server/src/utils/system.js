@@ -42,6 +42,13 @@ class SYS {
          || (day != 0 && day != 6)) {
             this.event_emptyBaskets();
         }
+
+        /**
+         * Check if the current day and time is Friday, 11pm
+         */
+        if(day==5 && hours == 23){
+            this.event_setUndeliveredOrders();
+        }
     }
 
     /**
@@ -59,6 +66,16 @@ class SYS {
             .catch((err) => {
                 console.log("Error: could not update order status: " + err);
             });
+    }
+
+    /**
+     * Set all the orders that was not retrieved in the 'unretrieved' state
+     */
+    event_setUndeliveredOrders() {
+        systemDAO.setUndeliveredOrders()
+            .catch((err) => {
+                console.log("Error: there was an error in setting the order as unretrieved: " + err);
+            })
     }
 
     /**

@@ -4,10 +4,11 @@ import {api_getProducts, api_addProductToBasket, api_getFarmerProducts} from '..
 import {addMessage} from '../Message';
 import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { checkOrderInterval } from '../../utils/date';
 
+import { checkOrderInterval } from '../../utils/date';
 const ProductCards = (props) => {
-    const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
+const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
+import FarmerProductForm from '../farmer/FarmerProductForm';
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -15,6 +16,7 @@ const ProductCards = (props) => {
     const [searchText, setSearchText] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(12);
+    const [farmerProductFormShow, setFarmerProductFormShow] = useState(false); /* used for opening farmerProductFormShow modal*/
 
     // product { id, name, description, category, quantity, price, unit, ref_farmer, farm_name }
     const [productList, setProductList] = useState([]);
@@ -203,6 +205,11 @@ const ProductCards = (props) => {
                         }
                     </Col>
                 </Row>)}
+                <FarmerProductForm
+                    user={{id:userId}}
+                    show={farmerProductFormShow}
+                    handleClose={() => setFarmerProductFormShow(false)}
+                />
             </Container>
         )
     );

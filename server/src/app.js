@@ -12,6 +12,7 @@ import {
   clientRouter,
   farmerRouter,
   orderRouter,
+  managerRouter,
 } from './routes';
 
 /* express setup */
@@ -48,5 +49,7 @@ app.use(clientRouter);
 app.use(farmerRouter);
 // Order routes
 app.use(orderRouter);
+// Manager routes
+app.use(managerRouter);
 
 export default app;

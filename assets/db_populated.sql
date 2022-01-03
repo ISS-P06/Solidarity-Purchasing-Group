@@ -79,7 +79,8 @@ INSERT INTO "User" ("id","username","password","role","name","surname","email","
  (2,'teiera','$2b$10$Kly7Jc4NXQV.9dKrC8BUVegmEuscBejLjKl6Ly3Q9DcKuP/r3U6v6','client','Teiera','McTeapot','s287037@studenti.polito.it','3234558732'),
  (3,'nonnaPapera','$2b$10$/plohJw/N06P0BEfTsj8XeiRb9qzYDVlglK1Gi9uFrfvweTHZN/Fe','farmer','Elvira','Coot','elvira.coot43@mail.dck','3221115465'),
  (4,'iosonoironman','$2b$10$7aoRwiHpc/1UVc0xNGLuAuAo8Szna4PVClcT1uw0T0REk8rDhzqp.','client','Tony','Stark','tony.stark@starkinc.us','1231231233'),
- (5,'mario','$2b$10$fUKuZot4T581s/lB5DXMmOQBEc3bb8XkGgZFhICghEneaZAXUOwxe','client','Mario','Mario','mariomario@mail.msh','1240973444');
+ (5,'mario','$2b$10$fUKuZot4T581s/lB5DXMmOQBEc3bb8XkGgZFhICghEneaZAXUOwxe','client','Mario','Mario','mariomario@mail.msh','1240973444'),
+ (5,'manager','$2b$10$h3jQVC88kqGImrw2eQPvQOKfykSYgHNKIHFw5mvvqIwFYrRDf3VAy','manager','Giorno','Giovanna','manager@passione.mail.com','3241234567');
 INSERT INTO "Farmer" ("ref_user","address","farm_name") VALUES (3,'Via dei Paperi, 5','Fattoria di Nonna Papera');
 INSERT INTO "Prod_descriptor" ("id","name","description","category","unit","ref_farmer") VALUES (1,'Lemon','Lemon','fruits and vegetables','kg',3),
  (2,'Garlic','Garlic','fruits and vegetables','kg',3),

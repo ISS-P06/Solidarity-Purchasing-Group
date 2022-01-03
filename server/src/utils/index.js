@@ -5,5 +5,10 @@ import * as passportUtil from './passport';
 import * as formatterUtil from './format';
 
 const isLoggedIn = passportUtil.isLoggedIn;
+const isLoggedIn_Employee = passportUtil.isLoggedIn_Employee;
+const isLoggedIn_Client = passportUtil.isLoggedIn_Client;
+const isLoggedIn_Farmer = passportUtil.isLoggedIn_Farmer;
+const isLoggedIn_Manager = passportUtil.isLoggedIn_Manager;
 
-export { VTC, SYS, mailerUtil, passportUtil, formatterUtil, isLoggedIn };
+export { VTC, SYS, mailerUtil, passportUtil, formatterUtil, 
+    isLoggedIn, isLoggedIn_Employee, isLoggedIn_Client, isLoggedIn_Farmer, isLoggedIn_Manager };
