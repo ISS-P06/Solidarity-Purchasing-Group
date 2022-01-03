@@ -72,6 +72,7 @@ const ProductCards = (props) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
             .then(() => {
                 setOpenBasketOffCanvas(true);
+                props.handleAddProduct();
             }).catch((e) => addMessage({message: e.message, type: 'danger'}));
     }
 
@@ -155,9 +156,8 @@ const ProductCards = (props) => {
                     </Col>
                     <Col xs={2} style={{display: 'flex', justifyContent: 'right'}}>
                         {userRole === "farmer" &&
-                        <Link to="/farmer/products/new" className="p-0">
-                            <Button>Add new product</Button>
-                        </Link>
+                            <Button onClick={()=>setFarmerProductFormShow(true)}>Add new product</Button>
+
                         }
                     </Col>
                 </Row>
