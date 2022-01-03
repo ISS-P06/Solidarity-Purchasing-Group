@@ -4,12 +4,11 @@ import {api_getProducts, api_addProductToBasket, api_getFarmerProducts} from '..
 import {addMessage} from '../Message';
 import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
-
-import { checkOrderInterval } from '../../utils/date';
-const ProductCards = (props) => {
-const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
 import FarmerProductForm from '../farmer/FarmerProductForm';
+import { checkOrderInterval } from '../../utils/date';
 
+const ProductCards = (props) => {
+    const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [searchedProduct, setSearchedProduct] = useState([]);

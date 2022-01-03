@@ -48,7 +48,7 @@ router.post(
 
 router.post(
   '/api/orders/:orderId/deliver/schedule',
-  isLoggedIn_Employee,
+  isLoggedIn_Client,
   check('orderId').isInt(),
   (req, res) => {
     const errors = validationResult(req);
