@@ -432,3 +432,39 @@ export const api_scheduleDelivery = async (orderId, delivery) => {
         manageError(err.response.status, 'Sorry, there was an error in scheduling bad delivery');
     }
 };
+
+// Manager APIs
+
+/**
+ * Generate a weekly report of unretrieved food
+ * @param date: the start date
+ */
+export const api_generateWeeklyReport = async (date) => {
+    try {
+        const res = await axios.post('/api/manager/report/weekly', { date });
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in generating the weekly report');
+    }
+};
+
+/**
+ * Generate a monthly report of unretrieved food
+ * @param date: the start date
+ */
+export const api_generateMonthlyReport = async (date) => {
+    try {
+        const res = await axios.post('/api/manager/report/monthly', { date });
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in generating the monthly report');
+    }
+};
