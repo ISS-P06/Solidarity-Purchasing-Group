@@ -1,13 +1,14 @@
-import {Container, Row, Col, Pagination, Form, Spinner, Button} from 'react-bootstrap';
+import {Container, Row, Col, Pagination, Form, Spinner, Button, Card} from 'react-bootstrap';
 import {useState, useEffect} from 'react';
 import {api_getProducts, api_addProductToBasket, api_getFarmerProducts} from '../../Api';
 import {addMessage} from '../Message';
 import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
 import FarmerProductForm from '../farmer/FarmerProductForm';
-const ProductCards = (props) => {
-    const {userRole, userId, virtualTime} = props;
+import { checkOrderInterval } from '../../utils/date';
 
+const ProductCards = (props) => {
+    const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [searchedProduct, setSearchedProduct] = useState([]);
@@ -70,8 +71,8 @@ const ProductCards = (props) => {
     const handleAddProductToBasket = async (reservedQuantity, productId) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
             .then(() => {
+                setOpenBasketOffCanvas(true);
                 props.handleAddProduct();
-                addMessage({message: 'Product correctly added to the basket', type: "info"});
             }).catch((e) => addMessage({message: e.message, type: 'danger'}));
     }
 
@@ -160,7 +161,7 @@ const ProductCards = (props) => {
                         }
                     </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className="mt-4 justify-content-center">
                     {productList.length === 0 && (
                         <Col style={{display: 'flex', justifyContent: 'center'}}>
                             <h5>No products found for this week</h5>
@@ -176,6 +177,15 @@ const ProductCards = (props) => {
                                             onBasketAdd={handleAddProductToBasket} virtualTime={virtualTime}/>;
                     })}
                 </Row>
+                {userRole === "client" && !checkOrderInterval(virtualTime) &&
+                <Card
+                    className="shadow"
+                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '40rem'}}>
+                    <div style={{padding: '4%'}}>
+                        <h5><u> Sorry, but orders are accepted only from Sat. 9am until Sun. 11pm. </u></h5>
+                    </div>
+                </Card>
+                }
                 {!error && (<Row className="mt-3 mb-3">
                     <Col style={{display: 'flex', justifyContent: 'center'}}>
                         {productList.length !== 0 &&
