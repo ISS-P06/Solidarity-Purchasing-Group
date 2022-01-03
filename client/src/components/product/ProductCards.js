@@ -72,7 +72,6 @@ const ProductCards = (props) => {
         await api_addProductToBasket(userId, productId, reservedQuantity)
             .then(() => {
                 setOpenBasketOffCanvas(true);
-                props.handleAddProduct();
             }).catch((e) => addMessage({message: e.message, type: 'danger'}));
     }
 
