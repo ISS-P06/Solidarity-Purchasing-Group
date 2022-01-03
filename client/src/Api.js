@@ -493,3 +493,11 @@ export const api_computeHomepageStats = async () => {
         manageError(err.response.status, "Sorry, there was an error in computing statistics.");
     }
 };
+/**
+ * TODO: api to get information on the suspension state of an user
+ * @param userId: ID of the logged user
+ * @returns {boolean} true if the user is suspended, false otherwise
+ */
+export const api_isUserSuspended = async() => {
+    return true;
+}

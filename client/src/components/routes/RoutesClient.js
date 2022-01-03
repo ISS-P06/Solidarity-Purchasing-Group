@@ -9,7 +9,7 @@ import { getUserRoute } from '../../utils';
  *  This component contains all client-only routes.
  */
 function RoutesClient(props) {
-    const {loggedIn, userRole, doLogin, userId, user, virtualTime, setOpenBasketOffCanvas} = props;
+    const {loggedIn, userRole, doLogin, userId, user, virtualTime, suspendedUser, setOpenBasketOffCanvas} = props;
 
     return (
         <>
@@ -51,7 +51,7 @@ function RoutesClient(props) {
               exact={true}
               role={userRole}
               condition={loggedIn}
-              component={<ClientHomePage user={user} />}
+              component={<ClientHomePage user={user} suspended={suspendedUser} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
         </>
