@@ -63,6 +63,7 @@ export function insertOrder(orderClient) {
  */
 export function computeOrderTotal(orderID) {
   return new Promise(async (resolve, reject) => {
+    // Extra fee for delivery at home amounts to 10 euros
     const deliveryFee = 10.0;
 
     const sql = `
@@ -84,11 +85,22 @@ export function computeOrderTotal(orderID) {
       }
 
       const order = rows[0];
-
       try {
+        // Check whether the order has to be delivered at home or not
         const delivery = await getDeliveryByRequestId(orderID);
 
-        if (delivery && delivery.deliveryAtHome != undefined && delivery.deliveryAtHome) {
+        /*
+          Note: the condition for the following if statement was written to make it 
+          compatible with both the old and new versions of the database for the current sprint (#4).
+
+          If the old database is used, the "deliveryAtHome" field will be undefined, and no delivery
+            fee will be added to the total amount.
+          If the new database is used, the field will be defined and will either be a "true" or "false"
+            string.
+        */
+        if (delivery 
+            && delivery.deliveryAtHome != undefined 
+            && (delivery.deliveryAtHome === "true")) {
           resolve(order.totalAmount + deliveryFee);
         }
         else {
@@ -130,6 +142,7 @@ export function checkBalanceAndSetStatus(orderID) {
         reject("error: no order found");
       }
 
+      // Get client info and the total amount to pay for the order
       const clientInfo = rows[0];
       let orderTotal = 0.0;
       
@@ -140,6 +153,7 @@ export function checkBalanceAndSetStatus(orderID) {
         reject(err);
       }
 
+      // Check whether the client's balance is enough to pay for the order
       if (clientInfo.clientBalance >= orderTotal) {
         // Decrease the client's balance and set the order's status to "confirmed"
         const sql_balance = `
@@ -168,7 +182,7 @@ export function checkBalanceAndSetStatus(orderID) {
         resolve("confirmed");
       }
       else {
-        // Set the order's status to "pending_canc"
+        // Set the order's status to "pending_canc" and do not decrease the client's balance
         const sql_order = `
           UPDATE request
           SET status = 'pending_canc'

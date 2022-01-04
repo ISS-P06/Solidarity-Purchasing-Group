@@ -99,6 +99,7 @@ export function checkOrdersAfterTopUp(clientID) {
         resolve("no orders found");
       }
 
+      // For each order, check whether the balance is sufficient and change its status
       for (let r in rows) {
         try {
           await orderDAO.checkBalanceAndSetStatus(r.orderID);
