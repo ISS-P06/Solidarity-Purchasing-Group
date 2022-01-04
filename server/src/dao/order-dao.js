@@ -42,7 +42,6 @@ export function insertOrder(orderClient) {
 
               // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
-
                 checkBalanceAndSetStatus(OrderID)
                   .then(() => resolve(OrderID))
                   .catch((err) => reject(err));                
