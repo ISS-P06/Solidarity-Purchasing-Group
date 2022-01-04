@@ -4,6 +4,7 @@ import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { productDAO, farmerDAO } from '../dao';
 import { isLoggedIn_Farmer, VTC } from '../utils';
+import { sendNewProductMessage } from '../telegram';
 
 const vtc = new VTC();
 
@@ -29,19 +30,20 @@ router.get(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({errors: errors.array()});
+      return res.status(422).json({ errors: errors.array() });
     }
 
     let currTime = new Date(vtc.time());
     let wednesday = currTime;
 
-    while(wednesday.getDay() != 3) {
-        wednesday.setDate(wednesday.getDate() - 1);
+    while (wednesday.getDay() != 3) {
+      wednesday.setDate(wednesday.getDate() - 1);
     }
 
-    farmerDAO.listSuppliedFarmerProducts(req.params.farmerId, wednesday)
-        .then((products) => res.json(products))
-        .catch(() => res.status(500).end());
+    farmerDAO
+      .listSuppliedFarmerProducts(req.params.farmerId, wednesday)
+      .then((products) => res.json(products))
+      .catch(() => res.status(500).end());
   }
 );
 /**
@@ -75,15 +77,23 @@ router.post(
   '/api/farmer/products/available',
   isLoggedIn_Farmer,
   [check('productID').isInt(), check('quantity').isNumeric(), check('price').isNumeric()],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    productDAO
-      .addExpectedAvailableProduct(req.body)
-      .then((products) => res.json(products))
-      .catch(() => res.status(500).end());
+
+    try {
+      const product = await productDAO.addExpectedAvailableProduct(req.body);
+      const prod_descr = await productDAO.getProductByID(product.productID);
+
+      // send a notificaton on the telegram channel
+      sendNewProductMessage({ ...prod_descr, ...product });
+
+      res.json(product);
+    } catch {
+      res.status(500).end();
+    }
   }
 );
 
@@ -92,15 +102,18 @@ router.post(
  *
  * DELETE expected available product {productID} amounts for the next week
  */
-router.delete('/api/farmer/products/available', 
+router.delete(
+  '/api/farmer/products/available',
   isLoggedIn_Farmer,
-  [check('productID').isInt()], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+  [check('productID').isInt()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    productDAO
+      .removeExpectedAvailableProduct(req.body)
+      .then((productID) => res.json(productID))
+      .catch(() => res.status(500).end());
   }
-  productDAO
-    .removeExpectedAvailableProduct(req.body)
-    .then((productID) => res.json(productID))
-    .catch(() => res.status(500).end());
-});
+);
