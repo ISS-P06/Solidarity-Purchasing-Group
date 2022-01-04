@@ -25,7 +25,9 @@ export async function sendNewProductMessage(product) {
  * @param {string} string Message
  */
 export async function sendTelegramMessage(string) {
-  bot.telegram.sendMessage(process.env.CHANNEL_ID, string);
+  if (process.env.BOT_TOKEN) {
+    bot.telegram.sendMessage(process.env.CHANNEL_ID, string);
+  }
 }
 
 /**
@@ -36,5 +38,7 @@ export function launchTelegramBot() {
 }
 
 // Enable graceful stop
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+if (process.env.BOT_TOKEN) {
+  process.once('SIGINT', () => bot.stop('SIGINT'));
+  process.once('SIGTERM', () => bot.stop('SIGTERM'));
+}
