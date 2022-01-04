@@ -13,7 +13,7 @@ export function insertOrder(orderClient) {
     const insertReqQuery = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(
       insertReqQuery,
-      [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
+      [orderClient.clientID, "pending", dayjs().format('YYYY-MM-DD HH:MM')],
 
       function (err) {
         if (err) {
@@ -40,13 +40,12 @@ export function insertOrder(orderClient) {
                 return;
               }
 
-              checkBalanceAndSetStatus(OrderID)
-                .then()
-                .catch((err) => reject(err));
-
               // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
-                resolve(OrderID);
+
+                checkBalanceAndSetStatus(OrderID)
+                  .then(() => resolve(OrderID))
+                  .catch((err) => reject(err));                
               }
             });
           });
@@ -75,7 +74,7 @@ export function computeOrderTotal(orderID) {
           AND R.ref_client = C.ref_user;
       `;
 
-    db.all(sql, [orderID], (err, rows) => {
+    db.all(sql, [orderID], async (err, rows) => {
       if (err) {
         reject(err);
       }
@@ -89,8 +88,7 @@ export function computeOrderTotal(orderID) {
       try {
         const delivery = await getDeliveryByRequestId(orderID);
 
-        // TODO: check if the order has to be delivered at home or if it's a pick up
-        if (delivery) {
+        if (delivery && delivery.deliveryAtHome != undefined && delivery.deliveryAtHome) {
           resolve(order.totalAmount + deliveryFee);
         }
         else {
@@ -114,30 +112,27 @@ export function computeOrderTotal(orderID) {
  * @param {int} orderID: the unique ID of the order  
  */
 export function checkBalanceAndSetStatus(orderID) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // Get the client's ID and balance for the given order
     const sql = `
-        SELECT C.ref_user AS clientID, C.balance AS clientBalance
+        SELECT DISTINCT C.ref_user AS clientID, C.balance AS clientBalance
         FROM client C, request R
         WHERE R.id = ?
-          AND PR.ref_request = R.id
-          AND PR.ref_product = P.id
-          AND R.ref_client = C.ref_user
-          AND R.status = 'pending';
+          AND R.ref_client = C.ref_user;
       `;
-    
-    db.all(sql, [orderID], (err, rows) => {
+
+    db.all(sql, [orderID], async function (err, rows) {
       if (err) {
         reject(err);
       }
 
-      if (!rows) {
+      if (rows == undefined || rows.length == 0 || !rows) {
         reject("error: no order found");
       }
 
       const clientInfo = rows[0];
       let orderTotal = 0.0;
-
+      
       try {
         orderTotal = await computeOrderTotal(orderID);
       }
@@ -159,7 +154,7 @@ export function checkBalanceAndSetStatus(orderID) {
           `;
 
         db.serialize(() => {
-          db.run(sql_balance, [order.totalAmount, order.clientID], (err) => {
+          db.run(sql_balance, [orderTotal, clientInfo.clientID], (err) => {
             if (err) {
               reject(err);
             }
@@ -167,11 +162,10 @@ export function checkBalanceAndSetStatus(orderID) {
           db.run(sql_order, [orderID], (err) => {
             if (err) {
               reject(err);
-            }
-
-            resolve("confirmed");
+            }          
           });
         }); 
+        resolve("confirmed");
       }
       else {
         // Set the order's status to "pending_canc"
@@ -184,10 +178,10 @@ export function checkBalanceAndSetStatus(orderID) {
         db.run(sql_order, [orderID], (err) => {
             if (err) {
               reject(err);
-            }
-
-            resolve("pending_canc");
+            }            
           });
+
+        resolve("pending_canc");
       }
     });
   });

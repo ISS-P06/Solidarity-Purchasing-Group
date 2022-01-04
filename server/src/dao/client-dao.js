@@ -90,7 +90,7 @@ export function checkOrdersAfterTopUp(clientID) {
       Note: orders are sorted by date so that they are checked in order
     */
 
-    db.all(sql, [clientID], (err, rows) => {
+    db.all(sql, [clientID], async (err, rows) => {
       if (err) {
         reject(err);
       }

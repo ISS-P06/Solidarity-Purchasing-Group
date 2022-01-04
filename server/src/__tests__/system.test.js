@@ -24,7 +24,7 @@ describe('Test SYS class: trigger for insufficient balance notification', () => 
 
     sys.checkTimedEvents(day);
 
-    sys.event_updateOrders();
+    sys.event_checkForInsufficientBalance();
 
     let mailingList = [
       {

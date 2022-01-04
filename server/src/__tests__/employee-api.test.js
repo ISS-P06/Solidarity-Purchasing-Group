@@ -66,7 +66,7 @@ describe('Test POST order ', function () {
     test('responds with json', function (done) {
         authSession_employee
         .post('/api/orders')
-        .send({ clientID: 1, order: [{ id: 55, quantity: 10.0 }] })
+        .send({ clientID: 2, order: [{ id: 55, quantity: 10.0 }] })
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
