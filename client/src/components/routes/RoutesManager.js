@@ -1,6 +1,6 @@
 import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
-import { ManagerHomePage } from '../manager';
+import { Report } from '../manager';
 
 /**
  *  This component contains all manager-only routes.
@@ -17,7 +17,7 @@ function RoutesManager(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'manager'}
-              component={<ManagerHomePage user={user} type="Weekly" virtualTime={virtualTime} />}
+              component={<Report type="Weekly" virtualTime={virtualTime} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
             
@@ -27,7 +27,7 @@ function RoutesManager(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'manager'}
-              component={<ManagerHomePage user={user} type="Monthly" virtualTime={virtualTime} />}
+              component={<Report type="Monthly" virtualTime={virtualTime} />}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
