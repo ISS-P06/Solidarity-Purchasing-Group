@@ -59,7 +59,7 @@ function ScheduleDelivery(props) {
     const formik = useFormik({
         initialValues: {
             typeDelivery: "home",
-            date: dayjs(),
+            date: dayjs(virtualTime).add(4, 'day').format("DD/MM/YYYY").toString(),
             startTime: '08:00',
             endTime:'09:00',
             address: ''
@@ -109,7 +109,6 @@ function ScheduleDelivery(props) {
                             id="store"
                             required
                             onClick={changeTypeDelivery}
-                            value={formik.values.date}
                             checked={formik.values.typeDelivery==="store"}
                         />
                     </Col>
