@@ -35,6 +35,11 @@ app.use(
 app.use(passportInit);
 app.use(passportSession);
 
+// serve static files on heroku
+if (process.env.HEROKU) {
+  app.use(express.static('../client/build'));
+}
+
 // VTC routes
 app.use(vtcRouter);
 // User routes
