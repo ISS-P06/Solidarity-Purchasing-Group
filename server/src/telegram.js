@@ -11,7 +11,7 @@ export const bot = new Telegraf(process.env.BOT_TOKEN);
  * @param {object} product Product informations
  */
 export async function sendNewProductMessage(product) {
-  const string = `A new product has just been added to the available product of the weekend:
+  const string = `A new product has just been added to the available products of the weekend:
 🥫 ${product.name}
 ⚖️ ${product.quantity} ${product.unit}
 💰 ${product.price} €/${product.unit}`;
