@@ -146,3 +146,50 @@ export function setUndeliveredOrders() {
       resolve();
   });
 }
+
+ /**
+ * (Used only for testing purposes)
+ * Adds a dummy order with negative ID to test the trigger to change the order status
+ * from confirmed to unretrieved
+ *
+ * @returns Promise; 0 if resolved, error message if rejected.
+ */
+export function test_addConfirmedDummyOrders() {
+  return new Promise((resolve, reject) => {
+    // Delete pre-existing dummy orders if present
+    const sql = 'DELETE FROM Request WHERE id = -1';
+
+    db.run(sql, [], (err) => {
+      if (err) reject(err);
+
+      const sql2 = 'DELETE FROM Product_Request WHERE ref_request = -1;';
+
+      db.run(sql2, [], (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        // Serialize queries
+        db.serialize(() => {
+          db.run(
+            `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, confirmed, ?)`,
+            [dayjs("2022-01-01 17:00", "YYYY-MM-DD HH:MM").format('YYYY-MM-DD HH:MM')],
+            function (err) {
+              const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
+              db.run(sql3, [], function (err) {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+
+                resolve(0);
+              });
+            }
+          );
+         
+        });
+      });
+    });
+  });
+}

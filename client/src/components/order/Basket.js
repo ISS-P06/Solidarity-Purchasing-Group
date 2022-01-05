@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Button, Card} from 'react-bootstrap';
+import {Button, Card, Row, Col} from 'react-bootstrap';
 import {api_getBasket, api_buyNow, api_removeProductFromBasket} from '../../Api';
 import ProductCards from '../product/ProductCards';
 import ProductList from './ProductList';
@@ -55,10 +55,6 @@ export default function Basket(props) {
             });
     };
 
-    const handleAddProduct = () => {
-        setIsUpdated(true);
-    };
-
     /**
      * This function computes the total as product quantity times the unit price
      * @param {*} products
@@ -102,12 +98,6 @@ export default function Basket(props) {
                 loading={loading}
                 virtualTime={props.virtualTime}
             />
-            <ProductCards
-                userRole={props.userRole}
-                userId={props.userId}
-                handleAddProduct={handleAddProduct}
-                virtualTime={props.virtualTime}
-            />
             <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime}/>
         </>
     );
@@ -117,14 +107,11 @@ const BasketProductList = (props) => {
     const {isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId, loading} = props;
 
     return (
-        <div class="main">
-            <div class="title" style={{padding: '2%'}}>
-                <h2> Basket </h2>
-            </div>
+        <div class="main " style={{height:"100%"}}>
             {checkOrderInterval(props.virtualTime) ? (
                 <Card
                     className="shadow"
-                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '35rem'}}>
+                    style={{marginLeft: 'auto', marginRight: 'auto', maxWidth: '35rem', height:'82%',   overflowY:"auto"}}>
                     {isEmpty ? (
                         <div style={{padding: '4%'}}>
                             <h5> There are no products in the basket </h5>
@@ -134,18 +121,12 @@ const BasketProductList = (props) => {
                             <div style={{padding: '2%'}} class="productList">
                                 <ProductList productList={basket} removeProduct={handleRemoveProduct}/>
                             </div>
-                            <div style={{padding: '0 4% 2% 0'}}>
+                            <div style={{textAlign: 'center'}}>
                                 <h5>Total: € {computeTotal(basket).toFixed(2)}</h5>
                             </div>
                         </div>
                     )}
-                    {isEmpty ? null : (
-                        <Card.Footer>
-                            <Button className="float-end btn mr-2" onClick={() => handleBuyNow(userId)}>
-                                Buy Now
-                            </Button>
-                        </Card.Footer>
-                    )}
+
                 </Card>) : (
                 <Card
                     className="shadow"
@@ -157,6 +138,18 @@ const BasketProductList = (props) => {
 
             )
             }
+            {isEmpty ? null : (
+                <Row className="justify-content-center mt-3 " style={{ height:'18%'}}>
+                    <Col xs={10} style={{textAlign: 'center'}} >
+                        <Button className="btn" style={{paddingLeft:"100px", paddingRight:"100px"}}  onClick={() => handleBuyNow(userId)} className={"mb-2"}>
+                            Buy Now
+                        </Button>
+                    </Col>
+
+                </Row>
+            )}
+
+
         </div>
     );
 };

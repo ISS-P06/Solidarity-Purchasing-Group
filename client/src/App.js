@@ -39,6 +39,9 @@ function App() {
   // State used to store the system's virtual time
   const [virtualTime, setVirtualTime] = useState({});
 
+  //state used to the open basket off canvas when a new product is added in the basket
+  const [openBasketOffCanvas, setOpenBasketOffCanvas]=useState(false);
+
   // async function for logging in
   const doLogin = async (credentials) => {
     try {
@@ -66,7 +69,6 @@ function App() {
             }
         };
         getVT();
-        console.log(virtualTime);
     }, [dirtyVT]);
 
     // useEffect for getting user info
@@ -103,9 +105,12 @@ function App() {
     loggedIn,
     doLogout,
     userRole,
+    userId,
     dirtyVT,
     setDirtyVT,
-    virtualTime
+    virtualTime,
+    openBasketOffCanvas,
+    setOpenBasketOffCanvas
   };
 
   const RoutesEmployeeProps = {
@@ -115,7 +120,7 @@ function App() {
     userRole,
     userId,
     virtualTime,
-    user
+    user,
   };
 
   const RoutesClientProps = {
@@ -124,7 +129,8 @@ function App() {
     userRole,
     userId,
     user,
-    virtualTime
+    virtualTime,
+    setOpenBasketOffCanvas
   };
 
   const RoutesFarmerProps = {
