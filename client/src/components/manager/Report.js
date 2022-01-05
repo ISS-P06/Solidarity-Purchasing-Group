@@ -8,7 +8,7 @@ import { addMessage } from "../Message";
 import dayjs from 'dayjs';
 
 function Report(props) {
-  const { user, type, virtualTime } = props;
+  const { type, virtualTime } = props;
   const [stats, setStats] = useState("");
   const [date, setDate] = useState((dayjs(virtualTime)).format("YYYY-MM-DD"));
   const cardHeight = '14.5rem';
@@ -21,15 +21,13 @@ function Report(props) {
   }
 
   useEffect(() => {
-    //if (date !== (dayjs(virtualTime)).format("YYYY-MM-DD")) {
-      api_generateReport(dayjs(date).format("YYYY-MM-DD HH:mm"))
-        .then((response) => {
-          setStats(response);
-        })
-        .catch((error) => {
-          addMessage({ message: 'An error occurred during the report generation', type: 'danger' });
-        });
-    //}
+    api_generateReport(dayjs(date).format("YYYY-MM-DD HH:mm"))
+      .then((response) => {
+        setStats(response);
+      })
+      .catch((error) => {
+        addMessage({ message: 'An error occurred during the report generation', type: 'danger' });
+      });
   }, [date]);
 
   return (<>

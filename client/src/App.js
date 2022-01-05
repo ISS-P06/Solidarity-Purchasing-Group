@@ -148,8 +148,6 @@ function App() {
     loggedIn,
     doLogin,
     userRole,
-    userId,
-    user,
     virtualTime,
   };
 

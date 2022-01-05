@@ -6,7 +6,7 @@ import { Report } from '../manager';
  *  This component contains all manager-only routes.
  */
 function RoutesManager(props) {
-    const {loggedIn, userRole, doLogin, userId, user, virtualTime} = props;
+    const {loggedIn, userRole, doLogin, virtualTime} = props;
     console.log(props);
     return (
         <>
