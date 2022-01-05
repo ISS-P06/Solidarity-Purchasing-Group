@@ -1,22 +1,32 @@
 import { Table } from 'react-bootstrap';
 
+// A table to display orders and food statistics
 function StatisticsTable(props) {
   const { stats, type } = props;
   const leftSpace = 10;
 
+  // format stats
+  function checkNumber(value) {
+    return value ? value : 0;
+  }
+  function checkPercentage(value) {
+    return value ? value*100 : 0;
+  }
+
+  // prepare table data from stats
   let tot, del, und, pdel, pund;
   if (type === "Orders") {
-    tot = stats.totalOrders ? stats.totalOrders : 0;
-    del = stats.deliveredOrders ? stats.deliveredOrders : 0;
-    und = stats.undeliveredOrders ? stats.undeliveredOrders : 0;
-    pdel = stats.perc_deliveredOrd ? stats.perc_deliveredOrd * 100 + " %" : 0 + " %";
-    pund = stats.perc_undeliveredOrd ? stats.perc_undeliveredOrd * 100 + " %" : 0 + " %";
+    tot = checkNumber(stats.totalOrders);
+    del = checkNumber(stats.deliveredOrders);
+    und = checkNumber(stats.undeliveredOrders);
+    pdel = checkPercentage(stats.perc_deliveredOrd)+" %";
+    pund = checkPercentage(stats.perc_undeliveredOrd)+" %";
   } else if (type === "Food") {
-    tot = stats.totalFood ? stats.totalFood + " Kg" : 0 + " Kg";
-    del = stats.deliveredFood ? stats.deliveredFood + " Kg" : 0 + " Kg";
-    und = stats.undeliveredFood ? stats.undeliveredFood + " Kg" : 0 + " Kg";
-    pdel = stats.perc_deliveredFood ? stats.perc_deliveredFood * 100 + " %" : 0 + " %";
-    pund = stats.perc_undeliveredFood ? stats.perc_undeliveredFood * 100 + " %" : 0 + " %";
+    tot = checkNumber(stats.totalFood)+" Kg";
+    del = checkNumber(stats.deliveredFood)+" Kg";
+    und = checkNumber(stats.undeliveredFood)+" Kg";
+    pdel = checkPercentage(stats.perc_deliveredFood)+" %";
+    pund = checkPercentage(stats.perc_undeliveredFood)+" %";
   }
 
   return (

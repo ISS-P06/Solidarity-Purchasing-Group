@@ -7,12 +7,15 @@ import { useState, useEffect } from 'react';
 import { addMessage } from "../Message";
 import dayjs from 'dayjs';
 
+// A report page for orders and food stats
+// It can bee Weekly or Monthly
 function Report(props) {
   const { type, virtualTime } = props;
   const [stats, setStats] = useState("");
   const [date, setDate] = useState((dayjs(virtualTime)).format("YYYY-MM-DD"));
   const cardHeight = '14.5rem';
 
+  // select correct API
   let api_generateReport;
   if (type === "Weekly") {
     api_generateReport = api_generateWeeklyReport;
@@ -20,6 +23,7 @@ function Report(props) {
     api_generateReport = api_generateMonthlyReport;
   }
 
+  // stats generation
   useEffect(() => {
     api_generateReport(dayjs(date).format("YYYY-MM-DD HH:mm"))
       .then((response) => {

@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import React from 'react';
-
 import Report from '../components/manager/Report';
 import StatisticsTable from '../components/manager/StatisticsTable';
 import CustomBarChart from '../components/manager/CustomBarChart';
@@ -13,9 +12,9 @@ jest.mock('../components/Message', () => ({
     addMessage: jest.fn(),
 }));
 
+// mock recharts in order to properly render the graphs
 jest.mock('recharts', () => {
     const OriginalModule = jest.requireActual('recharts');
-
     return {
         ...OriginalModule,
         ResponsiveContainer: ({ height, children }) => (
@@ -26,12 +25,13 @@ jest.mock('recharts', () => {
     };
 });
 
+// mock server setup
 const server = setupServer();
-
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
+// right test data
 let statsOk = {
     totalOrders: 100,
     deliveredOrders: 90,
@@ -45,6 +45,7 @@ let statsOk = {
     perc_deliveredFood: 0.75,
 }
 
+// wrong test data
 let statsKo = {
     totalOrders: 0,
     deliveredOrders: 0,
@@ -58,6 +59,7 @@ let statsKo = {
     perc_deliveredFood: 0,
 }
 
+// tests for the Report component
 describe('Report test', () => {
     test('test weekly report visualization', () => {
         render(<Report type="Weekly" virtualTime={new Date()} />);
@@ -89,6 +91,7 @@ describe('Report test', () => {
     });
 });
 
+// tests for the StatisticTable component
 describe('StatisticTable test', () => {
     test('test statistics table for orders visualization', () => {
         render(<StatisticsTable stats={statsOk} type="Orders" />);
@@ -100,6 +103,7 @@ describe('StatisticTable test', () => {
     });
 });
 
+// tests for the CustomBarChart component
 describe('CustomBarChart test', () => {
     test('test custom bar chart for orders visualization', () => {
         render(<CustomBarChart stats={statsOk} type="Orders" />);
@@ -119,6 +123,7 @@ describe('CustomBarChart test', () => {
     });
 });
 
+// tests for the CustomPieChart component
 describe('CustomPieChart test', () => {
     test('test custom pie chart for orders visualization', () => {
         render(<CustomPieChart stats={statsOk} type="Orders" />);

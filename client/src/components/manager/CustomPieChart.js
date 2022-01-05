@@ -1,9 +1,11 @@
 import { Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 
+// A pie chart to display orders and food statistics
 function CustomPieChart(props) {
   const { stats, type } = props;
   const COLORS = ['#499f36', '#38782a'];
 
+  // prepare pie chart data from stats
   let labelText;
   let delivered, undelivered;
   if (type === "Orders") {

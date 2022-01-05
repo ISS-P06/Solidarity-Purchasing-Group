@@ -1,9 +1,11 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+// A bar chart to display orders and food statistics
 function CustomBarChart(props) {
   const { stats, type } = props;
   const COLORS = ['#499f36', '#38782a'];
 
+  // prepare bar chart data from stats
   let labelText;
   let delivered, undelivered;
   if (type === "Orders") {
