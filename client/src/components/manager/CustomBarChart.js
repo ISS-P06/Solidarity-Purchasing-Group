@@ -20,8 +20,8 @@ function CustomBarChart(props) {
       return <div className="p-5">No food data available.</div>;
     }
     labelText = "Quantity of food (Kg)";
-    delivered = stats.deliveredFood;
-    undelivered = stats.undeliveredFood;
+    delivered = Math.round(stats.deliveredFood*100)/100;
+    undelivered = Math.round(stats.undeliveredFood*100)/100;
   }
   const data = [
     { name: 'Delivered', value: delivered },

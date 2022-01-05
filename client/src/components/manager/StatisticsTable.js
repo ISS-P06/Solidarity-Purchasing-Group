@@ -7,10 +7,10 @@ function StatisticsTable(props) {
 
   // format stats
   function checkNumber(value) {
-    return value ? value : 0;
+    return value ? Math.round(value*100)/100 : 0;
   }
   function checkPercentage(value) {
-    return value ? value*100 : 0;
+    return value ? Math.round(value*10000)/100 : 0;
   }
 
   // prepare table data from stats

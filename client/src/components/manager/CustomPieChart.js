@@ -6,26 +6,23 @@ function CustomPieChart(props) {
   const COLORS = ['#499f36', '#38782a'];
 
   // prepare pie chart data from stats
-  let labelText;
   let delivered, undelivered;
   if (type === "Orders") {
     if (!stats.totalOrders) {
       return <div className="p-5">No orders data available.</div>;
     }
-    labelText = " orders (%)";
-    delivered = stats.perc_deliveredOrd * 100;
-    undelivered = stats.perc_undeliveredOrd * 100;
+    delivered = Math.round(stats.perc_deliveredOrd*10000)/100;
+    undelivered = Math.round(stats.perc_undeliveredOrd*10000)/100;
   } else if (type === "Food") {
     if (!stats.totalFood) {
       return <div className="p-5">No food data available.</div>;
     }
-    labelText = " food (%)";
-    delivered = stats.perc_deliveredFood * 100;
-    undelivered = stats.perc_undeliveredFood * 100;
+    delivered = Math.round(stats.perc_deliveredFood*10000)/100;
+    undelivered = Math.round(stats.perc_undeliveredFood*10000)/100;
   }
   const data = [
-    { name: 'Delivered' + labelText, number: delivered },
-    { name: 'Undelivered' + labelText, number: undelivered },
+    { name: 'Delivered', number: delivered },
+    { name: 'Undelivered', number: undelivered },
   ];
 
   return (
@@ -35,8 +32,8 @@ function CustomPieChart(props) {
           dataKey="number"
           isAnimationActive={false}
           data={data}
-          cx="55%"
-          cy="55%"
+          cx="56%"
+          cy="56%"
           outerRadius={70}
           label
         >
