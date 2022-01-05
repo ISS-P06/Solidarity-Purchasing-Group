@@ -54,3 +54,17 @@ describe('Test SYS class: trigger for basket reset', () => {
     sys.checkTimedEvents(day4);
   });
 });
+
+describe('Test SYS class: trigger to set order to unretrieved status', () => {
+  beforeAll(async () => {
+    await systemDAO.test_addConfirmedDummyOrders();
+  });
+
+  test('Everything should work', () => {
+    // Friday, 23:00 
+    // The dummy order changes status from 'confirmed' to 'unretrieved'
+    let day = new Date('January 07, 2022 23:00:00');
+
+    sys.checkTimedEvents(day);
+  });
+});
