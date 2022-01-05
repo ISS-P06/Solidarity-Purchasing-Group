@@ -15,7 +15,7 @@ class SYS {
      * Check for time-based events every time the
      * virtual clock is updated.
      */
-    checkTimedEvents(currTime) {
+    checkTimedEvents(currTime, test = false) {
         let time = new Date(currTime);
         let day = time.getDay();
         let hours = time.getHours();
@@ -23,10 +23,23 @@ class SYS {
         /**
          * Check if the current day and time is
          * Monday, 9am
+         * 
+         * This triggers email notifications for "pending_canc" orders. 
          */
         if (day == 1
          && hours == 9) {
-            this.event_updateOrders();
+            this.event_checkForInsufficientBalance(test);
+        }
+
+        /**
+         * Check if the current day and time is
+         * Monday, 11pm 
+         * 
+         * This triggers the cancellation (= status change) of all "pending_canc" orders.
+         */
+        if (day == 1
+         && hours == 23) {
+            this.event_cancelPendingOrders();
         }
 
         /**
@@ -46,25 +59,32 @@ class SYS {
         /**
          * Check if the current day and time is Friday, 11pm
          */
-        if(day==5 && hours == 23){
+        if(day == 5 && hours == 23){
             this.event_setUndeliveredOrders();
         }
     }
 
     /**
-     * Updates order statuses on Monday at 9am.
-     * All "pending" orders are either set to "confirmed"
-     * or "pending_canc" (i.e. pending cancellation due to
-     * insufficient funds).
+     * Event that cancels all orders with "pending_canc" status
+     * on Monday at 11pm.
+     */
+    event_cancelPendingOrders() {
+        systemDAO.cancelPendingCancOrders()
+            .then()
+            .catch((err) => {console.log("Error: " + err)});
+    }
+
+    /**
+     * Event that checks which orders are still in pending_canc.
      * This triggers the delivery of the reminders for insufficient balance.
      */
-    event_updateOrders() {
-        systemDAO.checksClientBalance()
+    event_checkForInsufficientBalance(test = false) {
+        systemDAO.getClientEmailsForReminder()
             .then((mailList) => {
-                this.event_sendBalanceReminders(mailList);
+                this.event_sendBalanceReminders(mailList, test);
             })
             .catch((err) => {
-                console.log("Error: could not update order status: " + err);
+                console.log("Error: " + err);
             });
     }
 
@@ -73,6 +93,7 @@ class SYS {
      */
     event_setUndeliveredOrders() {
         systemDAO.setUndeliveredOrders()
+            .then()
             .catch((err) => {
                 console.log("Error: there was an error in setting the order as unretrieved: " + err);
             })
@@ -86,6 +107,7 @@ class SYS {
      */
      event_emptyBaskets() {
         systemDAO.emptyBaskets()
+            .then()
             .catch((err) => {
                 console.log("Error: there was an error in emptying baskets: " + err);
             });
@@ -100,9 +122,12 @@ class SYS {
      *      enough balance for. There can be multiple objects referring to the
      *      same user (i.e. with the same email).
      */
-    event_sendBalanceReminders(mailingList) {
+    event_sendBalanceReminders(mailingList, test = false) {
         for (let mail of mailingList) {
-            mailerUtil.mail_sendBalanceReminder(mail.email, mail.id)
+            // If test = true, the order id is set to -1 so that
+            // the function will no try to log in with nodemailer
+            // (which causes the tests to fail)
+            mailerUtil.mail_sendBalanceReminder(mail.email, test ? -1 : mail.id)
                 .then((res) => {
                     // ok
                 })

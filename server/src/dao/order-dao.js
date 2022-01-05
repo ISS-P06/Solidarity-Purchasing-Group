@@ -13,7 +13,7 @@ export function insertOrder(orderClient) {
     const insertReqQuery = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(
       insertReqQuery,
-      [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
+      [orderClient.clientID, "pending", dayjs().format('YYYY-MM-DD HH:MM')],
 
       function (err) {
         if (err) {
@@ -42,13 +42,161 @@ export function insertOrder(orderClient) {
 
               // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
-                resolve(OrderID);
+                checkBalanceAndSetStatus(OrderID)
+                  .then(() => resolve(OrderID))
+                  .catch((err) => reject(err));                
               }
             });
           });
         });
       }
     );
+  });
+}
+
+/**
+ * Computes an order's total amount to be paid, eventually taking into
+ * account delivery fees.
+ * 
+ * @param {int} orderID: the order's unique ID 
+ */
+export function computeOrderTotal(orderID) {
+  return new Promise(async (resolve, reject) => {
+    // Extra fee for delivery at home amounts to 10 euros
+    const deliveryFee = 10.0;
+
+    const sql = `
+        SELECT SUM(P.price * PR.quantity) AS totalAmount
+        FROM client C, request R, product_request PR, product P
+        WHERE R.id = ?
+          AND PR.ref_request = R.id
+          AND PR.ref_product = P.id
+          AND R.ref_client = C.ref_user;
+      `;
+
+    db.all(sql, [orderID], async (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (!rows) {
+        reject("order not found");
+      }
+
+      const order = rows[0];
+      try {
+        // Check whether the order has to be delivered at home or not
+        const delivery = await getDeliveryByRequestId(orderID);
+
+        /*
+          Note: the condition for the following if statement was written to make it 
+          compatible with both the old and new versions of the database for the current sprint (#4).
+
+          If the old database is used, the "deliveryAtHome" field will be undefined, and no delivery
+            fee will be added to the total amount.
+          If the new database is used, the field will be defined and will either be a "true" or "false"
+            string.
+        */
+        if (delivery 
+            && delivery.deliveryAtHome != undefined 
+            && (delivery.deliveryAtHome === "true")) {
+          resolve(order.totalAmount + deliveryFee);
+        }
+        else {
+          resolve(order.totalAmount);
+        }
+      }
+      catch(err) {
+        reject(err);
+      }
+    }); 
+  });
+}
+
+/**
+ * This function checks if a client's balance is enough to pay for
+ * the given order and changes the order's status to:
+ * - "confirmed", if the client has enough balance;
+ * - "pendinc_canc", if the balance is insufficient
+ * The function also updates the client's balance if it is sufficient.
+ * 
+ * @param {int} orderID: the unique ID of the order  
+ */
+export function checkBalanceAndSetStatus(orderID) {
+  return new Promise((resolve, reject) => {
+    // Get the client's ID and balance for the given order
+    const sql = `
+        SELECT DISTINCT C.ref_user AS clientID, C.balance AS clientBalance
+        FROM client C, request R
+        WHERE R.id = ?
+          AND R.ref_client = C.ref_user;
+      `;
+
+    db.all(sql, [orderID], async function (err, rows) {
+      if (err) {
+        reject(err);
+      }
+
+      if (rows == undefined || rows.length == 0 || !rows) {
+        reject("error: no order found");
+      }
+
+      // Get client info and the total amount to pay for the order
+      const clientInfo = rows[0];
+      let orderTotal = 0.0;
+      
+      try {
+        orderTotal = await computeOrderTotal(orderID);
+      }
+      catch (err) {
+        reject(err);
+      }
+
+      // Check whether the client's balance is enough to pay for the order
+      if (clientInfo.clientBalance >= orderTotal) {
+        // Decrease the client's balance and set the order's status to "confirmed"
+        const sql_balance = `
+            UPDATE client
+            SET balance = balance - ?
+            WHERE ref_user = ?;
+          `;
+        const sql_order = `
+          UPDATE request
+          SET status = 'confirmed'
+          WHERE id = ?;
+          `;
+
+        db.serialize(() => {
+          db.run(sql_balance, [orderTotal, clientInfo.clientID], (err) => {
+            if (err) {
+              reject(err);
+            }
+          });
+          db.run(sql_order, [orderID], (err) => {
+            if (err) {
+              reject(err);
+            }          
+          });
+        }); 
+        resolve("confirmed");
+      }
+      else {
+        // Set the order's status to "pending_canc" and do not decrease the client's balance
+        const sql_order = `
+          UPDATE request
+          SET status = 'pending_canc'
+          WHERE id = ?;
+          `;
+
+        db.run(sql_order, [orderID], (err) => {
+            if (err) {
+              reject(err);
+            }            
+          });
+
+        resolve("pending_canc");
+      }
+    });
   });
 }
 
@@ -280,6 +428,31 @@ export function scheduleOrderDeliver(orderId, delivery) {
         return;
       }
       resolve(rows);
+    });
+  });
+}
+
+/**
+ * Returns the DB tuple associated with a given order. Can also
+ * return an "undefined" object in case there's no delivery associated
+ * with it.
+ * 
+ * @param {int} requestId: the order's unique ID 
+ * @returns {Promise}
+ * - resolved promise containing the tuple, if the operation is successful
+ * - rejected promise otherwise
+ */
+function getDeliveryByRequestId(requestId) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+                  SELECT d.ref_request
+                  FROM Delivery d
+                  WHERE d.ref_request = ?;
+                  `;
+
+    db.get(sql, [requestId], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
     });
   });
 }
