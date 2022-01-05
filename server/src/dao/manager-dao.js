@@ -133,6 +133,7 @@ function computeReport(startDate, endDate) {
                 totalOrders: totalOrders,
                 deliveredOrders: deliveredOrders,
                 undeliveredOrders: undeliveredOrders,
+                totalFood: totalFood,
                 deliveredFood: deliveredFood,
                 undeliveredFood: undeliveredFood,
                 perc_undeliveredOrd: undeliveredOrders / totalOrders,

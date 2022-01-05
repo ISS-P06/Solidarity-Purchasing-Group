@@ -41,6 +41,7 @@ function Aside({
     shop_employee: <EmployeeMenu />,
     client: <ClientMenu />,
     farmer: <FarmerMenu />,
+    manager: <ManagerMenu />
   };
 
   return !userRole ? null : (
@@ -137,6 +138,23 @@ function FarmerMenu() {
             </MenuItem>
         </Menu>
     );
+}
+
+function ManagerMenu() {
+  return (
+      <Menu iconShape="circle">
+          <MenuItem icon={<FaRegListAlt />}>
+              <Link className="text-light" to="/manager/report/weekly">
+                  Weekly reports
+              </Link>
+          </MenuItem>
+          <MenuItem icon={<FaRegListAlt />}>
+              <Link className="text-light" to="/manager/report/monthly">
+                Monthly reports
+              </Link>
+          </MenuItem>
+      </Menu>
+  );
 }
 
 export default Aside;
