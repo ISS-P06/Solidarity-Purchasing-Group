@@ -22,9 +22,8 @@ describe('Test SYS class: trigger for insufficient balance notification', () => 
     // Mon. 9am
     let day = new Date('December 06, 2021 09:00:00');
 
-    sys.checkTimedEvents(day);
-
-    sys.event_checkForInsufficientBalance();
+    // checkTimedEvents is called with test = true
+    sys.checkTimedEvents(day, true);
 
     let mailingList = [
       {
@@ -33,7 +32,8 @@ describe('Test SYS class: trigger for insufficient balance notification', () => 
       },
     ];
 
-    sys.event_sendBalanceReminders(mailingList);
+    // Called with test = true
+    sys.event_sendBalanceReminders(mailingList, true);
   });
 });
 

@@ -15,7 +15,7 @@ class SYS {
      * Check for time-based events every time the
      * virtual clock is updated.
      */
-    checkTimedEvents(currTime) {
+    checkTimedEvents(currTime, test = false) {
         let time = new Date(currTime);
         let day = time.getDay();
         let hours = time.getHours();
@@ -28,7 +28,7 @@ class SYS {
          */
         if (day == 1
          && hours == 9) {
-            this.event_checkForInsufficientBalance();
+            this.event_checkForInsufficientBalance(test);
         }
 
         /**
@@ -78,10 +78,10 @@ class SYS {
      * Event that checks which orders are still in pending_canc.
      * This triggers the delivery of the reminders for insufficient balance.
      */
-    event_checkForInsufficientBalance() {
+    event_checkForInsufficientBalance(test = false) {
         systemDAO.getClientEmailsForReminder()
             .then((mailList) => {
-                this.event_sendBalanceReminders(mailList);
+                this.event_sendBalanceReminders(mailList, test);
             })
             .catch((err) => {
                 console.log("Error: " + err);
@@ -93,6 +93,7 @@ class SYS {
      */
     event_setUndeliveredOrders() {
         systemDAO.setUndeliveredOrders()
+            .then()
             .catch((err) => {
                 console.log("Error: there was an error in setting the order as unretrieved: " + err);
             })
@@ -106,6 +107,7 @@ class SYS {
      */
      event_emptyBaskets() {
         systemDAO.emptyBaskets()
+            .then()
             .catch((err) => {
                 console.log("Error: there was an error in emptying baskets: " + err);
             });
@@ -120,9 +122,12 @@ class SYS {
      *      enough balance for. There can be multiple objects referring to the
      *      same user (i.e. with the same email).
      */
-    event_sendBalanceReminders(mailingList) {
+    event_sendBalanceReminders(mailingList, test = false) {
         for (let mail of mailingList) {
-            mailerUtil.mail_sendBalanceReminder(mail.email, mail.id)
+            // If test = true, the order id is set to -1 so that
+            // the function will no try to log in with nodemailer
+            // (which causes the tests to fail)
+            mailerUtil.mail_sendBalanceReminder(mail.email, test ? -1 : mail.id)
                 .then((res) => {
                     // ok
                 })
