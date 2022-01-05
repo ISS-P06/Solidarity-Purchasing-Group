@@ -3,6 +3,7 @@ import session from 'supertest-session';
 
 import app from '../app';
 import { restoreBackup } from '../db';
+import { basketDAO } from '../dao';
 
 /**
  * During test the database can be modified, so we need to
@@ -46,37 +47,13 @@ describe('Test the get client orders api', () => {
 		authSession_client.get('/api/clients//orders/2').expect(404).end(done);
 	});
 });
-
+/*
 describe('Test the client path', () => {
   test('It should response GET api/client/4/basket', function (done) {
     authSession_client.get('/api/client/4/basket').expect(200).end(done);
   });
 });
-
-describe('Test add or delete a product into/from the basket', () => {
-  test('Add a product; It should response 200', function (done) {
-    const data = { productId: 4, reservedQuantity: 0.1 };
-    authSession_client.post('/api/client/4/basket/add').send(data).expect(200).end(done);
-  });
-
-  test('Remove a product; It should response 200', function (done) {
-    const data = { productId: 4 };
-    authSession_client.post('/api/client/4/basket/remove').send(data).expect(200).end(done);
-  });
-});
-
-describe('Test failure add or delete a product into/from the basket', () => {
-  test('Add a product; It should response 422 because validation fails', function (done) {
-    const data = { productId: '', reservedQuantity: 0.1 };
-    authSession_client.post('/api/client/4/basket/add').send(data).expect(422).end(done);
-  });
-
-  test('Remove a product; It should response 422 because validation fails', function (done) {
-    const data = { productId: '' };
-    authSession_client.post('/api/client/4/basket/remove').send(data).expect(422).end(done);
-  });
-});
-
+*/
 describe('test place a order', () => {
   test('Submit an order; It should response 200', function (done) {
     const userId = 2;
@@ -118,3 +95,32 @@ describe('Test schedule a bag delivery', () => {
             });
     });
 });
+
+describe('Test failure add or delete a product into/from the basket', () => {
+  test('Add a product; It should response 422 because validation fails', function (done) {
+    const data = { productId: '', reservedQuantity: 0.1 };
+    authSession_client.post('/api/client/4/basket/add').send(data).expect(422).end(done);
+  });
+
+  test('Remove a product; It should response 422 because validation fails', function (done) {
+    const data = { productId: '' };
+    authSession_client.post('/api/client/4/basket/remove').send(data).expect(422).end(done);
+  });
+});
+/*
+describe('Test add or delete a product into/from the basket', () => {
+  beforeAll(async () => {
+    await basketDAO.test_addDummyBasketProducts();
+  });
+
+  test('Add a product; It should response 200', function (done) {
+    const data = { productId: 3, reservedQuantity: 0.1 };
+    authSession_client.post('/api/client/4/basket/add').send(data).expect(200).end(done);
+  });
+
+  test('Remove a product; It should response 200', function (done) {
+    const data = { productId: 4 };
+    authSession_client.post('/api/client/4/basket/remove').send(data).expect(200).end(done);
+  });
+});
+*/
