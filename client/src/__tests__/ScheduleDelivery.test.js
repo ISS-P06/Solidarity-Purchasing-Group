@@ -33,7 +33,6 @@ describe('My component ScheduleDelivery', () => {
         expect(screen.getByTestId('startTime-element')).toBeInTheDocument();
         expect(screen.getByTestId('endTime-element')).toBeInTheDocument();
         expect(screen.getByTestId('address-element')).toBeInTheDocument();
-
         expect(screen.getByTestId('submit-element')).toBeInTheDocument();
 
 
@@ -41,15 +40,6 @@ describe('My component ScheduleDelivery', () => {
 
     test('schedules a delivery at home', async () => {
 
-        let db = [];
-
-        server.use(
-            rest.post('/api/orders/1/deliver/schedule', (req, res, ctx) => {
-                const delivery = req.body;
-                db.push(delivery);
-                return res(ctx.status(200));
-            })
-        );
 
         const history = createMemoryHistory();
 
@@ -67,6 +57,9 @@ describe('My component ScheduleDelivery', () => {
         fireEvent.click(screen.getAllByRole("radio")[0])
         expect(screen.getAllByRole("radio")[0].checked).toEqual(true);
 
+        const dateElement = screen.getByTestId('date-element')
+        expect(dateElement).toBeInTheDocument();
+        userEvent.type(dateElement, '01/01/2022');
 
         const startTimeElement = screen.getByTestId('startTime-element')
         expect(startTimeElement).toBeInTheDocument();
@@ -84,6 +77,14 @@ describe('My component ScheduleDelivery', () => {
 
         await userEvent.click(screen.getByTestId('submit-element'));
 
+        let db = [];
+        server.use(
+            rest.post('/api/orders/1/deliver/schedule', (req, res, ctx) => {
+                const {typeDelivery, address, date, startTime, endTime} = req.body;
+                db.push(req.body);
+                return res(ctx.status(200));
+            })
+        );
         await waitFor(() => {
             expect(db).toHaveLength(1)
         });
@@ -91,16 +92,6 @@ describe('My component ScheduleDelivery', () => {
     });
 
     test('schedules a pickup', async () => {
-
-        let db = [];
-
-        server.use(
-            rest.post('/api/orders/1/deliver/schedule', (req, res, ctx) => {
-                const delivery = req.body;
-                db.push(delivery);
-                return res(ctx.status(200));
-            })
-        );
 
         const history = createMemoryHistory();
 
@@ -126,9 +117,23 @@ describe('My component ScheduleDelivery', () => {
         expect(endTimeElement).toBeInTheDocument();
         userEvent.type(endTimeElement, '14:00');
 
+        const dateElement = screen.getByTestId('date-element')
+        expect(dateElement).toBeInTheDocument();
+        userEvent.type(dateElement, '01/01/2022');
+
+
         await userEvent.click(screen.getByTestId('submit-element'));
 
-      await waitFor(() => {
+        let db = [];
+
+        server.use(
+            rest.post('/api/orders/1/deliver/schedule', (req, res, ctx) => {
+                const {typeDelivery, date, startTime, endTime} = req.body;
+                db.push(req.body);
+                return res(ctx.status(200));
+            })
+        );
+        await waitFor(() => {
             expect(db).toHaveLength(1)
         });
 

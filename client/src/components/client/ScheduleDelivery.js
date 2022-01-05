@@ -59,9 +59,9 @@ function ScheduleDelivery(props) {
     const formik = useFormik({
         initialValues: {
             typeDelivery: "home",
-            date: dayjs().toString(),
+            date: dayjs(),
             startTime: '08:00',
-            endTime:'20:00',
+            endTime:'09:00',
             address: ''
         },
         validationSchema: Yup.object({
@@ -98,6 +98,8 @@ function ScheduleDelivery(props) {
                             type="radio"
                             id="home"
                             onClick={changeTypeDelivery}
+                            required
+                            checked={formik.values.typeDelivery==="home"}
                         />
                         <Form.Check
                             inline
@@ -105,7 +107,10 @@ function ScheduleDelivery(props) {
                             name="typeDelivery"
                             type="radio"
                             id="store"
+                            required
                             onClick={changeTypeDelivery}
+                            value={formik.values.date}
+                            checked={formik.values.typeDelivery==="store"}
                         />
                     </Col>
 
