@@ -31,7 +31,15 @@ export async function sendTelegramMessage(string) {
 }
 
 /**
- * Lauch the telegram bot
+ * Send a formatted message when the updated list of available products is available
+ *
+ */
+export async function sendAvailableProductsMessage() {
+  sendTelegramMessage("Now it is possible to order all available products this week. Look at them on the web page.");
+}
+
+/**
+ * Launch the telegram bot
  */
 export function launchTelegramBot() {
   bot.launch();
