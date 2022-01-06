@@ -3,6 +3,7 @@
 import db from '../db';
 import dayjs from 'dayjs';
 import {clientDAO, orderDAO} from '.';
+import VTC from './../utils/vtc';
 
 /**
  * Set all "pending_canc" orders to "cancelled" 
@@ -238,7 +239,7 @@ function getDeliveryByRequestId(requestId) {
 
 export function setUndeliveredOrders() {
     return new Promise((resolve, reject) => {
-        // the query returns for each client the number of missed pick up
+        // the query returns for each client the number of confirmed orders that will be set as missed pick up
         const sql = `SELECT r.ref_client as ref_client, count(*) as nMissedPickUp
             FROM Request r
             WHERE r.status = 'confirmed'
@@ -249,6 +250,7 @@ export function setUndeliveredOrders() {
                 return;
             }
 
+            // the query change the status of the confirmed orders that are unretrivied
             const sql2 = " UPDATE Request SET status = 'unretrieved' WHERE status = 'confirmed'";
             db.run(sql2, [], (err) => {
                 if (err) {
@@ -265,11 +267,13 @@ export function setUndeliveredOrders() {
                         reject(err);
                         return;
                     }
-                   if(index+1===rows.length){
-                       resolve(rows);
-                   }
+                    if (index + 1 === rows.length) {
+                        resolve(rows);
+                    }
                 });
             })
+
+            rows.length === 0 && resolve();
         });
     })
 }
@@ -331,7 +335,7 @@ export function suspendClients() {
         // the query return for each client the number of missed pick ups
         const sql = `SELECT ref_user as userID, missed_pickups as missed_pickups
             FROM Client c
-            WHERE c.missed_pickups>5`;
+            WHERE c.missed_pickups>=5`;
         db.all(sql, [], (err, rows) => {
             if (err) {
                 reject(err);
@@ -340,15 +344,28 @@ export function suspendClients() {
             rows.length >= 0 && rows.map((row, index) => {
                 // increment the number of missed picks up for a client
                 const sql1 = " INSERT INTO Suspension (ref_client, start_date, end_date) VALUES (?,?,?)";
-                /!*TODO to update*!/
+                /*TODO update*/
                 db.run(sql1, [row.userID, dayjs().format('YYYY-MM-DD'), dayjs().add(1, "month").format('YYYY-MM-DD')], (err) => {
                     if (err) {
+                        console.log(err)
                         reject(err);
                         return;
                     }
-                    resolve();
+                    // set to zero the number of missed pickups of suspended clients
+                    const sql2 = " UPDATE Client SET missed_pickups = 0 WHERE ref_user = ?";
+                    db.run(sql2, [row.userID], (err) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        if (index + 1 === rows.length) {
+                            resolve(rows);
+                        }
+                    });
                 });
-            })
+            });
+            rows.length === 0 && resolve();
+
         });
     });
 }
