@@ -1,0 +1,18 @@
+{
+    "name": "solidarity-purchasing-group",
+    "version": "1.0.0",
+    "author": "ISS-P06",
+    "homepage": "https://github.com/ISS-P06/Solidarity-Purchasing-Group#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ISS-P06/Solidarity-Purchasing-Group.git"
+    },
+    "engines": {
+        "node": "16.x",
+        "npm": "8.x"
+    },
+    "scripts": {
+        "heroku-postbuild": "npm -C client ci  && npm -C client run build && npm -C server ci",
+        "start": "cd server && npm run start"
+    }
+}
