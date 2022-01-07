@@ -7,10 +7,10 @@ import {addMessage} from "../Message";
 import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
-    const {orderID, show, setShow, virtualTime} = props;
+    const {orderID, show, setShow, virtualTime, handleCloseBasketCanvas} = props;
     const [wednesday, setWednesday] = useState('')
     const [friday, setFriday] = useState('')
-    const [dirty, setDirty] = useState(false)
+
 
     useEffect(async () => {
         let date = dayjs(virtualTime);
@@ -24,8 +24,6 @@ function ScheduleDelivery(props) {
             }
             date = date.add(1, 'day')
         }
-
-        setDirty(old => !old)
     }, [virtualTime])
 
     const handleSubmit = (values) => {
@@ -39,6 +37,7 @@ function ScheduleDelivery(props) {
         api_scheduleDelivery(orderID, delivery)
             .then(() => {
                 addMessage({title: "", message: 'Scheduling delivery completed with success', type: 'success'})
+               handleCloseBasketCanvas(); //close the basket modal
             }).catch((err) => {
             addMessage({title: "Error", message: err.message, type: 'danger'});
         })
@@ -49,9 +48,7 @@ function ScheduleDelivery(props) {
         setShow(false)
     }
 
-    function handleShow() {
-        setShow(true)
-    }
+
 
     const changeTypeDelivery = (event) => {
         formik.setFieldValue("typeDelivery", event.target.id)
