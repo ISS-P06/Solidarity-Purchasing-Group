@@ -100,7 +100,7 @@ function ManagerHomePage() {
                 <h2 className="pt-3" style={{ color: "#27511D" }}>Features:</h2>
                 <Row className="justify-content-center">
                     <Col xs={12} lg={6}>
-                        <Card bg="light" text="black" className="shadow p-3 d-flex flex-row"
+                        <Card bg="light" text="black" className="shadow p-3 d-flex flex-row" style={{ cursor: "pointer" }}
                             onClick={() => { history.push('/manager/report/weekly'); }} >
                             <div>
                                 <BsCalendarRangeFill className="feature-icon" />
@@ -112,7 +112,7 @@ function ManagerHomePage() {
                         </Card>
                     </Col>
                     <Col xs={12} lg={6}>
-                        <Card bg="light" text="black" className="shadow p-3 d-flex flex-row"
+                        <Card bg="light" text="black" className="shadow p-3 d-flex flex-row" style={{ cursor: "pointer" }}
                             onClick={() => { history.push('/manager/report/monthly'); }} >
                             <div>
                                 <BsCalendarFill className="feature-icon" />
