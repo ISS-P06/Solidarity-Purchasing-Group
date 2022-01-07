@@ -1,9 +1,8 @@
 import { Row, Col, Container, Card } from 'react-bootstrap';
 import { api_computeHomepageStats } from "../../Api";
-import { BsCalendarRangeFill, BsFillPersonFill } from 'react-icons/bs';
-import { BsCalendarFill } from 'react-icons/bs';
 import { useState, useEffect } from 'react';
 import { addMessage } from "../Message";
+import { BsCalendarRangeFill, BsFillPersonFill, BsCalendarFill } from 'react-icons/bs';
 import { GiFruitBowl } from 'react-icons/gi';
 import { FaRegListAlt } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
@@ -34,7 +33,6 @@ function ManagerHomePage() {
 
     return (
         <Container>
-
             <Row className="justify-content-center">
                 <Col xs={0} md={10}>
                     <h1 style={{ color: "#27511D" }}>Welcome to SPG manager area</h1>

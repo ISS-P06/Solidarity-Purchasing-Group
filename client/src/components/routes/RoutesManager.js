@@ -1,7 +1,6 @@
 import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
-import { ManagerHomePage } from '../manager';
-import { Report } from '../manager';
+import { ManagerHomePage, Report } from '../manager';
 
 /**
  *  This component contains all manager-only routes.
