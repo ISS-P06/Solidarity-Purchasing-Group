@@ -20,7 +20,7 @@ export default function BasketOffcanvas({userId, virtualTime, show, setShow}) {
           <Offcanvas.Title style={{fontSize: 25}}>Basket</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-         <Basket userId={userId} virtualTime={virtualTime}/>
+         <Basket userId={userId} virtualTime={virtualTime} handleClose={handleClose}/>
         </Offcanvas.Body>
       </Offcanvas>
     </>

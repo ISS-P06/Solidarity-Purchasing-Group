@@ -140,7 +140,7 @@ export function registerUser(user) {
               resolve(userID);
             } else if (user.typeUser === 'client') {
               const clientQuery =
-                'INSERT INTO Client (address, balance, ref_user) VALUES( ?, ?, ?) ';
+                'INSERT INTO Client (address, balance, ref_user, missed_pickups) VALUES( ?, ?, ?, 0) ';
               db.serialize(() => {
                 let stmt_1 = db.prepare(clientQuery);
                 stmt_1.run([user.address, user.balance, userID], (err) => {

@@ -66,6 +66,7 @@ describe('test place a order', () => {
   });
 });
 
+/*
 describe('Test schedule a bag delivery', () => {
     test('Schedule a bag delivery; It should response 200', () => {
         const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
@@ -95,6 +96,50 @@ describe('Test schedule a bag delivery', () => {
             });
     });
 });
+*/
+describe('Test schedule a bag delivery', () => {
+  test('Schedule a bag delivery; It should response 200', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return  authSession_client
+        .post('/api/orders/3/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        })
+  });
+
+  test('Schedule a bag pickup; It should response 200', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "pick-up"};
+    return  authSession_client
+        .post('/api/orders/4/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(200);
+        })
+  });
+
+  test('Schedule a bag delivery; It should response 422 because validation fails', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return  authSession_client
+        .post('/api/orders/marco/deliver/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(422);
+        });
+  });
+  test('Schedule a bag delivery; It should response 404', () => {
+    const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
+    return authSession_client
+        .post('/api/order/3/delivery/schedule')
+        .send(data)
+        .then((response) => {
+          expect(response.statusCode).toBe(404);
+        });
+  });
+
+
+});
+
 
 describe('Test failure add or delete a product into/from the basket', () => {
   test('Add a product; It should response 422 because validation fails', function (done) {

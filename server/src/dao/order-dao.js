@@ -305,9 +305,9 @@ export function getOrderById(orderId, clientId = -1) {
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
 
-    const sql3 = `SELECT d.address, d.date, d.time
+    const sql3 = `SELECT d.address, d.date, d.startTime, d.endTime, d.deliveryAtHome
                   FROM Delivery d
-                  WHERE d.ref_request= ? `;
+                  WHERE d.ref_request= ? `
 
     let deps = [orderId];
     if (clientId !== -1) {
@@ -360,7 +360,7 @@ export function getOrderById(orderId, clientId = -1) {
             resolve(order);
             return;
           }
-          order.delivery = { address: row.address, date: row.date, time: row.time };
+          order.delivery = { address: row.address, date: row.date, startTime: row.startTime, endTime: row.endTime, deliveryAtHome: row.deliveryAtHome };
           resolve(order);
         });
       });
@@ -391,8 +391,8 @@ export function setOrderStatus(orderId, status) {
  */
 export function scheduleOrderDeliver(orderId, delivery) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO Delivery(ref_request, address, date,time) VALUES(?, ?, ?,?)';
-    db.run(sql, [orderId, delivery.address, delivery.date, delivery.time], (err) =>
+    const sql = 'INSERT INTO Delivery(ref_request, address, date, startTime, endTime, deliveryAtHome) VALUES(?, ?, ?, ?, ?, ?)';
+    db.run(sql, [orderId, delivery.address, delivery.date, delivery.startTime, delivery.endTime, delivery.typeDelivery === "home" ? "true" : "false"], (err) =>
       err ? reject(err) : resolve(orderId)
     );
   });

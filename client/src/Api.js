@@ -418,7 +418,7 @@ export async function api_insertProductDescription(description) {
 /**
  * Schedule bag delivery
  * @param orderId: ID of the order
- * @param delivery: information about the delivery {address, date, time}
+ * @param delivery: information about the delivery {typeDelivery: home|store, address, date, startTime, endTime}
  */
 export const api_scheduleDelivery = async (orderId, delivery) => {
     try {
