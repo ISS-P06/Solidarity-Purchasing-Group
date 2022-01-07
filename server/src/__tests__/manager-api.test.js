@@ -81,3 +81,19 @@ describe("Test manager reports", () => {
     expect(stats_nov.totalOrders).toBe(0);
   });
 });
+
+describe("Test manager homepage stats", () => {
+  beforeAll(async () => {
+    await managerDAO.test_addDummyData_stats();
+  })
+
+  test("Test homepage stats", async () => {
+    const date = new Date("January, 3 2999 00:00:00");
+
+    const results = await managerDAO.computeHomepageStats(date);
+
+    expect(results.userStats.client).toBeGreaterThanOrEqual(3);
+    expect(results.numOrders).toBeGreaterThanOrEqual(4);
+    expect(results.numFarmers).toBeGreaterThanOrEqual(1);
+  });
+});

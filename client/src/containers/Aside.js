@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
-import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill } from 'react-icons/bs';
+import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill, BsCalendarRangeFill, BsCalendarFill } from 'react-icons/bs';
 import { GiFruitBowl, GiFruitTree } from 'react-icons/gi';
 import { VirtualClock } from '../components';
 import { FaRegListAlt } from 'react-icons/fa';
@@ -143,12 +143,12 @@ function FarmerMenu() {
 function ManagerMenu() {
   return (
       <Menu iconShape="circle">
-          <MenuItem icon={<FaRegListAlt />}>
+          <MenuItem icon={<BsCalendarRangeFill />}>
               <Link className="text-light" to="/manager/report/weekly">
                   Weekly reports
               </Link>
           </MenuItem>
-          <MenuItem icon={<FaRegListAlt />}>
+          <MenuItem icon={<BsCalendarFill />}>
               <Link className="text-light" to="/manager/report/monthly">
                 Monthly reports
               </Link>

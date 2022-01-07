@@ -1,13 +1,13 @@
 import { RedirectRoute } from '../../utils/route';
 import { LoginForm} from '../';
-import { Report } from '../manager';
+import { ManagerHomePage, Report } from '../manager';
 
 /**
  *  This component contains all manager-only routes.
  */
 function RoutesManager(props) {
     const {loggedIn, userRole, doLogin, virtualTime} = props;
-    console.log(props);
+
     return (
         <>
             {/* --- Manager-only routes --- */}
@@ -37,7 +37,7 @@ function RoutesManager(props) {
               exact={true}
               role={userRole}
               condition={loggedIn && userRole === 'manager'}
-              component={<div>To do: put here manager homepage</div>}
+              component={<ManagerHomePage/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
         </>

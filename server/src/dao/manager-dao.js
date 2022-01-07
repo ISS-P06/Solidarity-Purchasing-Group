@@ -2,6 +2,9 @@
 
 import db from '../db';
 import dayjs from 'dayjs';
+import VTC from '../utils/vtc';
+
+const vtc = new VTC();
 
 /**
  * This file contains all queries related to the manager's
@@ -27,6 +30,7 @@ import dayjs from 'dayjs';
  */
 function computeWeek(date) {
     let startDate = new Date(date);
+
     // 0 = Sunday => Saturday = 6
     while (startDate.getDay() != 6) {
         startDate.setDate(startDate.getDate() - 1);
@@ -44,6 +48,7 @@ function computeWeek(date) {
 
     let end = dayjs(endDate).format('YYYY-MM-DD');
     end = end + ' 23:59';
+
 
     return [ start, end ];
 }
@@ -191,6 +196,109 @@ export function generateMonthlyReport(date) {
 };
 
 /**
+ * Computes statistics to be displayed on the manager's homepage, 
+ * including:
+ * - total number of users of each type (i.e. total number of clients, employees, farmers, etc.)
+ * - total number of orders made this week
+ * - number of farmers contributing this week
+ * - total number of different products added by farmers this week
+ *
+ *  @param {Date} date The date for which to compute statistics. It's set to the current
+ *      date and time by the API.
+ *  @returns {object} An object containing the statistics described above.
+ */
+export function computeHomepageStats(date) {
+    return new Promise((resolve, reject) => {
+        // Get the current date and compute stats for the current week
+        let date_array = computeWeek(new Date(date));
+
+        let startDate = date_array[0];
+        let endDate = date_array[1];
+
+        let userStats = {};
+        let orderStats = {};
+        let farmerStats = {};
+        let productStats = {};
+
+        const sql_users = `
+                SELECT U.role AS role, COUNT(DISTINCT U.id) AS numUsers
+                FROM user U
+                GROUP BY U.role;
+            `;
+        
+        const sql_orders = `
+                SELECT COUNT(DISTINCT R.id) AS numOrders
+                FROM request R
+                WHERE date >= DATE(?)
+                    AND date < DATE(?);
+            `;
+
+        const sql_farmer = `
+                SELECT COUNT(DISTINCT PD.ref_farmer) AS numFarmers, COUNT(*) AS numProducts
+                FROM product P, prod_descriptor PD
+                WHERE P.ref_prod_descriptor = PD.id
+                    AND P.date >= DATE(?)
+                    AND P.date < DATE(?);
+            `;
+
+        db.serialize(() => {
+                // ---
+                db.all(sql_users, [], (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (rows) {
+                        let stats = {};
+
+                        for (let row of rows) {
+                            stats[row.role] = row.numUsers;
+                        }
+
+                        userStats = {
+                            userStats: stats
+                        };
+                    }
+                });
+                // ---
+                db.get(sql_orders, [startDate, endDate], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (row) {
+                        orderStats = {
+                            numOrders: row.numOrders
+                        };
+                    }
+                });
+                // ---
+                db.get(sql_farmer, [startDate, endDate], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (row) {
+                        farmerStats = {
+                            numFarmers: row.numFarmers
+                        };
+                        productStats = {
+                            numProducts: row.numProducts
+                        };
+                    }
+
+                    resolve({
+                        ...userStats,
+                        ...orderStats,
+                        ...farmerStats,
+                        ...productStats
+                    });
+                });
+            });
+    });
+}
+
+/**
  * (Used only for testing purposes)
  * Adds two dummy orders to test reports.
  *
@@ -240,6 +348,52 @@ export function test_addDummyOrders_report() {
                             }
                             resolve(0);
                         });
+                    });
+            });
+        });
+    });
+}
+
+/**
+ * (Used only for testing purposes)
+ * Adds dummy orders and products to test manager homepage statistics.
+ *
+ * @returns Promise; 0 if resolved, error message if rejected.
+ */
+export function test_addDummyData_stats() {
+    return new Promise((resolve, reject) => {
+        // Delete pre-existing dummy data if present
+        const date1 = dayjs(new Date("January, 1 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
+        const date2 = dayjs(new Date("January, 3 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
+        const sql = 'DELETE FROM Request WHERE date >= DATE(?)';
+    
+        db.run(sql, [date1], function (err) {
+            if (err) reject(err);
+
+            // Serialize queries
+            db.serialize(function () {
+                db.run(
+                    `INSERT INTO Request(ref_client, status, date) VALUES 
+                        (2, 'delivered', DATE(?)),
+                        (4, 'delivered', DATE(?)),
+                        (5, 'unretrieved', DATE(?)),
+                        (2, 'delivered', DATE(?));`,
+                    [date2, date2, date2, date2],
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
+                        }
+                    });
+                db.run(
+                    `INSERT INTO Product(ref_prod_descriptor, quantity, price, date)
+                        VALUES(2, 10.0, 5.0, DATE(?));`,
+                    [date2],
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
+                        }
+                        
+                        resolve(0);
                     });
             });
         });
