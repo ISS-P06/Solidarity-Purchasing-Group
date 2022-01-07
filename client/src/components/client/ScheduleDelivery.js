@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Container, Form, InputGroup, Modal} from "react-bootstrap";
+import {Button, Container, Form, InputGroup, Modal, Col} from "react-bootstrap";
 import {useFormik} from "formik";
 import * as Yup from 'yup'
 import {api_scheduleDelivery} from '../../Api'
