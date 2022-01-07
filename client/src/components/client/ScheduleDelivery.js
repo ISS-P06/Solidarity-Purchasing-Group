@@ -56,7 +56,7 @@ function ScheduleDelivery(props) {
     const formik = useFormik({
         initialValues: {
             typeDelivery: "home",
-            date: dayjs(virtualTime).add(4, 'day').format("DD/MM/YYYY").toString(),
+            date: dayjs(virtualTime).add(4, 'day').format("YYYY-MM-DD").toString(),
             startTime: '08:00',
             endTime:'09:00',
             address: ''
