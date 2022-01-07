@@ -1,4 +1,5 @@
 import { Telegraf, Markup } from 'telegraf';
+import { randomInt } from 'crypto';
 
 /**
  * Instance of the telegram bot
@@ -40,13 +41,11 @@ export async function sendTelegramMessage(string) {
       Markup.button.url('Solidarity Purchasing Group', 'https://spg06.herokuapp.com/'),
     ]);
 
-    const fingers = ['👇', '👇🏻', '👇🏿', '👇🏽', '👇🏾', '👇🏼'];
+    const finger = ['👇', '👇🏻', '👇🏿', '👇🏽', '👇🏾', '👇🏼'][randomInt(6)];
 
     bot.telegram.sendMessage(
       process.env.CHANNEL_ID,
-      `${string}\n\nClick on the link below! ${
-        fingers[Math.floor(Math.random() * fingers.length)]
-      }`,
+      `${string}\n\nClick on the link below! ${finger}`,
       keyboard
     );
   }
