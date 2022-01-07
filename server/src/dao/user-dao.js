@@ -1,7 +1,11 @@
 'use strict';
 
 import db from '../db.js';
+import dayjs from 'dayjs';
 import bcrypt from 'bcrypt';
+import VTC from '../utils/vtc.js';
+
+const vtc = new VTC();
 
 // --- Get user info by providing username and password
 export function getUser(username, password) {
@@ -152,6 +156,29 @@ export function registerUser(user) {
           }
         );
       });
+    });
+  });
+}
+
+
+// Get all the entrise of a give user suspensions
+export function getUserSuspensionsById(id) {
+  return new Promise((resolve, reject) => {
+    let currTime = new Date(vtc.time());
+    let date = dayjs(currTime).format('YYYY-MM-DD HH:mm');
+    console.log(date);
+    const sql = 'SELECT s.ref_client FROM Suspension s WHERE ref_client=? AND s.start_date <= DATE(?) AND s.end_date > DATE(?)';
+    db.get(sql, [id, date, date], (err, row) => {
+      console.log(err);
+      if (err) {
+        reject(err);
+        return;
+      }
+      console.log(row);
+      if(row != undefined)
+        resolve(true);
+        else
+        resolve(false);
     });
   });
 }

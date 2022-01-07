@@ -49,7 +49,7 @@ function App() {
   const doLogin = async (credentials) => {
     try {
       const res = await api_login(credentials);
-      const suspended = await api_isUserSuspended();
+      const suspended = await api_isUserSuspended(res.id);
       setUserRole(res.role);
       setLoggedIn(true);
       setSuspendedUser(suspended);
@@ -81,12 +81,12 @@ function App() {
         const checkAuth = async () => {
             try {
                 const info = await api_getUserInfo();
-                const suspended = await api_isUserSuspended();
-                setSuspendedUser(suspended);
+                const suspended = await api_isUserSuspended(info.id);
                 setUser(info);
                 setUserId(info.id);
                 setUserRole(info.role);
                 setLoggedIn(true);
+                setSuspendedUser(suspended);
             } catch (err) {
                 setUserRole('');
             }
