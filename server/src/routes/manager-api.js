@@ -4,6 +4,9 @@ import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import { managerDAO } from '../dao';
 import { isLoggedIn_Manager } from '../utils';
+import VTC from '../utils/vtc';
+
+const vtc = new VTC();
 
 export const router = Router();
 
@@ -16,7 +19,7 @@ export const router = Router();
 
 router.get('/api/manager/stats', isLoggedIn_Manager,
     (req, res) => {
-        managerDAO.computeHomepageStats()
+        managerDAO.computeHomepageStats(vtc.time())
             .then((result) => 
                 res.status(200).json(result).end())
             .catch((err) => 

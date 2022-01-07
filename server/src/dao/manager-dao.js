@@ -204,12 +204,10 @@ export function generateMonthlyReport(date) {
  *
  *  @returns {object} An object containing the statistics described above.
  */
-export function computeHomepageStats() {
+export function computeHomepageStats(date) {
     return new Promise((resolve, reject) => {
         // Get the current date and compute stats for the current week
-        let date = new Date(vtc.time());
-
-        let date_array = computeWeek(date);
+        let date_array = computeWeek(new Date(date));
 
         let startDate = date_array[0];
         let endDate = date_array[1];
@@ -342,6 +340,46 @@ export function test_addDummyOrders_report() {
                             }
                             resolve(0);
                         });
+                    });
+            });
+        });
+    });
+}
+
+export function test_addDummyData_stats() {
+    return new Promise((resolve, reject) => {
+        // Delete pre-existing dummy data if present
+        const date1 = dayjs(new Date("January, 1 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
+        const date2 = dayjs(new Date("January, 3 2999 00:00:00")).format('YYYY-MM-DD HH:mm');
+        const sql = 'DELETE FROM Request WHERE date >= DATE(?)';
+    
+        db.run(sql, [date1], function (err) {
+            if (err) reject(err);
+
+            // Serialize queries
+            db.serialize(function () {
+                db.run(
+                    `INSERT INTO Request(ref_client, status, date) VALUES 
+                        (2, 'delivered', DATE(?)),
+                        (4, 'delivered', DATE(?)),
+                        (5, 'unretrieved', DATE(?)),
+                        (2, 'delivered', DATE(?));`,
+                    [date2, date2, date2, date2],
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
+                        }
+                    });
+                db.run(
+                    `INSERT INTO Product(ref_prod_descriptor, quantity, price, date)
+                        VALUES(2, 10.0, 5.0, DATE(?));`,
+                    [date2],
+                    function (err1) {
+                        if (err1) {
+                            reject(err1);
+                        }
+                        
+                        resolve(0);
                     });
             });
         });
