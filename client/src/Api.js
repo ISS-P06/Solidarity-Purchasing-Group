@@ -468,3 +468,27 @@ export const api_generateMonthlyReport = async (date) => {
         manageError(err.response.status, 'Sorry, there was an error in generating the monthly report');
     }
 };
+
+/**
+ * Compute statistics for the manager's homepage.
+ * @returns {object} An object with the following structure:
+ * {
+ *      userStats: {
+ *          [role]: [number of users with that role]
+ *      },
+ *      orderStats: [number of orders made this week],
+ *      farmerStats: [number of farmers who reported supplies for this week]
+ * }
+ */
+export const api_computeHomepageStats = async () => {
+    try {
+        const res = await axios.get('/api/manager/stats');
+        if (res.data.id) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, "Sorry, there was an error in computing statistics.");
+    }
+};

@@ -2,6 +2,9 @@
 
 import db from '../db';
 import dayjs from 'dayjs';
+import VTC from '../utils/vtc';
+
+const vtc = new VTC();
 
 /**
  * This file contains all queries related to the manager's
@@ -27,6 +30,7 @@ import dayjs from 'dayjs';
  */
 function computeWeek(date) {
     let startDate = new Date(date);
+
     // 0 = Sunday => Saturday = 6
     while (startDate.getDay() != 6) {
         startDate.setDate(startDate.getDate() - 1);
@@ -44,6 +48,7 @@ function computeWeek(date) {
 
     let end = dayjs(endDate).format('YYYY-MM-DD');
     end = end + ' 23:59';
+
 
     return [ start, end ];
 }
@@ -189,6 +194,103 @@ export function generateMonthlyReport(date) {
             .catch((err) => reject(err));
     });
 };
+
+/**
+ * Computes statistics to be displayed on the manager's homepage, 
+ * including:
+ * - total number of users of each type (i.e. total number of clients, employees, farmers, etc.)
+ * - total number of orders made this week
+ * - number of farmers contributing this week
+ *
+ *  @returns {object} An object containing the statistics described above.
+ */
+export function computeHomepageStats() {
+    return new Promise((resolve, reject) => {
+        // Get the current date and compute stats for the current week
+        let date = new Date(vtc.time());
+
+        let date_array = computeWeek(date);
+
+        let startDate = date_array[0];
+        let endDate = date_array[1];
+
+        let userStats = {};
+        let orderStats = {};
+        let farmerStats = {};
+
+        const sql_users = `
+                SELECT U.role AS role, COUNT(DISTINCT U.id) AS numUsers
+                FROM user U
+                GROUP BY U.role;
+            `;
+        
+        const sql_orders = `
+                SELECT COUNT(DISTINCT R.id) AS numOrders
+                FROM request R
+                WHERE date >= DATE(?)
+                    AND date < DATE(?);
+            `;
+
+        const sql_farmer = `
+                SELECT COUNT(DISTINCT PD.ref_farmer) AS numFarmers
+                FROM product P, prod_descriptor PD
+                WHERE P.ref_prod_descriptor = PD.id
+                    AND P.date >= DATE(?)
+                    AND P.date < DATE(?);
+            `;
+
+        db.serialize(() => {
+                // ---
+                db.all(sql_users, [], (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (rows) {
+                        let stats = {};
+
+                        for (let row of rows) {
+                            stats[row.role] = row.numUsers;
+                        }
+
+                        userStats = {
+                            userStats: stats
+                        };
+                    }
+                });
+                // ---
+                db.get(sql_orders, [startDate, endDate], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (row) {
+                        orderStats = {
+                            numOrders: row.numOrders
+                        };
+                    }
+                });
+                // ---
+                db.get(sql_farmer, [startDate, endDate], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    if (row) {
+                        farmerStats = {
+                            numFarmers: row.numFarmers
+                        };
+                    }
+
+                    resolve({
+                        ...userStats,
+                        ...orderStats,
+                        ...farmerStats
+                    });
+                });
+            });
+    });
+}
 
 /**
  * (Used only for testing purposes)
