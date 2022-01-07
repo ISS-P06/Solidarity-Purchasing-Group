@@ -1,4 +1,4 @@
-import { Telegraf } from 'telegraf';
+import { Telegraf, Markup } from 'telegraf';
 
 /**
  * Instance of the telegram bot
@@ -11,12 +11,22 @@ export const bot = new Telegraf(process.env.BOT_TOKEN);
  * @param {object} product Product informations
  */
 export async function sendNewProductMessage(product) {
-  const string = `A new product has just been added to the available products of the weekend:
+  const string = `A new product has just been added to the available products of the week:
 🥫 ${product.name}
 ⚖️ ${product.quantity} ${product.unit}
 💰 ${product.price} €/${product.unit}`;
 
   sendTelegramMessage(string);
+}
+
+/**
+ * Send a formatted message when the updated list of available products is available
+ *
+ */
+export async function sendAvailableProductsMessage() {
+  sendTelegramMessage(
+    "Now it's possible to order all the available products of the week\nHave a look on the app 👀"
+  );
 }
 
 /**
@@ -26,16 +36,20 @@ export async function sendNewProductMessage(product) {
  */
 export async function sendTelegramMessage(string) {
   if (process.env.BOT_TOKEN) {
-    bot.telegram.sendMessage(process.env.CHANNEL_ID, string);
-  }
-}
+    const keyboard = Markup.inlineKeyboard([
+      Markup.button.url('Solidarity Purchasing Group', 'https://spg06.herokuapp.com/'),
+    ]);
 
-/**
- * Send a formatted message when the updated list of available products is available
- *
- */
-export async function sendAvailableProductsMessage() {
-  sendTelegramMessage("Now it is possible to order all available products this week. Look at them on the web page.");
+    const fingers = ['👇', '👇🏻', '👇🏿', '👇🏽', '👇🏾', '👇🏼'];
+
+    bot.telegram.sendMessage(
+      process.env.CHANNEL_ID,
+      `${string}\n\nClick on the link below! ${
+        fingers[Math.floor(Math.random() * fingers.length)]
+      }`,
+      keyboard
+    );
+  }
 }
 
 /**
