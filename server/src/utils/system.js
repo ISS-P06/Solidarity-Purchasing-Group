@@ -49,6 +49,15 @@ class SYS {
         if(day==5 && hours == 23){
             this.event_setUndeliveredOrders();
         }
+
+        /**
+         * this checks whether the friday night is exceeded or not
+         * if it is exceeded the system should send emails for people who have 3 or 4 missed pickups
+         */
+        if (day == 5 && hours == 23) {
+            console.log('salem')
+            systemDAO.getMailListWithThreeOrFourMissedPickups().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
+        }
     }
 
     /**
@@ -108,6 +117,16 @@ class SYS {
                 })
                 .catch((err) => console.log(err));
         }        
+    }
+
+    event_sendSuspensionWarning(customersInfo) {
+        for (let customerInfo of customersInfo) {
+            mailerUtil.sendWarningSuspension(customerInfo)
+                .then((res) => {
+                    // ok
+                })
+                .catch((err) => console.log(err));
+        }
     }
 }
 

@@ -202,3 +202,21 @@ export function setUndeliveredOrders() {
       resolve();
   });
 }
+
+/**
+ * this function queries the db to get some information about the client who have
+ * 3 or 4 missed pickups of their order
+ * @return {Promise<unknown>}
+ */
+export async function getMailListWithThreeOrFourMissedPickups() {
+  const warningMissedPickups = [3, 4]
+  return  new Promise((resolve, reject) => {
+    const customerInfoQuery = 'select email, name ,surname ,missed_pickups from Client C,User U where u.id = C.ref_user AND C.missed_pickups IN ('+warningMissedPickups.map(v=>'?')+')'
+    db.all(customerInfoQuery, [...warningMissedPickups], function (err, rows) {
+      if (err) {
+        reject(err);
+      }
+      resolve(rows);
+    })
+  })
+}
