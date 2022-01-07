@@ -201,7 +201,10 @@ export function generateMonthlyReport(date) {
  * - total number of users of each type (i.e. total number of clients, employees, farmers, etc.)
  * - total number of orders made this week
  * - number of farmers contributing this week
+ * - total number of different products added by farmers this week
  *
+ *  @param {Date} date The date for which to compute statistics. It's set to the current
+ *      date and time by the API.
  *  @returns {object} An object containing the statistics described above.
  */
 export function computeHomepageStats(date) {
@@ -215,6 +218,7 @@ export function computeHomepageStats(date) {
         let userStats = {};
         let orderStats = {};
         let farmerStats = {};
+        let productStats = {};
 
         const sql_users = `
                 SELECT U.role AS role, COUNT(DISTINCT U.id) AS numUsers
@@ -230,7 +234,7 @@ export function computeHomepageStats(date) {
             `;
 
         const sql_farmer = `
-                SELECT COUNT(DISTINCT PD.ref_farmer) AS numFarmers
+                SELECT COUNT(DISTINCT PD.ref_farmer) AS numFarmers, COUNT(*) AS numProducts
                 FROM product P, prod_descriptor PD
                 WHERE P.ref_prod_descriptor = PD.id
                     AND P.date >= DATE(?)
@@ -278,12 +282,16 @@ export function computeHomepageStats(date) {
                         farmerStats = {
                             numFarmers: row.numFarmers
                         };
+                        productStats = {
+                            numProducts: row.numProducts
+                        };
                     }
 
                     resolve({
                         ...userStats,
                         ...orderStats,
-                        ...farmerStats
+                        ...farmerStats,
+                        ...productStats
                     });
                 });
             });
@@ -346,6 +354,12 @@ export function test_addDummyOrders_report() {
     });
 }
 
+/**
+ * (Used only for testing purposes)
+ * Adds dummy orders and products to test manager homepage statistics.
+ *
+ * @returns Promise; 0 if resolved, error message if rejected.
+ */
 export function test_addDummyData_stats() {
     return new Promise((resolve, reject) => {
         // Delete pre-existing dummy data if present

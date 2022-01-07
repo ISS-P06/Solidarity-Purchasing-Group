@@ -476,8 +476,9 @@ export const api_generateMonthlyReport = async (date) => {
  *      userStats: {
  *          [role]: [number of users with that role]
  *      },
- *      orderStats: [number of orders made this week],
- *      farmerStats: [number of farmers who reported supplies for this week]
+ *      numOrders: [number of orders made this week],
+ *      numFarmers: [number of farmers who reported supplies for this week],
+ *      numProducts: [number of products supplied by farmers for this week]
  * }
  */
 export const api_computeHomepageStats = async () => {

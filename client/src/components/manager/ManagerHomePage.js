@@ -13,6 +13,7 @@ function ManagerHomePage() {
     const [shopEmployees, setShopEmployees] = useState("");
     const [managers, setManagers] = useState("");
     const [orders, setOrders] = useState("");
+    const [suppliers, setSuppliers] = useState("");
     const [products, setProducts] = useState("");
     const history = useHistory();
 
@@ -24,7 +25,8 @@ function ManagerHomePage() {
                 setShopEmployees(response.userStats.shop_employee);
                 setManagers(response.userStats.manager);
                 setOrders(response.numOrders);
-                setProducts(response.numFarmers);
+                setSuppliers(response.numFarmers);
+                setProducts(response.numProducts);
             })
             .catch((error) => {
                 addMessage({ message: 'An error occurred during the homepage stats generation', type: 'danger' });
@@ -82,8 +84,15 @@ function ManagerHomePage() {
                         <Card bg="light" text="black" className="shadow p-2" >
                             <div style={{ textAlign: "left" }}>
                                 <GiFruitBowl className="stat-icon" />
-                                <span className="p-3">Number of confirmed products</span>
+                                <span className="p-3">Number of confirmed products this week </span>
                                 <span className="p-3" style={{ float: "right", fontSize: "18px" }}>{products}</span>
+                            </div>
+                        </Card>
+                        <Card bg="light" text="black" className="shadow p-2" >
+                            <div style={{ textAlign: "left" }}>
+                                <BsFillPersonFill className="stat-icon" />
+                                <span className="p-3">Number of suppliers this week </span>
+                                <span className="p-3" style={{ float: "right", fontSize: "18px" }}>{suppliers}</span>
                             </div>
                         </Card>
                     </Col>
@@ -92,7 +101,7 @@ function ManagerHomePage() {
                 <Row className="justify-content-center">
                     <Col xs={12} lg={6}>
                         <Card bg="light" text="black" className="shadow p-3 d-flex flex-row"
-                            onClick={() => { history.push('/manager/report/monthly'); }} >
+                            onClick={() => { history.push('/manager/report/weekly'); }} >
                             <div>
                                 <BsCalendarRangeFill className="feature-icon" />
                             </div>
