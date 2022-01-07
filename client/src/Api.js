@@ -483,7 +483,7 @@ export const api_generateMonthlyReport = async (date) => {
 export const api_computeHomepageStats = async () => {
     try {
         const res = await axios.get('/api/manager/stats');
-        if (res.data.id) {
+        if (res.data) {
             return res.data;
         } else {
             throw new Error(res.data.message);

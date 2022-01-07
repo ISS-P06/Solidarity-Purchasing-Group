@@ -4,6 +4,8 @@ import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill } from 'react-icons/bs
 import { GiFruitBowl, GiFruitTree } from 'react-icons/gi';
 import { VirtualClock } from '../components';
 import { FaRegListAlt } from 'react-icons/fa';
+import { BsCalendarRangeFill } from 'react-icons/bs';
+import { BsCalendarFill } from 'react-icons/bs';
 
 // todo add collaspse change
 
@@ -143,12 +145,12 @@ function FarmerMenu() {
 function ManagerMenu() {
   return (
       <Menu iconShape="circle">
-          <MenuItem icon={<FaRegListAlt />}>
+          <MenuItem icon={<BsCalendarRangeFill />}>
               <Link className="text-light" to="/manager/report/weekly">
                   Weekly reports
               </Link>
           </MenuItem>
-          <MenuItem icon={<FaRegListAlt />}>
+          <MenuItem icon={<BsCalendarFill />}>
               <Link className="text-light" to="/manager/report/monthly">
                 Monthly reports
               </Link>
