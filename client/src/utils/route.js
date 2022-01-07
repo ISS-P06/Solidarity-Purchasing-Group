@@ -7,6 +7,7 @@ const rolesPathRedirect = {
   shop_employee: '/employee/clients',
   client: '/client',
   farmer: '/farmer',
+  manager: '/manager',
 };
 
 /**

@@ -33,14 +33,14 @@ export function deleteBackup(path = backupPath) {
   unlinkSync(path);
 }
 
-// open database
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) throw err;
-});
-
 // During the test stage automatically do a backup of the clean database
 if (process.env.NODE_ENV === 'test') {
   doBackup();
 }
+
+// open database
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) throw err;
+});
 
 export default db;

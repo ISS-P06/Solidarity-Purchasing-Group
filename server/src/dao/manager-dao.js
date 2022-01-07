@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 /**
  * Notes on reports:
  * - all orders can be set to "delivered" until Friday evening. After that moment,
- *      all orders with "confirmed" status are automatically set to "undelivered"
+ *      all orders with "confirmed" status are automatically set to "unretrieved"
  * - for the purpose of generating a weekly report, the week starts on Saturday
  *      and ends on Friday.
  */
@@ -108,7 +108,7 @@ function computeReport(startDate, endDate) {
                 reject(err);
             }
 
-            let stats = rows.filter((r) => (r.status === "delivered" || r.status === "undelivered"));
+            let stats = rows.filter((r) => (r.status === "delivered" || r.status === "unretrieved"));
 
             let deliveredOrders = 0;
             let deliveredFood = 0.0;
@@ -133,6 +133,7 @@ function computeReport(startDate, endDate) {
                 totalOrders: totalOrders,
                 deliveredOrders: deliveredOrders,
                 undeliveredOrders: undeliveredOrders,
+                totalFood: totalFood,
                 deliveredFood: deliveredFood,
                 undeliveredFood: undeliveredFood,
                 perc_undeliveredOrd: undeliveredOrders / totalOrders,
@@ -224,7 +225,7 @@ export function test_addDummyOrders_report() {
                         });
                     });
                 db.run(
-                    `INSERT INTO Request(ref_client, status, date) VALUES (2, 'undelivered', DATE(?))`,
+                    `INSERT INTO Request(ref_client, status, date) VALUES (2, 'unretrieved', DATE(?))`,
                     [date2],
                     function (err1) {
                         if (err1) {
