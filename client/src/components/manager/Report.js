@@ -25,13 +25,17 @@ function Report(props) {
 
   // stats generation
   useEffect(() => {
-    api_generateReport(dayjs(date).format("YYYY-MM-DD HH:mm"))
-      .then((response) => {
-        setStats(response);
-      })
-      .catch((error) => {
-        addMessage({ message: 'An error occurred during the report generation', type: 'danger' });
-      });
+    if (date !== "") {
+      api_generateReport(dayjs(date).format("YYYY-MM-DD HH:mm"))
+        .then((response) => {
+          setStats(response);
+        })
+        .catch((error) => {
+          addMessage({ message: 'An error occurred during the report generation', type: 'danger' });
+        });
+    } else {
+      setStats("");
+    }
   }, [date]);
 
   return (<>
