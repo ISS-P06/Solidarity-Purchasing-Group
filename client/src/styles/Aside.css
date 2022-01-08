@@ -59,3 +59,7 @@
     margin-right: 22px;
     margin-bottom: 1px;
 }
+
+.collapse-arrow:hover {
+    cursor: pointer;
+}
