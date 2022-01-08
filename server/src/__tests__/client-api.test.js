@@ -47,13 +47,13 @@ describe('Test the get client orders api', () => {
 		authSession_client.get('/api/clients//orders/2').expect(404).end(done);
 	});
 });
-/*
+
 describe('Test the client path', () => {
   test('It should response GET api/client/4/basket', function (done) {
     authSession_client.get('/api/client/4/basket').expect(200).end(done);
   });
 });
-*/
+
 describe('test place a order', () => {
   test('Submit an order; It should response 200', function (done) {
     const userId = 2;
@@ -66,37 +66,6 @@ describe('test place a order', () => {
   });
 });
 
-/*
-describe('Test schedule a bag delivery', () => {
-    test('Schedule a bag delivery; It should response 200', () => {
-        const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-        return  authSession_client
-            .post('/api/orders/1/deliver/schedule')
-            .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(200);
-            })
-    });
-    test('Schedule a bag delivery; It should response 422 because validation fails', () => {
-        const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-        return  authSession_client
-            .post('/api/orders/marco/deliver/schedule')
-            .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(422);
-            });
-    });
-    test('Schedule a bag delivery; It should response 404', () => {
-        const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-        return authSession_client
-            .post('/api/order/1/delivery/schedule')
-            .send(data)
-            .then((response) => {
-                expect(response.statusCode).toBe(404);
-            });
-    });
-});
-*/
 describe('Test schedule a bag delivery', () => {
   test('Schedule a bag delivery; It should response 200', () => {
     const data = {address: "Via Marco Polo 11", date: "01-01-2020", startTime:"13:10", endTime:"15:00", typeDelivery: "home"};
@@ -136,10 +105,7 @@ describe('Test schedule a bag delivery', () => {
           expect(response.statusCode).toBe(404);
         });
   });
-
-
 });
-
 
 describe('Test failure add or delete a product into/from the basket', () => {
   test('Add a product; It should response 422 because validation fails', function (done) {
@@ -152,7 +118,7 @@ describe('Test failure add or delete a product into/from the basket', () => {
     authSession_client.post('/api/client/4/basket/remove').send(data).expect(422).end(done);
   });
 });
-/*
+
 describe('Test add or delete a product into/from the basket', () => {
   beforeAll(async () => {
     await basketDAO.test_addDummyBasketProducts();
@@ -168,4 +134,3 @@ describe('Test add or delete a product into/from the basket', () => {
     authSession_client.post('/api/client/4/basket/remove').send(data).expect(200).end(done);
   });
 });
-*/

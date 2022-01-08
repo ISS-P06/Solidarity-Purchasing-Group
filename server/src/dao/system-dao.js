@@ -68,7 +68,7 @@ export function test_addDummyOrders() {
         // Serialize queries
         db.serialize(() => {
           db.run(
-            `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`,
+            `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, 'pending', ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
             function (err2) {
               if (err2) reject(err2);
@@ -81,7 +81,7 @@ export function test_addDummyOrders() {
             }
           );
           db.run(
-            `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, pending, ?)`,
+            `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, 'pending', ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
             function (err2) {
               if (err2) reject(err2);
@@ -173,7 +173,7 @@ export function test_addConfirmedDummyOrders() {
         // Serialize queries
         db.serialize(() => {
           db.run(
-            `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, confirmed, ?)`,
+            `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, 'confirmed', ?)`,
             [dayjs("2022-01-01 17:00", "YYYY-MM-DD HH:MM").format('YYYY-MM-DD HH:MM')],
             function (err2) {
               if (err2) reject(err2);
