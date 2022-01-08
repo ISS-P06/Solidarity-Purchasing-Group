@@ -1,17 +1,36 @@
-import { Navbar as BNavbar, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { Navbar as BNavbar, Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { BsBasket2, BsPersonCircle } from 'react-icons/bs';
 import { BiUser, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { BasketOffcanvas } from '.';
+import { FaBars } from 'react-icons/fa';
 
 import { getUserRoute } from '../utils';
 
 function Navbar(props) {
-  const { userRole, userId, virtualTime, openBasketOffCanvas, setOpenBasketOffCanvas } = props;
+  const {
+    userRole,
+    userId,
+    virtualTime,
+    openBasketOffCanvas,
+    setOpenBasketOffCanvas,
+    handleToggle,
+  } = props;
 
   return (
     <BNavbar collapseOnSelect className="navbar text-light" fixed="top" fluid="true" expand="false">
+      {/* This button shows up on mobile version for showing the sidebar */}
+      {!userRole ? null : (
+        <Button
+          as={FaBars}
+          className="btn aside-toggle"
+          variant="success"
+          onClick={() => handleToggle()}>
+          <FaBars />
+        </Button>
+      )}
+
       <BNavbar.Brand as={Link} to={getUserRoute(userRole)} style={{ color: '#fff' }}>
         <BsBasket2 size={30} /> SPG
       </BNavbar.Brand>
@@ -26,9 +45,7 @@ function Navbar(props) {
             show={openBasketOffCanvas}
             setShow={setOpenBasketOffCanvas}
           />
-        ) : (
-          <></>
-        )}
+        ) : null}
       </ButtonGroup>
     </BNavbar>
   );
