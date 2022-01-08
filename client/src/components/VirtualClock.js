@@ -95,12 +95,12 @@ function VirtualClock(props) {
         className={`virtual-clock${collapsed ? '-collapsed' : ''}`}
         variant="success"
         onClick={handleShow}>
-        {collapsed ? <BsClockHistory style={{ marginBottom: `2px` }} size={18} /> : 'Virtual Clock'}
+        {collapsed ? <BsClockHistory style={{ marginBottom: `2px` }} size={18} /> : 'Virtual clock'}
       </Button>
 
       <Modal show={showModalVT} onHide={handleClose}>
         <Modal.Header className="justify-content-center" closeButton>
-          <Modal.Title>Virtual Clock</Modal.Title>
+          <Modal.Title>Virtual clock</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
           <Form onSubmit={handleSubmit}>
