@@ -54,3 +54,8 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.collapse-arrow {
+    margin-right: 22px;
+    margin-bottom: 1px;
+}

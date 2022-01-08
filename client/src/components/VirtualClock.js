@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Col, Form, Row, Button, Modal } from 'react-bootstrap';
 
 import TimePicker from 'react-bootstrap-time-picker';
+import { BsClockHistory } from 'react-icons/bs';
 
 import { api_setTime } from '../Api';
 import { humanToISO, ISOtoHuman } from '../utils';
@@ -26,6 +27,7 @@ function VirtualClock(props) {
   const setDirtyVT = props.setDirtyVT;
   const virtualTime = props.virtualTime;
   const dirtyVT = props.dirtyVT;
+  const collapsed = props.collapsed;
 
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(0);
@@ -54,7 +56,9 @@ function VirtualClock(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const ISODate = humanToISO(date, time);
-    await api_setTime(ISODate).catch((e) => addMessage({title:"Error", message: e.message, type: 'danger' }));
+    await api_setTime(ISODate).catch((e) =>
+      addMessage({ title: 'Error', message: e.message, type: 'danger' })
+    );
 
     setDirtyVT(true);
 
@@ -87,8 +91,11 @@ function VirtualClock(props) {
 
   return (
     <>
-      <Button variant="success" onClick={handleShow}>
-        Virtual clock
+      <Button
+        className={`virtual-clock${collapsed ? '-collapsed' : ''}`}
+        variant="success"
+        onClick={handleShow}>
+        {collapsed ? <BsClockHistory /> : 'Virtual clock'}
       </Button>
 
       <Modal show={showModalVT} onHide={handleClose}>
