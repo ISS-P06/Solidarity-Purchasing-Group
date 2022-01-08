@@ -29,7 +29,7 @@ class SYS {
         if (day == 1
          && hours == 9) {
             this.event_checkForInsufficientBalance(test);
-            this.event_updateOrders();
+            //this.event_updateOrders();
         }
 
         /**
