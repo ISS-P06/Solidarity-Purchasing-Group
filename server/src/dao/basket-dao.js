@@ -46,7 +46,6 @@ export function addProductToBasket(clientId, productId, quantity) {
     db.run(sql, [clientId, productId, quantity], (err, rows) => {
       if (err) {
         reject(err);
-        return;
       }
     });
     const sql2 = `UPDATE Product SET quantity = quantity - ? WHERE id = ?`;
@@ -69,26 +68,60 @@ export function addProductToBasket(clientId, productId, quantity) {
  */
 export function removeProductFromBasket(clientId, productId) {
   return new Promise((resolve, reject) => {
-    const sql1 = `SELECT quantity FROM Basket WHERE ref_client=? AND ref_product=? `;
+    const sql1 = `SELECT quantity FROM Basket WHERE ref_client=? AND ref_product=?;`;
     db.get(sql1, [clientId, productId], (err, row) => {
       if (err) {
         reject(err);
+      }
+
+      if (row == undefined) {
+        resolve("No product found");
         return;
       }
+
       const sql2 = `UPDATE Product SET quantity = quantity + ? WHERE id = ?`;
-      db.run(sql2, [row.quantity, productId], (err, rows) => {
-        if (err) {
-          reject(err);
-          return;
+      db.run(sql2, [row.quantity, productId], (err1) => {
+        if (err1) {
+          reject(err1);
         }
       });
       const sql3 = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
-      db.run(sql3, [clientId, productId], (err, rows) => {
-        if (err) {
-          reject(err);
-          return;
+      db.run(sql3, [clientId, productId], (err1) => {
+        if (err1) {
+          reject(err1);
         }
         resolve(productId);
+      });
+    });
+  });
+}
+
+/**
+ * (Used for testing purposes only)
+ * Adds products in a client's basket for testing purposes.
+ * 
+ * @returns {Promise}
+ * - resolved if operation is successful
+ * - rejected otherwise
+ */
+export function test_addDummyBasketProducts() {
+  return new Promise((resolve, reject) => {
+    // delete basket products if present
+    const sql = "DELETE FROM basket WHERE ref_product = 4 AND ref_client = 4;";
+
+    db.run(sql, [], (err) => {
+      if (err) {
+        reject(err);
+      }
+
+      const sql1 = "INSERT INTO basket(ref_product, ref_client, quantity) VALUES (4, 4, 1.0);"
+
+      db.run(sql1, [], (err1) => {
+        if (err1) {
+          reject(err1);
+        }
+
+        resolve(0);
       });
     });
   });

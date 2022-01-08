@@ -26,29 +26,168 @@ export function insertOrder(orderClient) {
         orderClient.order.map((product, index) => {
           const insertProdQuery = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,?,?)`;
 
-          db.run(insertProdQuery, [OrderID, product.id, product.quantity], function (err) {
-            if (err) {
-              reject(err);
+          db.run(insertProdQuery, [OrderID, product.id, product.quantity], function (err1) {
+            if (err1) {
+              reject(err1);
               return;
             }
 
             const updateQuery = `UPDATE Product SET quantity=quantity-? WHERE id=?`;
 
-            db.run(updateQuery, [product.quantity, product.id], function (err) {
-              if (err) {
-                reject(err);
+            db.run(updateQuery, [product.quantity, product.id], function (err2) {
+              if (err2) {
+                reject(err2);
                 return;
               }
 
               // When the last product is inserted resolve the promise
               if (orderClient.order.length === index + 1) {
-                resolve(OrderID);
+                checkBalanceAndSetStatus(OrderID)
+                  .then(() => resolve(OrderID))
+                  .catch((err3) => reject(err3));
               }
             });
           });
         });
       }
     );
+  });
+}
+
+/**
+ * Computes an order's total amount to be paid, eventually taking into
+ * account delivery fees.
+ *
+ * @param {int} orderID: the order's unique ID
+ */
+export function computeOrderTotal(orderID) {
+  return new Promise(async (resolve, reject) => {
+    // Extra fee for delivery at home amounts to 10 euros
+    const deliveryFee = 10.0;
+
+    const sql = `
+        SELECT SUM(P.price * PR.quantity) AS totalAmount
+        FROM client C, request R, product_request PR, product P
+        WHERE R.id = ?
+          AND PR.ref_request = R.id
+          AND PR.ref_product = P.id
+          AND R.ref_client = C.ref_user;
+      `;
+
+    db.all(sql, [orderID], async (err, rows) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (!rows) {
+        reject('order not found');
+      }
+
+      const order = rows[0];
+      try {
+        // Check whether the order has to be delivered at home or not
+        const delivery = await getDeliveryByRequestId(orderID);
+
+        /*
+          Note: the condition for the following if statement was written to make it 
+          compatible with both the old and new versions of the database for the current sprint (#4).
+
+          If the old database is used, the "deliveryAtHome" field will be undefined, and no delivery
+            fee will be added to the total amount.
+          If the new database is used, the field will be defined and will either be a "true" or "false"
+            string.
+        */
+        if (
+          delivery &&
+          delivery.deliveryAtHome != undefined &&
+          delivery.deliveryAtHome === 'true'
+        ) {
+          resolve(order.totalAmount + deliveryFee);
+        } else {
+          resolve(order.totalAmount);
+        }
+      } catch (err1) {
+        reject(err1);
+      }
+    });
+  });
+}
+
+/**
+ * This function checks if a client's balance is enough to pay for
+ * the given order and changes the order's status to:
+ * - "confirmed", if the client has enough balance;
+ * - "pendinc_canc", if the balance is insufficient
+ * The function also updates the client's balance if it is sufficient.
+ *
+ * @param {int} orderID: the unique ID of the order
+ */
+export function checkBalanceAndSetStatus(orderID) {
+  return new Promise((resolve, reject) => {
+    // Get the client's ID and balance for the given order
+    const sql = `
+        SELECT DISTINCT C.ref_user AS clientID, C.balance AS clientBalance
+          FROM client C, request R
+          WHERE R.id = ? AND R.ref_client = C.ref_user;`;
+
+    db.all(sql, [orderID], async function (err, rows) {
+      if (err) {
+        reject(err);
+      }
+
+      if (rows === undefined || rows.length === 0 || !rows) {
+        reject('error: no order found');
+        return;
+      }
+
+      // Get client info and the total amount to pay for the order
+      const clientInfo = rows[0];
+      const orderTotal = await computeOrderTotal(orderID).catch((e) => reject(e));
+
+      // Check whether the client's balance is enough to pay for the order
+      if (clientInfo.clientBalance >= orderTotal) {
+        // Decrease the client's balance and set the order's status to "confirmed"
+        const sql_balance = `
+            UPDATE client
+            SET balance = balance - ?
+            WHERE ref_user = ?;
+          `;
+        const sql_order = `
+          UPDATE request
+          SET status = 'confirmed'
+          WHERE id = ?;
+          `;
+
+        db.serialize(() => {
+          db.run(sql_balance, [orderTotal, clientInfo.clientID], (err2) => {
+            if (err2) {
+              reject(err2);
+            }
+          });
+          db.run(sql_order, [orderID], (err2) => {
+            if (err2) {
+              reject(err2);
+            }
+          });
+        });
+        resolve('confirmed');
+      } else {
+        // Set the order's status to "pending_canc" and do not decrease the client's balance
+        const sql_order = `
+          UPDATE request
+          SET status = 'pending_canc'
+          WHERE id = ?;
+          `;
+
+        db.run(sql_order, [orderID], (err2) => {
+          if (err2) {
+            reject(err2);
+          }
+        });
+
+        resolve('pending_canc');
+      }
+    });
   });
 }
 
@@ -62,8 +201,8 @@ export function insertOrder(orderClient) {
 export function getOrders(clientId = -1) {
   return new Promise((resolve, reject) => {
     let sql = `SELECT r.id, u.email, r.date, r.status
-                    FROM Request r, Client c, User u
-            WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
+                FROM Request r, Client c, User u
+                WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
     let deps = [];
     if (clientId !== -1) {
       sql += ` AND u.id = ?`;
@@ -157,7 +296,7 @@ export function getOrderById(orderId, clientId = -1) {
                     AND p.ref_prod_descriptor = pd.id
                     AND r.id=?`;
 
-    const sql3 = `SELECT d.address, d.date, d.time
+    const sql3 = `SELECT d.address, d.date, d.startTime, d.endTime, d.deliveryAtHome
                   FROM Delivery d
                   WHERE d.ref_request= ? `;
 
@@ -173,10 +312,10 @@ export function getOrderById(orderId, clientId = -1) {
         return;
       }
 
-      let productsPromise = new Promise((resolve, reject) => {
-        db.all(sql2, orderId, (err, rows) => {
-          if (err) {
-            reject(err);
+      let productsPromise = new Promise((resolve1, reject1) => {
+        db.all(sql2, orderId, (err1, rows) => {
+          if (err1) {
+            reject1(err1);
             return;
           }
           const products = rows.map((p) => ({
@@ -185,7 +324,7 @@ export function getOrderById(orderId, clientId = -1) {
             price: p.price,
             unit: p.unit,
           }));
-          resolve(products);
+          resolve1(products);
         });
       });
 
@@ -203,16 +342,22 @@ export function getOrderById(orderId, clientId = -1) {
           address: row.address,
           products: products,
         };
-        db.get(sql3, [orderId], function (err, row) {
-          if (err) {
-            reject(err);
+        db.get(sql3, [orderId], function (err1, row1) {
+          if (err1) {
+            reject(err1);
             return;
           }
-          if (row == undefined) {
+          if (row1 == undefined) {
             resolve(order);
             return;
           }
-          order.delivery = { address: row.address, date: row.date, time: row.time };
+          order.delivery = {
+            address: row1.address,
+            date: row1.date,
+            startTime: row1.startTime,
+            endTime: row1.endTime,
+            deliveryAtHome: row1.deliveryAtHome,
+          };
           resolve(order);
         });
       });
@@ -228,7 +373,6 @@ export function setOrderStatus(orderId, status) {
     db.run(sql, [status, orderId], (err) => {
       if (err) {
         reject(err);
-        return;
       }
     });
     resolve(orderId);
@@ -243,9 +387,19 @@ export function setOrderStatus(orderId, status) {
  */
 export function scheduleOrderDeliver(orderId, delivery) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO Delivery(ref_request, address, date,time) VALUES(?, ?, ?,?)';
-    db.run(sql, [orderId, delivery.address, delivery.date, delivery.time], (err) =>
-      err ? reject(err) : resolve(orderId)
+    const sql =
+      'INSERT INTO Delivery(ref_request, address, date, startTime, endTime, deliveryAtHome) VALUES(?, ?, ?, ?, ?, ?)';
+    db.run(
+      sql,
+      [
+        orderId,
+        delivery.address,
+        delivery.date,
+        delivery.startTime,
+        delivery.endTime,
+        delivery.typeDelivery === 'home' ? 'true' : 'false',
+      ],
+      (err) => (err ? reject(err) : resolve(orderId))
     );
   });
 }
@@ -255,18 +409,17 @@ export function scheduleOrderDeliver(orderId, delivery) {
  * @param {Date} currentDate current date needed to get only the unretrieved orders of the last month
  * @returns all the unretrieved orders
  */
- export function getUnretrievedOrders(currentDate) {
+export function getUnretrievedOrders(currentDate) {
   return new Promise((resolve, reject) => {
-
     // Convert currentDate into a format readable by SQLite
     let endDate = dayjs(currentDate).format('YYYY-MM-DD');
     endDate = endDate + ' 00:00';
 
     //Start date corresponds to the first day of the current month
     //We want to get the unretrieved the orders of the last month
-    const month = dayjs(currentDate).get("month"); 
-    const year = dayjs(currentDate).get("year");
-    const startDateString = "" + year + "-" + month + "-" + "01";
+    const month = dayjs(currentDate).get('month');
+    const year = dayjs(currentDate).get('year');
+    const startDateString = '' + year + '-' + month + '-' + '01';
     let startDate = dayjs(startDateString, 'YYYY-MM-DD');
     startDate = startDate + ' 00:00';
 
@@ -280,6 +433,31 @@ export function scheduleOrderDeliver(orderId, delivery) {
         return;
       }
       resolve(rows);
+    });
+  });
+}
+
+/**
+ * Returns the DB tuple associated with a given order. Can also
+ * return an "undefined" object in case there's no delivery associated
+ * with it.
+ *
+ * @param {int} requestId: the order's unique ID
+ * @returns {Promise}
+ * - resolved promise containing the tuple, if the operation is successful
+ * - rejected promise otherwise
+ */
+function getDeliveryByRequestId(requestId) {
+  return new Promise((resolve, reject) => {
+    const sql = `
+                  SELECT d.ref_request
+                  FROM Delivery d
+                  WHERE d.ref_request = ?;
+                  `;
+
+    db.get(sql, [requestId], (err, row) => {
+      if (err) reject(err);
+      resolve(row);
     });
   });
 }

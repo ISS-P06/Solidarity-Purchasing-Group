@@ -22,9 +22,8 @@ describe('Test SYS class: trigger for insufficient balance notification', () => 
     // Mon. 9am
     let day = new Date('December 06, 2021 09:00:00');
 
-    sys.checkTimedEvents(day);
-
-    sys.event_updateOrders();
+    // checkTimedEvents is called with test = true
+    sys.checkTimedEvents(day, true);
 
     let mailingList = [
       {
@@ -33,7 +32,8 @@ describe('Test SYS class: trigger for insufficient balance notification', () => 
       },
     ];
 
-    sys.event_sendBalanceReminders(mailingList);
+    // Called with test = true
+    sys.event_sendBalanceReminders(mailingList, true);
   });
 });
 
@@ -52,5 +52,19 @@ describe('Test SYS class: trigger for basket reset', () => {
     sys.checkTimedEvents(day2);
     sys.checkTimedEvents(day3);
     sys.checkTimedEvents(day4);
+  });
+});
+
+describe('Test SYS class: trigger to set order to unretrieved status', () => {
+  beforeAll(async () => {
+    await systemDAO.test_addConfirmedDummyOrders();
+  });
+
+  test('Everything should work', () => {
+    // Friday, 23:00 
+    // The dummy order changes status from 'confirmed' to 'unretrieved'
+    let day = new Date('January 07, 2022 23:00:00');
+
+    sys.checkTimedEvents(day);
   });
 });

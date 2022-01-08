@@ -1,8 +1,13 @@
 import {Carousel, Image, Row, Col, Container} from 'react-bootstrap';
 import {BsFillPersonPlusFill, BsBox} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
-import {RiShoppingBasketFill} from 'react-icons/ri';
+import {RiShoppingBasketFill, RiTelegramLine} from 'react-icons/ri';
 import {GiFruitBowl,GiWallet, GiFruitTree} from 'react-icons/gi';
+import {MdPendingActions, MdDeliveryDining} from 'react-icons/md';
+import {FaTelegramPlane} from 'react-icons/fa';
+import {BiStore} from 'react-icons/bi'
+
+
 
 function HomePage() {
     const image1 = '/img/homepage/Agriculture.jpg';
@@ -90,6 +95,53 @@ function HomePage() {
                     high-quality network of food in order to buy and sell products at a fair price.
                 </h3>
                 <h1 className="pt-3" style={{color: "#27511D"}}>Check out our new features!</h1>
+                <h3 className="m-3 pt-1">Services for clients</h3>
+                <Row className="justify-content-center">
+                    <Col xs={6} lg={3}>
+                        <BsFillPersonPlusFill className="icon"/>
+                        <h5>
+                            Register
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <GiFruitBowl className="icon"/>
+                        <h5>
+                            Browse the available products
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <RiShoppingBasketFill className="icon"/>
+                        <h5>
+                            Add products to basket
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <BsBox className="icon"/>
+                        <h5>
+                            Browse orders
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <MdDeliveryDining className="icon"/>
+                        <h5>
+                            Schedule bag delivery
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <BiStore className="icon"/>
+                        <h5>
+                            Schedule pick-up in store
+                        </h5>
+                    </Col>
+                    <Col xs={6} lg={3}>
+                        <FaTelegramPlane className="icon"/>
+                        <h5>
+                            Join to telegram channel
+                        </h5>
+                    </Col>
+
+
+                </Row>
                 <h3 className="m-3 pb-2 pt-2">Services for shop employees</h3>
                 <Row className="justify-content-center">
                     <Col xs={6} lg={3}>
@@ -116,35 +168,14 @@ function HomePage() {
                             Top-up a client's wallet
                         </h5>
                     </Col>
+                    <Col xs={6} lg={3}>
+                        <MdPendingActions className="icon"/>
+                        <h5>
+                            Check order in cancellation
+                        </h5>
+                    </Col>
                 </Row>
-                <h3 className="m-3 pt-1">Services for clients</h3>
-                <Row className="justify-content-center">
-                    <Col xs={6} lg={3}>
-                        <BsFillPersonPlusFill className="icon"/>
-                        <h5>
-                            Register
-                        </h5>
-                    </Col>
-                    <Col xs={6} lg={3}>
-                        <GiFruitBowl className="icon"/>
-                        <h5>
-                            Browse the products available
-                        </h5>
-                    </Col>
-                    <Col xs={6} lg={3}>
-                        <RiShoppingBasketFill className="icon"/>
-                        <h5>
-                            Add product to basket
-                        </h5>
-                    </Col>
-                    <Col xs={6} lg={3}>
-                        <BsBox className="icon"/>
-                        <h5>
-                            Browse orders
-                        </h5>
-                    </Col>
 
-                </Row>
                 <h3 className="m-3 pt-1">Services for farmers</h3>
                 <Row className="justify-content-center">
                     <Col xs={6} lg={3}>

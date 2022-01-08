@@ -84,14 +84,14 @@ export function test_addDummyProductSupplies() {
       // insert dummy product descriptor
       db.run(`INSERT INTO prod_descriptor(name, description, category, unit, ref_farmer) 
         VALUES ('equijoin', 'unica operazione ammissibile', 'meats_cold_cuts', 'kg', 3);`, [], 
-        function (err) {
-            if (err) reject(err);
+        function (err1) {
+            if (err1) reject(err1);
             const id = this.lastID;
 
             // insert dummy product supply
             db.run(`INSERT INTO Product(ref_prod_descriptor, quantity, price, date) 
-            VALUES (?, 1, 39, DATE(?));`, [id, date], (err) => {
-                if (err) reject(err);
+            VALUES (?, 1, 39, DATE(?));`, [id, date], (err2) => {
+                if (err2) reject(err2);
 
                 resolve('ok');
               });

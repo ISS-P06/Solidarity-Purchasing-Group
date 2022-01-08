@@ -3,6 +3,7 @@ import session from 'supertest-session';
 
 import app from '../app';
 import { restoreBackup } from '../db';
+import { orderDAO } from '../dao';
 
 /**
  * During test the database can be modified, so we need to
@@ -66,7 +67,7 @@ describe('Test POST order ', function () {
     test('responds with json', function (done) {
         authSession_employee
         .post('/api/orders')
-        .send({ clientID: 1, order: [{ id: 55, quantity: 10.0 }] })
+        .send({ clientID: 2, order: [{ id: 55, quantity: 10.0 }] })
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -75,6 +76,32 @@ describe('Test POST order ', function () {
             return done();
         });
     });
+});
+
+describe("Test order status", function () {
+  let id_pending;
+  let id_confirmed;
+
+  beforeAll(() => {
+    orderDAO.insertOrder({ clientID: 2, order: 
+        [{ id: 1, quantity: 1.0 }] 
+      })
+      .then((res) => {id_confirmed = res});
+    orderDAO.insertOrder({ clientID: 2, order: [
+        { id: 1, quantity: 99999.0 }
+      ] })
+      .then((res) => {id_pending = res});
+  });
+
+  test("Check order status", async () => {
+    let status =  await orderDAO.checkBalanceAndSetStatus(id_pending);
+    
+    expect(status).toBe("pending_canc");
+
+    status = await orderDAO.checkBalanceAndSetStatus(id_confirmed);
+    
+    expect(status).toBe("confirmed");
+  });
 });
 
 describe('Test the orders path', () => {
@@ -87,32 +114,3 @@ describe('Test the orders path', () => {
   });
 });
 
-describe('Test schedule a bag delivery', () => {
-  test('Schedule a bag delivery; It should response 200', () => {
-    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-    return  authSession_employee
-        .post('/api/orders/3/deliver/schedule')
-        .send(data)
-        .then((response) => {
-          expect(response.statusCode).toBe(200);
-        })
-  });
-  test('Schedule a bag delivery; It should response 422 because validation fails', () => {
-    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-    return  authSession_employee
-        .post('/api/orders/marco/deliver/schedule')
-        .send(data)
-        .then((response) => {
-          expect(response.statusCode).toBe(422);
-        });
-  });
-  test('Schedule a bag delivery; It should response 404', () => {
-    const data = {address: "Via Marco Polo 11", date: "01-01-2020", time:"13:10"};
-    return request(app)
-        .post('/api/order/3/delivery/schedule')
-        .send(data)
-        .then((response) => {
-          expect(response.statusCode).toBe(404);
-        });
-  });
-});

@@ -12,6 +12,7 @@ import {
   clientRouter,
   farmerRouter,
   orderRouter,
+  managerRouter,
 } from './routes';
 
 /* express setup */
@@ -34,6 +35,11 @@ app.use(
 app.use(passportInit);
 app.use(passportSession);
 
+// serve static files on heroku
+if (process.env.HEROKU) {
+  app.use(express.static('../client/build'));
+}
+
 // VTC routes
 app.use(vtcRouter);
 // User routes
@@ -48,5 +54,7 @@ app.use(clientRouter);
 app.use(farmerRouter);
 // Order routes
 app.use(orderRouter);
+// Manager routes
+app.use(managerRouter);
 
 export default app;

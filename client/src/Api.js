@@ -418,7 +418,7 @@ export async function api_insertProductDescription(description) {
 /**
  * Schedule bag delivery
  * @param orderId: ID of the order
- * @param delivery: information about the delivery {address, date, time}
+ * @param delivery: information about the delivery {typeDelivery: home|store, address, date, startTime, endTime}
  */
 export const api_scheduleDelivery = async (orderId, delivery) => {
     try {
@@ -430,5 +430,66 @@ export const api_scheduleDelivery = async (orderId, delivery) => {
         }
     } catch (err) {
         manageError(err.response.status, 'Sorry, there was an error in scheduling bad delivery');
+    }
+};
+
+// Manager APIs
+
+/**
+ * Generate a weekly report of unretrieved food
+ * @param date: the start date
+ */
+export const api_generateWeeklyReport = async (date) => {
+    try {
+        const res = await axios.post('/api/manager/report/weekly', { date });
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in generating the weekly report');
+    }
+};
+
+/**
+ * Generate a monthly report of unretrieved food
+ * @param date: the start date
+ */
+export const api_generateMonthlyReport = async (date) => {
+    try {
+        const res = await axios.post('/api/manager/report/monthly', { date });
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, 'Sorry, there was an error in generating the monthly report');
+    }
+};
+
+/**
+ * Compute statistics for the manager's homepage.
+ * @returns {object} An object with the following structure:
+ * {
+ *      userStats: {
+ *          [role]: [number of users with that role]
+ *      },
+ *      numOrders: [number of orders made this week],
+ *      numFarmers: [number of farmers who reported supplies for this week],
+ *      numProducts: [number of products supplied by farmers for this week]
+ * }
+ */
+export const api_computeHomepageStats = async () => {
+    try {
+        const res = await axios.get('/api/manager/stats');
+        if (res.data) {
+            return res.data;
+        } else {
+            throw new Error(res.data.message);
+        }
+    } catch (err) {
+        manageError(err.response.status, "Sorry, there was an error in computing statistics.");
     }
 };

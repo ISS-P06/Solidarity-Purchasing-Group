@@ -6,7 +6,8 @@ import {
     InsertUser,
     RoutesEmployee,
     RoutesClient,
-    RoutesFarmer
+    RoutesFarmer,
+    RoutesManager
 } from './components';
 
 import HomePage from './containers/HomePage';
@@ -25,6 +26,7 @@ function App() {
     - shop_employee
     - client
     - farmer
+    - manager
 
     other values will be considered in subsequent sprints
     when necessary
@@ -38,6 +40,9 @@ function App() {
 
   // State used to store the system's virtual time
   const [virtualTime, setVirtualTime] = useState({});
+
+  //state used to the open basket off canvas when a new product is added in the basket
+  const [openBasketOffCanvas, setOpenBasketOffCanvas]=useState(false);
 
   // async function for logging in
   const doLogin = async (credentials) => {
@@ -66,7 +71,6 @@ function App() {
             }
         };
         getVT();
-        console.log(virtualTime);
     }, [dirtyVT]);
 
     // useEffect for getting user info
@@ -103,9 +107,12 @@ function App() {
     loggedIn,
     doLogout,
     userRole,
+    userId,
     dirtyVT,
     setDirtyVT,
-    virtualTime
+    virtualTime,
+    openBasketOffCanvas,
+    setOpenBasketOffCanvas
   };
 
   const RoutesEmployeeProps = {
@@ -115,7 +122,7 @@ function App() {
     userRole,
     userId,
     virtualTime,
-    user
+    user,
   };
 
   const RoutesClientProps = {
@@ -124,7 +131,8 @@ function App() {
     userRole,
     userId,
     user,
-    virtualTime
+    virtualTime,
+    setOpenBasketOffCanvas
   };
 
   const RoutesFarmerProps = {
@@ -133,6 +141,13 @@ function App() {
     userRole,
     userId,
     user,
+    virtualTime,
+  };
+
+  const RoutesManagerProps = {
+    loggedIn,
+    doLogin,
+    userRole,
     virtualTime,
   };
 
@@ -153,6 +168,10 @@ function App() {
             {/* --- Farmer-only routes --- */}
             <RoutesFarmer
               {...RoutesFarmerProps}/>
+
+            {/* --- Manager-only routes --- */}
+            <RoutesManager
+              {...RoutesManagerProps}/>
 
             {/* --- Default routes --- */}
             {/* User registration route */}
