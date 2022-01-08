@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { Offcanvas } from 'react-bootstrap';
+import { Button, Offcanvas } from 'react-bootstrap';
 import { BsBasket2} from 'react-icons/bs';
 import Basket from '../components/order/Basket';
 

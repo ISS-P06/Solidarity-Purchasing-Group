@@ -5,10 +5,9 @@ import {api_getProducts, api_addOrder} from '../../Api';
 import {addMessage} from '../Message';
 import ScheduleDelivery from "../client/ScheduleDelivery";
 function ClientOrderForm(props) {
-    const {show, onHide, client, openConfirmationModal, virtualTime} = props;
+    const {show, onHide, client, virtualTime} = props;
     const [productsList, setProductsList] = useState([]); /* list of products of available */
     const [categoriesList, setCategoriesList] = useState([]); /* list of the categories */
-
 
     const [productsClient, setProductsClient] = useState([]); /* list of the products ordered by the client */
     const [temporaryKey, setTemporaryKey] = useState(0);
@@ -67,13 +66,6 @@ function ClientOrderForm(props) {
             setProductsClient([]);
             setPartialPrice(0);
             setInsertProduct(true);
-            //
-
-            /*      /!* verify wallet of the customer *!/
-                  if (partialPrice > client.balance) {
-                    openConfirmationModal();
-                  }*/
-
         }
     };
 
@@ -180,10 +172,18 @@ export function ProductForm(props) {
             .filter((p) => p.quantity > 0);
         setProductsListbyCurrentCategory(itemsList);
 
-        setProductID(product ? product.id : itemsList[0] ? itemsList[0].id : ' ');
-        setQuantityOrdered(product ? product.quantityOrdered : 0.1);
-        setMaxQuantity(product ? '' : itemsList[0] ? itemsList[0].quantity : ' ');
-        setCurrentPrice(product ? 0 : itemsList[0] ? itemsList[0].price * 0.1 : ' ');
+        if (product) {
+            setProductID(product.id);
+            setQuantityOrdered(product.quantityOrdered);
+            setMaxQuantity('');
+            setCurrentPrice(0);
+        }
+        else {
+            setProductID(itemsList[0] ? itemsList[0].id : ' ');
+            setQuantityOrdered(0.1);
+            setMaxQuantity(itemsList[0] ? itemsList[0].quantity : ' ');
+            setCurrentPrice(itemsList[0] ? itemsList[0].price * 0.1 : ' ');
+        }
     }, []);
 
     const handleSubmit = (event) => {
@@ -239,9 +239,9 @@ export function ProductForm(props) {
         setProductID(_productID);
 
         const _product = productsList.find((p) => p.id === _productID);
-        const currentPrice = _product.price * quantityOrdered;
+        const currPrice = _product.price * quantityOrdered;
 
-        setCurrentPrice(currentPrice);
+        setCurrentPrice(currPrice);
     };
 
     const updateQuantity = (_quantity) => {

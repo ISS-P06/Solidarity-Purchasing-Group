@@ -15,9 +15,9 @@ export function getUser(username, password) {
       if (row == undefined) {
         resolve(false);
       } else {
-        bcrypt.compare(password, row.password, (err, same) => {
-          if (err) {
-            reject(err);
+        bcrypt.compare(password, row.password, (err1, same) => {
+          if (err1) {
+            reject(err1);
             return;
           }
 
@@ -60,32 +60,32 @@ export function getUserById(id) {
           phone: row.phone,
         };
         if (role === 'farmer') {
-          const sql = 'SELECT * FROM farmer WHERE ref_user=?;';
-          db.get(sql, [id], (err, row) => {
-            if (err) {
-              reject(err);
+          const sql1 = 'SELECT * FROM farmer WHERE ref_user=?;';
+          db.get(sql1, [id], (err1, row1) => {
+            if (err1) {
+              reject(err1);
               return;
             }
-            if (row == undefined) {
+            if (row1 == undefined) {
               resolve(false);
             } else {
-              user.address = row.address;
-              user.farm_name = row.farm_name;
+              user.address = row1.address;
+              user.farm_name = row1.farm_name;
               resolve(user);
             }
           });
         } else if (role === 'client') {
-          const sql = 'SELECT * FROM client WHERE ref_user=?;';
-          db.get(sql, [id], (err, row) => {
-            if (err) {
-              reject(err);
+          const sql1 = 'SELECT * FROM client WHERE ref_user=?;';
+          db.get(sql1, [id], (err1, row1) => {
+            if (err1) {
+              reject(err1);
               return;
             }
-            if (row == undefined) {
+            if (row1 == undefined) {
               resolve(false);
             } else {
-              user.address = row.address;
-              user.balance = row.balance;
+              user.address = row1.address;
+              user.balance = row1.balance;
               resolve(user);
             }
           });
@@ -104,8 +104,6 @@ export function getUserById(id) {
  */
 export function registerUser(user) {
   return new Promise((resolve, reject) => {
-    let userID;
-
     const userQuery =
       'INSERT INTO User (username ,password ,role, name, surname, email, phone) VALUES ( ?, ?, ?, ?, ?, ?, ?)';
 
@@ -118,11 +116,11 @@ export function registerUser(user) {
 
         stmt.run(
           [user.username, hash, user.typeUser, user.name, user.surname, user.mail, user.phone],
-          function (err) {
-            if (err) {
-              console.log(err);
-              reject(err);
+          function (err1) {
+            if (err1) {
+              reject(err1);
             }
+
             const userID = this.lastID;
             if (user.typeUser === 'shop_employee') {
               resolve(this.lastID);
@@ -131,9 +129,9 @@ export function registerUser(user) {
                 'INSERT INTO Farmer (ref_user , address , farm_name) VALUES (?, ?, ?)';
               db.serialize(() => {
                 let stmt_1 = db.prepare(farmerQuery);
-                stmt_1.run([userID, user.address, user.farmName], function (err) {
-                  if (err) {
-                    reject(err);
+                stmt_1.run([userID, user.address, user.farmName], function (err2) {
+                  if (err2) {
+                    reject(err2);
                   }
                 });
               });
@@ -143,9 +141,9 @@ export function registerUser(user) {
                 'INSERT INTO Client (address, balance, ref_user, missed_pickups) VALUES( ?, ?, ?, 0) ';
               db.serialize(() => {
                 let stmt_1 = db.prepare(clientQuery);
-                stmt_1.run([user.address, user.balance, userID], (err) => {
-                  if (err) {
-                    reject(err);
+                stmt_1.run([user.address, user.balance, userID], (err2) => {
+                  if (err2) {
+                    reject(err2);
                   }
                 });
               });

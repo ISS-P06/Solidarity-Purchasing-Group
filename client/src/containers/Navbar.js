@@ -1,4 +1,4 @@
-import {Navbar as BNavbar, Dropdown, ButtonGroup, Col} from 'react-bootstrap';
+import {Navbar as BNavbar, Dropdown, ButtonGroup} from 'react-bootstrap';
 import {BsBasket2, BsPersonCircle} from 'react-icons/bs';
 import {BiUser, BiLogIn, BiLogOut} from 'react-icons/bi';
 import {AiOutlineUserAdd} from 'react-icons/ai';

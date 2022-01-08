@@ -1,7 +1,6 @@
 import { RedirectRoute } from '../../utils/route';
-import { OrderReview, OrderList, Basket } from '../order';
-import { ProductCards } from '..';
-import { LoginForm } from '..';
+import { OrderReview, OrderList } from '../order';
+import { ProductCards, LoginForm } from '..';
 import { ClientHomePage } from '../client';
 import { Redirect, Route} from 'react-router-dom';
 import { getUserRoute } from '../../utils';

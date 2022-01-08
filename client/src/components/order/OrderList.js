@@ -23,8 +23,8 @@ function OrderList(props) {
     useEffect(() => {
         if (props.userRole === 'shop_employee') {
             api_getOrders()
-                .then((orders) => {
-                    setOrders(orders);
+                .then((orderList) => {
+                    setOrders(orderList);
                     setLoading(false);
                 })
                 .catch((e) => {
@@ -33,9 +33,9 @@ function OrderList(props) {
                 });
         } else if (props.userRole === 'client') {
             api_getClientOrders(props.userId)
-                .then((orders) => {
-                    setOrders(orders);
-                    setOrdersVisualized(orders);
+                .then((orderList) => {
+                    setOrders(orderList);
+                    setOrdersVisualized(orderList);
                     setLoading(false);
                 })
                 .catch((e) => {

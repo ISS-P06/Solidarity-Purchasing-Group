@@ -6,7 +6,7 @@ import { getUserRoute, RedirectRoute} from '../../utils';
  *  This component contains all employee-only routes.
  */
 function RoutesEmployee(props) {
-    const {loggedIn, userRole, virtualTime, setLoggedIn, doLogin, userId} = props;
+    const {loggedIn, userRole, virtualTime, doLogin, userId} = props;
 
     return (
         <>

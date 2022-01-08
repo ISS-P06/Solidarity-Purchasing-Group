@@ -59,9 +59,9 @@ export function test_addDummyOrders() {
 
       const sql2 = 'DELETE FROM Product_Request WHERE ref_request = -1 OR ref_request = -2;';
 
-      db.run(sql2, [], (err) => {
-        if (err) {
-          reject(err);
+      db.run(sql2, [], (err1) => {
+        if (err1) {
+          reject(err1);
           return;
         }
 
@@ -70,12 +70,12 @@ export function test_addDummyOrders() {
           db.run(
             `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
-            function (err) {
+            function (err2) {
+              if (err2) reject(err2);
               const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
-              db.run(sql3, [], function (err) {
-                if (err) {
-                  reject(err);
-                  return;
+              db.run(sql3, [], function (err3) {
+                if (err3) {
+                  reject(err3);
                 }
               });
             }
@@ -83,11 +83,12 @@ export function test_addDummyOrders() {
           db.run(
             `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, pending, ?)`,
             [dayjs().format('YYYY-MM-DD HH:MM')],
-            function (err) {
+            function (err2) {
+              if (err2) reject(err2);
               const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-2,2,0.1)`;
-              db.run(sql4, [], function (err) {
-                if (err) {
-                  reject(err);
+              db.run(sql4, [], function (err3) {
+                if (err3) {
+                  reject(err3);
                   return;
                 }
 
@@ -140,7 +141,6 @@ export function setUndeliveredOrders() {
       db.run(sql, [], (err) => {
         if (err) {
           reject(err);
-          return;
         }
       });
       resolve();
@@ -164,9 +164,9 @@ export function test_addConfirmedDummyOrders() {
 
       const sql2 = 'DELETE FROM Product_Request WHERE ref_request = -1;';
 
-      db.run(sql2, [], (err) => {
-        if (err) {
-          reject(err);
+      db.run(sql2, [], (err1) => {
+        if (err1) {
+          reject(err1);
           return;
         }
 
@@ -175,11 +175,12 @@ export function test_addConfirmedDummyOrders() {
           db.run(
             `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, confirmed, ?)`,
             [dayjs("2022-01-01 17:00", "YYYY-MM-DD HH:MM").format('YYYY-MM-DD HH:MM')],
-            function (err) {
+            function (err2) {
+              if (err2) reject(err2);
               const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
-              db.run(sql3, [], function (err) {
-                if (err) {
-                  reject(err);
+              db.run(sql3, [], function (err3) {
+                if (err3) {
+                  reject(err3);
                   return;
                 }
 
@@ -187,7 +188,6 @@ export function test_addConfirmedDummyOrders() {
               });
             }
           );
-         
         });
       });
     });

@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Button, Card, Row, Col} from 'react-bootstrap';
 import {api_getBasket, api_buyNow, api_removeProductFromBasket} from '../../Api';
-import ProductCards from '../product/ProductCards';
 import ProductList from './ProductList';
 import {addMessage} from '../Message';
 import {checkOrderInterval} from '../../utils/date';
@@ -103,7 +102,7 @@ export default function Basket(props) {
 }
 
 const BasketProductList = (props) => {
-    const {isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId, loading} = props;
+    const {isEmpty, basket, handleRemoveProduct, computeTotal, handleBuyNow, userId} = props;
 
     return (
         <div class="main " style={{height:"100%"}}>

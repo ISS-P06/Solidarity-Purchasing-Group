@@ -17,7 +17,6 @@ function ClientHomePage(props) {
         Welcome on Solidarity Purchase Group, {user && user.name} {user && user.surname}!
       </h1>
       <h4 className="mt-3 mb-3">Your current balance is {user && user.balance} €</h4>
-      {/*Todo update with the real balance*/}
       <h3 className="pt-5">What would you like to do?</h3>
       <h4 className="pb-5"> Choose one of the options below by clicking on the images! </h4>
       <Row className="justify-content-center pt-2">

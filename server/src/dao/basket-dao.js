@@ -46,7 +46,6 @@ export function addProductToBasket(clientId, productId, quantity) {
     db.run(sql, [clientId, productId, quantity], (err, rows) => {
       if (err) {
         reject(err);
-        return;
       }
     });
     const sql2 = `UPDATE Product SET quantity = quantity - ? WHERE id = ?`;
@@ -81,15 +80,15 @@ export function removeProductFromBasket(clientId, productId) {
       }
 
       const sql2 = `UPDATE Product SET quantity = quantity + ? WHERE id = ?`;
-      db.run(sql2, [row.quantity, productId], (err, rows) => {
-        if (err) {
-          reject(err);
+      db.run(sql2, [row.quantity, productId], (err1) => {
+        if (err1) {
+          reject(err1);
         }
       });
       const sql3 = `DELETE FROM Basket WHERE ref_client=? AND ref_product=? `;
-      db.run(sql3, [clientId, productId], (err, rows) => {
-        if (err) {
-          reject(err);
+      db.run(sql3, [clientId, productId], (err1) => {
+        if (err1) {
+          reject(err1);
         }
         resolve(productId);
       });

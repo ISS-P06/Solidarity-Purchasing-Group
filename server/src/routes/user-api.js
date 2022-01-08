@@ -38,8 +38,8 @@ router.post('/api/sessions', function (req, res, next) {
         return res.status(401).json(info.message);
       }
       // success, perform the login
-      req.login(user, (err) => {
-        if (err) return next(err);
+      req.login(user, (err1) => {
+        if (err1) return next(err1);
 
         // req.user contains the authenticated user, we send all the user info back
         return res.json(req.user);

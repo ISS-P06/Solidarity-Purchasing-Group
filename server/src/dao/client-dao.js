@@ -48,7 +48,7 @@ export function updateClientBalance(id, amount) {
       
       checkOrdersAfterTopUp(id)
         .then()
-        .catch((err) => reject(err));
+        .catch((err1) => reject(err1));
 
       resolve(null);
     });
@@ -104,8 +104,8 @@ export function checkOrdersAfterTopUp(clientID) {
         try {
           await orderDAO.checkBalanceAndSetStatus(r.orderID);
         }
-        catch(err) {
-          reject(err);
+        catch(err1) {
+          reject(err1);
         }
       }
 

@@ -42,11 +42,13 @@ const InsertUser = function (props) {
                 } else {
                     doLogin({username: userToAdd.username, password: userToAdd.password});
                     if (userToAdd.typeUser === "client") {
-                        history.push('/client'); /*TODO redirect in the correct home page*/
+                        history.push('/client');
                     } else if (userToAdd.typeUser === "farmer") {
                         history.push('/farmer');
                     } else if (userToAdd.typeUser === "shop_employee") {
                         history.push('/shop_employee');
+                    } else if (userToAdd.typeUser === "manager") {
+                        history.push('/manager');
                     }
                 }
             })

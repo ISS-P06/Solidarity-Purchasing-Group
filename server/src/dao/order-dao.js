@@ -26,17 +26,17 @@ export function insertOrder(orderClient) {
         orderClient.order.map((product, index) => {
           const insertProdQuery = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (?,?,?)`;
 
-          db.run(insertProdQuery, [OrderID, product.id, product.quantity], function (err) {
-            if (err) {
-              reject(err);
+          db.run(insertProdQuery, [OrderID, product.id, product.quantity], function (err1) {
+            if (err1) {
+              reject(err1);
               return;
             }
 
             const updateQuery = `UPDATE Product SET quantity=quantity-? WHERE id=?`;
 
-            db.run(updateQuery, [product.quantity, product.id], function (err) {
-              if (err) {
-                reject(err);
+            db.run(updateQuery, [product.quantity, product.id], function (err2) {
+              if (err2) {
+                reject(err2);
                 return;
               }
 
@@ -44,7 +44,7 @@ export function insertOrder(orderClient) {
               if (orderClient.order.length === index + 1) {
                 checkBalanceAndSetStatus(OrderID)
                   .then(() => resolve(OrderID))
-                  .catch((err) => reject(err));                
+                  .catch((err3) => reject(err3));                
               }
             });
           });
@@ -106,8 +106,8 @@ export function computeOrderTotal(orderID) {
           resolve(order.totalAmount);
         }
       }
-      catch(err) {
-        reject(err);
+      catch(err1) {
+        reject(err1);
       }
     }); 
   });
@@ -148,8 +148,8 @@ export function checkBalanceAndSetStatus(orderID) {
       try {
         orderTotal = await computeOrderTotal(orderID);
       }
-      catch (err) {
-        reject(err);
+      catch (err1) {
+        reject(err1);
       }
 
       // Check whether the client's balance is enough to pay for the order
@@ -167,14 +167,14 @@ export function checkBalanceAndSetStatus(orderID) {
           `;
 
         db.serialize(() => {
-          db.run(sql_balance, [orderTotal, clientInfo.clientID], (err) => {
-            if (err) {
-              reject(err);
+          db.run(sql_balance, [orderTotal, clientInfo.clientID], (err2) => {
+            if (err2) {
+              reject(err2);
             }
           });
-          db.run(sql_order, [orderID], (err) => {
-            if (err) {
-              reject(err);
+          db.run(sql_order, [orderID], (err2) => {
+            if (err2) {
+              reject(err2);
             }          
           });
         }); 
@@ -188,9 +188,9 @@ export function checkBalanceAndSetStatus(orderID) {
           WHERE id = ?;
           `;
 
-        db.run(sql_order, [orderID], (err) => {
-            if (err) {
-              reject(err);
+        db.run(sql_order, [orderID], (err2) => {
+            if (err2) {
+              reject(err2);
             }            
           });
 
@@ -321,10 +321,10 @@ export function getOrderById(orderId, clientId = -1) {
         return;
       }
 
-      let productsPromise = new Promise((resolve, reject) => {
-        db.all(sql2, orderId, (err, rows) => {
-          if (err) {
-            reject(err);
+      let productsPromise = new Promise((resolve1, reject1) => {
+        db.all(sql2, orderId, (err1, rows) => {
+          if (err1) {
+            reject1(err1);
             return;
           }
           const products = rows.map((p) => ({
@@ -333,7 +333,7 @@ export function getOrderById(orderId, clientId = -1) {
             price: p.price,
             unit: p.unit,
           }));
-          resolve(products);
+          resolve1(products);
         });
       });
 
@@ -351,16 +351,16 @@ export function getOrderById(orderId, clientId = -1) {
           address: row.address,
           products: products,
         };
-        db.get(sql3, [orderId], function (err, row) {
-          if (err) {
-            reject(err);
+        db.get(sql3, [orderId], function (err1, row1) {
+          if (err1) {
+            reject(err1);
             return;
           }
-          if (row == undefined) {
+          if (row1 == undefined) {
             resolve(order);
             return;
           }
-          order.delivery = { address: row.address, date: row.date, startTime: row.startTime, endTime: row.endTime, deliveryAtHome: row.deliveryAtHome };
+          order.delivery = { address: row1.address, date: row1.date, startTime: row1.startTime, endTime: row1.endTime, deliveryAtHome: row1.deliveryAtHome };
           resolve(order);
         });
       });
@@ -376,7 +376,6 @@ export function setOrderStatus(orderId, status) {
     db.run(sql, [status, orderId], (err) => {
       if (err) {
         reject(err);
-        return;
       }
     });
     resolve(orderId);

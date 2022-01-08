@@ -172,7 +172,7 @@ export function generateWeeklyReport(date) {
             .then((res) => resolve(res))
             .catch((err) => reject(err));
     });
-};
+}
 
 /**
  * Generate a monthly report given a date in input.
@@ -193,7 +193,7 @@ export function generateMonthlyReport(date) {
             .then((res) => resolve(res))
             .catch((err) => reject(err));
     });
-};
+}
 
 /**
  * Computes statistics to be displayed on the manager's homepage, 

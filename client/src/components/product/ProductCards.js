@@ -2,7 +2,6 @@ import {Container, Row, Col, Pagination, Form, Spinner, Button, Card} from 'reac
 import {useState, useEffect} from 'react';
 import {api_getProducts, api_addProductToBasket, api_getFarmerProducts} from '../../Api';
 import {addMessage} from '../Message';
-import {Link} from 'react-router-dom';
 import ProductCard from './ProductCard';
 import FarmerProductForm from '../farmer/FarmerProductForm';
 import { checkOrderInterval } from '../../utils/date';

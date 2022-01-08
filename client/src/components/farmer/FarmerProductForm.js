@@ -1,9 +1,7 @@
 import {Button, Container, Row, Col, Form, FloatingLabel, Modal} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
 import {useState} from 'react';
 import {api_insertProductDescription} from '../../Api'
 import {addMessage} from "../Message";
-
 
 const FarmerProductForm = (props) => {
     const {user, show, handleClose} = props;
@@ -13,7 +11,6 @@ const FarmerProductForm = (props) => {
     const [category, setCategory] = useState('Bread');
     const [unit, setUnit] = useState('kg');
     const [validated, setValidated] = useState(false);
-
 
     const handleSubmit = (event) => {
         event.preventDefault();

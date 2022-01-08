@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner } from 'react-bootstrap';
+import { Button, Form, Col, FloatingLabel, Row, Container, Table, Spinner } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { api_getFarmerProducts, api_addAvailableProductQuantity, api_getSupplyFarmerProducts, api_removeAvailableProductQuantity } from '../../Api';
 import { addMessage } from '../Message';
@@ -123,9 +123,6 @@ export function SuppliedProductForm(props) {
                 }).catch((err) => {
                     addMessage({ message: err.message, type: 'danger' });
                 });
-            /*       setProductID();
-                   setExpectedQuantityAvailable();
-                   setPrice();*/
             setValidated(false);
         } else {
             setValidated(true);
