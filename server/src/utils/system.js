@@ -20,6 +20,7 @@ class SYS {
         let day = time.getDay();
         let hours = time.getHours();
 
+        console.log(day, hours , currTime);
         /**
          * Check if the current day and time is
          * Monday, 9am
@@ -54,8 +55,7 @@ class SYS {
          * this checks whether the friday night is exceeded or not
          * if it is exceeded the system should send emails for people who have 3 or 4 missed pickups
          */
-        if (day == 5 && hours == 23) {
-            console.log('salem')
+        if (day == 5 && hours == 22) {
             systemDAO.getMailListWithThreeOrFourMissedPickups().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
         }
     }

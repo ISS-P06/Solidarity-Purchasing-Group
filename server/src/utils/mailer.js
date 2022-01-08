@@ -72,18 +72,18 @@ export function mail_sendBalanceReminder(userMail, orderID) {
 
 export function sendWarningSuspension(customerInfo) {
     // Set up email options
+    console.log( customerInfo)
+
     let mailOptions = {
         from: senderMail,
-        to: customerInfo.mail,
+        to: customerInfo.email,
         subject: 'SPG - your account is about to be suspended',
-        text: 'Dear\n' + customerInfo.surname + customerInfo.name +','+
-            'We are sorry to inform you that your account is about to be suspended since you have'+ customerInfo.missed_pickups +
+        text: 'Dear ' + customerInfo.surname +' '+ customerInfo.name +',\n'+
+            'We are sorry to inform you that your account is about to be suspended since you have '+ customerInfo.missed_pickups +
             ' times of orders missed pickups.\n\n'+
-            'For more information you are invited to consult our customer service\n'+
+            'For more information you are invited to consult our customer service.\n'+
             'Best regards'
     };
-
-
 
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions)
@@ -91,8 +91,6 @@ export function sendWarningSuspension(customerInfo) {
                 resolve("email sent");
             })
             .catch((err) => {
-                console.log(process.env.EMAIL);
-                console.log(process.env.PASSWORD)
                 reject(err);
             });
     });
