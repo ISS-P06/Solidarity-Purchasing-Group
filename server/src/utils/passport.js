@@ -98,7 +98,7 @@ export const isLoggedIn_Manager = (req, res, next) => {
 
 // Temporary suspension
 export const isNotSuspended = (req, res, next) => {
-  userDAO.getUserSuspensionsById(req.user.id).then((isSuspended) => {
+  userDAO.checkUserSuspensionsById(req.user.id).then((isSuspended) => {
       if(isSuspended)
         return res.status(403).json({ message: 'forbidden: user suspended'});
       else

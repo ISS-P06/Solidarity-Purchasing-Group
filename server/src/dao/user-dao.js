@@ -162,7 +162,7 @@ export function registerUser(user) {
 
 
 // Get all the entrise of a give user suspensions
-export function getUserSuspensionsById(id) {
+export function checkUserSuspensionsById(id) {
   return new Promise((resolve, reject) => {
     let currTime = new Date(vtc.time());
     let date = dayjs(currTime).format('YYYY-MM-DD HH:mm');
