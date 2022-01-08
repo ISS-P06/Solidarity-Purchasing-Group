@@ -41,7 +41,7 @@ function RoutesClient(props) {
               path="/client/products"
               role={userRole}
               condition={loggedIn}
-              component={<ProductCards userRole={userRole} userId={userId} virtualTime={virtualTime} setOpenBasketOffCanvas={setOpenBasketOffCanvas}/>}
+              component={<ProductCards userRole={userRole} userId={userId} virtualTime={virtualTime} setOpenBasketOffCanvas={setOpenBasketOffCanvas} isSuspended={suspendedUser}/>}
               redirect={<LoginForm doLogin={doLogin} />}
             />
 
