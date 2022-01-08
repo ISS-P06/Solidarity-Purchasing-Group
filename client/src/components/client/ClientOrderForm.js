@@ -5,7 +5,7 @@ import {api_getProducts, api_addOrder} from '../../Api';
 import {addMessage} from '../Message';
 import ScheduleDelivery from "../client/ScheduleDelivery";
 function ClientOrderForm(props) {
-    const {show, onHide, client, virtualTime} = props;
+    const {show, onHide, client, virtualTime, openConfirmationModal} = props;
     const [productsList, setProductsList] = useState([]); /* list of products of available */
     const [categoriesList, setCategoriesList] = useState([]); /* list of the categories */
 
@@ -16,6 +16,7 @@ function ClientOrderForm(props) {
     const [orderID, setOrderID] = useState();
 
     const [scheduleDeliveryModal, setScheduleDeliveryModal] = useState(false);
+    const [askTopUp, setAskTopUp] = useState(false)
 
     useEffect(() => {
         api_getProducts()
@@ -39,35 +40,47 @@ function ClientOrderForm(props) {
         onHide();
     };
 
-    const addOrder = () => {
+    const addOrder = async () => {
         if (productsClient.length === 0) {
             addMessage({message: 'Complete add at least one product', type: 'danger'});
         } else if (insertProduct) {
             addMessage({message: 'Complete the addition of the last product', type: 'danger'});
         } else {
-            //send the request
-            const order = productsClient.map((p) => ({
-                id: p.id,
-                quantity: p.quantityOrdered,
-            }));
-            const orderClient = {clientID: client.id, order: order};
+          //send the request
+          const order = productsClient.map((p) => ({
+            id: p.id,
+            quantity: p.quantityOrdered,
+          }));
+          const orderClient = { clientID: client.id, order: order };
 
-            api_addOrder(orderClient)
-                .then((id) => {
-                    addMessage({message: 'Order ' + id + ' emitted with success ', type: 'success'})
-                    setOrderID(id);
-                    handleClose();
-                    setScheduleDeliveryModal(true);
+          api_addOrder(orderClient)
+            .then((id) => {
+              addMessage({ message: 'Order ' + id + ' emitted with success ', type: 'success' });
+              setOrderID(id);
+              handleClose();
+              setScheduleDeliveryModal(true);
+            })
+            .catch((e) => addMessage({ title: 'Error', message: e.message, type: 'danger' }));
 
-                }).catch((e) => addMessage({title: "Error", message: e.message, type: "danger"}));
+          /*RESET*/
+          setProductsList([]);
+          setProductsClient([]);
+          setPartialPrice(0);
+          setInsertProduct(true);
 
-            /*RESET*/
-            setProductsList([]);
-            setProductsClient([]);
-            setPartialPrice(0);
-            setInsertProduct(true);
+            /* verify wallet of the customer */
+            if (partialPrice > client.balance) {
+                setAskTopUp(true)
+            }
         }
     };
+
+    const handleAskTopUp = () =>{
+        if(askTopUp){
+            openConfirmationModal();
+            setAskTopUp(false);
+        }
+    }
 
     return (
         <> <Modal
@@ -135,7 +148,7 @@ function ClientOrderForm(props) {
                 </Button>
             </Modal.Footer>
         </Modal>
-            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime}/>
+            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime} onModalHide={handleAskTopUp}/>
         </>
 
     );

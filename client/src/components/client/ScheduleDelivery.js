@@ -11,7 +11,6 @@ function ScheduleDelivery(props) {
     const [wednesday, setWednesday] = useState('')
     const [friday, setFriday] = useState('')
 
-
     useEffect(async () => {
         let date = dayjs(virtualTime);
 
@@ -46,6 +45,7 @@ function ScheduleDelivery(props) {
 
     const handleClose = () => {
         setShow(false)
+        props.onModalHide()
     }
 
 
