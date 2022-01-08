@@ -96,7 +96,6 @@ Note:
 ### Client-only routes
 
 - Route `/client`: client homepage, from which the user can access all routes reserved to clients only.
-- Route `/client/basket`: client-side page containing information about the client's own basket.
 - Route `/client/orders`: client-side page containing information about the client's own orders.
 - Route `/client/orders/:id`: client-side page containing information about one of the client's orders.
 - Route `/client/products`: client-side page containing a list of all available products.
@@ -107,6 +106,12 @@ Note:
 - Route `/farmer/supply`: farmer page containing a form to add a new supply for the upcoming week.
 - Route `/farmer/products`: farmer page containing the list of products (= product descriptors) they added.
 - Route `/farmer/products/new`: farmer page containing a form for adding a new product descriptor.
+
+### Manager-only routes
+
+- Route `/manager`: manager homepage.
+- Route `/manager/report/weekly`: manager page containing a date picker and statistics computed for a specific week.
+- Route `/manager/report/month`: manager page containing a date picker and statistics computed for a specific month.
 
 # Database documentation
 
@@ -136,11 +141,12 @@ Contains generic information for a registered user.
 
 Contains specific information about a registered client.
 
-| Field name | Type    | Constraints            | Notes                                                           |
-| ---------- | ------- | ---------------------- | --------------------------------------------------------------- |
-| ref_user   | INTEGER | **PK**, _FK_, NOT NULL | References `User("id")`; refers to the client's own credentials |
-| address    | TEXT    | NOT NULL               |                                                                 |
-| balance    | REAL    | NOT NULL               | Client's current wallet balance                                 |
+| Field name     | Type    | Constraints            | Notes                                                        |
+| -------------- | ------- | ---------------------- | ------------------------------------------------------------ |
+| ref_user       | INTEGER | **PK**, _FK_, NOT NULL | References `User("id")`; refers to the client's own credentials |
+| address        | TEXT    | NOT NULL               |                                                              |
+| balance        | REAL    | NOT NULL               | Client's current wallet balance                              |
+| missed_pickups | INTEGER |                        | Number of consecutive missed pickups                         |
 
 ### Farmer
 
@@ -171,13 +177,13 @@ Note that products of the same type (e.g. apples) are treated as two separate pr
 
 Contains information about a specific supply of a product.
 
-| Field name          | Type    | Constraints    | Notes                                                                                   |
-| ------------------- | ------- | -------------- | --------------------------------------------------------------------------------------- |
+| Field name          | Type    | Constraints    | Notes                                                        |
+| ------------------- | ------- | -------------- | ------------------------------------------------------------ |
 | ref_prod_descriptor | INTEGER | _FK_, NOT NULL | References `prod_descriptor("id")`; references the descriptor that describes the supply |
-| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg)                 |
-| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                                           |
-| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added; format must be `YYYY-MM-DD HH:MM`    |
-| id                  | INTEGER | **PK**         | Auto-increment                                                                          |
+| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg) |
+| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                |
+| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added. Format must be `YYYY-MM-DD HH:MM` |
+| id                  | INTEGER | **PK**         | Auto-increment                                               |
 
 ### Request
 
@@ -185,18 +191,19 @@ Contains global information about a client's order/request. Total price can be c
 
 The `status` field describes the request's current status:
 
-- `pending`: request has been made, but farmers need to confirm products first;
+- `pending`: request has been made and is about to be set to either `confirmed` or `pending_canc`. This is only a transient state and is not actually visible (this would change if product confirmation were to be implemented);
 - `confirmed`: products have been confirmed and the order is ready to be delivered;
 - `delivered`: products have successfully been delivered to the client;
 - `pending_canc`: products have been confirmed, but the client's current balance is insufficient;
-- `canceled` (_currently unused_): the order has been canceled due to insufficient funds or other reasons.
+- `canceled`: the order has been canceled due to insufficient funds or other reasons;
+-  `unretrieved`: the order has not been delivered or picked up.
 
-| Field name | Type    | Constraints    | Notes                                                                            |
-| ---------- | ------- | -------------- | -------------------------------------------------------------------------------- |
-| id         | INTEGER | **PK**         | Auto-increment                                                                   |
-| ref_client | INTEGER | _FK_, NOT NULL | References `Client("ref_user")`; refers to the client who made the request       |
+| Field name | Type    | Constraints    | Notes                                                        |
+| ---------- | ------- | -------------- | ------------------------------------------------------------ |
+| id         | INTEGER | **PK**         | Auto-increment                                               |
+| ref_client | INTEGER | _FK_, NOT NULL | References `Client("ref_user")`; refers to the client who made the request |
 | status     | TEXT    | NOT NULL       | Possible values: `pending`, `confirmed`, `delivered`, `pending_canc`, `canceled` |
-| date       | TEXT    | NOT NULL       | Format must be `YYYY-MM-DD HH:MM`                                                |
+| date       | TEXT    | NOT NULL       | Date in which the order has been made. Format must be `YYYY-MM-DD HH:MM`. |
 
 ### Product_Request
 
@@ -219,6 +226,29 @@ Note that adding products to a basket means modifying the value of `quantity` in
 | ref_client  | INTEGER | **PK**, _FK_ | References `Client("ref_user")`; references the client who "owns" the basket |
 | ref_product | INTEGER | **PK**, _FK_ | References `Product("id")`; references the product added to the basket       |
 | quantity    | REAL    | NOT NULL     | Quantity of the product requested and reserved by the client                 |
+
+### Delivery
+
+Contains information about the scheduled delivery/pick-up for a specific order.
+
+| Field name     | Type    | Constraints            | Notes                                                        |
+| -------------- | ------- | ---------------------- | ------------------------------------------------------------ |
+| ref_request    | INTEGER | **PK**, *FK*, NOT NULL | References `Request(id)`; references the request for which the delivery/pick-up has  been scheduled. |
+| address        | TEXT    | NOT NULL               | Address to which the order must be delivered. Can be an empty string in case of a pick-up. |
+| date           | TEXT    | NOT NULL               | Date of the delivery/pick-up. Format must be `YYYY-MM-DD HH:mm`. |
+| startTime      | TEXT    | NOT NULL               | Starting time of the time frame in which the delivery/pick-up can occur. |
+| endTime        | TEXT    | NOT NULL               | End time of the time frame in which the delivery/pick-up can occur. |
+| deliveryAtHome | TEXT    | NOT NULL               | Indicates whether the tuple describes a delivery (`"true"`) or a pick-up (`"false"`). Note that the values are not booleans but strings. |
+
+### Suspension
+
+Contains information about the suspension of a client. A suspended client cannot make any orders for a month.
+
+| Field name | Type    | Constraints            | Notes                                                        |
+| ---------- | ------- | ---------------------- | ------------------------------------------------------------ |
+| ref_client | INTEGER | **PK**, *FK*, NOT NULL | References `Client(ref_user)`; refers to the suspended client. |
+| start_date | TEXT    | NOT NULL               | Starting date for the suspension. Format must be `YYYY-MM-DD HH:mm`. |
+| end_date   | TEXT    | NOT NULL               | End date for the suspension. Format must be `YYYY-MM-DD HH:mm`. |
 
 ## Registered users
 
