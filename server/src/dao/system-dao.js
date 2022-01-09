@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import {clientDAO, orderDAO} from '.';
 import VTC from './../utils/vtc';
 
+const vtc = new VTC();
 /**
  * Set all "pending_canc" orders to "cancelled" 
  * 
@@ -344,10 +345,9 @@ export function suspendClients() {
             rows.length >= 0 && rows.map((row, index) => {
                 // increment the number of missed picks up for a client
                 const sql1 = " INSERT INTO Suspension (ref_client, start_date, end_date) VALUES (?,?,?)";
-                /*TODO update*/
-                db.run(sql1, [row.userID, dayjs().format('YYYY-MM-DD'), dayjs().add(1, "month").format('YYYY-MM-DD')], (err) => {
+                let currTime = new Date(vtc.time());
+                db.run(sql1, [row.userID, dayjs(vtc.time()).format('YYYY-MM-DD'), dayjs(vtc.time()).add(1, "month").format('YYYY-MM-DD')], (err) => {
                     if (err) {
-                        console.log(err)
                         reject(err);
                         return;
                     }
