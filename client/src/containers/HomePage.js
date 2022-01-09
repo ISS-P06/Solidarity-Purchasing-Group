@@ -21,9 +21,9 @@ function HomePage() {
                         🆕🆕🆕 We are now on telegram! Join to our channel
                         <Alert.Link  href="https://t.me/spg06update"  target="_blank"> clicking here</Alert.Link>  🆕🆕🆕
                     </Alert>
-                    <Col xs={0} md={10} className="mt-3">
-                        <h1 style={{color:"#27511D"}}>Welcome to Solidarity Purchasing Group!</h1>
-                        <Carousel className="mt-3 d-none d-md-block" >
+                    <Col xs={0} md={10} className="mt-5">
+                        <h2 style={{color:"#27511D"}}>Welcome to Solidarity Purchasing Group!</h2>
+                        <Carousel className="mt-1 d-none d-md-block" >
                             <Carousel.Item>
                                 <Image src={image1} className="img" alt="A non profit organization"
                                        style={{width: "60%", paddingTop: "20px"}}/>
@@ -92,7 +92,7 @@ function HomePage() {
                             </Carousel.Item>
                         </Carousel>
                     </Col>
-                    <h3 className={"mt-5"}>
+                    <h3 className={"mt-2"}>
                         We are a self-organized group of citizens and farmers that try to promote a sustainable and
                         high-quality network of food in order to buy and sell products at a fair price.
                     </h3>
