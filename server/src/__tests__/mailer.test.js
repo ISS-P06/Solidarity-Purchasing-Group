@@ -6,4 +6,15 @@ describe('Test mailer methods', () => {
 
     expect(result).toBe('email sent');
   });
+
+  test('test successful sending warning suspension email ', async () => {
+    const result = await mailerUtil.sendWarningSuspension({
+      email: 'email@gmail.com' ,
+      name : 'abc',
+      surname : 'MRx',
+      missed_pickups : 3
+    });
+
+    expect(result).toBe('email sent');
+  });
 });

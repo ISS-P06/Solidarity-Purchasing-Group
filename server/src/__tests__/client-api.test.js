@@ -3,7 +3,8 @@ import session from 'supertest-session';
 
 import app from '../app';
 import { restoreBackup } from '../db';
-import { basketDAO } from '../dao';
+import { basketDAO, systemDAO, userDAO } from '../dao';
+import { registerUser } from '../dao/user-dao';
 
 /**
  * During test the database can be modified, so we need to
@@ -18,6 +19,7 @@ const testSession = session(app);
 let authSession_client = null;
 
 // Login as a farmer
+
 beforeEach((done) => {
   testSession
     .post('/api/sessions')
@@ -133,4 +135,34 @@ describe('Test add or delete a product into/from the basket', () => {
     const data = { productId: 4 };
     authSession_client.post('/api/client/4/basket/remove').send(data).expect(200).end(done);
   });
+});
+
+describe('Test add or delete a product into/from the basket from suspended user', () => {
+  let authSession_suspendedClient = null;
+
+  beforeEach((done) => {
+    testSession
+      .post('/api/sessions')
+      .send({ username: 'mario', password: 'itsamemario' })
+      .end((err) => {
+        if (err) return done(err);
+        authSession_suspendedClient = testSession;
+        return done();
+      });
+  });
+
+  test('Add a product; It should response 403', function (done) {
+    const data = { productId: 1, reservedQuantity: 0.1 };
+    authSession_suspendedClient.post('/api/client/5/basket/add').send(data).expect(403).end(done);
+  });
+
+  test('Remove a product; It should response 403', function (done) {
+    const data = { productId: 1 };
+    authSession_suspendedClient.post('/api/client/5/basket/remove').send(data).expect(403).end(done);
+  });
+
+  test('Remove a product; It should response 403', function (done) {
+    authSession_suspendedClient.post('/api/client/5/basket/buy').expect(403).end(done);
+  });
+
 });

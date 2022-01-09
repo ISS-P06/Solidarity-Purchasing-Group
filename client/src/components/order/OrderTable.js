@@ -6,33 +6,36 @@ import { Table, Row } from 'react-bootstrap';
  *  - product is a custom object containing all the useful iformation to descibe a product
  */
 function OrderTable(props) {
-
-  const productList =
-    props.products != null
-      ? props.products.map((product, k) => {
+  const productList = !props.products
+    ? 0
+    : props.products.map((product, k) => {
         return (
           <tr key={k}>
             <td>{product.name}</td>
             <td>{product.quantity}</td>
-            <td>{product.price}  €/{product.unit}</td>
-            <td>{product.quantity * product.price} €</td>
+            <td>
+              {product.price.toFixed(2)} €/{product.unit}
+            </td>
+            <td>{(product.quantity * product.price).toFixed(2)} €</td>
           </tr>
         );
-      })
-      : 0;
-  
+      });
+
   /**
-   * This function computes the total as product quantity times the unit price 
-   * @param {*} products 
+   * This function computes the total as product quantity times the unit price
+   * @param {*} products
    *  - the list of the products
    * @returns the total amount of the product
    */
   function computeTotal(products) {
-    let total = 0.0;
-    products.forEach((product) => {
-      total += product.quantity * product.price;
-    });
-    return total;
+    if (!products || !products.length) {
+      return 0;
+    }
+
+    return products
+      .map((p) => p.quantity * p.price)
+      .reduce((a, b) => a + b)
+      .toFixed(2);
   }
 
   return (
@@ -49,7 +52,7 @@ function OrderTable(props) {
         <tbody>{productList}</tbody>
       </Table>
       <Row className="justify-content-end m-1">
-        <h4>Total € {props.products != null ? computeTotal(props.products).toFixed(2) : 0}</h4>
+        <h4>Total € {computeTotal(props.products)}</h4>
       </Row>
     </>
   );

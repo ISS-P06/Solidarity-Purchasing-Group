@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Row, Col, Spinner, Card, Modal, Container } from 'react-bootstrap/';
-import { api_getClientsList} from '../../Api';
+import { api_getClientsList } from '../../Api';
 import ClientOrderForm from './ClientOrderForm';
 import ClientTopUpForm from './ClientTopUpForm';
 import { addMessage } from '../Message';
@@ -23,14 +23,12 @@ function ClientsList(props) {
         })
         .catch((error) => {
           addMessage({ message: error.message, type: 'danger' });
-            setLoading(false);
+          setLoading(false);
         });
     }
   }, [dirty]);
 
-  return loading ? (
-    <Spinner animation="border" variant="success" />
-  ) : (
+  const PageView = () => (
     <Container>
       <h3 className="mt-3">Clients List</h3>
       {clientsList.length === 0 ? (
@@ -50,15 +48,19 @@ function ClientsList(props) {
       )}
     </Container>
   );
+
+  return loading ? <Spinner animation="border" variant="success" /> : <PageView />;
 }
 
 export function Client(props) {
   const { client, reloadList, virtualTime } = props;
 
-  const [clientOrderFormShow, setClientOrderFormShow] = useState(false); /* used for opening clientOrderForm modal*/
-  const [clientTopUpFormShow, setClientTopUpFormShow] = useState(false); /* used for opening clientTopUpForm modal*/
-  const [confirmationModalShow, setConfirmationModalShow] = useState(false); /* used for opening confirmartion modal*/
-
+  const [clientOrderFormShow, setClientOrderFormShow] =
+    useState(false); /* used for opening clientOrderForm modal*/
+  const [clientTopUpFormShow, setClientTopUpFormShow] =
+    useState(false); /* used for opening clientTopUpForm modal*/
+  const [confirmationModalShow, setConfirmationModalShow] =
+    useState(false); /* used for opening confirmartion modal*/
 
   return (
     <Card className="text-left shadow">
@@ -114,7 +116,6 @@ export function Client(props) {
         openTopUpForm={() => setClientTopUpFormShow(true)}
         handleClose={() => setConfirmationModalShow(false)}
       />
-
     </Card>
   );
 }

@@ -164,9 +164,10 @@ export function checkBalanceAndSetStatus(orderID) {
               reject(err2);
             }
           });
-          db.run(sql_order, [orderID], (err2) => {
-            if (err2) {
-              reject(err2);
+
+          db.run(sql_order, [orderID], (err3) => {
+            if (err3) {
+              reject(err3);
             }
           });
         });
@@ -179,9 +180,9 @@ export function checkBalanceAndSetStatus(orderID) {
           WHERE id = ?;
           `;
 
-        db.run(sql_order, [orderID], (err2) => {
-          if (err2) {
-            reject(err2);
+        db.run(sql_order, [orderID], (err4) => {
+          if (err4) {
+            reject(err4);
           }
         });
 

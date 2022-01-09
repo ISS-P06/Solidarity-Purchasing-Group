@@ -11,7 +11,7 @@ function ScheduleDelivery(props) {
     const [wednesday, setWednesday] = useState('')
     const [friday, setFriday] = useState('')
 
-    useEffect(async () => {
+    useEffect(() => {
         let date = dayjs(virtualTime);
 
         for (let i = 0; i < 7; i++) {

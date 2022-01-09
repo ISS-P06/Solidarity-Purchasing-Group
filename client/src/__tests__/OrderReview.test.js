@@ -17,9 +17,10 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 function WrapperComponent(props) {
-  let userRole='shop_employee', userId='1';
-  return <OrderReview userRole={userRole} userId={userId}/>;
-};
+  let userRole = 'shop_employee',
+    userId = '1';
+  return <OrderReview userRole={userRole} userId={userId} />;
+}
 
 export function renderWithRouterMatch(
   ui,
@@ -28,7 +29,7 @@ export function renderWithRouterMatch(
   return {
     ...render(
       <Router history={history}>
-        <Route path={path} component={ui}/>
+        <Route path={path} component={ui} />
       </Router>
     ),
   };
@@ -52,13 +53,14 @@ describe('My component OrderReview', () => {
                 unit: 'kg',
               },
             ],
-            
           })
         );
       })
     );
 
-    {/* Test if all elements are rendered */}
+    {
+      /* Test if all elements are rendered */
+    }
 
     const { getByText } = renderWithRouterMatch(WrapperComponent, {
       route: '/employee/orders/1',
@@ -66,10 +68,10 @@ describe('My component OrderReview', () => {
     });
 
     expect(getByText('Order review')).toBeInTheDocument();
-    await waitFor(() => getByText('Email: massimo.rossi@mail.com'));
-    expect(getByText('Email: massimo.rossi@mail.com')).toBeInTheDocument();
-    expect(getByText('onion')).toBeInTheDocument();
-    //screen.debug();
+    await waitFor(() => getByText(/Email: massimo.rossi@mail.com/));
+    expect(getByText(/Email: massimo.rossi@mail.com/)).toBeInTheDocument();
+    expect(getByText(/onion/)).toBeInTheDocument();
+    // screen.debug();
   });
 
   test('Delivers an order', async () => {
@@ -120,7 +122,9 @@ describe('My component OrderReview', () => {
       })
     );
 
-    {/* Test if an order can be delivered */}
+    {
+      /* Test if an order can be delivered */
+    }
 
     const { getByText } = renderWithRouterMatch(WrapperComponent, {
       route: '/employee/orders/1',

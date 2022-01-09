@@ -95,3 +95,13 @@ export const isLoggedIn_Manager = (req, res, next) => {
 
   return res.status(401).json({ message: 'not authenticated'});
 };
+
+// Temporary suspension
+export const isNotSuspended = (req, res, next) => {
+  userDAO.checkUserSuspensionsById(req.user.id).then((isSuspended) => {
+      if(isSuspended)
+        return res.status(403).json({ message: 'forbidden: user suspended'});
+      else
+        return next();
+  }).catch(e => console.log(e));
+};

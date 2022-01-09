@@ -1,0 +1,12 @@
+.virtual-clock-collapsed {
+    margin-left: 18px;
+}
+
+.virtual-clock {
+    margin-left: 75px;
+}
+
+.virtual-clock-collapsed,
+.virtual-clock {
+    margin-top: 15px;
+}

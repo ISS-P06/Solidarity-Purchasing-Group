@@ -72,7 +72,6 @@ export function mail_sendBalanceReminder(userMail, orderID) {
 
 export function sendWarningSuspension(customerInfo) {
     // Set up email options
-    console.log( customerInfo)
 
     let mailOptions = {
         from: senderMail,

@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom';
 import { ProSidebar, Menu, MenuItem, SidebarHeader, SidebarContent } from 'react-pro-sidebar';
-import { BsFillPersonPlusFill, BsList, BsFillCartPlusFill, BsCalendarRangeFill, BsCalendarFill } from 'react-icons/bs';
+import {
+  BsFillPersonPlusFill,
+  BsList,
+  BsFillCartPlusFill,
+  BsCalendarRangeFill,
+  BsCalendarFill,
+} from 'react-icons/bs';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { GiFruitBowl, GiFruitTree } from 'react-icons/gi';
-import { VirtualClock } from '../components';
 import { FaRegListAlt } from 'react-icons/fa';
 
-// todo add collaspse change
+import { VirtualClock } from '../components';
 
 /**
  * Sidebar component.
@@ -38,10 +44,14 @@ function Aside({
    * Dictionary for selection of the the menu, based on its role
    */
   const roleMenu = {
-    shop_employee: <EmployeeMenu />,
-    client: <ClientMenu />,
-    farmer: <FarmerMenu />,
-    manager: <ManagerMenu />
+    shop_employee: <EmployeeMenu collapsed={collapsed} />,
+    client: <ClientMenu collapsed={collapsed} />,
+    farmer: <FarmerMenu collapsed={collapsed} />,
+    manager: <ManagerMenu collapsed={collapsed} />,
+  };
+
+  const handleClose = () => {
+    handleToggle(false);
   };
 
   return !userRole ? null : (
@@ -51,7 +61,7 @@ function Aside({
       breakPoint="md"
       onToggle={handleToggle}
       style={{
-        paddingTop: '66px',
+        marginTop: '58px',
         height: 'auto',
       }}>
       <SidebarHeader>
@@ -67,93 +77,114 @@ function Aside({
             whiteSpace: 'nowrap',
           }}
           className="pro-sidebar">
-          {userRole.replace('_', ' ')}
+          <CollapseArrow collapsed={collapsed} handleCollapse={handleCollapse} />
+
+          {collapsed ? null : userRole.replace('_', ' ')}
         </div>
       </SidebarHeader>
-      <SidebarContent className="pro-sidebar">
+      <SidebarContent className="pro-sidebar" onClick={handleClose}>
         {roleMenu[userRole]}
-        {/* todo aggiustare posizione virtual clock */}
-        <VirtualClock virtualTime={virtualTime} setDirtyVT={setDirtyVT} dirtyVT={dirtyVT} />
+        <hr />
+        <VirtualClock
+          virtualTime={virtualTime}
+          setDirtyVT={setDirtyVT}
+          dirtyVT={dirtyVT}
+          collapsed={collapsed}
+        />
       </SidebarContent>
     </ProSidebar>
   );
 }
+function CollapseArrow({ collapsed, handleCollapse }) {
+  const Arrow = collapsed ? IoIosArrowForward : IoIosArrowBack;
+  return <Arrow className="collapse-arrow" size={22} onClick={() => handleCollapse(!collapsed)} />;
+}
 
-function EmployeeMenu() {
+function CollapsableLink(props) {
+  const { className, to, collapsed } = props;
+
+  return (
+    <Link className={className} to={to}>
+      {collapsed ? null : props.children}
+    </Link>
+  );
+}
+
+function EmployeeMenu({ collapsed }) {
   return (
     <Menu iconShape="circle">
       <MenuItem icon={<BsFillPersonPlusFill />}>
-        <Link className="text-light" to="/employee/register">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/employee/register">
           Enter a new client
-        </Link>
+        </CollapsableLink>
       </MenuItem>
       <MenuItem icon={<BsList />}>
-        <Link className="text-light" to="/employee/clients">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/employee/clients">
           Show clients
-        </Link>
+        </CollapsableLink>
       </MenuItem>
       <MenuItem icon={<GiFruitBowl />}>
-        <Link className="text-light" to="/employee/products">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/employee/products">
           Browse Products
-        </Link>
+        </CollapsableLink>
       </MenuItem>
       <MenuItem icon={<BsList />}>
-        <Link className="text-light" to="/employee/orders">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/employee/orders">
           Browse Orders
-        </Link>
+        </CollapsableLink>
       </MenuItem>
     </Menu>
   );
 }
 
-function ClientMenu() {
+function ClientMenu({ collapsed }) {
   return (
     <Menu iconShape="circle">
       <MenuItem icon={<BsFillCartPlusFill />}>
-        <Link className="text-light" to="/client/products">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/client/products">
           Add products to basket
-        </Link>
+        </CollapsableLink>
       </MenuItem>
       <MenuItem icon={<FaRegListAlt />}>
-        <Link className="text-light" to="/client/orders">
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/client/orders">
           Browse order history list
-        </Link>
+        </CollapsableLink>
       </MenuItem>
     </Menu>
   );
 }
 
-function FarmerMenu() {
-    return (
-        <Menu iconShape="circle">
-            <MenuItem icon={<GiFruitTree />}>
-                <Link className="text-light" to="/farmer/supply">
-                    Report expected products
-                </Link>
-            </MenuItem>
-            <MenuItem icon={<GiFruitBowl />}>
-                <Link className="text-light" to="/farmer/products">
-                    Browse my products
-                </Link>
-            </MenuItem>
-        </Menu>
-    );
+function FarmerMenu({ collapsed }) {
+  return (
+    <Menu iconShape="circle">
+      <MenuItem icon={<GiFruitTree />}>
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/farmer/supply">
+          Report expected products
+        </CollapsableLink>
+      </MenuItem>
+      <MenuItem icon={<GiFruitBowl />}>
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/farmer/products">
+          Browse my products
+        </CollapsableLink>
+      </MenuItem>
+    </Menu>
+  );
 }
 
-function ManagerMenu() {
+function ManagerMenu({ collapsed }) {
   return (
-      <Menu iconShape="circle">
-          <MenuItem icon={<BsCalendarRangeFill />}>
-              <Link className="text-light" to="/manager/report/weekly">
-                  Weekly reports
-              </Link>
-          </MenuItem>
-          <MenuItem icon={<BsCalendarFill />}>
-              <Link className="text-light" to="/manager/report/monthly">
-                Monthly reports
-              </Link>
-          </MenuItem>
-      </Menu>
+    <Menu iconShape="circle">
+      <MenuItem icon={<BsCalendarRangeFill />}>
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/manager/report/weekly">
+          Weekly reports
+        </CollapsableLink>
+      </MenuItem>
+      <MenuItem icon={<BsCalendarFill />}>
+        <CollapsableLink collapsed={collapsed} className="text-light" to="/manager/report/monthly">
+          Monthly reports
+        </CollapsableLink>
+      </MenuItem>
+    </Menu>
   );
 }
 

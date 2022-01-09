@@ -197,6 +197,7 @@ export function ProductForm(props) {
             setMaxQuantity(itemsList[0] ? itemsList[0].quantity : ' ');
             setCurrentPrice(itemsList[0] ? itemsList[0].price * 0.1 : ' ');
         }
+        // eslint-disable-next-line
     }, []);
 
     const handleSubmit = (event) => {
@@ -210,7 +211,7 @@ export function ProductForm(props) {
             if (productToAdd) {
                 productToAdd.quantityOrdered = quantityOrdered;
                 productToAdd.temporaryKey = temporaryKey;
-                setTemporaryKey((temporaryKey) => temporaryKey + 1);
+                setTemporaryKey((tk) => tk + 1);
 
                 setProductsList(
                     productsList.map((p) =>

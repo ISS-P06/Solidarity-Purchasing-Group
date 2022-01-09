@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { Notification } from '../components';
-import { FaBars } from 'react-icons/fa';
 
 import Aside from './Aside';
 import Navbar from './Navbar';
@@ -28,8 +27,8 @@ function Layout(props) {
     setCollapsed(value);
   };
 
-  const handleToggle = (value) => {
-    setToggled(value);
+  const handleToggle = () => {
+    setToggled(!toggled);
   };
 
   const AsideProps = {
@@ -54,15 +53,10 @@ function Layout(props) {
         virtualTime={virtualTime}
         openBasketOffCanvas={openBasketOffCanvas}
         setOpenBasketOffCanvas={setOpenBasketOffCanvas}
+        handleToggle={handleToggle}
       />
       <Aside {...AsideProps} />
 
-      {/* This button shows up when the sidebar is hidden */}
-      {!userRole ? null : (
-        <Button as={FaBars} className="aside-toggle" onClick={() => handleToggle(true)}>
-          <FaBars />
-        </Button>
-      )}
       <main className="main-view">{props.children}</main>
       <Footer />
     </Container>

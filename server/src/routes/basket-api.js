@@ -4,6 +4,7 @@ import { Router } from 'express';
 import { param, check, validationResult } from 'express-validator';
 import { basketDAO, orderDAO } from '../dao';
 import { isLoggedIn_Client, VTC } from '../utils';
+import { isNotSuspended } from '../utils/passport';
 
 export const router = Router();
 
@@ -26,6 +27,7 @@ const vtc = new VTC();
 router.post(
   '/api/client/:userId/basket/buy',
   isLoggedIn_Client,
+  isNotSuspended,
   [check('userId').isInt()],
   async (req, res) => {
     const errors = validationResult(req);
@@ -68,6 +70,7 @@ router.post(
 router.post(
   '/api/client/:userId/basket/remove',
   isLoggedIn_Client,
+  isNotSuspended,
   [param('userId').isInt(), check('productId').isInt()],
   (req, res) => {
     const errors = validationResult(req);
@@ -97,6 +100,7 @@ router.post(
 router.post(
   '/api/client/:userId/basket/add',
   isLoggedIn_Client,
+  isNotSuspended,
   [check('userId').isInt(), check('productId').isInt(), check('reservedQuantity').isNumeric()],
   (req, res) => {
     const errors = validationResult(req);

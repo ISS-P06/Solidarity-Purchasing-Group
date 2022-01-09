@@ -69,9 +69,7 @@ router.post(
 router.post('/api/orders/:id/deliver', isLoggedIn_Employee, (req, res) => {
   orderDAO
     .setOrderStatus(req.params.id, 'delivered')
-    .then((orderId) => {
-      res.json(orderId);
-    })
+    .then((orderId) => res.json(orderId))
     .catch(() => res.status(500).end());
 });
 
@@ -94,14 +92,4 @@ router.get('/api/orders/:id', isLoggedIn_Employee, (req, res) => {
     .catch(() => {
       res.status(500).end();
     });
-});
-
-// POST /api/orders/:id/deliver
-router.post('/api/orders/:id/deliver', isLoggedIn_Employee, (req, res) => {
-  orderDAO
-    .setOrderStatus(req.params.id, 'delivered')
-    .then((orderId) => {
-      res.json(orderId);
-    })
-    .catch(() => res.status(500).end());
 });
