@@ -8,12 +8,7 @@ describe('Test mailer methods', () => {
   });
 
   test('test successful sending warning suspension email ', async () => {
-    const result = await mailerUtil.sendWarningSuspension({
-      email: 'email@gmail.com' ,
-      name : 'abc',
-      surname : 'MRx',
-      missed_pickups : 3
-    });
+    const result = await mailerUtil.sendWarningSuspension('');
 
     expect(result).toBe('email sent');
   });

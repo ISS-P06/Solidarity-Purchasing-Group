@@ -84,6 +84,16 @@ export function sendWarningSuspension(customerInfo) {
             'Best regards'
     };
 
+    /*
+    Note: this IF statement is used only to run tests.
+    In order to avoid sending emails every time a test is ran,
+    an orderID of 0 or less is passed to the function so that it returns
+    a resolved promise every time instead of using nodemailer.
+*/
+    if (customerInfo === '') {
+        return Promise.resolve("email sent");
+    }
+
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions)
             .then((res) => {
