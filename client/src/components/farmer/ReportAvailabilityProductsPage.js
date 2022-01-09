@@ -18,7 +18,7 @@ function ReportAvailabilityProductsPage(props) {
                 setProductsList(products);
             })
             .catch((e) => addMessage({ message: e.message, type: 'danger' }));
-
+// eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -29,6 +29,7 @@ function ReportAvailabilityProductsPage(props) {
                 setLoading(false);
             })
             .catch((e) => addMessage({ message: e.message, type: 'danger' }));
+            // eslint-disable-next-line
     }, [dirty, props.virtualTime]);
 
     return (
@@ -136,32 +137,18 @@ export function SuppliedProductForm(props) {
             <Row>
                 <Col xs={12} lg={4}>
                     <FloatingLabel controlId="ProductName" label="Name of the product" className="mt-2">
-                        {checkSupplyInterval(props.virtualTime) ? (
                             <Form.Select
+                                disabled={checkSupplyInterval(props.virtualTime)}
                                 aria-label="Name of the product"
                                 onChange={(e) => setProductID(e.target.value)} required>
                                 <option></option>
-                                {productsList && productsList.map((p, k) => (
+                                {productsList && productsList.map((p) => (
                                     <option key={p.id} value={p.id}>
                                         {p.name}
                                     </option>
                                 ))}
 
                             </Form.Select>
-                        ) : (
-                            <Form.Select
-                                disabled
-                                aria-label="Name of the product"
-                                onChange={(e) => setProductID(e.target.value)} required>
-                                <option></option>
-                                {productsList && productsList.map((p, k) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.name}
-                                    </option>
-                                ))}
-
-                            </Form.Select>
-                        )}
 
                         <Form.Control.Feedback type="invalid">
                             Please insert the category of the product
@@ -172,7 +159,7 @@ export function SuppliedProductForm(props) {
                 <Col xs={12} lg={4}>
                     <FloatingLabel
                         controlId="ProductQuantity"
-                        label={`Product quantity${productsList.length > 0 && productID ? '(' + productsList.find((product) => product.id == productID).unit + ')' : ""}`}
+                        label={`Product quantity${productsList.length > 0 && productID ? '(' + productsList.find((product) => product.id === productID).unit + ')' : ""}`}
                         className="mt-2"
                         required
                         onChange={(e) => setExpectedQuantityAvailable(Number(e.target.value))}>
@@ -206,7 +193,7 @@ export function SuppliedProductForm(props) {
                 <Col xs={12} lg={4}>
                     <FloatingLabel
                         controlId="Price"
-                        label={`Price${productsList.length > 0 && productID ? '/' + productsList.find((product) => product.id == productID).unit : ""}`}
+                        label={`Price${productsList.length > 0 && productID ? '/' + productsList.find((product) => product.id === productID).unit : ""}`}
                         className="mt-2"
                         required
                         onChange={(e) => setPrice(Number(e.target.value))}>

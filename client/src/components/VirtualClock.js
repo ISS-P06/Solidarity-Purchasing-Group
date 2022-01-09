@@ -74,6 +74,7 @@ function VirtualClock(props) {
       setDate(humanTime.date);
       setTime(humanTime.time);
     }
+    // eslint-disable-next-line
   }, [dirtyVT]);
 
   /**

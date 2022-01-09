@@ -30,6 +30,7 @@ const ProductCards = (props) => {
             addMessage({message: e.message, type: 'danger'});
             setLoading(false);
         });
+        // eslint-disable-next-line
     }, [virtualTime]);
 
     // go up after changing page

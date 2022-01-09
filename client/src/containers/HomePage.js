@@ -1,7 +1,7 @@
 import {Carousel, Image, Row, Col, Container, Alert} from 'react-bootstrap';
 import {BsFillPersonPlusFill, BsBox} from 'react-icons/bs';
 import {ImBoxAdd, ImBoxRemove} from 'react-icons/im';
-import {RiShoppingBasketFill, RiTelegramLine} from 'react-icons/ri';
+import {RiShoppingBasketFill} from 'react-icons/ri';
 import {GiFruitBowl,GiWallet, GiFruitTree} from 'react-icons/gi';
 import {MdPendingActions, MdDeliveryDining} from 'react-icons/md';
 import {FaTelegramPlane} from 'react-icons/fa';

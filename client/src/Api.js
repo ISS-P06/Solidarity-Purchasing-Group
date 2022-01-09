@@ -494,17 +494,17 @@ export const api_computeHomepageStats = async () => {
     }
 };
 /**
- * TODO: api to get information on the suspension state of an user
+ * Api to get information on the suspension state of an user
  * @param userId: ID of the logged user
  * @returns {boolean} true if the user is suspended, false otherwise
  */
 export const api_isUserSuspended = async (userId) => {
     try {
         const res = await axios.get('/api/clients/' + userId + '/isSuspended');
-        if (res.data == true) {
+        if (res.data === true) {
             return true;
         }
-        else if(res.data == false){
+        else if(res.data === false){
             return false;
         } else {
             throw new Error(res.data.message);

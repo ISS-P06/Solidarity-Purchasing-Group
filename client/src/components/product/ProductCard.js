@@ -63,7 +63,7 @@ const ProductCard = (props) => {
                         </ListGroup.Item>
                     </>)}
                 </ListGroup>
-                {userRole == "client" && checkOrderInterval(virtualTime)?
+                {userRole === "client" && checkOrderInterval(virtualTime)?
                     <Card.Footer>
                         <Button
                             variant="primary"

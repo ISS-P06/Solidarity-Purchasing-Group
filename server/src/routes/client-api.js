@@ -4,7 +4,7 @@ import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { clientDAO, orderDAO, userDAO } from '../dao';
 import { isLoggedIn_Client, isLoggedIn_Employee } from '../utils';
-import { isLoggedIn, isLoggedIn_Farmer, isLoggedIn_Manager } from '../utils/passport';
+import { isLoggedIn } from '../utils/passport';
 
 export const router = Router();
 
@@ -75,11 +75,9 @@ router.get('/api/clients/:clientId/orders/:orderId', isLoggedIn_Client, (req, re
     .catch(() => res.status(500).end());
 });
 
-router.get('/api/clients/:clientId/isSuspended', isLoggedIn,
- (req, res) => {
+router.get('/api/clients/:clientId/isSuspended', isLoggedIn, (req, res) => {
   userDAO
-  .checkUserSuspensionsById(req.params.clientId)
-  .then((isSuspended) => res.json(isSuspended))
-  .catch(() => res.status(500).end());
+    .checkUserSuspensionsById(req.params.clientId)
+    .then((isSuspended) => res.json(isSuspended))
+    .catch(() => res.status(500).end());
 });
-
