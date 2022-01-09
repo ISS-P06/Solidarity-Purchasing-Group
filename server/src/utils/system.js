@@ -1,7 +1,8 @@
 'use strict';
 
-import {mailerUtil} from './';
-import {systemDAO} from '../dao';
+import { mailerUtil } from './';
+import { systemDAO } from '../dao';
+import { sendAvailableProductsMessage } from '../telegram';
 
 class SYS {
     /**
@@ -12,8 +13,10 @@ class SYS {
      */
 
     /**
-     * Check for time-based events every time the
-     * virtual clock is updated.
+     * Check if the current day and time is
+     * Monday, 9am
+     *
+     * This triggers email notifications for "pending_canc" orders.
      */
     checkTimedEvents(currTime, test = false) {
         let time = new Date(currTime);
@@ -63,30 +66,10 @@ class SYS {
         if (day == 5 && hours == 23) {
             this.event_checkUndeliveredOrders();
         }
-    }
 
-    /**
-     * Event that cancels all orders with "pending_canc" status
-     * on Monday at 11pm.
-     */
-    event_cancelPendingOrders() {
-        systemDAO.cancelPendingCancOrders()
-            .then()
-            .catch((err) => {console.log("Error: " + err)});
-    }
-
-    /**
-     * Event that checks which orders are still in pending_canc.
-     * This triggers the delivery of the reminders for insufficient balance.
-     */
-    event_checkForInsufficientBalance(test = false) {
-        systemDAO.getClientEmailsForReminder()
-            .then((mailList) => {
-                this.event_sendBalanceReminders(mailList, test);
-            })
-            .catch((err) => {
-                console.log("Error: " + err);
-            });
+        if (day === 6 && hours === 9) {
+          sendAvailableProductsMessage();
+        }
     }
 
     /**
@@ -104,10 +87,7 @@ class SYS {
     }
 
     /**
-     * Deletes all tuples from the "Basket" table in the DB.
-     * This operation is executed whenever the current time is
-     * outside the time interval in which clients are allowed to
-     * make orders.
+     * Check if the current day and time is Friday, 11pm
      */
     event_emptyBaskets() {
         systemDAO.emptyBaskets()
@@ -116,28 +96,57 @@ class SYS {
                 console.log("Error: there was an error in emptying baskets: " + err);
             });
     }
+  
 
-    /**
-     * Sends reminders via e-mail to all clients who have
-     * orders pending cancellation due to insufficient funds.
-     *
-     * @param {array of objects} mailingList Array of objects, each containing the
-     *      email of the user and the id of the order for which they do not have
-     *      enough balance for. There can be multiple objects referring to the
-     *      same user (i.e. with the same email).
-     */
-    event_sendBalanceReminders(mailingList, test = false) {
-        for (let mail of mailingList) {
-            // If test = true, the order id is set to -1 so that
-            // the function will no try to log in with nodemailer
-            // (which causes the tests to fail)
-            mailerUtil.mail_sendBalanceReminder(mail.email, test ? -1 : mail.id)
-                .then((res) => {
-                    // ok
-                })
-                .catch((err) => console.log(err));
-        }
+  /**
+ * Sends reminders via e-mail to all clients who have
+ * orders pending cancellation due to insufficient funds.
+ *
+ * @param {array of objects} mailingList Array of objects, each containing the
+ *      email of the user and the id of the order for which they do not have
+ *      enough balance for. There can be multiple objects referring to the
+ *      same user (i.e. with the same email).
+ */
+event_sendBalanceReminders(mailingList, test = false) {
+    for (let mail of mailingList) {
+        // If test = true, the order id is set to -1 so that
+        // the function will no try to log in with nodemailer
+        // (which causes the tests to fail)
+        mailerUtil.mail_sendBalanceReminder(mail.email, test ? -1 : mail.id)
+            .then((res) => {
+                // ok
+            })
+            .catch((err) => console.log(err));
     }
+  }
+
+  /**
+   * Event that cancels all orders with "pending_canc" status
+   * on Monday at 11pm.
+   */
+  event_cancelPendingOrders() {
+    systemDAO
+      .cancelPendingCancOrders()
+      .then()
+      .catch((err) => {
+        console.log('Error: ' + err);
+      });
+  }
+
+  /**
+   * Event that checks which orders are still in pending_canc.
+   * This triggers the delivery of the reminders for insufficient balance.
+   */
+  event_checkForInsufficientBalance(test = false) {
+    systemDAO
+      .getClientEmailsForReminder()
+      .then((mailList) => {
+        this.event_sendBalanceReminders(mailList, test);
+      })
+      .catch((err) => {
+        console.log('Error: ' + err);
+      });
+  }
 }
 
 export default SYS;

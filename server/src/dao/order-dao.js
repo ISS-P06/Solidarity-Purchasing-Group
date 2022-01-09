@@ -13,7 +13,7 @@ export function insertOrder(orderClient) {
     const insertReqQuery = `INSERT INTO Request(ref_client, status,date) VALUES (?, ?,?)`;
     db.run(
       insertReqQuery,
-      [orderClient.clientID, "pending", dayjs().format('YYYY-MM-DD HH:MM')],
+      [orderClient.clientID, 'pending', dayjs().format('YYYY-MM-DD HH:MM')],
 
       function (err) {
         if (err) {
@@ -44,7 +44,7 @@ export function insertOrder(orderClient) {
               if (orderClient.order.length === index + 1) {
                 checkBalanceAndSetStatus(OrderID)
                   .then(() => resolve(OrderID))
-                  .catch((err3) => reject(err3));                
+                  .catch((err3) => reject(err3));
               }
             });
           });
@@ -57,8 +57,8 @@ export function insertOrder(orderClient) {
 /**
  * Computes an order's total amount to be paid, eventually taking into
  * account delivery fees.
- * 
- * @param {int} orderID: the order's unique ID 
+ *
+ * @param {int} orderID: the order's unique ID
  */
 export function computeOrderTotal(orderID) {
   return new Promise(async (resolve, reject) => {
@@ -80,7 +80,7 @@ export function computeOrderTotal(orderID) {
       }
 
       if (!rows) {
-        reject("order not found");
+        reject('order not found');
       }
 
       const order = rows[0];
@@ -97,19 +97,19 @@ export function computeOrderTotal(orderID) {
           If the new database is used, the field will be defined and will either be a "true" or "false"
             string.
         */
-        if (delivery 
-            && delivery.deliveryAtHome != undefined 
-            && (delivery.deliveryAtHome === "true")) {
+        if (
+          delivery &&
+          delivery.deliveryAtHome != undefined &&
+          delivery.deliveryAtHome === 'true'
+        ) {
           resolve(order.totalAmount + deliveryFee);
-        }
-        else {
+        } else {
           resolve(order.totalAmount);
         }
-      }
-      catch(err1) {
+      } catch (err1) {
         reject(err1);
       }
-    }); 
+    });
   });
 }
 
@@ -119,26 +119,25 @@ export function computeOrderTotal(orderID) {
  * - "confirmed", if the client has enough balance;
  * - "pendinc_canc", if the balance is insufficient
  * The function also updates the client's balance if it is sufficient.
- * 
- * @param {int} orderID: the unique ID of the order  
+ *
+ * @param {int} orderID: the unique ID of the order
  */
 export function checkBalanceAndSetStatus(orderID) {
   return new Promise((resolve, reject) => {
     // Get the client's ID and balance for the given order
     const sql = `
         SELECT DISTINCT C.ref_user AS clientID, C.balance AS clientBalance
-        FROM client C, request R
-        WHERE R.id = ?
-          AND R.ref_client = C.ref_user;
-      `;
+          FROM client C, request R
+          WHERE R.id = ? AND R.ref_client = C.ref_user;`;
 
     db.all(sql, [orderID], async function (err, rows) {
       if (err) {
         reject(err);
       }
 
-      if (rows == undefined || rows.length == 0 || !rows) {
-        reject("error: no order found");
+      if (rows === undefined || rows.length === 0 || !rows) {
+        reject('error: no order found');
+        return;
       }
 
       // Get client info and the total amount to pay for the order
@@ -168,12 +167,11 @@ export function checkBalanceAndSetStatus(orderID) {
           db.run(sql_order, [orderID], (err2) => {
             if (err2) {
               reject(err2);
-            }          
+            }
           });
-        }); 
-        resolve("confirmed");
-      }
-      else {
+        });
+        resolve('confirmed');
+      } else {
         // Set the order's status to "pending_canc" and do not decrease the client's balance
         const sql_order = `
           UPDATE request
@@ -182,12 +180,12 @@ export function checkBalanceAndSetStatus(orderID) {
           `;
 
         db.run(sql_order, [orderID], (err2) => {
-            if (err2) {
-              reject(err2);
-            }            
-          });
+          if (err2) {
+            reject(err2);
+          }
+        });
 
-        resolve("pending_canc");
+        resolve('pending_canc');
       }
     });
   });
@@ -203,8 +201,8 @@ export function checkBalanceAndSetStatus(orderID) {
 export function getOrders(clientId = -1) {
   return new Promise((resolve, reject) => {
     let sql = `SELECT r.id, u.email, r.date, r.status
-                    FROM Request r, Client c, User u
-            WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
+                FROM Request r, Client c, User u
+                WHERE r.ref_client = c.ref_user AND c.ref_user = u.id`;
     let deps = [];
     if (clientId !== -1) {
       sql += ` AND u.id = ?`;
@@ -300,7 +298,7 @@ export function getOrderById(orderId, clientId = -1) {
 
     const sql3 = `SELECT d.address, d.date, d.startTime, d.endTime, d.deliveryAtHome
                   FROM Delivery d
-                  WHERE d.ref_request= ? `
+                  WHERE d.ref_request= ? `;
 
     let deps = [orderId];
     if (clientId !== -1) {
@@ -353,7 +351,13 @@ export function getOrderById(orderId, clientId = -1) {
             resolve(order);
             return;
           }
-          order.delivery = { address: row1.address, date: row1.date, startTime: row1.startTime, endTime: row1.endTime, deliveryAtHome: row1.deliveryAtHome };
+          order.delivery = {
+            address: row1.address,
+            date: row1.date,
+            startTime: row1.startTime,
+            endTime: row1.endTime,
+            deliveryAtHome: row1.deliveryAtHome,
+          };
           resolve(order);
         });
       });
@@ -383,9 +387,19 @@ export function setOrderStatus(orderId, status) {
  */
 export function scheduleOrderDeliver(orderId, delivery) {
   return new Promise((resolve, reject) => {
-    const sql = 'INSERT INTO Delivery(ref_request, address, date, startTime, endTime, deliveryAtHome) VALUES(?, ?, ?, ?, ?, ?)';
-    db.run(sql, [orderId, delivery.address, delivery.date, delivery.startTime, delivery.endTime, delivery.typeDelivery === "home" ? "true" : "false"], (err) =>
-      err ? reject(err) : resolve(orderId)
+    const sql =
+      'INSERT INTO Delivery(ref_request, address, date, startTime, endTime, deliveryAtHome) VALUES(?, ?, ?, ?, ?, ?)';
+    db.run(
+      sql,
+      [
+        orderId,
+        delivery.address,
+        delivery.date,
+        delivery.startTime,
+        delivery.endTime,
+        delivery.typeDelivery === 'home' ? 'true' : 'false',
+      ],
+      (err) => (err ? reject(err) : resolve(orderId))
     );
   });
 }
@@ -395,18 +409,17 @@ export function scheduleOrderDeliver(orderId, delivery) {
  * @param {Date} currentDate current date needed to get only the unretrieved orders of the last month
  * @returns all the unretrieved orders
  */
- export function getUnretrievedOrders(currentDate) {
+export function getUnretrievedOrders(currentDate) {
   return new Promise((resolve, reject) => {
-
     // Convert currentDate into a format readable by SQLite
     let endDate = dayjs(currentDate).format('YYYY-MM-DD');
     endDate = endDate + ' 00:00';
 
     //Start date corresponds to the first day of the current month
     //We want to get the unretrieved the orders of the last month
-    const month = dayjs(currentDate).get("month"); 
-    const year = dayjs(currentDate).get("year");
-    const startDateString = "" + year + "-" + month + "-" + "01";
+    const month = dayjs(currentDate).get('month');
+    const year = dayjs(currentDate).get('year');
+    const startDateString = '' + year + '-' + month + '-' + '01';
     let startDate = dayjs(startDateString, 'YYYY-MM-DD');
     startDate = startDate + ' 00:00';
 
@@ -428,8 +441,8 @@ export function scheduleOrderDeliver(orderId, delivery) {
  * Returns the DB tuple associated with a given order. Can also
  * return an "undefined" object in case there's no delivery associated
  * with it.
- * 
- * @param {int} requestId: the order's unique ID 
+ *
+ * @param {int} requestId: the order's unique ID
  * @returns {Promise}
  * - resolved promise containing the tuple, if the operation is successful
  * - rejected promise otherwise
