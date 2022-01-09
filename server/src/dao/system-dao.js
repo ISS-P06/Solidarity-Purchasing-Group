@@ -7,8 +7,8 @@ import VTC from './../utils/vtc';
 
 const vtc = new VTC();
 /**
- * Set all "pending_canc" orders to "cancelled" 
- * 
+ * Set all "pending_canc" orders to "cancelled"
+ *
  * @returns {Promise}
  * - Returns a resolved promise if the operation is successful, a rejected one otherwise
  */
@@ -325,7 +325,7 @@ export function test_addConfirmedDummyOrders() {
     });
   });
 }
-    
+
 /**
  * Function that is used to suspend clients with a number of missed pick up greather than 5
  * @returns {Promise}
@@ -383,4 +383,21 @@ export function test_addSuspensionAtClientById(id) {
             resolve(true);
         });
     });
+}
+/**
+ * this function queries the db to get some information about the client who have
+ * 3 or 4 missed pickups of their order
+ * @return {Promise<unknown>}
+ */
+export async function getWarnedCustomers() {
+  const warningMissedPickups = [3, 4]
+  return  new Promise((resolve, reject) => {
+    const customerInfoQuery = 'select email, name ,surname ,missed_pickups from Client C,User U where u.id = C.ref_user AND C.missed_pickups IN ('+warningMissedPickups.map(v=>'?')+')'
+    db.all(customerInfoQuery, [...warningMissedPickups], function (err, rows) {
+      if (err) {
+        reject(err);
+      }
+      resolve(rows);
+    })
+  })
 }

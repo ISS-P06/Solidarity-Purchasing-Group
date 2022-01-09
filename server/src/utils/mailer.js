@@ -61,3 +61,47 @@ export function mail_sendBalanceReminder(userMail, orderID) {
             });
     });
 }
+
+/**
+ * this method sends an email to the user to warn him that his account is about to be suspended due to
+ * excessive times of order missed pickups.
+ *
+ * @param{Object} customerInfo; carries customer information {name ,surname ,email, missed_pickups}
+ * @return {Promise}
+ */
+
+export function sendWarningSuspension(customerInfo) {
+    // Set up email options
+
+    let mailOptions = {
+        from: senderMail,
+        to: customerInfo.email,
+        subject: 'SPG - your account is about to be suspended',
+        text: 'Dear ' + customerInfo.surname +' '+ customerInfo.name +',\n'+
+            'We are sorry to inform you that your account is about to be suspended since you have '+ customerInfo.missed_pickups +
+            ' times of orders missed pickups.\n\n'+
+            'For more information you are invited to consult our customer service.\n'+
+            'Best regards'
+    };
+
+    /*
+    Note: this IF statement is used only to run tests.
+    In order to avoid sending emails every time a test is ran,
+    an orderID of 0 or less is passed to the function so that it returns
+    a resolved promise every time instead of using nodemailer.
+*/
+    if (customerInfo == '') {
+        return Promise.resolve("email sent");
+    }
+
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions)
+            .then((res) => {
+                resolve("email sent");
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}
+
