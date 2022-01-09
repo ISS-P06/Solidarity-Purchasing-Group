@@ -38,4 +38,38 @@ describe('Test the client homepage component', () => {
       })
     );
   });
+
+  test('Test whether the client homepage  component renders properly when suspended', () => {
+
+    const user = { name: 'ciao'};
+    const history = createMemoryHistory();
+
+    // mock push function
+    history.push = jest.fn();
+
+    render(
+      <Router history={history}>
+        <ClientHomePage user={user} suspended={true} />
+      </Router>
+    );
+
+    const title = screen.getByText(/Welcome on Solidarity Purchase Group/);
+    expect(title).toBeInTheDocument();
+    const balance = screen.getByText(/Your current balance is/);
+    expect(balance).toBeInTheDocument();
+    const alert = screen.getByText(/You have missed 5 pickups so you have been suspended for a month./)
+    expect(alert).toBeInTheDocument();
+    const images = screen.getAllByRole('img');
+    for (var image of images) {
+      expect(image).toBeInTheDocument();
+    }
+
+    fireEvent(
+      screen.getByText(/Add products to my basket/),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+      })
+    );
+  });
 });

@@ -77,7 +77,7 @@ describe('Test POST order ', function () {
         });
     });
 });
-/*
+
 describe("Test order status", function () {
   let id_pending;
   let id_confirmed;
@@ -103,7 +103,7 @@ describe("Test order status", function () {
     expect(status).toBe("confirmed");
   });
 });
-*/
+
 describe('Test the orders path', () => {
   test('It should response GET api/orders', function (done) {
     authSession_employee.get('/api/orders').expect(200).end(done);
