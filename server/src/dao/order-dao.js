@@ -143,14 +143,7 @@ export function checkBalanceAndSetStatus(orderID) {
 
       // Get client info and the total amount to pay for the order
       const clientInfo = rows[0];
-      let orderTotal = 0.0;
-      
-      try {
-        orderTotal = await computeOrderTotal(orderID);
-      }
-      catch (err1) {
-        reject(err1);
-      }
+      const orderTotal = await computeOrderTotal(orderID).catch((e) => reject(e));
 
       // Check whether the client's balance is enough to pay for the order
       if (clientInfo.clientBalance >= orderTotal) {

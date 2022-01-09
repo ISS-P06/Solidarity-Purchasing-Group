@@ -369,3 +369,18 @@ export function suspendClients() {
         });
     });
 }
+
+
+export function test_addSuspensionAtClientById(id) {
+    return new Promise((resolve, reject) => {
+        const sql1 = " INSERT INTO Suspension (ref_client, start_date, end_date) VALUES (?,?,?)";
+        db.run(sql1, [id, dayjs().format('YYYY-MM-DD HH:mm'), dayjs().add(1, "month").format('YYYY-MM-DD HH:mm')], (err) => {
+            if (err) {
+                console.log(err)
+                reject(err);
+                return;
+            }
+            resolve(true);
+        });
+    });
+}
