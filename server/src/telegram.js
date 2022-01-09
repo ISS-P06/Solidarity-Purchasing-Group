@@ -4,7 +4,21 @@ import { randomInt } from 'crypto';
 /**
  * Instance of the telegram bot
  */
-export const bot = new Telegraf(process.env.BOT_TOKEN);
+export const bot = initTelegraf();
+
+/**
+ * Check the env variable and start the bot
+ *
+ * @returns Instace of the bot or `false`
+ */
+function initTelegraf() {
+  if (process.env.BOT_ACTIVE && process.env.BOT_TOKEN) {
+    return new Telegraf(process.env.BOT_TOKEN);
+  } else {
+    console.log('Telegram bot is not running');
+    return null;
+  }
+}
 
 /**
  * Send a formatted message for the availability of a product
@@ -36,19 +50,21 @@ export async function sendAvailableProductsMessage() {
  * @param {string} string Message
  */
 export async function sendTelegramMessage(string) {
-  if (process.env.BOT_TOKEN) {
-    const keyboard = Markup.inlineKeyboard([
-      Markup.button.url('Solidarity Purchasing Group', 'https://spg06.herokuapp.com/'),
-    ]);
-
-    const finger = ['👇', '👇🏻', '👇🏿', '👇🏽', '👇🏾', '👇🏼'][randomInt(6)];
-
-    bot.telegram.sendMessage(
-      process.env.CHANNEL_ID,
-      `${string}\n\nClick on the link below! ${finger}`,
-      keyboard
-    );
+  if (!bot) {
+    return;
   }
+
+  const keyboard = Markup.inlineKeyboard([
+    Markup.button.url('Solidarity Purchasing Group', 'https://spg06.herokuapp.com/'),
+  ]);
+
+  const finger = ['👇', '👇🏻', '👇🏿', '👇🏽', '👇🏾', '👇🏼'][randomInt(6)];
+
+  bot.telegram.sendMessage(
+    process.env.CHANNEL_ID,
+    `${string}\n\nClick on the link below! ${finger}`,
+    keyboard
+  );
 }
 
 /**
@@ -59,7 +75,7 @@ export function launchTelegramBot() {
 }
 
 // Enable graceful stop
-if (process.env.BOT_TOKEN) {
+if (bot !== null) {
   process.once('SIGINT', () => bot.stop('SIGINT'));
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
