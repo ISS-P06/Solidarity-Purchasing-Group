@@ -46,7 +46,6 @@ function OrderList(props) {
     }, [setOrders, props.virtualTime]);
 
     useEffect(() => {
-        console.log(orders.filter((order)=> order.status===typeOrders));
         if(typeOrders==="all"){
             setOrdersVisualized(orders);
         }

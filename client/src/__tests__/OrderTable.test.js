@@ -43,6 +43,6 @@ describe('My function computeTotal()', () => {
 
     render(<OrderTable products={products} />);
 
-    expect(screen.getByText(/€ 9.85/)).toBeInTheDocument();
+    expect(screen.getByText(/Total € 9.85/)).toBeInTheDocument();
   });
 });

@@ -8,17 +8,12 @@
 /* Sidebar css */
 
 .aside-toggle {
-    position: absolute;
     cursor: pointer;
     width: 50px;
     height: 50px;
-    text-align: center;
-    border-radius: 0%;
-    align-items: center;
-    justify-content: center;
     display: none;
-    margin-top: 100px;
 }
+
 
 @media (max-width: 768px) {
     .aside-toggle {
@@ -53,4 +48,13 @@
     justify-content: center;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.collapse-arrow {
+    margin-right: 22px;
+    margin-bottom: 1px;
+}
+
+.collapse-arrow:hover {
+    cursor: pointer;
 }
