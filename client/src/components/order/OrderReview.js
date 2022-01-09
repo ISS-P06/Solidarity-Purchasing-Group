@@ -35,7 +35,7 @@ function OrderReview(props) {
             setOrderReview(order);
             setIsUpdated(true);
           })
-          .catch((e) =>   addMessage({title: "Error", message: e.message, type: 'danger'}));
+          .catch((e) => addMessage({ title: 'Error', message: e.message, type: 'danger' }));
       } else if (props.userRole === 'client') {
         api_getClientOrderReview(props.userId, match.params.id)
           .then((order) => {
@@ -43,9 +43,10 @@ function OrderReview(props) {
             setOrderReview(order);
             setIsUpdated(true);
           })
-          .catch((e) =>  addMessage({title: "Error", message: e.message, type: 'danger'}));
+          .catch((e) => addMessage({ title: 'Error', message: e.message, type: 'danger' }));
       }
     }
+    // eslint-disable-next-line
   }, [match]);
 
 

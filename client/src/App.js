@@ -76,6 +76,7 @@ function App() {
             }
         };
         getVT();
+        // eslint-disable-next-line
     }, [dirtyVT]);
 
     // useEffect for getting user info

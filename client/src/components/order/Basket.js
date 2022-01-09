@@ -82,6 +82,7 @@ export default function Basket(props) {
             .catch((e) => {
                 setLoading(false);
             });
+            // eslint-disable-next-line
     }, [isUpdated, setIsUpdated, props.virtualTime]);
 
     return (
@@ -139,7 +140,7 @@ const BasketProductList = (props) => {
             {isEmpty ? null : (
                 <Row className="justify-content-center mt-3 " style={{ height:'18%'}}>
                     <Col xs={10} style={{textAlign: 'center'}} >
-                        <Button className="btn" style={{paddingLeft:"100px", paddingRight:"100px"}}  onClick={() => handleBuyNow(userId)} className={"mb-2"}>
+                        <Button className="btn mb-2" style={{paddingLeft:"100px", paddingRight:"100px"}}  onClick={() => handleBuyNow(userId)}>
                             Buy Now
                         </Button>
                     </Col>

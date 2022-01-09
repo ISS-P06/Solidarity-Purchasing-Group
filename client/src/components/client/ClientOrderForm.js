@@ -197,6 +197,7 @@ export function ProductForm(props) {
             setMaxQuantity(itemsList[0] ? itemsList[0].quantity : ' ');
             setCurrentPrice(itemsList[0] ? itemsList[0].price * 0.1 : ' ');
         }
+        // eslint-disable-next-line
     }, []);
 
     const handleSubmit = (event) => {

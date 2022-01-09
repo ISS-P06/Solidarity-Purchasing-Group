@@ -501,10 +501,10 @@ export const api_computeHomepageStats = async () => {
 export const api_isUserSuspended = async (userId) => {
     try {
         const res = await axios.get('/api/clients/' + userId + '/isSuspended');
-        if (res.data == true) {
+        if (res.data === true) {
             return true;
         }
-        else if(res.data == false){
+        else if(res.data === false){
             return false;
         } else {
             throw new Error(res.data.message);

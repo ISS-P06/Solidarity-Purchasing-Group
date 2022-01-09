@@ -36,6 +36,7 @@ function Report(props) {
     } else {
       setStats("");
     }
+    // eslint-disable-next-line
   }, [date]);
 
   return (<>

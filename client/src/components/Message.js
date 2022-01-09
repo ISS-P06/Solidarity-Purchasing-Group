@@ -35,7 +35,8 @@ function Notification() {
 
 /**
  * @deprecated Use `Notification` instead of this
- */
+ */ 
+// eslint-disable-next-line
 function Alert({ alert, setAlert, message }) {
   // On componentDidMount set the timer
   useEffect(() => {

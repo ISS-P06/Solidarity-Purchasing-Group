@@ -33,17 +33,17 @@ export function humanToISO(date, time) {
 /**
  * Check if the virtual time is in the interval: Sat, 9am - Sun, 11pm.
  * If so, orders can be made by clients.
- * 
+ *
  * @param {Date} virtualTime
- * @return {boolean} true if the client can order, false otherwise 
+ * @return {boolean} true if the client can order, false otherwise
  */
 export function checkOrderInterval(virtualTime) {
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
   const timeOfDay = virtualTime.getHours(); // 0 ... 23
 
-  if(dayOfWeek==6 && timeOfDay>=10){
+  if (dayOfWeek === 6 && timeOfDay >= 10) {
     return true;
-  } else if (dayOfWeek==0 && timeOfDay<24) {
+  } else if (dayOfWeek === 0 && timeOfDay < 24) {
     return true;
   } else {
     return false;
@@ -53,20 +53,19 @@ export function checkOrderInterval(virtualTime) {
 /**
  * Check if the virtual time is in the interval: Wed - Sat, 9am.
  * If so, farmers can insert available products for the next week.
- * 
+ *
  * @param {Date} virtualTime
- * @return {boolean} true if the farmer can insert products, false otherwise 
+ * @return {boolean} true if the farmer can insert products, false otherwise
  */
 export function checkSupplyInterval(virtualTime) {
   const dayOfWeek = virtualTime.getDay(); // Sunday ... Saturday -> 0 ... 6
   const timeOfDay = virtualTime.getHours(); // 0 ... 23
 
-  if(dayOfWeek==3 || dayOfWeek==4 || dayOfWeek==5){
+  if (dayOfWeek === 3 || dayOfWeek === 4 || dayOfWeek === 5) {
     return true;
-  }else if(dayOfWeek==6 && timeOfDay<10){
+  } else if (dayOfWeek === 6 && timeOfDay < 10) {
     return true;
   } else {
     return false;
   }
-
 }
