@@ -13,8 +13,6 @@ import { FaRegListAlt } from 'react-icons/fa';
 
 import { VirtualClock } from '../components';
 
-// todo add collaspse change
-
 /**
  * Sidebar component.
  *

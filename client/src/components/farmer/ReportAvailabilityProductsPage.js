@@ -137,32 +137,18 @@ export function SuppliedProductForm(props) {
             <Row>
                 <Col xs={12} lg={4}>
                     <FloatingLabel controlId="ProductName" label="Name of the product" className="mt-2">
-                        {checkSupplyInterval(props.virtualTime) ? (
                             <Form.Select
+                                disabled={checkSupplyInterval(props.virtualTime)}
                                 aria-label="Name of the product"
                                 onChange={(e) => setProductID(e.target.value)} required>
                                 <option></option>
-                                {productsList && productsList.map((p, k) => (
+                                {productsList && productsList.map((p) => (
                                     <option key={p.id} value={p.id}>
                                         {p.name}
                                     </option>
                                 ))}
 
                             </Form.Select>
-                        ) : (
-                            <Form.Select
-                                disabled
-                                aria-label="Name of the product"
-                                onChange={(e) => setProductID(e.target.value)} required>
-                                <option></option>
-                                {productsList && productsList.map((p, k) => (
-                                    <option key={p.id} value={p.id}>
-                                        {p.name}
-                                    </option>
-                                ))}
-
-                            </Form.Select>
-                        )}
 
                         <Form.Control.Feedback type="invalid">
                             Please insert the category of the product

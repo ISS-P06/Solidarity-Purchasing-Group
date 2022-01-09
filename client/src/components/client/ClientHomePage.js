@@ -14,7 +14,6 @@ function ClientHomePage(props) {
         {props.user && props.user.surname}!
       </h1>
       <h4 className="mt-3 mb-3">Your current balance is {props.user && props.user.balance} €</h4>
-      {/*Todo update with the real balance*/}
       {props.suspended ? (
         <>
           <h5>

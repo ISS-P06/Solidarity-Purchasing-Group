@@ -494,7 +494,7 @@ export const api_computeHomepageStats = async () => {
     }
 };
 /**
- * TODO: api to get information on the suspension state of an user
+ * Api to get information on the suspension state of an user
  * @param userId: ID of the logged user
  * @returns {boolean} true if the user is suspended, false otherwise
  */

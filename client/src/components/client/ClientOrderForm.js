@@ -211,7 +211,7 @@ export function ProductForm(props) {
             if (productToAdd) {
                 productToAdd.quantityOrdered = quantityOrdered;
                 productToAdd.temporaryKey = temporaryKey;
-                setTemporaryKey((temporaryKey) => temporaryKey + 1);
+                setTemporaryKey((tk) => tk + 1);
 
                 setProductsList(
                     productsList.map((p) =>
