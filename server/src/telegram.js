@@ -12,10 +12,10 @@ export const bot = initTelegraf();
  * @returns Instace of the bot or `false`
  */
 function initTelegraf() {
-  if (process.env.BOT_ACTIVE && process.env.BOT_TOKEN) {
+  if (Boolean(process.env.BOT_ACTIVE) && process.env.BOT_TOKEN) {
     return new Telegraf(process.env.BOT_TOKEN);
   } else {
-    console.log('Telegram bot is not running');
+    console.log('==> Telegram bot is not running');
     return null;
   }
 }

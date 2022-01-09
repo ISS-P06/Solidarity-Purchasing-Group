@@ -63,9 +63,9 @@ export function test_addDummyOrders() {
 
             const sql2 = 'DELETE FROM Product_Request WHERE ref_request = -1 OR ref_request = -2;';
 
-            db.run(sql2, [], (err) => {
-                if (err) {
-                    reject(err);
+            db.run(sql2, [], (err2) => {
+                if (err2) {
+                    reject(err2);
                     return;
                 }
 
@@ -74,11 +74,11 @@ export function test_addDummyOrders() {
                     db.run(
                         `INSERT INTO Request(id, ref_client, status, date) VALUES (-1, 2, pending, ?)`,
                         [dayjs().format('YYYY-MM-DD HH:MM')],
-                        function (err) {
+                        function () {
                             const sql3 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-1,1,9999.0)`;
-                            db.run(sql3, [], function (err) {
-                                if (err) {
-                                    reject(err);
+                            db.run(sql3, [], function (err3) {
+                                if (err3) {
+                                    reject(err3);
                                     return;
                                 }
                             });
@@ -87,11 +87,11 @@ export function test_addDummyOrders() {
                     db.run(
                         `INSERT INTO Request(id, ref_client, status, date) VALUES (-2, 2, pending, ?)`,
                         [dayjs().format('YYYY-MM-DD HH:MM')],
-                        function (err) {
+                        function () {
                             const sql4 = `INSERT INTO Product_Request(ref_request,ref_product,quantity) VALUES (-2,2,0.1)`;
-                            db.run(sql4, [], function (err) {
-                                if (err) {
-                                    reject(err);
+                            db.run(sql4, [], function (err4) {
+                                if (err4) {
+                                    reject(err4);
                                     return;
                                 }
 

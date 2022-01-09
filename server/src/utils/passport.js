@@ -1,6 +1,6 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import { systemDAO, userDAO } from '../dao';
+import { userDAO } from '../dao';
 
 /**
  * ---
