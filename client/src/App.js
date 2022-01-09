@@ -66,6 +66,8 @@ function App() {
             try {
                 const data = await api_getTime();
                 setVirtualTime(new Date(data.currentTime));
+                const suspended = await api_isUserSuspended(userId);
+                setSuspendedUser(suspended);
                 setDirtyVT(false);
             } catch (err) {
                 setVirtualTime(new Date());

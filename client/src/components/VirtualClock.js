@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { Col, Form, Row, Button, Modal } from 'react-bootstrap';
 
@@ -42,9 +43,7 @@ function VirtualClock(props) {
    * This function add 1 days to the date state. It's needed beceause in Date object the date start from 0.
    */
   const handleDate = async () => {
-    const newDate = new Date();
-    newDate.setDate(date.getDate() + 1);
-
+    const newDate = new Date(dayjs(date).add(1, 'day').format());
     setDate(newDate);
   };
 
