@@ -7,7 +7,7 @@ import FarmerProductForm from '../farmer/FarmerProductForm';
 import { checkOrderInterval } from '../../utils/date';
 
 const ProductCards = (props) => {
-    const {userRole, userId, virtualTime, setOpenBasketOffCanvas} = props;
+    const {userRole, userId, virtualTime, setOpenBasketOffCanvas, isSuspended} = props;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [searchedProduct, setSearchedProduct] = useState([]);
@@ -172,7 +172,7 @@ const ProductCards = (props) => {
                     )}
                     {currentProducts.map((p) => {
                         return <ProductCard key={p.id} product={p} userRole={userRole}
-                                            onBasketAdd={handleAddProductToBasket} virtualTime={virtualTime}/>;
+                                            onBasketAdd={handleAddProductToBasket} virtualTime={virtualTime} isSuspended={isSuspended}/>;
                     })}
                 </Row>
                 {userRole === "client" && !checkOrderInterval(virtualTime) &&

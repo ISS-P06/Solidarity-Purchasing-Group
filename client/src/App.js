@@ -14,7 +14,7 @@ import HomePage from './containers/HomePage';
 import {Layout} from './containers';
 import {getUserRoute, RedirectRoute} from './utils/route.js';
 import {addMessage} from './components/Message';
-import {api_getUserInfo, api_login, api_logout, api_getTime} from './Api';
+import {api_getUserInfo, api_login, api_logout, api_getTime, api_isUserSuspended} from './Api';
 
 
 
@@ -34,6 +34,7 @@ function App() {
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState();
   const [user, setUser] = useState();
+  const [suspendedUser, setSuspendedUser] = useState(false);
   // This state is used to update (and monitor) the time on front-end
   // Some functionalities can be used only at a certain time
   const [dirtyVT, setDirtyVT] = useState(true);
@@ -48,8 +49,10 @@ function App() {
   const doLogin = async (credentials) => {
     try {
       const res = await api_login(credentials);
+      const suspended = await api_isUserSuspended(res.id);
       setUserRole(res.role);
       setLoggedIn(true);
+      setSuspendedUser(suspended);
       return { done: true, msg: 'ok', role: res.role };
     } catch (err) {
       return { done: false, msg: err.message };
@@ -63,6 +66,8 @@ function App() {
             try {
                 const data = await api_getTime();
                 setVirtualTime(new Date(data.currentTime));
+                const suspended = await api_isUserSuspended(userId);
+                setSuspendedUser(suspended);
                 setDirtyVT(false);
             } catch (err) {
                 setVirtualTime(new Date());
@@ -78,10 +83,12 @@ function App() {
         const checkAuth = async () => {
             try {
                 const info = await api_getUserInfo();
+                const suspended = await api_isUserSuspended(info.id);
                 setUser(info);
                 setUserId(info.id);
                 setUserRole(info.role);
                 setLoggedIn(true);
+                setSuspendedUser(suspended);
             } catch (err) {
                 setUserRole('');
             }
@@ -131,8 +138,9 @@ function App() {
     userRole,
     userId,
     user,
-    virtualTime,
-    setOpenBasketOffCanvas
+    setOpenBasketOffCanvas,
+    suspendedUser,
+    virtualTime
   };
 
   const RoutesFarmerProps = {

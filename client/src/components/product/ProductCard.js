@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { checkOrderInterval } from '../../utils/date';
 
 const ProductCard = (props) => {
-    const { product, userRole, onBasketAdd, virtualTime } = props;
+    const { product, userRole, onBasketAdd, virtualTime, isSuspended } = props;
 
     const [show, setShow] = useState(false);
     const [reservedQuantity, setReservedQuantity] = useState(0);
@@ -18,7 +18,10 @@ const ProductCard = (props) => {
         setShow(false);
         setReservedQuantity(0)
     };
-    const handleShow = () => setShow(true);
+    const handleShow = () => { 
+        if(!isSuspended)    
+            setShow(true);
+    };
 
     /**
      * This function handles what happen if we add a product in the basket,
@@ -66,7 +69,7 @@ const ProductCard = (props) => {
                             variant="primary"
                             className="float-end text-light pt-0 pb-1"
                             style={{ fontSize: 20 }}
-                            onClick={handleShow} disabled={!checkOrderInterval(virtualTime)}>
+                            onClick={handleShow} disabled={!checkOrderInterval(virtualTime) || isSuspended}>
                             +
                         </Button>
                         <Modal show={show} onHide={handleClose} centered>
@@ -101,7 +104,7 @@ const ProductCard = (props) => {
                                     <Col>
                                         <Button variant="primary"
                                             onClick={handleAddProductToBasket}
-                                            disabled={!checkOrderInterval(virtualTime)}>
+                                            disabled={!checkOrderInterval(virtualTime) || isSuspended}>
                                             Add product to Basket
                                         </Button>
                                     </Col>
