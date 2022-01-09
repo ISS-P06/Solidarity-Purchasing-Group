@@ -90,7 +90,7 @@ export function sendWarningSuspension(customerInfo) {
     an orderID of 0 or less is passed to the function so that it returns
     a resolved promise every time instead of using nodemailer.
 */
-    if (customerInfo === '') {
+    if (customerInfo == '') {
         return Promise.resolve("email sent");
     }
 

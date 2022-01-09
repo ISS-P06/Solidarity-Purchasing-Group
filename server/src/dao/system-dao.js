@@ -389,7 +389,7 @@ export function test_addSuspensionAtClientById(id) {
  * 3 or 4 missed pickups of their order
  * @return {Promise<unknown>}
  */
-export async function getMailListWithThreeOrFourMissedPickups() {
+export async function getWarnedCustomers() {
   const warningMissedPickups = [3, 4]
   return  new Promise((resolve, reject) => {
     const customerInfoQuery = 'select email, name ,surname ,missed_pickups from Client C,User U where u.id = C.ref_user AND C.missed_pickups IN ('+warningMissedPickups.map(v=>'?')+')'

@@ -72,7 +72,7 @@ class SYS {
        * if it is exceeded the system should send emails for people who have 3 or 4 missed pickups
        */
       if (day == 5 && hours == 22) {
-          systemDAO.getMailListWithThreeOrFourMissedPickups().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
+          systemDAO.getWarnedCustomers().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
       }
   }
 
