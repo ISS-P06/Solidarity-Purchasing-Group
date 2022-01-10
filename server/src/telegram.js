@@ -12,7 +12,8 @@ export const bot = initTelegraf();
  * @returns Instace of the bot or `false`
  */
 function initTelegraf() {
-  if (Boolean(process.env.BOT_ACTIVE) && process.env.BOT_TOKEN) {
+  if (process.env.BOT_ACTIVE === 'true' && process.env.BOT_TOKEN) {
+    console.log('==> Telegram bot is up and running');
     return new Telegraf(process.env.BOT_TOKEN);
   } else {
     console.log('==> Telegram bot is not running');
@@ -71,7 +72,9 @@ export async function sendTelegramMessage(string) {
  * Launch the telegram bot
  */
 export function launchTelegramBot() {
-  bot.launch();
+  if (bot !== null) {
+    bot.launch();
+  }
 }
 
 // Enable graceful stop
