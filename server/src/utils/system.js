@@ -61,19 +61,17 @@ class SYS {
      */
     if (day === 5 && hours === 23) {
       this.event_checkUndeliveredOrders();
+      /**
+       * this checks whether the friday night is exceeded or not
+       * if it is exceeded the system should send emails for people who have 3 or 4 missed pickups
+       */
+      systemDAO.getWarnedCustomers().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
     }
 
     if (day === 6 && hours === 9) {
       sendAvailableProductsMessage();
     }
-
-      /**
-       * this checks whether the friday night is exceeded or not
-       * if it is exceeded the system should send emails for people who have 3 or 4 missed pickups
-       */
-      if (day == 5 && hours == 22) {
-          systemDAO.getWarnedCustomers().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
-      }
+    
   }
 
   /**
@@ -143,7 +141,9 @@ class SYS {
                 .then((res) => {
                     // ok
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+
+                });
         }
     }
   }
