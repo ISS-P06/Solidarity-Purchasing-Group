@@ -97,7 +97,7 @@ function OrderReview(props) {
                 </Row>
                 {orderReview.delivery &&
                     <Row>
-                      <Col>Delivery: {orderReview.delivery.address} {orderReview.delivery.date} {orderReview.delivery.time} </Col>
+                      <Col>Delivery: {orderReview.delivery.address} {orderReview.delivery.date} {orderReview.delivery.startTime} {orderReview.delivery.endTime}</Col>
                     </Row>
                 }
 
