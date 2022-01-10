@@ -45,12 +45,14 @@ router.post(
       const requestId = await orderDAO.insertOrderFromBasket(userId, dateTime);
 
       const basket = await basketDAO.getBasketByClientId(userId);
-      basket.forEach((p) => {
+      basket.forEach(async (p) => {
         // insert product info on table `Product_Request`
-        orderDAO.insertProductRequest(requestId, p.productId, p.quantity);
+        await orderDAO.insertProductRequest(requestId, p.productId, p.quantity);
         // clear basket
-        basketDAO.removeProductFromBasket(userId, p.productId);
+        await basketDAO.removeProductFromBasket(userId, p.productId);
       });
+
+      await orderDAO.checkBalanceAndSetStatus(requestId);
 
       res.status(200).json(requestId);
     } catch (e) {
