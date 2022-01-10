@@ -56,15 +56,15 @@ docker-compose -f docker-compose.prod.yml push
 This repo has two images, one for the user interface and one for the server logic. Both images can be pulled with:
 
 ```
-docker pull gabelluardo/solidarity-purchasing-group:release1-client
-docker pull gabelluardo/solidarity-purchasing-group:release1-server
+docker pull gabelluardo/solidarity-purchasing-group:release2-client
+docker pull gabelluardo/solidarity-purchasing-group:release2-server
 ```
 
 When images are built, you can run them with:
 
 ```
-docker run -d -p 3001:3001 --name spg06-server gabelluardo/solidarity-purchasing-group:release1-server
-docker run -d -p 3000:80 --name spg06-client --link spg06-server:server gabelluardo/solidarity-purchasing-group:release1-client
+docker run -d -p 3001:3001 --name spg06-server gabelluardo/solidarity-purchasing-group:release2-server
+docker run -d -p 3000:80 --name spg06-client --link spg06-server:server gabelluardo/solidarity-purchasing-group:release2-client
 ```
 
 **The app can be reached on http://localhost:3000**
@@ -141,12 +141,12 @@ Contains generic information for a registered user.
 
 Contains specific information about a registered client.
 
-| Field name     | Type    | Constraints            | Notes                                                        |
-| -------------- | ------- | ---------------------- | ------------------------------------------------------------ |
+| Field name     | Type    | Constraints            | Notes                                                           |
+| -------------- | ------- | ---------------------- | --------------------------------------------------------------- |
 | ref_user       | INTEGER | **PK**, _FK_, NOT NULL | References `User("id")`; refers to the client's own credentials |
-| address        | TEXT    | NOT NULL               |                                                              |
-| balance        | REAL    | NOT NULL               | Client's current wallet balance                              |
-| missed_pickups | INTEGER |                        | Number of consecutive missed pickups                         |
+| address        | TEXT    | NOT NULL               |                                                                 |
+| balance        | REAL    | NOT NULL               | Client's current wallet balance                                 |
+| missed_pickups | INTEGER |                        | Number of consecutive missed pickups                            |
 
 ### Farmer
 
@@ -177,13 +177,13 @@ Note that products of the same type (e.g. apples) are treated as two separate pr
 
 Contains information about a specific supply of a product.
 
-| Field name          | Type    | Constraints    | Notes                                                        |
-| ------------------- | ------- | -------------- | ------------------------------------------------------------ |
+| Field name          | Type    | Constraints    | Notes                                                                                   |
+| ------------------- | ------- | -------------- | --------------------------------------------------------------------------------------- |
 | ref_prod_descriptor | INTEGER | _FK_, NOT NULL | References `prod_descriptor("id")`; references the descriptor that describes the supply |
-| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg) |
-| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                |
-| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added. Format must be `YYYY-MM-DD HH:MM` |
-| id                  | INTEGER | **PK**         | Auto-increment                                               |
+| quantity            | REAL    | NOT NULL       | Measured in the unit specified in the `prod_descriptor` table (e.g. kg)                 |
+| price               | REAL    | NOT NULL       | Price per unit (e.g. euro/kg)                                                           |
+| date                | TEXT    | NOT NULL       | Date and time of the moment the product was added. Format must be `YYYY-MM-DD HH:MM`    |
+| id                  | INTEGER | **PK**         | Auto-increment                                                                          |
 
 ### Request
 
@@ -196,14 +196,14 @@ The `status` field describes the request's current status:
 - `delivered`: products have successfully been delivered to the client;
 - `pending_canc`: products have been confirmed, but the client's current balance is insufficient;
 - `canceled`: the order has been canceled due to insufficient funds or other reasons;
--  `unretrieved`: the order has not been delivered or picked up.
+- `unretrieved`: the order has not been delivered or picked up.
 
-| Field name | Type    | Constraints    | Notes                                                        |
-| ---------- | ------- | -------------- | ------------------------------------------------------------ |
-| id         | INTEGER | **PK**         | Auto-increment                                               |
-| ref_client | INTEGER | _FK_, NOT NULL | References `Client("ref_user")`; refers to the client who made the request |
+| Field name | Type    | Constraints    | Notes                                                                            |
+| ---------- | ------- | -------------- | -------------------------------------------------------------------------------- |
+| id         | INTEGER | **PK**         | Auto-increment                                                                   |
+| ref_client | INTEGER | _FK_, NOT NULL | References `Client("ref_user")`; refers to the client who made the request       |
 | status     | TEXT    | NOT NULL       | Possible values: `pending`, `confirmed`, `delivered`, `pending_canc`, `canceled` |
-| date       | TEXT    | NOT NULL       | Date in which the order has been made. Format must be `YYYY-MM-DD HH:MM`. |
+| date       | TEXT    | NOT NULL       | Date in which the order has been made. Format must be `YYYY-MM-DD HH:MM`.        |
 
 ### Product_Request
 
@@ -231,24 +231,24 @@ Note that adding products to a basket means modifying the value of `quantity` in
 
 Contains information about the scheduled delivery/pick-up for a specific order.
 
-| Field name     | Type    | Constraints            | Notes                                                        |
-| -------------- | ------- | ---------------------- | ------------------------------------------------------------ |
-| ref_request    | INTEGER | **PK**, *FK*, NOT NULL | References `Request(id)`; references the request for which the delivery/pick-up has  been scheduled. |
-| address        | TEXT    | NOT NULL               | Address to which the order must be delivered. Can be an empty string in case of a pick-up. |
-| date           | TEXT    | NOT NULL               | Date of the delivery/pick-up. Format must be `YYYY-MM-DD HH:mm`. |
-| startTime      | TEXT    | NOT NULL               | Starting time of the time frame in which the delivery/pick-up can occur. |
-| endTime        | TEXT    | NOT NULL               | End time of the time frame in which the delivery/pick-up can occur. |
+| Field name     | Type    | Constraints            | Notes                                                                                                                                    |
+| -------------- | ------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| ref_request    | INTEGER | **PK**, _FK_, NOT NULL | References `Request(id)`; references the request for which the delivery/pick-up has been scheduled.                                      |
+| address        | TEXT    | NOT NULL               | Address to which the order must be delivered. Can be an empty string in case of a pick-up.                                               |
+| date           | TEXT    | NOT NULL               | Date of the delivery/pick-up. Format must be `YYYY-MM-DD HH:mm`.                                                                         |
+| startTime      | TEXT    | NOT NULL               | Starting time of the time frame in which the delivery/pick-up can occur.                                                                 |
+| endTime        | TEXT    | NOT NULL               | End time of the time frame in which the delivery/pick-up can occur.                                                                      |
 | deliveryAtHome | TEXT    | NOT NULL               | Indicates whether the tuple describes a delivery (`"true"`) or a pick-up (`"false"`). Note that the values are not booleans but strings. |
 
 ### Suspension
 
 Contains information about the suspension of a client. A suspended client cannot make any orders for a month.
 
-| Field name | Type    | Constraints            | Notes                                                        |
-| ---------- | ------- | ---------------------- | ------------------------------------------------------------ |
-| ref_client | INTEGER | **PK**, *FK*, NOT NULL | References `Client(ref_user)`; refers to the suspended client. |
+| Field name | Type    | Constraints            | Notes                                                                |
+| ---------- | ------- | ---------------------- | -------------------------------------------------------------------- |
+| ref_client | INTEGER | **PK**, _FK_, NOT NULL | References `Client(ref_user)`; refers to the suspended client.       |
 | start_date | TEXT    | NOT NULL               | Starting date for the suspension. Format must be `YYYY-MM-DD HH:mm`. |
-| end_date   | TEXT    | NOT NULL               | End date for the suspension. Format must be `YYYY-MM-DD HH:mm`. |
+| end_date   | TEXT    | NOT NULL               | End date for the suspension. Format must be `YYYY-MM-DD HH:mm`.      |
 
 ## Registered users
 
@@ -258,7 +258,7 @@ Below is a list of all users registered in the database for testing purposes:
 | ------------- | --------------------- | ------------- | --------- | ------------- | -------------------------- |
 | pentolino     | pentolino             | Shop employee | pentolino | de' pentolini | giorgiomastrota@mail.com   |
 | teiera        | teiera123             | Client        | Teiera    | McTeapot      | s287037@studenti.polito.it |
-| nonnaPapera   | paperino            | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
+| nonnaPapera   | paperino              | Farmer        | Elvira    | Coot          | elvira.coot43@mail.dck     |
 | iosonoironman | tonystark             | Client        | Tony      | Stark         | tony.stark@starkinc.us     |
 | mario         | itsamemario           | Client        | Mario     | Mario         | mariomario@mail.msh        |
-| manager         | mudamuda           | Manager        | Giorno     | Giovanna         | manager@passione.mail.com        |
+| manager       | mudamuda              | Manager       | Giorno    | Giovanna      | manager@passione.mail.com  |

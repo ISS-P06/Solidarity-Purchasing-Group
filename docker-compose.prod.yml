@@ -5,7 +5,7 @@ services:
     build:
       context: ./client/
       dockerfile: Dockerfile.prod
-    image: gabelluardo/solidarity-purchasing-group:release1-client
+    image: gabelluardo/solidarity-purchasing-group:release2-client
     restart: always
     # production mode is on port 80
     ports:
@@ -19,7 +19,7 @@ services:
     build:
       context: ./server/
       target: production
-    image: gabelluardo/solidarity-purchasing-group:release1-server
+    image: gabelluardo/solidarity-purchasing-group:release2-server
     restart: always
     environment:
       NODE_ENV: production
