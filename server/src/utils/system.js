@@ -73,9 +73,9 @@ class SYS {
     }
 
 
-      /*if (day == 5 && hours == 22) {
+      if (day == 5 && hours == 22) {
           systemDAO.getWarnedCustomers().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
-      }*/
+      }
   }
 
   /**
@@ -145,7 +145,9 @@ class SYS {
                 .then((res) => {
                     // ok
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+
+                });
         }
     }
   }
