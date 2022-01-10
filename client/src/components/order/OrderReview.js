@@ -66,7 +66,7 @@ function OrderReview(props) {
   };
 
   return (
-    <div>
+    <Container>
       <div className="pt-4 pb-3">
         <h3>Order review</h3>
       </div>
@@ -93,7 +93,7 @@ function OrderReview(props) {
                   <Col>Surname: {orderReview.surname}</Col>
                 </Row>
                 <Row>
-                  <Col>Phone: {orderReview.phone}</Col>
+                  <Col className='pb-3'>Phone: {orderReview.phone}</Col>
                 </Row>
                 {orderReview.delivery &&
                     <Row>
@@ -126,7 +126,7 @@ function OrderReview(props) {
           </Card>
         </Col>
       </Row>
-    </div>
+    </Container>
   );
 }
 
