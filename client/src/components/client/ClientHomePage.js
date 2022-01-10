@@ -13,7 +13,7 @@ function ClientHomePage(props) {
         Welcome on Solidarity Purchase Group, {props.user && props.user.name}{' '}
         {props.user && props.user.surname}!
       </h1>
-      <h4 className="mt-3 mb-3">Your current balance is {props.user && props.user.balance} €</h4>
+      <h4 className="mt-3 mb-3">Your current balance is {props.user && parseFloat(props.user.balance).toFixed(2) } €</h4>
       {props.suspended ? (
         <>
           <h5>
