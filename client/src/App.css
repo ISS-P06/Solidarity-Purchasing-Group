@@ -46,7 +46,8 @@ h3 {
 
 .btn:hover,
 .btn:active,
-.btn:focus {
+.btn:focus,
+.btn:disabled {
   color: #fff;
   background-color: #38782a;
   border-color: #27511d;
