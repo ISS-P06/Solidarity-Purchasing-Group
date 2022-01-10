@@ -18,6 +18,8 @@ export function listProducts(day) {
     // Convert day into a format readable by SQLite
     let date = dayjs(day).format('YYYY-MM-DD');
     date = date + ' 00:00';
+    let endDate = dayjs(day).add(3, 'day').format('YYYY-MM-DD');
+    endDate = endDate + ' 09:00';
 
     const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit, pd.ref_farmer, f.farm_name
                      FROM Product p,
@@ -25,9 +27,9 @@ export function listProducts(day) {
                         Farmer f
                      WHERE pd.id = p.ref_prod_descriptor 
                         AND pd.ref_farmer = f.ref_user
-                        AND p.date >= DATE(?)`;
+                        AND p.date >= DATE(?) AND p.date < DATE(?)`;
 
-    db.all(sql, [date], (err, rows) => {
+    db.all(sql, [date, endDate], (err, rows) => {
       if (err) {
         reject(err);
         return;
