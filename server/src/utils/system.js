@@ -71,11 +71,7 @@ class SYS {
     if (day === 6 && hours === 9) {
       sendAvailableProductsMessage();
     }
-
-
-      if (day == 5 && hours == 22) {
-          systemDAO.getWarnedCustomers().then(customerInfo => this.event_sendSuspensionWarning(customerInfo))
-      }
+    
   }
 
   /**
