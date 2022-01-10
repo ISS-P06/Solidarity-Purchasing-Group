@@ -18,7 +18,7 @@ export function listProducts(day) {
     // Convert day into a format readable by SQLite
     let date = dayjs(day).format('YYYY-MM-DD');
     date = date + ' 00:00';
-    let endDate = dayjs(day).add(3, 'day').format('YYYY-MM-DD');
+    let endDate = dayjs(day).add(4, 'day').format('YYYY-MM-DD');
     endDate = endDate + ' 09:00';
 
     const sql = `SELECT p.id, pd.name, pd.description, pd.category, p.quantity, p.price, pd.unit, pd.ref_farmer, f.farm_name
