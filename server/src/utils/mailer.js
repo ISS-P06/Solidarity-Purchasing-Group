@@ -81,7 +81,8 @@ export function sendWarningSuspension(customerInfo) {
             'We are sorry to inform you that your account is about to be suspended since you have '+ customerInfo.missed_pickups +
             ' times of orders missed pickups.\n\n'+
             'For more information you are invited to consult our customer service.\n'+
-            'Best regards'
+            '\nBest regards,\nThe SPG team\n\n' +
+            '---\nThis is an automated email, please do not respond.'
     };
 
     /*
