@@ -97,7 +97,7 @@ export default function Basket(props) {
                 loading={loading}
                 virtualTime={props.virtualTime}
             />
-            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime} handleCloseBasketCanvas={props.handleClose}/>
+            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime} handleCloseBasketCanvas={props.handleClose}  userType={"client"}/>
         </>
     );
 }

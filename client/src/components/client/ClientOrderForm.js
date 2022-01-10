@@ -148,7 +148,7 @@ function ClientOrderForm(props) {
                 </Button>
             </Modal.Footer>
         </Modal>
-            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime} onModalHide={handleAskTopUp}/>
+            <ScheduleDelivery orderID={orderID} show={scheduleDeliveryModal} setShow={setScheduleDeliveryModal} virtualTime={virtualTime} onModalHide={handleAskTopUp} userType={"farmer"}/>
         </>
 
     );

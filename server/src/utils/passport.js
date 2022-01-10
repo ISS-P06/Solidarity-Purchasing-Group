@@ -96,6 +96,13 @@ export const isLoggedIn_Manager = (req, res, next) => {
   return res.status(401).json({ message: 'not authenticated'});
 };
 
+// Shop employee or client
+export const isLoggedIn_ShopEmployeeOrClient = (req, res, next) => {
+  if (req.isAuthenticated() && (req.user.role === "client" || req.user.role === "shop_employee" ))
+    return next();
+  return res.status(401).json({ message: 'not authenticated'});
+};
+
 // Temporary suspension
 export const isNotSuspended = (req, res, next) => {
   userDAO.checkUserSuspensionsById(req.user.id).then((isSuspended) => {

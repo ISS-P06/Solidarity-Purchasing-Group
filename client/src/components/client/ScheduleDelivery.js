@@ -7,7 +7,7 @@ import {addMessage} from "../Message";
 import dayjs from "dayjs";
 
 function ScheduleDelivery(props) {
-    const {orderID, show, setShow, virtualTime, handleCloseBasketCanvas} = props;
+    const {orderID, show, setShow, virtualTime, handleCloseBasketCanvas, userType} = props;
     const [wednesday, setWednesday] = useState('')
     const [friday, setFriday] = useState('')
 
@@ -36,7 +36,7 @@ function ScheduleDelivery(props) {
         api_scheduleDelivery(orderID, delivery)
             .then(() => {
                 addMessage({title: "", message: 'Scheduling delivery completed with success', type: 'success'})
-               handleCloseBasketCanvas(); //close the basket modal
+               userType==="client" && handleCloseBasketCanvas(); //close the basket modal
             }).catch((err) => {
             addMessage({title: "Error", message: err.message, type: 'danger'});
         })
