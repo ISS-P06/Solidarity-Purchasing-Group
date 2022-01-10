@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { orderDAO } from '../dao';
-import { isLoggedIn_Employee, isLoggedIn_Client, formatterUtil } from '../utils';
+import { isLoggedIn_Employee, isLoggedIn_Client, isLoggedIn_ShopEmployeeOrClient,formatterUtil } from '../utils';
 
 export const router = Router();
 
@@ -48,7 +48,7 @@ router.post(
 
 router.post(
   '/api/orders/:orderId/deliver/schedule',
-  isLoggedIn_Client,
+    isLoggedIn_ShopEmployeeOrClient,
   check('orderId').isInt(),
   (req, res) => {
     const errors = validationResult(req);
